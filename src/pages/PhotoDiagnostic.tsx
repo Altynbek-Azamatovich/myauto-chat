@@ -9,9 +9,9 @@ const PhotoDiagnostic = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="flex items-center justify-between p-4">
+      <header className="flex items-center justify-between p-4 flex-shrink-0">
         <Button variant="ghost" size="icon" className="rounded-full bg-muted">
           <Menu className="h-6 w-6" />
         </Button>
@@ -24,12 +24,12 @@ const PhotoDiagnostic = () => {
       </header>
 
       {/* Content */}
-      <div className="px-4 py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold mb-4">
+      <div className="flex-1 flex flex-col px-4 py-4 min-h-0">
+        <div className="text-center mb-4 flex-shrink-0">
+          <h1 className="text-2xl font-bold mb-2">
             Сделай фото автомобиля
           </h1>
-          <p className="text-lg text-muted-foreground mb-2">
+          <p className="text-lg text-muted-foreground mb-1">
             ИИ распознает повреждения
           </p>
           <p className="text-lg text-muted-foreground">
@@ -38,8 +38,8 @@ const PhotoDiagnostic = () => {
         </div>
 
         {/* Camera Frame */}
-        <div className="relative mb-8">
-          <div className="aspect-square bg-muted rounded-2xl overflow-hidden relative">
+        <div className="relative flex-1 mb-4 max-h-80">
+          <div className="h-full bg-muted rounded-2xl overflow-hidden relative">
             {/* Placeholder for damaged car - will be replaced with camera feed */}
             <div className="absolute inset-0 bg-gradient-to-b from-muted to-app-gray-light flex items-center justify-center">
               <div className="text-center text-muted-foreground">
@@ -57,14 +57,14 @@ const PhotoDiagnostic = () => {
         </div>
 
         {/* Camera Button */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-primary rounded-full mb-6 shadow-lg">
-            <Camera className="h-10 w-10 text-primary-foreground" />
+        <div className="text-center mb-4 flex-shrink-0">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full shadow-lg">
+            <Camera className="h-8 w-8 text-primary-foreground" />
           </div>
         </div>
 
         {/* Action Button */}
-        <div className="px-8 pb-20">
+        <div className="px-8 pb-4 flex-shrink-0">
           <Button 
             className="w-full py-4 text-lg font-semibold rounded-full bg-primary hover:bg-primary/90"
             onClick={handleCameraClick}

@@ -48,7 +48,7 @@ const SuperChat = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="flex items-center justify-between p-4 border-b">
         <Button variant="ghost" size="icon" className="rounded-full bg-muted">
