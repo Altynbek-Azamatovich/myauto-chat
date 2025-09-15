@@ -50,7 +50,7 @@ const SuperChat = () => {
   return (
     <div className="h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="flex items-center justify-between p-4 border-b">
+      <header className="flex items-center justify-between p-4">
         <Button variant="ghost" size="icon" className="rounded-full bg-muted">
           <Menu className="h-6 w-6" />
         </Button>
@@ -88,7 +88,7 @@ const SuperChat = () => {
       </div>
 
       {/* Input Area */}
-      <div className="p-4 border-t bg-background pb-24">
+      <div className="p-4 bg-background pb-24">
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="icon" className="rounded-full">
             <Plus className="h-5 w-5" />
