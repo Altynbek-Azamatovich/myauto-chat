@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import carMainImage from "@/assets/car-main.jpg";
+import carMainImage from "@/assets/car-main.png";
 import logoImage from "@/assets/logo.png";
 
 const Home = () => {
@@ -111,7 +111,7 @@ const Home = () => {
       {/* Car Info Cards */}
       <div className="px-4 space-y-4">
         <div className="grid grid-cols-2 gap-4">
-          <Card className="p-4 bg-card/50 backdrop-blur-sm">
+          <Card className="p-4 bg-card rounded-2xl">
             <div className="flex items-start space-x-2">
               <div className="text-muted-foreground">
                 <span className="text-2xl">ⓘ</span>
@@ -127,7 +127,7 @@ const Home = () => {
             </div>
           </Card>
 
-          <Card className="p-4 bg-card/50 backdrop-blur-sm">
+          <Card className="p-4 bg-card rounded-2xl">
             <div className="space-y-3">
               <div className="flex items-center space-x-2">
                 <AlertTriangle className="h-5 w-5 text-yellow-500" />
@@ -148,7 +148,7 @@ const Home = () => {
         </div>
 
         {/* Technical Condition */}
-        <Card className="p-4 bg-card/50 backdrop-blur-sm">
+        <Card className="p-4 bg-card rounded-2xl">
           <div className="flex items-center space-x-3">
             <HeartPulse className="h-6 w-6 text-app-green" />
             <div className="flex-1">
@@ -167,7 +167,7 @@ const Home = () => {
 
         {/* Additional Info */}
         <div className="grid grid-cols-2 gap-4 pb-20">
-          <Card className="p-4 bg-card/50 backdrop-blur-sm">
+          <Card className="p-4 bg-card rounded-2xl">
             <div className="flex items-center space-x-2">
               <div className="text-2xl">⚡</div>
               <div>
@@ -177,7 +177,7 @@ const Home = () => {
             </div>
           </Card>
 
-          <Card className="p-4 bg-card/50 backdrop-blur-sm">
+          <Card className="p-4 bg-card rounded-2xl">
             <div className="flex items-center space-x-2">
               <div className="text-2xl">📋</div>
               <div>
