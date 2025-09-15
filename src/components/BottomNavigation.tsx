@@ -17,7 +17,7 @@ const BottomNavigation = () => {
 
   return (
     <div className="fixed bottom-4 left-4 right-4">
-      <div className="bg-background border border-border rounded-2xl shadow-lg">
+      <div className="bg-background border border-border rounded-full shadow-lg">
         <div className="flex items-center justify-between px-4 py-2">
         {/* Main navigation buttons */}
         <div className="flex items-center space-x-2 bg-muted/50 rounded-full p-2">
