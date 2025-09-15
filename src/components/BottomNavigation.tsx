@@ -16,8 +16,9 @@ const BottomNavigation = () => {
   const isChatActive = location.pathname === "/super-chat";
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-lg border-t">
-      <div className="flex items-center justify-between px-4 py-2">
+    <div className="fixed bottom-4 left-4 right-4">
+      <div className="bg-background border border-border rounded-2xl shadow-lg">
+        <div className="flex items-center justify-between px-4 py-2">
         {/* Main navigation buttons */}
         <div className="flex items-center space-x-2 bg-muted/50 rounded-full p-2">
           {navItems.map((item) => (
@@ -51,6 +52,7 @@ const BottomNavigation = () => {
             isChatActive ? "text-white" : "text-muted-foreground"
           }`} />
         </Button>
+        </div>
       </div>
     </div>
   );

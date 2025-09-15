@@ -15,7 +15,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="flex items-center justify-between p-4">
+      <header className="flex items-center justify-between px-4 pt-8 pb-4">
         <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full bg-muted">
@@ -46,7 +46,7 @@ const Home = () => {
           </SheetContent>
         </Sheet>
 
-        <img src={logoImage} alt="myAuto" className="h-8 w-auto" />
+        <img src={logoImage} alt="myAuto" className="h-12 w-auto" />
 
         <Dialog open={isProfileOpen} onOpenChange={setIsProfileOpen}>
           <DialogTrigger asChild>
