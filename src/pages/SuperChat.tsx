@@ -88,7 +88,7 @@ const SuperChat = () => {
       </div>
 
       {/* Input Area */}
-      <div className="p-4 border-t bg-background pb-20">
+      <div className="p-4 border-t bg-background pb-24">
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="icon" className="rounded-full">
             <Plus className="h-5 w-5" />
