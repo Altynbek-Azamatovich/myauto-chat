@@ -17,41 +17,41 @@ const BottomNavigation = () => {
 
   return (
     <div className="fixed bottom-4 left-4 right-4">
-      <div className="bg-background border border-border rounded-full shadow-lg">
-        <div className="flex items-center justify-between px-4 py-2">
+      <div className="flex items-center justify-between max-w-md mx-auto">
         {/* Main navigation buttons */}
-        <div className="flex items-center space-x-2 bg-muted/50 rounded-full p-2">
+        <div className="flex items-center space-x-3 bg-muted rounded-full p-3">
           {navItems.map((item) => (
             <Button
               key={item.path}
               variant={isActive(item.path) ? "default" : "ghost"}
-              size="sm"
-              className={`rounded-full ${
+              size="lg"
+              className={`rounded-full aspect-square p-4 ${
                 isActive(item.path) 
                   ? "bg-foreground text-background shadow-md" 
                   : "text-muted-foreground hover:text-foreground"
               }`}
               onClick={() => navigate(item.path)}
             >
-              <item.icon className="h-5 w-5" />
+              <item.icon className="h-6 w-6" />
             </Button>
           ))}
         </div>
 
         {/* SuperChat FAB */}
-        <Button
-          size="lg"
-          className={`rounded-full aspect-square p-3 ${
-            isChatActive 
-              ? "bg-app-green hover:bg-app-green/90 shadow-lg" 
-              : "bg-muted hover:bg-muted/80"
-          }`}
-          onClick={() => navigate("/super-chat")}
-        >
-          <MessageCircle className={`h-6 w-6 ${
-            isChatActive ? "text-white" : "text-muted-foreground"
-          }`} />
-        </Button>
+        <div className="bg-background border border-border rounded-full shadow-lg">
+          <Button
+            size="lg"
+            className={`rounded-full aspect-square p-4 ${
+              isChatActive 
+                ? "bg-app-green hover:bg-app-green/90 shadow-lg" 
+                : "bg-muted hover:bg-muted/80"
+            }`}
+            onClick={() => navigate("/super-chat")}
+          >
+            <MessageCircle className={`h-6 w-6 ${
+              isChatActive ? "text-white" : "text-muted-foreground"
+            }`} />
+          </Button>
         </div>
       </div>
     </div>
