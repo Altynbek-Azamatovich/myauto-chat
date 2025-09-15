@@ -32,7 +32,7 @@ const BottomNavigation = () => {
               }`}
               onClick={() => navigate(item.path)}
             >
-              <item.icon className="h-12 w-12" />
+              <item.icon className="h-6 w-6" />
             </Button>
           ))}
         </div>
@@ -48,7 +48,7 @@ const BottomNavigation = () => {
             }`}
             onClick={() => navigate("/super-chat")}
           >
-            <MessageCircle className={`h-12 w-12 ${
+            <MessageCircle className={`h-6 w-6 ${
               isChatActive ? "text-white" : "text-muted-foreground"
             }`} />
           </Button>
