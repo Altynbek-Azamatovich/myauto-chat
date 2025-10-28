@@ -20,7 +20,7 @@ const SuperChat = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: "Привет! Я твой AI помощник по авто на базе Gemini. Могу ответить на вопросы об автомобилях, диагностике и обслуживании! 🚗",
+      text: "Привет! Я твой AI помощник по авто. Сейчас я в процессе обучения, что бы помогать тебе максимально эффективно! 🚗",
       isBot: true,
       timestamp: "сейчас"
     }
@@ -170,7 +170,7 @@ const SuperChat = () => {
         </Button>
 
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-primary">Auto-GPT</h1>
+          <h1 className="text-2xl font-bold text-primary">СуперЧат</h1>
         </div>
 
         <Button variant="ghost" size="icon" className="rounded-full bg-muted">
@@ -221,13 +221,19 @@ const SuperChat = () => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Заказать"
+              placeholder="Сообщение"
               className="pr-20 rounded-full bg-muted border-0"
             />
             <Button 
               variant="ghost" 
               size="icon" 
               className="absolute right-12 top-1/2 -translate-y-1/2 rounded-full"
+              onClick={() => {
+                toast({
+                  title: "Голосовое общение будет доступно после обновления",
+                  description: "Мы работаем над этой функцией"
+                });
+              }}
             >
               <Mic className="h-4 w-4" />
             </Button>
