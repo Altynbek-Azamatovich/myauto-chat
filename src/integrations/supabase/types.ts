@@ -14,7 +14,158 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      car_brands: {
+        Row: {
+          brand_name: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          brand_name: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          brand_name?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          phone_number: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id: string
+          phone_number: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone_number?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      service_history: {
+        Row: {
+          cost: number | null
+          created_at: string
+          description: string | null
+          id: string
+          mileage_at_service: number | null
+          next_service_date: string | null
+          notes: string | null
+          service_date: string
+          service_provider: string | null
+          service_type: Database["public"]["Enums"]["service_type"]
+          updated_at: string
+          vehicle_id: string
+        }
+        Insert: {
+          cost?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          mileage_at_service?: number | null
+          next_service_date?: string | null
+          notes?: string | null
+          service_date: string
+          service_provider?: string | null
+          service_type: Database["public"]["Enums"]["service_type"]
+          updated_at?: string
+          vehicle_id: string
+        }
+        Update: {
+          cost?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          mileage_at_service?: number | null
+          next_service_date?: string | null
+          notes?: string | null
+          service_date?: string
+          service_provider?: string | null
+          service_type?: Database["public"]["Enums"]["service_type"]
+          updated_at?: string
+          vehicle_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_history_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "user_vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_vehicles: {
+        Row: {
+          brand_id: string
+          created_at: string
+          id: string
+          is_primary: boolean | null
+          license_plate: string | null
+          mileage: number
+          model: string
+          updated_at: string
+          user_id: string
+          vin: string | null
+          year: number
+        }
+        Insert: {
+          brand_id: string
+          created_at?: string
+          id?: string
+          is_primary?: boolean | null
+          license_plate?: string | null
+          mileage?: number
+          model: string
+          updated_at?: string
+          user_id: string
+          vin?: string | null
+          year: number
+        }
+        Update: {
+          brand_id?: string
+          created_at?: string
+          id?: string
+          is_primary?: boolean | null
+          license_plate?: string | null
+          mileage?: number
+          model?: string
+          updated_at?: string
+          user_id?: string
+          vin?: string | null
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_vehicles_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "car_brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_vehicles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +174,13 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      service_type:
+        | "maintenance"
+        | "repair"
+        | "inspection"
+        | "tire_change"
+        | "oil_change"
+        | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +307,15 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      service_type: [
+        "maintenance",
+        "repair",
+        "inspection",
+        "tire_change",
+        "oil_change",
+        "other",
+      ],
+    },
   },
 } as const
