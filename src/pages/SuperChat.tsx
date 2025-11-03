@@ -164,7 +164,7 @@ const SuperChat = () => {
   return (
     <div className="h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="flex items-center justify-between p-4">
+      <header className="flex items-center justify-between p-4 flex-shrink-0">
         <Button variant="ghost" size="icon" className="rounded-full bg-muted">
           <Menu className="h-6 w-6" />
         </Button>
@@ -179,7 +179,7 @@ const SuperChat = () => {
       </header>
 
       {/* Messages */}
-      <div className="flex-1 p-4 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto px-4 pb-32">
         <div className="space-y-4">
           {messages.map((msg) => (
             <div 
@@ -209,10 +209,10 @@ const SuperChat = () => {
         </div>
       </div>
 
-      {/* Input Area */}
-      <div className="p-4 bg-background pb-24">
-        <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="icon" className="rounded-full">
+      {/* Input Area - Fixed at bottom */}
+      <div className="fixed bottom-20 left-0 right-0 p-4 bg-background border-t border-border">
+        <div className="flex items-center space-x-2 max-w-screen-xl mx-auto">
+          <Button variant="ghost" size="icon" className="rounded-full flex-shrink-0">
             <Plus className="h-5 w-5" />
           </Button>
           
@@ -242,7 +242,8 @@ const SuperChat = () => {
           <Button 
             onClick={handleSendMessage}
             size="icon" 
-            className="rounded-full bg-primary hover:bg-primary/90"
+            className="rounded-full bg-primary hover:bg-primary/90 flex-shrink-0"
+            disabled={isLoading || !message.trim()}
           >
             <ArrowUp className="h-4 w-4" />
           </Button>
