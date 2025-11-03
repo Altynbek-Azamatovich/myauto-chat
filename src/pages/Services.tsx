@@ -4,16 +4,7 @@ import { Card } from "@/components/ui/card";
 import logoImage from "@/assets/logo.png";
 
 const Services = () => {
-  const services = [
-    { title: "Автосервисы", placeholder: true },
-    { title: "Автомагазины", placeholder: true },
-    { title: "Детейлинг", placeholder: true },
-    { title: "Автомаляры", placeholder: true },
-    { title: "Авторазборы", placeholder: true },
-    { title: "Автомойки", placeholder: true },
-    { title: "Аксессуары", placeholder: true },
-    { title: "Химчистка", placeholder: true },
-  ];
+  const services = Array(8).fill(null);
 
   return (
     <div className="min-h-screen bg-background">
@@ -40,25 +31,11 @@ const Services = () => {
       {/* Services Grid */}
       <div className="px-4 pb-20">
         <div className="grid grid-cols-2 gap-4">
-          {services.map((service, index) => (
+          {services.map((_, index) => (
             <Card 
               key={index} 
-              className="aspect-square p-4 bg-card/80 backdrop-blur-sm hover:bg-card/90 transition-all cursor-pointer group"
-            >
-              <div className="h-full flex flex-col justify-between">
-                {/* Placeholder for service image */}
-                <div className="flex-1 bg-muted rounded-lg mb-3 flex items-center justify-center">
-                  <div className="text-center text-muted-foreground">
-                    <div className="text-3xl mb-2">🔧</div>
-                    <p className="text-xs">Загрузить изображение</p>
-                  </div>
-                </div>
-                
-                <h3 className="text-sm font-semibold text-center group-hover:text-primary transition-colors">
-                  {service.title}
-                </h3>
-              </div>
-            </Card>
+              className="h-48 bg-card/80 backdrop-blur-sm hover:bg-card/90 transition-all cursor-pointer"
+            />
           ))}
         </div>
       </div>
