@@ -19,7 +19,7 @@ const BottomNavigation = () => {
     <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
       <div className="flex items-center space-x-4">
         {/* Main navigation buttons */}
-        <div className="flex items-center space-x-3 bg-muted rounded-full p-3">
+        <div className="flex items-center space-x-3 bg-muted/70 backdrop-blur-md rounded-full p-3">
           {navItems.map((item) => (
             <Button
               key={item.path}
@@ -38,7 +38,7 @@ const BottomNavigation = () => {
         </div>
 
         {/* SuperChat FAB */}
-        <div className="bg-background border border-border rounded-full shadow-lg p-3">
+        <div className="bg-muted/70 backdrop-blur-md border border-border rounded-full shadow-lg p-3">
           <Button
             size="lg"
             className={`rounded-full aspect-square p-4 ${

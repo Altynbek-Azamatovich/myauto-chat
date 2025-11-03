@@ -21,13 +21,6 @@ const Services = () => {
         </Button>
       </header>
 
-      {/* Car Background */}
-      <div className="px-4 py-6">
-        <div className="h-48 bg-gradient-to-b from-muted to-transparent rounded-lg relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-background/20 to-transparent"></div>
-        </div>
-      </div>
-
       {/* Services Grid */}
       <div className="px-4 pb-20">
         <div className="grid grid-cols-2 gap-4">
