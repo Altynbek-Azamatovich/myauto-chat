@@ -163,8 +163,8 @@ const SuperChat = () => {
 
   return (
     <div className="h-screen bg-background flex flex-col">
-      {/* Header */}
-      <header className="flex items-center justify-between p-4 flex-shrink-0">
+      {/* Header - Fixed at top */}
+      <header className="fixed top-0 left-0 right-0 flex items-center justify-between p-4 bg-background z-10">
         <Button variant="ghost" size="icon" className="rounded-full bg-muted">
           <Menu className="h-6 w-6" />
         </Button>
@@ -179,7 +179,7 @@ const SuperChat = () => {
       </header>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 pb-32">
+      <div className="flex-1 overflow-y-auto px-4 pt-20 pb-32">
         <div className="space-y-4">
           {messages.map((msg) => (
             <div 
