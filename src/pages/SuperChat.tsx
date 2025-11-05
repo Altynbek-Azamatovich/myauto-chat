@@ -210,7 +210,7 @@ const SuperChat = () => {
       </div>
 
       {/* Input Area - Fixed at bottom */}
-      <div className="fixed bottom-20 left-0 right-0 p-4 bg-background">
+      <div className="fixed bottom-20 left-0 right-0 p-4 bg-black/20 backdrop-blur-lg">
         <div className="flex items-center space-x-2 max-w-screen-xl mx-auto">
           <Button variant="ghost" size="icon" className="rounded-full flex-shrink-0">
             <Plus className="h-5 w-5" />
