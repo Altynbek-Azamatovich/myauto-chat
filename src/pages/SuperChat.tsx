@@ -204,23 +204,23 @@ const SuperChat = () => {
           {messages.map((msg) => (
             <div 
               key={msg.id} 
-              className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'}`}
+              className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'} animate-fade-in`}
             >
-              <Card className={`max-w-[80%] p-3 rounded-2xl relative ${
+              <Card className={`max-w-[75%] p-4 rounded-2xl border-0 shadow-sm ${
                 msg.isBot 
-                  ? 'bg-muted text-foreground before:content-[""] before:absolute before:bottom-0 before:left-0 before:-ml-2 before:w-0 before:h-0 before:border-[8px] before:border-transparent before:border-r-muted before:border-b-muted' 
-                  : 'bg-primary text-primary-foreground after:content-[""] after:absolute after:bottom-0 after:right-0 after:-mr-2 after:w-0 after:h-0 after:border-[8px] after:border-transparent after:border-l-primary after:border-b-primary'
+                  ? 'bg-muted/80 text-foreground' 
+                  : 'bg-primary text-primary-foreground'
               }`}>
-                <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
-                <p className={`text-xs mt-1 opacity-70`}>
+                <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.text}</p>
+                <p className="text-xs mt-2 opacity-60">
                   {msg.isBot ? 'Gemini AI' : 'Вы'} • {msg.timestamp}
                 </p>
               </Card>
             </div>
           ))}
           {isLoading && messages[messages.length - 1]?.isBot !== true && (
-            <div className="flex justify-start">
-              <Card className="max-w-[80%] p-3 rounded-2xl relative bg-muted text-foreground before:content-[''] before:absolute before:bottom-0 before:left-0 before:-ml-2 before:w-0 before:h-0 before:border-[8px] before:border-transparent before:border-r-muted before:border-b-muted">
+            <div className="flex justify-start animate-fade-in">
+              <Card className="max-w-[75%] p-4 rounded-2xl border-0 shadow-sm bg-muted/80 text-foreground">
                 <p className="text-sm">Думаю...</p>
               </Card>
             </div>
