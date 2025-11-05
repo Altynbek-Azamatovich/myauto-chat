@@ -165,16 +165,16 @@ const SuperChat = () => {
     <div className="h-screen bg-background flex flex-col">
       {/* Header - Fixed at top */}
       <header className="fixed top-0 left-0 right-0 flex items-center justify-between p-4 bg-background z-10">
-        <Button variant="ghost" size="icon" className="rounded-full bg-muted">
-          <Menu className="h-6 w-6" />
+        <Button variant="ghost" size="icon" className="rounded-full bg-black/20 backdrop-blur-lg">
+          <Menu className="h-6 w-6 text-white" />
         </Button>
 
         <div className="text-center">
           <h1 className="text-2xl font-bold text-primary">СуперЧат</h1>
         </div>
 
-        <Button variant="ghost" size="icon" className="rounded-full bg-muted">
-          <Bell className="h-6 w-6" />
+        <Button variant="ghost" size="icon" className="rounded-full bg-black/20 backdrop-blur-lg">
+          <Bell className="h-6 w-6 text-white" />
         </Button>
       </header>
 

@@ -10,14 +10,14 @@ const Services = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="flex items-center justify-between p-4">
-        <Button variant="ghost" size="icon" className="rounded-full bg-muted">
-          <ChevronLeft className="h-6 w-6" />
+        <Button variant="ghost" size="icon" className="rounded-full bg-black/20 backdrop-blur-lg">
+          <ChevronLeft className="h-6 w-6 text-white" />
         </Button>
 
         <img src={logoImage} alt="myAuto" className="h-8 w-auto" />
 
-        <Button variant="ghost" size="icon" className="rounded-full bg-muted">
-          <User className="h-6 w-6" />
+        <Button variant="ghost" size="icon" className="rounded-full bg-black/20 backdrop-blur-lg">
+          <User className="h-6 w-6 text-white" />
         </Button>
       </header>
 

@@ -18,8 +18,8 @@ const Home = () => {
       <header className="flex items-center justify-between px-4 pt-8 pb-4">
         <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="rounded-full bg-muted">
-              <Menu className="h-6 w-6" />
+            <Button variant="ghost" size="icon" className="rounded-full bg-black/20 backdrop-blur-lg">
+              <Menu className="h-6 w-6 text-white" />
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-80">
@@ -50,8 +50,8 @@ const Home = () => {
 
         <Dialog open={isProfileOpen} onOpenChange={setIsProfileOpen}>
           <DialogTrigger asChild>
-            <Button variant="ghost" size="icon" className="rounded-full bg-muted">
-              <User className="h-6 w-6" />
+            <Button variant="ghost" size="icon" className="rounded-full bg-black/20 backdrop-blur-lg">
+              <User className="h-6 w-6 text-white" />
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
