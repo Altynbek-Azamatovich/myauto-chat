@@ -17,6 +17,7 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 
 const SuperChat = () => {
   const [message, setMessage] = useState("");
+  const [activeTab, setActiveTab] = useState<"chat" | "community">("chat");
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
@@ -164,17 +165,36 @@ const SuperChat = () => {
   return (
     <div className="h-screen bg-background flex flex-col">
       {/* Header - Fixed at top */}
-      <header className="fixed top-0 left-0 right-0 flex items-center justify-between p-4 bg-background z-10">
-        <Button variant="ghost" size="icon" className="rounded-full bg-black/20 backdrop-blur-lg">
-          <Menu className="h-6 w-6 text-white" />
+      <header className="fixed top-0 left-0 right-0 flex items-center justify-between p-4 bg-muted/30 backdrop-blur-lg z-10">
+        <Button variant="ghost" size="icon">
+          <Menu className="h-6 w-6" />
         </Button>
 
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-primary">СуперЧат</h1>
+        <div className="flex items-center gap-1 bg-muted/50 backdrop-blur-lg rounded-full px-1 py-1">
+          <button
+            onClick={() => setActiveTab("chat")}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+              activeTab === "chat"
+                ? "bg-white/70 text-primary"
+                : "text-muted-foreground"
+            }`}
+          >
+            СуперЧат
+          </button>
+          <button
+            onClick={() => setActiveTab("community")}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+              activeTab === "community"
+                ? "bg-white/70 text-primary"
+                : "text-muted-foreground"
+            }`}
+          >
+            Сообщество
+          </button>
         </div>
 
-        <Button variant="ghost" size="icon" className="rounded-full bg-black/20 backdrop-blur-lg">
-          <Bell className="h-6 w-6 text-white" />
+        <Button variant="ghost" size="icon">
+          <Bell className="h-6 w-6" />
         </Button>
       </header>
 
@@ -212,33 +232,37 @@ const SuperChat = () => {
       {/* Input Area - Fixed at bottom */}
       <div className="fixed bottom-20 left-0 right-0 p-4">
         <div className="flex items-center space-x-2 max-w-screen-xl mx-auto">
-          <Button variant="ghost" size="icon" className="rounded-full flex-shrink-0">
-            <Plus className="h-5 w-5" />
-          </Button>
-          
-          <div className="flex-1 relative">
+          <div className="flex-1 relative flex items-center bg-muted/30 backdrop-blur-lg rounded-full px-3 py-2">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8 flex-shrink-0"
+            >
+              <Plus className="h-5 w-5" />
+            </Button>
+            
             <Input
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Сообщение"
-              className="pr-24 rounded-full bg-muted/30 backdrop-blur-lg border-0"
+              className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-2"
             />
-          </div>
 
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="rounded-full flex-shrink-0"
-            onClick={() => {
-              toast({
-                title: "Голосовое общение будет доступно после обновления",
-                description: "Мы работаем над этой функцией"
-              });
-            }}
-          >
-            <Mic className="h-5 w-5" />
-          </Button>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8 flex-shrink-0"
+              onClick={() => {
+                toast({
+                  title: "Голосовое общение будет доступно после обновления",
+                  description: "Мы работаем над этой функцией"
+                });
+              }}
+            >
+              <Mic className="h-5 w-5" />
+            </Button>
+          </div>
 
           <Button 
             onClick={handleSendMessage}
