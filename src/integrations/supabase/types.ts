@@ -34,24 +34,57 @@ export type Database = {
       }
       profiles: {
         Row: {
+          car_brand: string | null
+          car_color: string | null
+          car_model: string | null
+          car_year: number | null
+          city: string | null
           created_at: string
+          first_name: string | null
           full_name: string | null
           id: string
+          last_name: string | null
+          license_plate: string | null
+          onboarding_completed: boolean | null
+          patronymic: string | null
           phone_number: string
+          preferred_language: string | null
           updated_at: string
         }
         Insert: {
+          car_brand?: string | null
+          car_color?: string | null
+          car_model?: string | null
+          car_year?: number | null
+          city?: string | null
           created_at?: string
+          first_name?: string | null
           full_name?: string | null
           id: string
+          last_name?: string | null
+          license_plate?: string | null
+          onboarding_completed?: boolean | null
+          patronymic?: string | null
           phone_number: string
+          preferred_language?: string | null
           updated_at?: string
         }
         Update: {
+          car_brand?: string | null
+          car_color?: string | null
+          car_model?: string | null
+          car_year?: number | null
+          city?: string | null
           created_at?: string
+          first_name?: string | null
           full_name?: string | null
           id?: string
+          last_name?: string | null
+          license_plate?: string | null
+          onboarding_completed?: boolean | null
+          patronymic?: string | null
           phone_number?: string
+          preferred_language?: string | null
           updated_at?: string
         }
         Relationships: []
