@@ -19,7 +19,7 @@ const BottomNavigation = () => {
     <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
       <div className="flex items-center space-x-4">
         {/* Main navigation buttons */}
-        <div className="flex items-center space-x-3 bg-muted/70 backdrop-blur-md rounded-full p-3">
+        <div className="flex items-center space-x-3 bg-black/60 backdrop-blur-lg rounded-full p-3">
           {navItems.map((item) => (
             <Button
               key={item.path}
@@ -32,13 +32,13 @@ const BottomNavigation = () => {
               }`}
               onClick={() => navigate(item.path)}
             >
-              <item.icon className="h-8 w-8" />
+              <item.icon className="h-16 w-16" />
             </Button>
           ))}
         </div>
 
         {/* SuperChat FAB */}
-        <div className="bg-muted/70 backdrop-blur-md border border-border rounded-full shadow-lg p-3">
+        <div className="bg-black/60 backdrop-blur-lg border border-border rounded-full shadow-lg p-3">
           <Button
             size="lg"
             className={`rounded-full aspect-square p-4 ${
@@ -48,7 +48,7 @@ const BottomNavigation = () => {
             }`}
             onClick={() => navigate("/super-chat")}
           >
-            <MessageCircle className={`h-8 w-8 ${
+            <MessageCircle className={`h-16 w-16 ${
               isChatActive ? "text-white" : "text-muted-foreground"
             }`} />
           </Button>
