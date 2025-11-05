@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
-import welcomeImage from "@/assets/welcome-illustration.jpg";
+import welcomeImage from "@/assets/welcome-hero.jpg";
 import { Globe } from "lucide-react";
 
 const Welcome = () => {
