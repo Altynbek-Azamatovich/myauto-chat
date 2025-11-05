@@ -38,14 +38,14 @@ const BottomNavigation = () => {
         </div>
 
         {/* SuperChat FAB */}
-        <div className="bg-black/20 backdrop-blur-lg rounded-full shadow-lg p-3">
+        <div className={`bg-black/20 backdrop-blur-lg rounded-full shadow-lg p-3 border-2 ${
+          isChatActive 
+            ? "border-app-green" 
+            : "border-transparent"
+        }`}>
           <Button
             size="lg"
-            className={`rounded-full aspect-square p-2 bg-transparent hover:bg-white/10 ${
-              isChatActive 
-                ? "ring-2 ring-inset ring-app-green" 
-                : ""
-            }`}
+            className="rounded-full aspect-square p-2 bg-transparent hover:bg-white/10"
             onClick={() => navigate("/super-chat")}
           >
             <MessageCircle size={64} strokeWidth={1.5} className="text-white" />
