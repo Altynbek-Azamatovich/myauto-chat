@@ -165,7 +165,7 @@ const SuperChat = () => {
   return (
     <div className="h-screen bg-background flex flex-col">
       {/* Header - Fixed at top */}
-      <header className="fixed top-0 left-0 right-0 flex items-center justify-between p-4 bg-muted/30 backdrop-blur-lg z-10">
+      <header className="fixed top-0 left-0 right-0 flex items-center justify-between p-4 z-10">
         <Button variant="ghost" size="icon">
           <Menu className="h-6 w-6" />
         </Button>
@@ -230,9 +230,9 @@ const SuperChat = () => {
       </div>
 
       {/* Input Area - Fixed at bottom */}
-      <div className="fixed bottom-20 left-0 right-0 p-4">
-        <div className="flex items-center space-x-2 max-w-screen-xl mx-auto">
-          <div className="flex-1 relative flex items-center bg-muted/30 backdrop-blur-lg rounded-full px-3 py-2">
+      <div className="fixed bottom-20 left-0 right-0 px-6">
+        <div className="flex items-center justify-center space-x-2">
+          <div className="flex items-center bg-muted/30 backdrop-blur-lg rounded-full px-3 h-10 max-w-xl w-full">
             <Button 
               variant="ghost" 
               size="icon" 
@@ -246,7 +246,7 @@ const SuperChat = () => {
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Сообщение"
-              className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-2"
+              className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-2 h-8"
             />
 
             <Button 
