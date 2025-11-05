@@ -206,11 +206,11 @@ const SuperChat = () => {
               key={msg.id} 
               className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'}`}
             >
-              <div className="relative">
-                <Card className={`max-w-[80%] p-3 rounded-3xl ${
+              <div className="relative max-w-[80%]">
+                <Card className={`p-3 rounded-3xl relative ${
                   msg.isBot 
-                    ? 'bg-muted text-foreground rounded-bl-sm' 
-                    : 'bg-primary text-primary-foreground rounded-br-sm'
+                    ? 'bg-muted text-foreground' 
+                    : 'bg-primary text-primary-foreground'
                 }`}>
                   <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
                   <p className={`text-xs mt-1 opacity-70`}>
@@ -218,33 +218,26 @@ const SuperChat = () => {
                   </p>
                 </Card>
                 {/* Message tail */}
-                <div className={`absolute bottom-0 w-4 h-4 ${
-                  msg.isBot 
-                    ? 'left-0 -ml-1' 
-                    : 'right-0 -mr-1'
-                }`}>
-                  <svg viewBox="0 0 8 13" className={`${
-                    msg.isBot ? '' : 'scale-x-[-1]'
-                  }`}>
-                    <path 
-                      d="M0,0 Q8,0 8,13 L0,13 Z" 
-                      className={msg.isBot ? 'fill-muted' : 'fill-primary'}
-                    />
-                  </svg>
-                </div>
+                {msg.isBot ? (
+                  <div className="absolute bottom-0 left-0 -ml-2 w-5 h-5 overflow-hidden">
+                    <div className="w-3 h-3 bg-muted rotate-45 translate-x-2 translate-y-1"></div>
+                  </div>
+                ) : (
+                  <div className="absolute bottom-0 right-0 -mr-2 w-5 h-5 overflow-hidden">
+                    <div className="w-3 h-3 bg-primary rotate-45 -translate-x-2 translate-y-1"></div>
+                  </div>
+                )}
               </div>
             </div>
           ))}
           {isLoading && messages[messages.length - 1]?.isBot !== true && (
             <div className="flex justify-start">
-              <div className="relative">
-                <Card className="max-w-[80%] p-3 rounded-3xl bg-muted text-foreground rounded-bl-sm">
+              <div className="relative max-w-[80%]">
+                <Card className="p-3 rounded-3xl bg-muted text-foreground">
                   <p className="text-sm">Думаю...</p>
                 </Card>
-                <div className="absolute bottom-0 left-0 -ml-1 w-4 h-4">
-                  <svg viewBox="0 0 8 13">
-                    <path d="M0,0 Q8,0 8,13 L0,13 Z" className="fill-muted" />
-                  </svg>
+                <div className="absolute bottom-0 left-0 -ml-2 w-5 h-5 overflow-hidden">
+                  <div className="w-3 h-3 bg-muted rotate-45 translate-x-2 translate-y-1"></div>
                 </div>
               </div>
             </div>
