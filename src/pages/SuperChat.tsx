@@ -179,7 +179,7 @@ const SuperChat = () => {
       </header>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 pt-20 pb-32">
+      <div className="flex-1 overflow-y-auto px-4 pt-24 pb-32">
         <div className="space-y-4">
           {messages.map((msg) => (
             <div 
@@ -210,7 +210,7 @@ const SuperChat = () => {
       </div>
 
       {/* Input Area - Fixed at bottom */}
-      <div className="fixed bottom-20 left-0 right-0 p-4 bg-background border-t border-border">
+      <div className="fixed bottom-20 left-0 right-0 p-4 bg-background">
         <div className="flex items-center space-x-2 max-w-screen-xl mx-auto">
           <Button variant="ghost" size="icon" className="rounded-full flex-shrink-0">
             <Plus className="h-5 w-5" />
@@ -222,22 +222,23 @@ const SuperChat = () => {
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Сообщение"
-              className="pr-20 rounded-full bg-muted border-0"
+              className="pr-24 rounded-full bg-muted border-0"
             />
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="absolute right-12 top-1/2 -translate-y-1/2 rounded-full"
-              onClick={() => {
-                toast({
-                  title: "Голосовое общение будет доступно после обновления",
-                  description: "Мы работаем над этой функцией"
-                });
-              }}
-            >
-              <Mic className="h-4 w-4" />
-            </Button>
           </div>
+
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full flex-shrink-0"
+            onClick={() => {
+              toast({
+                title: "Голосовое общение будет доступно после обновления",
+                description: "Мы работаем над этой функцией"
+              });
+            }}
+          >
+            <Mic className="h-5 w-5" />
+          </Button>
 
           <Button 
             onClick={handleSendMessage}
