@@ -45,7 +45,7 @@ const BottomNavigation = () => {
         }`}>
           <Button
             size="lg"
-            className="rounded-full aspect-square p-2 bg-transparent hover:bg-white/10"
+            className="rounded-full aspect-square p-2 bg-transparent hover:bg-transparent"
             onClick={() => navigate("/super-chat")}
           >
             <MessageCircle size={64} strokeWidth={1.5} className="text-white" />
