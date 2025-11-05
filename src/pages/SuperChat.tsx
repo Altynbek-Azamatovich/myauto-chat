@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from "react";
-import { Menu, Bell, Plus, Mic, ArrowUp } from "lucide-react";
+import { Bell, Plus, Mic, ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import logoImage from "@/assets/logo.png";
+import { supabase } from "@/integrations/supabase/client";
+import { ChatArchiveDrawer } from "@/components/ChatArchiveDrawer";
+import { CommunityPlaceholder } from "@/components/CommunityPlaceholder";
 
 interface Message {
   id: number;
@@ -27,6 +29,7 @@ const SuperChat = () => {
     }
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -38,8 +41,131 @@ const SuperChat = () => {
     scrollToBottom();
   }, [messages]);
 
+  useEffect(() => {
+    loadOrCreateConversation();
+  }, []);
+
+  const loadOrCreateConversation = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    // Try to load the most recent conversation
+    const { data: conversations } = await supabase
+      .from('chat_conversations')
+      .select('id')
+      .eq('user_id', user.id)
+      .order('updated_at', { ascending: false })
+      .limit(1);
+
+    if (conversations && conversations.length > 0) {
+      await loadConversation(conversations[0].id);
+    }
+  };
+
+  const loadConversation = async (conversationId: string) => {
+    setCurrentConversationId(conversationId);
+    
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data: chatMessages, error } = await supabase
+      .from('chat_messages')
+      .select('*')
+      .eq('conversation_id', conversationId)
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      console.error('Error loading messages:', error);
+      return;
+    }
+
+    if (chatMessages && chatMessages.length > 0) {
+      const loadedMessages: Message[] = chatMessages.map(msg => ({
+        id: Date.now() + Math.random(),
+        text: msg.content,
+        isBot: msg.role === 'assistant',
+        timestamp: 'сейчас'
+      }));
+      setMessages(loadedMessages);
+    } else {
+      // If conversation has no messages, start with welcome message
+      setMessages([{
+        id: 1,
+        text: "Привет! Я твой AI помощник по авто. Сейчас я в процессе обучения, что бы помогать тебе максимально эффективно! 🚗",
+        isBot: true,
+        timestamp: "сейчас"
+      }]);
+    }
+  };
+
+  const createNewConversation = async (): Promise<string | null> => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
+
+    const { data, error } = await supabase
+      .from('chat_conversations')
+      .insert({
+        user_id: user.id,
+        title: 'Новый чат'
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating conversation:', error);
+      return null;
+    }
+
+    return data.id;
+  };
+
+  const saveMessage = async (conversationId: string, role: 'user' | 'assistant', content: string) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    await supabase
+      .from('chat_messages')
+      .insert({
+        conversation_id: conversationId,
+        user_id: user.id,
+        role,
+        content
+      });
+
+    // Update conversation timestamp
+    await supabase
+      .from('chat_conversations')
+      .update({ updated_at: new Date().toISOString() })
+      .eq('id', conversationId);
+  };
+
+  const handleNewChat = () => {
+    setCurrentConversationId(null);
+    setMessages([{
+      id: 1,
+      text: "Привет! Я твой AI помощник по авто. Сейчас я в процессе обучения, что бы помогать тебе максимально эффективно! 🚗",
+      isBot: true,
+      timestamp: "сейчас"
+    }]);
+  };
+
   const handleSendMessage = async () => {
     if (!message.trim() || isLoading) return;
+
+    // Create or get conversation ID
+    let convId = currentConversationId;
+    if (!convId) {
+      convId = await createNewConversation();
+      if (!convId) {
+        toast({
+          title: "Ошибка",
+          description: "Не удалось создать чат",
+          variant: "destructive"
+        });
+        return;
+      }
+      setCurrentConversationId(convId);
+    }
 
     const userMessage: Message = {
       id: Date.now(),
@@ -49,6 +175,10 @@ const SuperChat = () => {
     };
 
     setMessages(prev => [...prev, userMessage]);
+    
+    // Save user message to database
+    await saveMessage(convId, 'user', message);
+    
     setMessage("");
     setIsLoading(true);
 
@@ -144,6 +274,11 @@ const SuperChat = () => {
           }
         }
       }
+
+      // Save assistant message to database
+      if (assistantText && convId) {
+        await saveMessage(convId, 'assistant', assistantText);
+      }
     } catch (error) {
       console.error("Error:", error);
       toast({
@@ -166,9 +301,11 @@ const SuperChat = () => {
     <div className="h-screen bg-background flex flex-col">
       {/* Header - Fixed at top */}
       <header className="fixed top-0 left-0 right-0 flex items-center justify-between p-4 z-10">
-        <Button variant="ghost" size="icon">
-          <Menu className="h-6 w-6" />
-        </Button>
+        <ChatArchiveDrawer 
+          currentConversationId={currentConversationId}
+          onSelectConversation={loadConversation}
+          onNewChat={handleNewChat}
+        />
 
         <div className="flex items-center gap-1 bg-muted/50 backdrop-blur-lg rounded-full px-1 py-1">
           <button
@@ -198,10 +335,15 @@ const SuperChat = () => {
         </Button>
       </header>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 pt-24 pb-32">
-        <div className="space-y-4">
-          {messages.map((msg) => (
+      {/* Content */}
+      {activeTab === "community" ? (
+        <div className="flex-1 overflow-y-auto px-4 pt-24 pb-32">
+          <CommunityPlaceholder />
+        </div>
+      ) : (
+        <div className="flex-1 overflow-y-auto px-4 pt-24 pb-32">
+          <div className="space-y-4">
+            {messages.map((msg) => (
             <div 
               key={msg.id} 
               className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'} animate-fade-in`}
@@ -225,9 +367,10 @@ const SuperChat = () => {
               </Card>
             </div>
           )}
-          <div ref={messagesEndRef} />
+            <div ref={messagesEndRef} />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Input Area - Fixed at bottom */}
       <div className="fixed bottom-28 left-0 right-0 px-6">
