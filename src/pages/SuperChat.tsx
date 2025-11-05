@@ -206,47 +206,23 @@ const SuperChat = () => {
               key={msg.id} 
               className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'}`}
             >
-              <div className="relative">
-                <Card className={`max-w-[80%] p-3 rounded-3xl ${
-                  msg.isBot 
-                    ? 'bg-muted text-foreground rounded-bl-sm' 
-                    : 'bg-primary text-primary-foreground rounded-br-sm'
-                }`}>
-                  <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
-                  <p className={`text-xs mt-1 opacity-70`}>
-                    {msg.isBot ? 'Gemini AI' : 'Вы'} • {msg.timestamp}
-                  </p>
-                </Card>
-                {/* Message tail */}
-                <div className={`absolute bottom-0 w-4 h-4 ${
-                  msg.isBot 
-                    ? 'left-0 -ml-1' 
-                    : 'right-0 -mr-1'
-                }`}>
-                  <svg viewBox="0 0 8 13" className={`${
-                    msg.isBot ? '' : 'scale-x-[-1]'
-                  }`}>
-                    <path 
-                      d="M0,0 Q8,0 8,13 L0,13 Z" 
-                      className={msg.isBot ? 'fill-muted' : 'fill-primary'}
-                    />
-                  </svg>
-                </div>
-              </div>
+              <Card className={`max-w-[80%] p-3 rounded-2xl relative ${
+                msg.isBot 
+                  ? 'bg-muted text-foreground before:content-[""] before:absolute before:bottom-0 before:left-0 before:-ml-2 before:w-0 before:h-0 before:border-[8px] before:border-transparent before:border-r-muted before:border-b-muted' 
+                  : 'bg-primary text-primary-foreground after:content-[""] after:absolute after:bottom-0 after:right-0 after:-mr-2 after:w-0 after:h-0 after:border-[8px] after:border-transparent after:border-l-primary after:border-b-primary'
+              }`}>
+                <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
+                <p className={`text-xs mt-1 opacity-70`}>
+                  {msg.isBot ? 'Gemini AI' : 'Вы'} • {msg.timestamp}
+                </p>
+              </Card>
             </div>
           ))}
           {isLoading && messages[messages.length - 1]?.isBot !== true && (
             <div className="flex justify-start">
-              <div className="relative">
-                <Card className="max-w-[80%] p-3 rounded-3xl bg-muted text-foreground rounded-bl-sm">
-                  <p className="text-sm">Думаю...</p>
-                </Card>
-                <div className="absolute bottom-0 left-0 -ml-1 w-4 h-4">
-                  <svg viewBox="0 0 8 13">
-                    <path d="M0,0 Q8,0 8,13 L0,13 Z" className="fill-muted" />
-                  </svg>
-                </div>
-              </div>
+              <Card className="max-w-[80%] p-3 rounded-2xl relative bg-muted text-foreground before:content-[''] before:absolute before:bottom-0 before:left-0 before:-ml-2 before:w-0 before:h-0 before:border-[8px] before:border-transparent before:border-r-muted before:border-b-muted">
+                <p className="text-sm">Думаю...</p>
+              </Card>
             </div>
           )}
           <div ref={messagesEndRef} />
