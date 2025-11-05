@@ -17,14 +17,20 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 const SuperChat = () => {
   const [message, setMessage] = useState("");
   const [activeTab, setActiveTab] = useState<"chat" | "community">("chat");
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      text: "Привет! Я твой AI помощник по авто. Сейчас я в процессе обучения, что бы помогать тебе максимально эффективно! 🚗",
-      isBot: true,
-      timestamp: "сейчас"
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const saved = localStorage.getItem('superChatMessages');
+    if (saved) {
+      return JSON.parse(saved);
     }
-  ]);
+    return [
+      {
+        id: 1,
+        text: "Привет! Я твой AI помощник по авто. Сейчас я в процессе обучения, что бы помогать тебе максимально эффективно! 🚗",
+        isBot: true,
+        timestamp: "сейчас"
+      }
+    ];
+  });
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -35,6 +41,10 @@ const SuperChat = () => {
 
   useEffect(() => {
     scrollToBottom();
+  }, [messages]);
+
+  useEffect(() => {
+    localStorage.setItem('superChatMessages', JSON.stringify(messages));
   }, [messages]);
 
   const handleSendMessage = async () => {
@@ -214,7 +224,7 @@ const SuperChat = () => {
                   Сообщество скоро!
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Мы работаем над созданием сообщества, где вы сможете:
+                  Мы работаем над созданием сообщества:
                 </p>
               </div>
 
