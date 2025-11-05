@@ -17,7 +17,6 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 
 const SuperChat = () => {
   const [message, setMessage] = useState("");
-  const [activeTab, setActiveTab] = useState<'superchat' | 'community'>('superchat');
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
@@ -165,48 +164,18 @@ const SuperChat = () => {
   return (
     <div className="h-screen bg-background flex flex-col">
       {/* Header - Fixed at top */}
-      <header className="fixed top-0 left-0 right-0 z-10">
-        <div className="flex items-center justify-between p-4">
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="bg-black/20 backdrop-blur-lg text-white hover:bg-black/30"
-          >
-            <Menu className="h-6 w-6" />
-          </Button>
-          
-          {/* Tabs */}
-          <div className="flex items-center gap-2 bg-black/20 backdrop-blur-lg rounded-full p-1">
-            <button
-              onClick={() => setActiveTab('superchat')}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-                activeTab === 'superchat'
-                  ? 'bg-white/50 text-primary'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              СуперЧат
-            </button>
-            <button
-              onClick={() => setActiveTab('community')}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-                activeTab === 'community'
-                  ? 'bg-white/50 text-primary'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Сообщество
-            </button>
-          </div>
-          
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="bg-black/20 backdrop-blur-lg text-white hover:bg-black/30"
-          >
-            <Bell className="h-6 w-6" />
-          </Button>
+      <header className="fixed top-0 left-0 right-0 flex items-center justify-between p-4 bg-background z-10">
+        <Button variant="ghost" size="icon" className="rounded-full bg-black/20 backdrop-blur-lg">
+          <Menu className="h-6 w-6 text-white" />
+        </Button>
+
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-primary">СуперЧат</h1>
         </div>
+
+        <Button variant="ghost" size="icon" className="rounded-full bg-black/20 backdrop-blur-lg">
+          <Bell className="h-6 w-6 text-white" />
+        </Button>
       </header>
 
       {/* Messages */}
