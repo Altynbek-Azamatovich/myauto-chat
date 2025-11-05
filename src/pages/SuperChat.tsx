@@ -1,26 +1,15 @@
 import { useState, useRef, useEffect } from "react";
-import { Menu, Bell, Plus, Mic, ArrowUp, Users, MessageCircle, Sparkles, Trash2 } from "lucide-react";
+import { Menu, Bell, Plus, Mic, ArrowUp, Users, MessageCircle, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { format } from "date-fns";
 
 interface Message {
   id: number;
   text: string;
   isBot: boolean;
   timestamp: string;
-}
-
-interface Conversation {
-  id: string;
-  title: string;
-  created_at: string;
-  updated_at: string;
 }
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
@@ -37,9 +26,6 @@ const SuperChat = () => {
     }
   ]);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
-  const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [isArchiveOpen, setIsArchiveOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -51,184 +37,8 @@ const SuperChat = () => {
     scrollToBottom();
   }, [messages]);
 
-  useEffect(() => {
-    loadOrCreateConversation();
-  }, []);
-
-  useEffect(() => {
-    if (isArchiveOpen) {
-      loadConversations();
-    }
-  }, [isArchiveOpen]);
-
-  const loadConversations = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { data, error } = await supabase
-      .from('chat_conversations')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('updated_at', { ascending: false });
-
-    if (error) {
-      console.error('Error loading conversations:', error);
-      return;
-    }
-
-    setConversations(data || []);
-  };
-
-  const loadOrCreateConversation = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    // Try to load the most recent conversation
-    const { data: conversations } = await supabase
-      .from('chat_conversations')
-      .select('id')
-      .eq('user_id', user.id)
-      .order('updated_at', { ascending: false })
-      .limit(1);
-
-    if (conversations && conversations.length > 0) {
-      await loadConversation(conversations[0].id);
-    }
-  };
-
-  const loadConversation = async (conversationId: string) => {
-    setCurrentConversationId(conversationId);
-    
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { data: chatMessages, error } = await supabase
-      .from('chat_messages')
-      .select('*')
-      .eq('conversation_id', conversationId)
-      .order('created_at', { ascending: true });
-
-    if (error) {
-      console.error('Error loading messages:', error);
-      return;
-    }
-
-    if (chatMessages && chatMessages.length > 0) {
-      const loadedMessages: Message[] = chatMessages.map(msg => ({
-        id: Date.now() + Math.random(),
-        text: msg.content,
-        isBot: msg.role === 'assistant',
-        timestamp: 'сейчас'
-      }));
-      setMessages(loadedMessages);
-    } else {
-      // If conversation has no messages, start with welcome message
-      setMessages([{
-        id: 1,
-        text: "Привет! Я твой AI помощник по авто. Сейчас я в процессе обучения, что бы помогать тебе максимально эффективно! 🚗",
-        isBot: true,
-        timestamp: "сейчас"
-      }]);
-    }
-  };
-
-  const createNewConversation = async (): Promise<string | null> => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return null;
-
-    const { data, error } = await supabase
-      .from('chat_conversations')
-      .insert({
-        user_id: user.id,
-        title: 'Новый чат'
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Error creating conversation:', error);
-      return null;
-    }
-
-    return data.id;
-  };
-
-  const saveMessage = async (conversationId: string, role: 'user' | 'assistant', content: string) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    await supabase
-      .from('chat_messages')
-      .insert({
-        conversation_id: conversationId,
-        user_id: user.id,
-        role,
-        content
-      });
-
-    // Update conversation timestamp
-    await supabase
-      .from('chat_conversations')
-      .update({ updated_at: new Date().toISOString() })
-      .eq('id', conversationId);
-  };
-
-  const handleNewChat = () => {
-    setCurrentConversationId(null);
-    setMessages([{
-      id: 1,
-      text: "Привет! Я твой AI помощник по авто. Сейчас я в процессе обучения, что бы помогать тебе максимально эффективно! 🚗",
-      isBot: true,
-      timestamp: "сейчас"
-    }]);
-  };
-
-  const handleDeleteConversation = async (conversationId: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    
-    const { error } = await supabase
-      .from('chat_conversations')
-      .delete()
-      .eq('id', conversationId);
-
-    if (error) {
-      toast({
-        title: "Ошибка",
-        description: "Не удалось удалить чат",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setConversations(prev => prev.filter(c => c.id !== conversationId));
-    
-    if (conversationId === currentConversationId) {
-      handleNewChat();
-    }
-
-    toast({
-      title: "Чат удален",
-      description: "История чата успешно удалена"
-    });
-  };
-
   const handleSendMessage = async () => {
     if (!message.trim() || isLoading) return;
-
-    // Create or get conversation ID
-    let convId = currentConversationId;
-    if (!convId) {
-      convId = await createNewConversation();
-      if (!convId) {
-        toast({
-          title: "Ошибка",
-          description: "Не удалось создать чат",
-          variant: "destructive"
-        });
-        return;
-      }
-      setCurrentConversationId(convId);
-    }
 
     const userMessage: Message = {
       id: Date.now(),
@@ -238,10 +48,6 @@ const SuperChat = () => {
     };
 
     setMessages(prev => [...prev, userMessage]);
-    
-    // Save user message to database
-    await saveMessage(convId, 'user', message);
-    
     setMessage("");
     setIsLoading(true);
 
@@ -337,11 +143,6 @@ const SuperChat = () => {
           }
         }
       }
-
-      // Save assistant message to database
-      if (assistantText && convId) {
-        await saveMessage(convId, 'assistant', assistantText);
-      }
     } catch (error) {
       console.error("Error:", error);
       toast({
@@ -364,73 +165,9 @@ const SuperChat = () => {
     <div className="h-screen bg-background flex flex-col">
       {/* Header - Fixed at top */}
       <header className="fixed top-0 left-0 right-0 flex items-center justify-between p-4 z-10">
-        <Sheet open={isArchiveOpen} onOpenChange={setIsArchiveOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <Menu className="h-6 w-6" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-80">
-            <SheetHeader>
-              <SheetTitle>Архив Чатов</SheetTitle>
-            </SheetHeader>
-            
-            <div className="mt-4">
-              <Button 
-                onClick={() => {
-                  handleNewChat();
-                  setIsArchiveOpen(false);
-                }}
-                className="w-full mb-4"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Новый чат
-              </Button>
-
-              <ScrollArea className="h-[calc(100vh-200px)]">
-                <div className="space-y-2">
-                  {conversations.map((conversation) => (
-                    <div
-                      key={conversation.id}
-                      className={`p-3 rounded-lg cursor-pointer hover:bg-muted/50 transition-colors group ${
-                        conversation.id === currentConversationId ? 'bg-muted' : ''
-                      }`}
-                      onClick={() => {
-                        loadConversation(conversation.id);
-                        setIsArchiveOpen(false);
-                      }}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm truncate">
-                            {conversation.title}
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {format(new Date(conversation.updated_at), 'dd MMM yyyy, HH:mm')}
-                          </p>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={(e) => handleDeleteConversation(conversation.id, e)}
-                        >
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                  
-                  {conversations.length === 0 && (
-                    <p className="text-sm text-muted-foreground text-center py-8">
-                      У вас пока нет сохраненных чатов
-                    </p>
-                  )}
-                </div>
-              </ScrollArea>
-            </div>
-          </SheetContent>
-        </Sheet>
+        <Button variant="ghost" size="icon">
+          <Menu className="h-6 w-6" />
+        </Button>
 
         <div className="flex items-center gap-1 bg-muted/50 backdrop-blur-lg rounded-full px-1 py-1">
           <button
