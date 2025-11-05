@@ -6,7 +6,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
-import { ru } from "date-fns/locale";
 
 interface Conversation {
   id: string;
@@ -126,7 +125,7 @@ export const ChatArchiveDrawer = ({
                         {conversation.title}
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {format(new Date(conversation.updated_at), 'dd MMM yyyy, HH:mm', { locale: ru })}
+                        {format(new Date(conversation.updated_at), 'dd MMM yyyy, HH:mm')}
                       </p>
                     </div>
                     <Button
