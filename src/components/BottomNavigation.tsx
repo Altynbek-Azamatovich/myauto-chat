@@ -28,27 +28,27 @@ const BottomNavigation = () => {
               className={`rounded-full aspect-square p-2 ${
                 isActive(item.path) 
                   ? "bg-gray-300/30 text-white hover:bg-gray-300/40" 
-                  : "text-white hover:bg-white/10 hover:text-white"
+                  : "text-white/70 hover:bg-white/10 hover:text-white"
               }`}
               onClick={() => navigate(item.path)}
             >
-              <item.icon className="h-40 w-40" />
+              <item.icon size={64} strokeWidth={1.5} />
             </Button>
           ))}
         </div>
 
         {/* SuperChat FAB */}
-        <div className="bg-black/20 backdrop-blur-lg rounded-full shadow-lg p-3">
+        <div className={`backdrop-blur-lg rounded-full shadow-lg p-3 ${
+          isChatActive 
+            ? "bg-black/20 border-2 border-app-green" 
+            : "bg-black/20"
+        }`}>
           <Button
             size="lg"
-            className={`rounded-full aspect-square p-2 ${
-              isChatActive 
-                ? "bg-transparent border-2 border-app-green hover:bg-transparent" 
-                : "bg-transparent hover:bg-white/10"
-            }`}
+            className="rounded-full aspect-square p-2 bg-transparent hover:bg-white/10"
             onClick={() => navigate("/super-chat")}
           >
-            <MessageCircle className="h-40 w-40 text-white" />
+            <MessageCircle size={64} strokeWidth={1.5} className="text-white" />
           </Button>
         </div>
       </div>
