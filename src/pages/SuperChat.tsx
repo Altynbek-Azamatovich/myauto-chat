@@ -1,18 +1,26 @@
 import { useState, useRef, useEffect } from "react";
-import { Bell, Plus, Mic, ArrowUp } from "lucide-react";
+import { Menu, Bell, Plus, Mic, ArrowUp, Users, MessageCircle, Sparkles, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { ChatArchiveDrawer } from "@/components/ChatArchiveDrawer";
-import { CommunityPlaceholder } from "@/components/CommunityPlaceholder";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { format } from "date-fns";
 
 interface Message {
   id: number;
   text: string;
   isBot: boolean;
   timestamp: string;
+}
+
+interface Conversation {
+  id: string;
+  title: string;
+  created_at: string;
+  updated_at: string;
 }
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
@@ -30,6 +38,8 @@ const SuperChat = () => {
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [isArchiveOpen, setIsArchiveOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -44,6 +54,30 @@ const SuperChat = () => {
   useEffect(() => {
     loadOrCreateConversation();
   }, []);
+
+  useEffect(() => {
+    if (isArchiveOpen) {
+      loadConversations();
+    }
+  }, [isArchiveOpen]);
+
+  const loadConversations = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('chat_conversations')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('updated_at', { ascending: false });
+
+    if (error) {
+      console.error('Error loading conversations:', error);
+      return;
+    }
+
+    setConversations(data || []);
+  };
 
   const loadOrCreateConversation = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -147,6 +181,35 @@ const SuperChat = () => {
       isBot: true,
       timestamp: "сейчас"
     }]);
+  };
+
+  const handleDeleteConversation = async (conversationId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    const { error } = await supabase
+      .from('chat_conversations')
+      .delete()
+      .eq('id', conversationId);
+
+    if (error) {
+      toast({
+        title: "Ошибка",
+        description: "Не удалось удалить чат",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setConversations(prev => prev.filter(c => c.id !== conversationId));
+    
+    if (conversationId === currentConversationId) {
+      handleNewChat();
+    }
+
+    toast({
+      title: "Чат удален",
+      description: "История чата успешно удалена"
+    });
   };
 
   const handleSendMessage = async () => {
@@ -301,11 +364,73 @@ const SuperChat = () => {
     <div className="h-screen bg-background flex flex-col">
       {/* Header - Fixed at top */}
       <header className="fixed top-0 left-0 right-0 flex items-center justify-between p-4 z-10">
-        <ChatArchiveDrawer 
-          currentConversationId={currentConversationId}
-          onSelectConversation={loadConversation}
-          onNewChat={handleNewChat}
-        />
+        <Sheet open={isArchiveOpen} onOpenChange={setIsArchiveOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <Menu className="h-6 w-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-80">
+            <SheetHeader>
+              <SheetTitle>Архив Чатов</SheetTitle>
+            </SheetHeader>
+            
+            <div className="mt-4">
+              <Button 
+                onClick={() => {
+                  handleNewChat();
+                  setIsArchiveOpen(false);
+                }}
+                className="w-full mb-4"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Новый чат
+              </Button>
+
+              <ScrollArea className="h-[calc(100vh-200px)]">
+                <div className="space-y-2">
+                  {conversations.map((conversation) => (
+                    <div
+                      key={conversation.id}
+                      className={`p-3 rounded-lg cursor-pointer hover:bg-muted/50 transition-colors group ${
+                        conversation.id === currentConversationId ? 'bg-muted' : ''
+                      }`}
+                      onClick={() => {
+                        loadConversation(conversation.id);
+                        setIsArchiveOpen(false);
+                      }}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm truncate">
+                            {conversation.title}
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {format(new Date(conversation.updated_at), 'dd MMM yyyy, HH:mm')}
+                          </p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => handleDeleteConversation(conversation.id, e)}
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {conversations.length === 0 && (
+                    <p className="text-sm text-muted-foreground text-center py-8">
+                      У вас пока нет сохраненных чатов
+                    </p>
+                  )}
+                </div>
+              </ScrollArea>
+            </div>
+          </SheetContent>
+        </Sheet>
 
         <div className="flex items-center gap-1 bg-muted/50 backdrop-blur-lg rounded-full px-1 py-1">
           <button
@@ -338,7 +463,61 @@ const SuperChat = () => {
       {/* Content */}
       {activeTab === "community" ? (
         <div className="flex-1 overflow-y-auto px-4 pt-24 pb-32">
-          <CommunityPlaceholder />
+          <div className="flex items-center justify-center min-h-[calc(100vh-200px)] p-6">
+            <Card className="max-w-md w-full p-8 text-center space-y-6 bg-gradient-to-br from-muted/30 to-muted/10 border-2 border-dashed">
+              <div className="flex justify-center">
+                <div className="relative">
+                  <Users className="h-16 w-16 text-primary" />
+                  <Sparkles className="h-6 w-6 text-primary absolute -top-1 -right-1 animate-pulse" />
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <h3 className="text-2xl font-bold">
+                  Сообщество скоро!
+                </h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Мы работаем над созданием сообщества, где вы сможете:
+                </p>
+              </div>
+
+              <div className="space-y-3 text-left">
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
+                  <MessageCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-medium">Групповые чаты</p>
+                    <p className="text-sm text-muted-foreground">
+                      Общайтесь с другими автовладельцами
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
+                  <Users className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-medium">Тематические группы</p>
+                    <p className="text-sm text-muted-foreground">
+                      Присоединяйтесь к группам по интересам
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
+                  <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-medium">Обмен опытом</p>
+                    <p className="text-sm text-muted-foreground">
+                      Делитесь советами и получайте помощь
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-sm text-muted-foreground italic">
+                Следите за обновлениями! 🚀
+              </p>
+            </Card>
+          </div>
         </div>
       ) : (
         <div className="flex-1 overflow-y-auto px-4 pt-24 pb-32">
