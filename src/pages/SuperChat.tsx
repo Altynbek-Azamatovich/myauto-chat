@@ -206,23 +206,47 @@ const SuperChat = () => {
               key={msg.id} 
               className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'}`}
             >
-              <Card className={`max-w-[80%] p-3 ${
-                msg.isBot 
-                  ? 'bg-muted text-foreground' 
-                  : 'bg-primary text-primary-foreground'
-              }`}>
-                <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
-                <p className={`text-xs mt-1 opacity-70`}>
-                  {msg.isBot ? 'Gemini AI' : 'Вы'} • {msg.timestamp}
-                </p>
-              </Card>
+              <div className="relative">
+                <Card className={`max-w-[80%] p-3 rounded-3xl ${
+                  msg.isBot 
+                    ? 'bg-muted text-foreground rounded-bl-sm' 
+                    : 'bg-primary text-primary-foreground rounded-br-sm'
+                }`}>
+                  <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
+                  <p className={`text-xs mt-1 opacity-70`}>
+                    {msg.isBot ? 'Gemini AI' : 'Вы'} • {msg.timestamp}
+                  </p>
+                </Card>
+                {/* Message tail */}
+                <div className={`absolute bottom-0 w-4 h-4 ${
+                  msg.isBot 
+                    ? 'left-0 -ml-1' 
+                    : 'right-0 -mr-1'
+                }`}>
+                  <svg viewBox="0 0 8 13" className={`${
+                    msg.isBot ? '' : 'scale-x-[-1]'
+                  }`}>
+                    <path 
+                      d="M0,0 Q8,0 8,13 L0,13 Z" 
+                      className={msg.isBot ? 'fill-muted' : 'fill-primary'}
+                    />
+                  </svg>
+                </div>
+              </div>
             </div>
           ))}
           {isLoading && messages[messages.length - 1]?.isBot !== true && (
             <div className="flex justify-start">
-              <Card className="max-w-[80%] p-3 bg-muted text-foreground">
-                <p className="text-sm">Думаю...</p>
-              </Card>
+              <div className="relative">
+                <Card className="max-w-[80%] p-3 rounded-3xl bg-muted text-foreground rounded-bl-sm">
+                  <p className="text-sm">Думаю...</p>
+                </Card>
+                <div className="absolute bottom-0 left-0 -ml-1 w-4 h-4">
+                  <svg viewBox="0 0 8 13">
+                    <path d="M0,0 Q8,0 8,13 L0,13 Z" className="fill-muted" />
+                  </svg>
+                </div>
+              </div>
             </div>
           )}
           <div ref={messagesEndRef} />
