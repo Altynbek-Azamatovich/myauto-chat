@@ -172,16 +172,16 @@ const SuperChat = () => {
             size="icon" 
             className="bg-black/20 backdrop-blur-lg text-white hover:bg-black/30"
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="h-6 w-6" />
           </Button>
           
           {/* Tabs */}
           <div className="flex items-center gap-2 bg-black/20 backdrop-blur-lg rounded-full p-1">
             <button
               onClick={() => setActiveTab('superchat')}
-              className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
                 activeTab === 'superchat'
-                  ? 'bg-white/30 text-primary'
+                  ? 'bg-white/50 text-primary'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -189,9 +189,9 @@ const SuperChat = () => {
             </button>
             <button
               onClick={() => setActiveTab('community')}
-              className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
                 activeTab === 'community'
-                  ? 'bg-white/30 text-primary'
+                  ? 'bg-white/50 text-primary'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -204,7 +204,7 @@ const SuperChat = () => {
             size="icon" 
             className="bg-black/20 backdrop-blur-lg text-white hover:bg-black/30"
           >
-            <Bell className="h-5 w-5" />
+            <Bell className="h-6 w-6" />
           </Button>
         </div>
       </header>
