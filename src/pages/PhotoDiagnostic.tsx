@@ -11,7 +11,7 @@ const PhotoDiagnostic = () => {
   return (
     <div className="h-screen bg-background flex flex-col overflow-hidden">
       {/* Header */}
-      <header className="flex items-center justify-between px-4 pt-8 pb-4 flex-shrink-0">
+      <header className="flex items-center justify-between px-4 pt-6 pb-3 flex-shrink-0">
         <Button variant="ghost" size="icon" className="rounded-full bg-black/20 backdrop-blur-lg">
           <Menu className="h-6 w-6 text-white" />
         </Button>
@@ -24,7 +24,7 @@ const PhotoDiagnostic = () => {
       </header>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6">
+      <div className="flex-1 flex flex-col items-center justify-center px-6 pb-24">
         <div className="text-center space-y-4 max-w-md">
           <div className="w-20 h-20 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-6">
             <Camera className="h-10 w-10 text-primary" />
