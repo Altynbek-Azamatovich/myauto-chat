@@ -176,7 +176,7 @@ const SuperChat = () => {
   return (
     <div className="h-screen bg-background flex flex-col overflow-hidden">
       {/* Header - Fixed at top */}
-      <header className="fixed top-0 left-0 right-0 flex items-center justify-between px-4 py-4 z-20 bg-background border-b border-border">
+      <header className="fixed top-0 left-0 right-0 flex items-center justify-between px-4 py-4 z-20">
         <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
           <Menu className="h-6 w-6" />
         </Button>
@@ -301,7 +301,7 @@ const SuperChat = () => {
       )}
 
       {/* Input Area - Fixed at bottom */}
-      <div className="fixed bottom-24 left-0 right-0 px-4 py-3 bg-background border-t border-border z-10">
+      <div className="fixed bottom-24 left-0 right-0 px-4 py-3 z-10">
         <div className="flex items-center justify-center space-x-2">
           <div className="flex items-center bg-muted/30 backdrop-blur-lg rounded-full px-3 h-10 max-w-xl w-full">
             <Button 
