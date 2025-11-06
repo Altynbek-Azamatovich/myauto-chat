@@ -176,7 +176,7 @@ const SuperChat = () => {
   return (
     <div className="h-screen bg-background flex flex-col">
       {/* Header - Fixed at top */}
-      <header className="fixed top-0 left-0 right-0 flex items-center justify-between p-4 z-10">
+      <header className="fixed top-0 left-0 right-0 flex items-center justify-between px-4 py-4 z-10 bg-background/80 backdrop-blur-sm">
         <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
           <Menu className="h-6 w-6" />
         </Button>

@@ -9,12 +9,12 @@ const Services = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="flex items-center justify-between p-4">
+      <header className="flex items-center justify-between px-4 py-4">
         <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
           <ChevronLeft className="h-6 w-6" />
         </Button>
 
-        <img src={logoImage} alt="myAuto" className="h-12 w-auto" />
+        <img src={logoImage} alt="myAuto" className="h-10 w-auto" />
 
         <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
           <User className="h-6 w-6" />
