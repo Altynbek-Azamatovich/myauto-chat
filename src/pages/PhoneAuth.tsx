@@ -16,6 +16,42 @@ const PhoneAuth = () => {
   const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const formatPhoneNumber = (value: string) => {
+    // Remove all non-digit characters except +
+    const cleaned = value.replace(/[^\d+]/g, '');
+    
+    // Ensure it starts with +7
+    if (!cleaned.startsWith('+7')) {
+      return '+7';
+    }
+    
+    // Get only digits after +7
+    const digits = cleaned.slice(2);
+    
+    // Limit to 10 digits
+    const limitedDigits = digits.slice(0, 10);
+    
+    // Format as +7 XXX XXX XXXX
+    let formatted = '+7';
+    if (limitedDigits.length > 0) {
+      formatted += ' ' + limitedDigits.slice(0, 3);
+    }
+    if (limitedDigits.length > 3) {
+      formatted += ' ' + limitedDigits.slice(3, 6);
+    }
+    if (limitedDigits.length > 6) {
+      formatted += ' ' + limitedDigits.slice(6, 10);
+    }
+    
+    return formatted;
+  };
+
+  const isPhoneValid = (phone: string) => {
+    // Check if phone matches +7 XXX XXX XXXX format (exactly 10 digits after +7)
+    const phoneRegex = /^\+7 \d{3} \d{3} \d{4}$/;
+    return phoneRegex.test(phone);
+  };
+
   const handleSubmit = async () => {
     if (!agreed) {
       toast({
@@ -28,12 +64,12 @@ const PhoneAuth = () => {
       return;
     }
 
-    if (phone.length < 12) {
+    if (!isPhoneValid(phone)) {
       toast({
         title: language === 'ru' ? "Ошибка" : "Қате",
         description: language === 'ru' 
-          ? "Введите корректный номер телефона" 
-          : "Дұрыс телефон нөмірін енгізіңіз",
+          ? "Введите корректный номер телефона в формате +7 XXX XXX XXXX" 
+          : "Телефон нөмірін +7 XXX XXX XXXX форматында енгізіңіз",
         variant: "destructive",
       });
       return;
@@ -43,8 +79,11 @@ const PhoneAuth = () => {
     try {
       console.log('Sending OTP to:', phone);
       
+      // Remove spaces from phone number before sending
+      const cleanPhone = phone.replace(/\s/g, '');
+      
       const { data, error } = await supabase.functions.invoke('send-otp', {
-        body: { phone: phone }
+        body: { phone: cleanPhone }
       });
 
       if (error) {
@@ -58,7 +97,8 @@ const PhoneAuth = () => {
 
       console.log('OTP sent successfully:', data);
       
-      localStorage.setItem('auth_phone', phone);
+      // Store phone without spaces
+      localStorage.setItem('auth_phone', cleanPhone);
       toast({
         title: language === 'ru' ? "Код отправлен" : "Код жіберілді",
         description: language === 'ru' 
@@ -114,8 +154,8 @@ const PhoneAuth = () => {
             <Input
               type="tel"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="+7 (XXX) XXX XX XX"
+              onChange={(e) => setPhone(formatPhoneNumber(e.target.value))}
+              placeholder="+7 XXX XXX XXXX"
               className="border-0 text-lg focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
             />
           </div>
