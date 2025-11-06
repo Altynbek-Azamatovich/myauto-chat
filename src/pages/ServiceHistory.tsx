@@ -13,10 +13,12 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
+type ServiceType = 'maintenance' | 'repair' | 'tire_change' | 'oil_change' | 'other' | 'inspection';
+
 interface ServiceRecord {
   id: string;
   vehicle_id: string;
-  service_type: string;
+  service_type: ServiceType;
   service_date: string;
   service_provider?: string;
   cost?: number;
@@ -43,7 +45,7 @@ export default function ServiceHistory() {
   const [editingService, setEditingService] = useState<ServiceRecord | null>(null);
   const [formData, setFormData] = useState({
     vehicle_id: '',
-    service_type: 'maintenance',
+    service_type: 'maintenance' as ServiceType,
     service_date: new Date().toISOString().split('T')[0],
     service_provider: '',
     cost: '',
@@ -120,7 +122,7 @@ export default function ServiceHistory() {
     if (error) {
       toast.error(error.message);
     } else {
-      toast.success(t.profile.serviceAdded);
+      toast.success(t('serviceAdded'));
       setIsAddDialogOpen(false);
       fetchServices();
       resetForm();
@@ -151,7 +153,7 @@ export default function ServiceHistory() {
     if (error) {
       toast.error(error.message);
     } else {
-      toast.success(t.profile.serviceUpdated);
+      toast.success(t('serviceUpdated'));
       setIsEditDialogOpen(false);
       setEditingService(null);
       fetchServices();
@@ -169,7 +171,7 @@ export default function ServiceHistory() {
     if (error) {
       toast.error(error.message);
     } else {
-      toast.success(t.profile.serviceDeleted);
+      toast.success(t('serviceDeleted'));
       setDeleteServiceId(null);
       fetchServices();
     }
@@ -207,12 +209,12 @@ export default function ServiceHistory() {
 
   const getServiceTypeLabel = (type: string) => {
     const types: Record<string, string> = {
-      maintenance: t.profile.maintenance,
-      repair: t.profile.repair,
-      diagnostics: t.profile.diagnostics,
-      tire_service: t.profile.tire_service,
-      oil_change: t.profile.oil_change,
-      other: t.profile.other,
+      maintenance: t('maintenance'),
+      repair: t('repair'),
+      tire_change: t('tireService'),
+      oil_change: t('oilChangeService'),
+      other: t('other'),
+      inspection: t('diagnostics'),
     };
     return types[type] || type;
   };
@@ -228,7 +230,7 @@ export default function ServiceHistory() {
         >
           <ArrowLeft className="h-6 w-6" />
         </Button>
-        <h1 className="text-lg font-semibold">{t.profile.serviceHistory}</h1>
+        <h1 className="text-lg font-semibold">{t('serviceHistoryTitle')}</h1>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
             <Button size="icon" variant="ghost" className="rounded-full hover:bg-muted/30 hover:text-foreground" disabled={vehicles.length === 0}>
@@ -237,11 +239,11 @@ export default function ServiceHistory() {
           </DialogTrigger>
           <DialogContent className="max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>{t.profile.addService}</DialogTitle>
+              <DialogTitle>{t('addService')}</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label>{t.profile.selectVehicle}</Label>
+                <Label>{t('selectVehicle')}</Label>
                 <Select value={formData.vehicle_id} onValueChange={(value) => setFormData({ ...formData, vehicle_id: value })}>
                   <SelectTrigger>
                     <SelectValue />
@@ -256,23 +258,23 @@ export default function ServiceHistory() {
                 </Select>
               </div>
               <div>
-                <Label>{t.profile.serviceType}</Label>
-                <Select value={formData.service_type} onValueChange={(value) => setFormData({ ...formData, service_type: value })}>
+                <Label>{t('serviceType')}</Label>
+                <Select value={formData.service_type} onValueChange={(value: ServiceType) => setFormData({ ...formData, service_type: value })}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="maintenance">{t.profile.maintenance}</SelectItem>
-                    <SelectItem value="repair">{t.profile.repair}</SelectItem>
-                    <SelectItem value="diagnostics">{t.profile.diagnostics}</SelectItem>
-                    <SelectItem value="tire_service">{t.profile.tire_service}</SelectItem>
-                    <SelectItem value="oil_change">{t.profile.oil_change}</SelectItem>
-                    <SelectItem value="other">{t.profile.other}</SelectItem>
+                    <SelectItem value="maintenance">{t('maintenance')}</SelectItem>
+                    <SelectItem value="repair">{t('repair')}</SelectItem>
+                    <SelectItem value="inspection">{t('diagnostics')}</SelectItem>
+                    <SelectItem value="tire_change">{t('tireService')}</SelectItem>
+                    <SelectItem value="oil_change">{t('oilChangeService')}</SelectItem>
+                    <SelectItem value="other">{t('other')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div>
-                <Label>{t.profile.serviceDate}</Label>
+                <Label>{t('serviceDate')}</Label>
                 <Input
                   type="date"
                   value={formData.service_date}
@@ -281,14 +283,14 @@ export default function ServiceHistory() {
                 />
               </div>
               <div>
-                <Label>{t.profile.serviceProvider}</Label>
+                <Label>{t('serviceProvider')}</Label>
                 <Input
                   value={formData.service_provider}
                   onChange={(e) => setFormData({ ...formData, service_provider: e.target.value })}
                 />
               </div>
               <div>
-                <Label>{t.profile.cost}</Label>
+                <Label>{t('cost')}</Label>
                 <Input
                   type="number"
                   value={formData.cost}
@@ -296,7 +298,7 @@ export default function ServiceHistory() {
                 />
               </div>
               <div>
-                <Label>{t.profile.mileageAtService}</Label>
+                <Label>{t('mileageAtService')}</Label>
                 <Input
                   type="number"
                   value={formData.mileage_at_service}
@@ -304,28 +306,28 @@ export default function ServiceHistory() {
                 />
               </div>
               <div>
-                <Label>{t.profile.description}</Label>
+                <Label>{t('description')}</Label>
                 <Textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 />
               </div>
               <div>
-                <Label>{t.profile.notes}</Label>
+                <Label>{t('notes')}</Label>
                 <Textarea
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 />
               </div>
               <div>
-                <Label>{t.profile.nextServiceDate}</Label>
+                <Label>{t('nextServiceDate')}</Label>
                 <Input
                   type="date"
                   value={formData.next_service_date}
                   onChange={(e) => setFormData({ ...formData, next_service_date: e.target.value })}
                 />
               </div>
-              <Button type="submit" className="w-full">{t.profile.save}</Button>
+              <Button type="submit" className="w-full">{t('save')}</Button>
             </form>
           </DialogContent>
         </Dialog>
@@ -334,13 +336,13 @@ export default function ServiceHistory() {
       <div className="p-4 space-y-4">
         {vehicles.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-muted-foreground mb-2">{t.profile.noVehicles}</p>
-            <p className="text-sm text-muted-foreground">{t.profile.addFirstVehicle}</p>
+            <p className="text-muted-foreground mb-2">{t('noVehicles')}</p>
+            <p className="text-sm text-muted-foreground">{t('addFirstVehicle')}</p>
           </div>
         ) : services.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-muted-foreground mb-2">{t.profile.noServiceHistory}</p>
-            <p className="text-sm text-muted-foreground">{t.profile.addFirstService}</p>
+            <p className="text-muted-foreground mb-2">{t('noServiceHistory')}</p>
+            <p className="text-sm text-muted-foreground">{t('addFirstService')}</p>
           </div>
         ) : (
           services.map((service) => {
@@ -378,19 +380,19 @@ export default function ServiceHistory() {
                 </div>
                 <div className="space-y-1 text-sm">
                   {service.service_provider && (
-                    <p><span className="text-muted-foreground">{t.profile.serviceProvider}:</span> {service.service_provider}</p>
+                    <p><span className="text-muted-foreground">{t('serviceProvider')}:</span> {service.service_provider}</p>
                   )}
                   {service.cost && (
-                    <p><span className="text-muted-foreground">{t.profile.cost}:</span> {service.cost} ₸</p>
+                    <p><span className="text-muted-foreground">{t('cost')}:</span> {service.cost} ₸</p>
                   )}
                   {service.mileage_at_service && (
-                    <p><span className="text-muted-foreground">{t.profile.mileage}:</span> {service.mileage_at_service} км</p>
+                    <p><span className="text-muted-foreground">{t('vehicleMileage')}:</span> {service.mileage_at_service} км</p>
                   )}
                   {service.description && (
-                    <p><span className="text-muted-foreground">{t.profile.description}:</span> {service.description}</p>
+                    <p><span className="text-muted-foreground">{t('description')}:</span> {service.description}</p>
                   )}
                   {service.next_service_date && (
-                    <p><span className="text-muted-foreground">{t.profile.nextServiceDate}:</span> {new Date(service.next_service_date).toLocaleDateString()}</p>
+                    <p><span className="text-muted-foreground">{t('nextServiceDate')}:</span> {new Date(service.next_service_date).toLocaleDateString()}</p>
                   )}
                 </div>
               </Card>
@@ -402,11 +404,11 @@ export default function ServiceHistory() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{t.profile.edit}</DialogTitle>
+            <DialogTitle>{t('edit')}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleEdit} className="space-y-4">
             <div>
-              <Label>{t.profile.selectVehicle}</Label>
+              <Label>{t('selectVehicle')}</Label>
               <Select value={formData.vehicle_id} onValueChange={(value) => setFormData({ ...formData, vehicle_id: value })}>
                 <SelectTrigger>
                   <SelectValue />
@@ -421,23 +423,23 @@ export default function ServiceHistory() {
               </Select>
             </div>
             <div>
-              <Label>{t.profile.serviceType}</Label>
-              <Select value={formData.service_type} onValueChange={(value) => setFormData({ ...formData, service_type: value })}>
+              <Label>{t('serviceType')}</Label>
+              <Select value={formData.service_type} onValueChange={(value: ServiceType) => setFormData({ ...formData, service_type: value })}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="maintenance">{t.profile.maintenance}</SelectItem>
-                  <SelectItem value="repair">{t.profile.repair}</SelectItem>
-                  <SelectItem value="diagnostics">{t.profile.diagnostics}</SelectItem>
-                  <SelectItem value="tire_service">{t.profile.tire_service}</SelectItem>
-                  <SelectItem value="oil_change">{t.profile.oil_change}</SelectItem>
-                  <SelectItem value="other">{t.profile.other}</SelectItem>
+                  <SelectItem value="maintenance">{t('maintenance')}</SelectItem>
+                  <SelectItem value="repair">{t('repair')}</SelectItem>
+                  <SelectItem value="inspection">{t('diagnostics')}</SelectItem>
+                  <SelectItem value="tire_change">{t('tireService')}</SelectItem>
+                  <SelectItem value="oil_change">{t('oilChangeService')}</SelectItem>
+                  <SelectItem value="other">{t('other')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label>{t.profile.serviceDate}</Label>
+              <Label>{t('serviceDate')}</Label>
               <Input
                 type="date"
                 value={formData.service_date}
@@ -446,14 +448,14 @@ export default function ServiceHistory() {
               />
             </div>
             <div>
-              <Label>{t.profile.serviceProvider}</Label>
+              <Label>{t('serviceProvider')}</Label>
               <Input
                 value={formData.service_provider}
                 onChange={(e) => setFormData({ ...formData, service_provider: e.target.value })}
               />
             </div>
             <div>
-              <Label>{t.profile.cost}</Label>
+              <Label>{t('cost')}</Label>
               <Input
                 type="number"
                 value={formData.cost}
@@ -461,7 +463,7 @@ export default function ServiceHistory() {
               />
             </div>
             <div>
-              <Label>{t.profile.mileageAtService}</Label>
+              <Label>{t('mileageAtService')}</Label>
               <Input
                 type="number"
                 value={formData.mileage_at_service}
@@ -469,28 +471,28 @@ export default function ServiceHistory() {
               />
             </div>
             <div>
-              <Label>{t.profile.description}</Label>
+              <Label>{t('description')}</Label>
               <Textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               />
             </div>
             <div>
-              <Label>{t.profile.notes}</Label>
+              <Label>{t('notes')}</Label>
               <Textarea
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               />
             </div>
             <div>
-              <Label>{t.profile.nextServiceDate}</Label>
+              <Label>{t('nextServiceDate')}</Label>
               <Input
                 type="date"
                 value={formData.next_service_date}
                 onChange={(e) => setFormData({ ...formData, next_service_date: e.target.value })}
               />
             </div>
-            <Button type="submit" className="w-full">{t.profile.save}</Button>
+            <Button type="submit" className="w-full">{t('save')}</Button>
           </form>
         </DialogContent>
       </Dialog>
@@ -498,11 +500,11 @@ export default function ServiceHistory() {
       <AlertDialog open={!!deleteServiceId} onOpenChange={() => setDeleteServiceId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t.profile.deleteConfirm}</AlertDialogTitle>
+            <AlertDialogTitle>{t('deleteConfirm')}</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t.profile.cancel}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>{t.profile.delete}</AlertDialogAction>
+            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>{t('delete')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

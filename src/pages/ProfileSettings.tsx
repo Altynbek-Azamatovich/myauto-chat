@@ -61,7 +61,7 @@ export default function ProfileSettings() {
     if (error) {
       toast.error(error.message);
     } else {
-      toast.success(t.profile.profileUpdated);
+      toast.success(t('profileUpdated'));
     }
 
     setLoading(false);
@@ -78,7 +78,7 @@ export default function ProfileSettings() {
         >
           <ArrowLeft className="h-6 w-6" />
         </Button>
-        <h1 className="text-lg font-semibold">{t.profile.profileSettings}</h1>
+        <h1 className="text-lg font-semibold">{t('profileSettingsTitle')}</h1>
         <div className="w-10" />
       </header>
 
@@ -86,7 +86,7 @@ export default function ProfileSettings() {
         <Card className="p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label>{t.profile.phoneNumber}</Label>
+              <Label>{t('phoneNumber')}</Label>
               <Input
                 value={formData.phone_number}
                 onChange={(e) => setFormData({ ...formData, phone_number: e.target.value })}
@@ -95,35 +95,35 @@ export default function ProfileSettings() {
               />
             </div>
             <div>
-              <Label>{t.profile.lastName}</Label>
+              <Label>{t('profileLastName')}</Label>
               <Input
                 value={formData.last_name}
                 onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
               />
             </div>
             <div>
-              <Label>{t.profile.firstName}</Label>
+              <Label>{t('profileFirstName')}</Label>
               <Input
                 value={formData.first_name}
                 onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
               />
             </div>
             <div>
-              <Label>{t.profile.patronymic}</Label>
+              <Label>{t('profilePatronymic')}</Label>
               <Input
                 value={formData.patronymic}
                 onChange={(e) => setFormData({ ...formData, patronymic: e.target.value })}
               />
             </div>
             <div>
-              <Label>{t.profile.city}</Label>
+              <Label>{t('profileCity')}</Label>
               <Input
                 value={formData.city}
                 onChange={(e) => setFormData({ ...formData, city: e.target.value })}
               />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
-              {t.profile.save}
+              {t('save')}
             </Button>
           </form>
         </Card>

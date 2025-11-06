@@ -60,8 +60,6 @@ export default function MyVehicles() {
     }
   };
 
-  const brand_id_placeholder = '00000000-0000-0000-0000-000000000000';
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const { data: { user } } = await supabase.auth.getUser();
@@ -171,7 +169,7 @@ export default function MyVehicles() {
                 />
               </div>
               <div>
-                <Label>{t.profile.model}</Label>
+                <Label>{t('model')}</Label>
                 <Input
                   value={formData.model}
                   onChange={(e) => setFormData({ ...formData, model: e.target.value })}
@@ -179,7 +177,7 @@ export default function MyVehicles() {
                 />
               </div>
               <div>
-                <Label>{t.profile.year}</Label>
+                <Label>{t('year')}</Label>
                 <Input
                   type="number"
                   value={formData.year}
@@ -188,21 +186,21 @@ export default function MyVehicles() {
                 />
               </div>
               <div>
-                <Label>{t.profile.vin}</Label>
+                <Label>{t('vin')}</Label>
                 <Input
                   value={formData.vin}
                   onChange={(e) => setFormData({ ...formData, vin: e.target.value })}
                 />
               </div>
               <div>
-                <Label>{t.profile.licensePlate}</Label>
+                <Label>{t('plate')}</Label>
                 <Input
                   value={formData.license_plate}
                   onChange={(e) => setFormData({ ...formData, license_plate: e.target.value })}
                 />
               </div>
               <div>
-                <Label>{t.profile.mileage}</Label>
+                <Label>{t('vehicleMileage')}</Label>
                 <Input
                   type="number"
                   value={formData.mileage}
@@ -211,13 +209,13 @@ export default function MyVehicles() {
                 />
               </div>
               <div className="flex items-center justify-between">
-                <Label>{t.profile.isPrimary}</Label>
+                <Label>{t('isPrimary')}</Label>
                 <Switch
                   checked={formData.is_primary}
                   onCheckedChange={(checked) => setFormData({ ...formData, is_primary: checked })}
                 />
               </div>
-              <Button type="submit" className="w-full">{t.profile.save}</Button>
+              <Button type="submit" className="w-full">{t('save')}</Button>
             </form>
           </DialogContent>
         </Dialog>
@@ -226,8 +224,8 @@ export default function MyVehicles() {
       <div className="p-4 space-y-4">
         {vehicles.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-muted-foreground mb-2">{t.profile.noVehicles}</p>
-            <p className="text-sm text-muted-foreground">{t.profile.addFirstVehicle}</p>
+            <p className="text-muted-foreground mb-2">{t('noVehicles')}</p>
+            <p className="text-sm text-muted-foreground">{t('addFirstVehicle')}</p>
           </div>
         ) : (
           vehicles.map((vehicle) => (
@@ -238,7 +236,7 @@ export default function MyVehicles() {
                   <p className="text-sm text-muted-foreground">{vehicle.year}</p>
                   {vehicle.is_primary && (
                     <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full mt-1 inline-block">
-                      {t.profile.isPrimary}
+                      {t('isPrimary')}
                     </span>
                   )}
                 </div>
@@ -263,12 +261,12 @@ export default function MyVehicles() {
               </div>
               <div className="space-y-1 text-sm">
                 {vehicle.license_plate && (
-                  <p><span className="text-muted-foreground">{t.profile.licensePlate}:</span> {vehicle.license_plate}</p>
+                  <p><span className="text-muted-foreground">{t('plate')}:</span> {vehicle.license_plate}</p>
                 )}
                 {vehicle.vin && (
-                  <p><span className="text-muted-foreground">{t.profile.vin}:</span> {vehicle.vin}</p>
+                  <p><span className="text-muted-foreground">{t('vin')}:</span> {vehicle.vin}</p>
                 )}
-                <p><span className="text-muted-foreground">{t.profile.mileage}:</span> {vehicle.mileage} км</p>
+                <p><span className="text-muted-foreground">{t('vehicleMileage')}:</span> {vehicle.mileage} км</p>
               </div>
             </Card>
           ))
@@ -278,11 +276,11 @@ export default function MyVehicles() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t.profile.edit}</DialogTitle>
+            <DialogTitle>{t('edit')}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleEdit} className="space-y-4">
             <div>
-              <Label>{t.profile.brand}</Label>
+              <Label>{t('brand')}</Label>
               <Input
                 value={formData.brand_id}
                 onChange={(e) => setFormData({ ...formData, brand_id: e.target.value })}
@@ -290,7 +288,7 @@ export default function MyVehicles() {
               />
             </div>
             <div>
-              <Label>{t.profile.model}</Label>
+              <Label>{t('model')}</Label>
               <Input
                 value={formData.model}
                 onChange={(e) => setFormData({ ...formData, model: e.target.value })}
@@ -298,7 +296,7 @@ export default function MyVehicles() {
               />
             </div>
             <div>
-              <Label>{t.profile.year}</Label>
+              <Label>{t('year')}</Label>
               <Input
                 type="number"
                 value={formData.year}
@@ -307,21 +305,21 @@ export default function MyVehicles() {
               />
             </div>
             <div>
-              <Label>{t.profile.vin}</Label>
+              <Label>{t('vin')}</Label>
               <Input
                 value={formData.vin}
                 onChange={(e) => setFormData({ ...formData, vin: e.target.value })}
               />
             </div>
             <div>
-              <Label>{t.profile.licensePlate}</Label>
+              <Label>{t('plate')}</Label>
               <Input
                 value={formData.license_plate}
                 onChange={(e) => setFormData({ ...formData, license_plate: e.target.value })}
               />
             </div>
             <div>
-              <Label>{t.profile.mileage}</Label>
+              <Label>{t('vehicleMileage')}</Label>
               <Input
                 type="number"
                 value={formData.mileage}
@@ -330,13 +328,13 @@ export default function MyVehicles() {
               />
             </div>
             <div className="flex items-center justify-between">
-              <Label>{t.profile.isPrimary}</Label>
+              <Label>{t('isPrimary')}</Label>
               <Switch
                 checked={formData.is_primary}
                 onCheckedChange={(checked) => setFormData({ ...formData, is_primary: checked })}
               />
             </div>
-            <Button type="submit" className="w-full">{t.profile.save}</Button>
+            <Button type="submit" className="w-full">{t('save')}</Button>
           </form>
         </DialogContent>
       </Dialog>
@@ -344,11 +342,11 @@ export default function MyVehicles() {
       <AlertDialog open={!!deleteVehicleId} onOpenChange={() => setDeleteVehicleId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t.profile.deleteConfirm}</AlertDialogTitle>
+            <AlertDialogTitle>{t('deleteConfirm')}</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t.profile.cancel}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>{t.profile.delete}</AlertDialogAction>
+            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>{t('delete')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
