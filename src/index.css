@@ -120,13 +120,3 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
-
-@layer components {
-  .toaster {
-    @apply !max-w-md !mx-auto;
-  }
-  
-  .toast {
-    @apply !rounded-2xl;
-  }
-}
