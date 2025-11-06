@@ -174,9 +174,9 @@ const SuperChat = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
       {/* Header - Fixed at top */}
-      <header className="flex items-center justify-between px-4 py-4 flex-shrink-0 bg-background">
+      <header className="fixed top-0 left-0 right-0 flex items-center justify-between px-4 py-4 z-20 bg-background border-b border-border">
         <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
           <Menu className="h-6 w-6" />
         </Button>
@@ -211,7 +211,7 @@ const SuperChat = () => {
 
       {/* Content */}
       {activeTab === "community" ? (
-        <div className="flex-1 overflow-y-auto px-4 pb-24">
+        <div className="flex-1 overflow-y-auto px-4 pt-20 pb-32">
           <div className="flex items-center justify-center min-h-[calc(100vh-200px)] p-6">
             <Card className="max-w-md w-full p-8 text-center space-y-6 bg-gradient-to-br from-muted/30 to-muted/10 border-2 border-dashed">
               <div className="flex justify-center">
@@ -269,7 +269,7 @@ const SuperChat = () => {
           </div>
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto px-4 pb-24">
+        <div className="flex-1 overflow-y-auto px-4 pt-20 pb-32">
           <div className="space-y-4">
             {messages.map((msg) => (
             <div 
@@ -301,7 +301,7 @@ const SuperChat = () => {
       )}
 
       {/* Input Area - Fixed at bottom */}
-      <div className="px-4 pb-24 flex-shrink-0">
+      <div className="fixed bottom-24 left-0 right-0 px-4 py-3 bg-background border-t border-border z-10">
         <div className="flex items-center justify-center space-x-2">
           <div className="flex items-center bg-muted/30 backdrop-blur-lg rounded-full px-3 h-10 max-w-xl w-full">
             <Button 
