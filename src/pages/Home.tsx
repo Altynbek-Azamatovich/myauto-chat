@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, User, RotateCcw, AlertTriangle, Clock, HeartPulse, Globe, Sun, Moon, Bell, Info, Car, History, UserCog, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -14,16 +14,65 @@ import carMainImage from "@/assets/car-main.png";
 import logoImage from "@/assets/logo.png";
 import BottomNavigation from '@/components/BottomNavigation';
 
+interface Vehicle {
+  id: string;
+  brand_id: string;
+  model: string;
+  year: number;
+  license_plate?: string;
+  mileage: number;
+  is_primary: boolean;
+}
+
+interface CarBrand {
+  id: string;
+  brand_name: string;
+}
+
 const Home = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
   const [isThemeOpen, setIsThemeOpen] = useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+  const [primaryVehicle, setPrimaryVehicle] = useState<Vehicle | null>(null);
+  const [brandName, setBrandName] = useState<string>('');
   const { t, language, setLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchPrimaryVehicle();
+  }, []);
+
+  const fetchPrimaryVehicle = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data: vehicles } = await supabase
+      .from('user_vehicles')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('is_primary', true)
+      .limit(1);
+
+    if (vehicles && vehicles.length > 0) {
+      const vehicle = vehicles[0];
+      setPrimaryVehicle(vehicle);
+
+      // Fetch brand name
+      const { data: brand } = await supabase
+        .from('car_brands')
+        .select('brand_name')
+        .eq('id', vehicle.brand_id)
+        .single();
+
+      if (brand) {
+        setBrandName(brand.brand_name);
+      }
+    }
+  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -193,23 +242,29 @@ const Home = () => {
       {/* Car Info Cards */}
       <div className="px-4 space-y-4">
         <div className="grid grid-cols-2 gap-4">
-          <Card className="p-4 bg-background/40 backdrop-blur-lg rounded-2xl border-border/50">
+          <Card className="p-4 bg-muted/60 backdrop-blur-sm rounded-2xl border-border/30">
             <div className="flex items-start space-x-3">
               <div className="text-muted-foreground mt-0.5">
                 <span className="text-xl">ⓘ</span>
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-base leading-tight mb-1">Toyota Camry 2019</h3>
-                <p className="text-sm text-muted-foreground mb-3">284 AVB 01</p>
+                <h3 className="font-semibold text-base leading-tight mb-1">
+                  {primaryVehicle ? `${brandName} ${primaryVehicle.model} ${primaryVehicle.year}` : t('noVehicles')}
+                </h3>
+                {primaryVehicle?.license_plate && (
+                  <p className="text-sm text-muted-foreground mb-3">{primaryVehicle.license_plate}</p>
+                )}
                 <div>
                   <p className="text-xs text-muted-foreground">{t('mileage')}</p>
-                  <p className="font-semibold text-sm">143.450 км</p>
+                  <p className="font-semibold text-sm">
+                    {primaryVehicle ? primaryVehicle.mileage.toLocaleString() : '0'} км
+                  </p>
                 </div>
               </div>
             </div>
           </Card>
 
-          <Card className="p-4 bg-background/40 backdrop-blur-lg rounded-2xl border-border/50">
+          <Card className="p-4 bg-muted/60 backdrop-blur-sm rounded-2xl border-border/30">
             <div className="space-y-3">
               <div className="flex items-start space-x-2">
                 <AlertTriangle className="h-5 w-5 text-yellow-500 mt-0.5 flex-shrink-0" />
@@ -230,7 +285,7 @@ const Home = () => {
         </div>
 
         {/* Technical Condition */}
-        <Card className="p-4 bg-background/40 backdrop-blur-lg rounded-2xl border-border/50">
+        <Card className="p-4 bg-muted/60 backdrop-blur-sm rounded-2xl border-border/30">
           <div className="flex items-center space-x-3">
             <HeartPulse className="h-5 w-5 text-app-green flex-shrink-0" />
             <div className="flex-1">
@@ -238,7 +293,7 @@ const Home = () => {
                 <span className="text-sm font-medium">{t('technicalCondition')}</span>
                 <span className="text-xl font-bold text-app-green">85%</span>
               </div>
-              <Progress value={85} className="h-2" />
+              <Progress value={85} className="h-2 [&>div]:bg-app-green" />
               <div className="flex justify-between text-xs text-muted-foreground mt-1">
                 <span>0%</span>
                 <span>100%</span>
@@ -249,7 +304,7 @@ const Home = () => {
 
         {/* Additional Info */}
         <div className="grid grid-cols-2 gap-4 pb-20">
-          <Card className="p-4 bg-background/40 backdrop-blur-lg rounded-2xl border-border/50">
+          <Card className="p-4 bg-muted/60 backdrop-blur-sm rounded-2xl border-border/30">
             <div className="flex items-start space-x-2">
               <div className="text-xl mt-0.5">⚡</div>
               <div className="flex-1 min-w-0">
@@ -259,7 +314,7 @@ const Home = () => {
             </div>
           </Card>
 
-          <Card className="p-4 bg-background/40 backdrop-blur-lg rounded-2xl border-border/50">
+          <Card className="p-4 bg-muted/60 backdrop-blur-sm rounded-2xl border-border/30">
             <div className="flex items-start space-x-2">
               <div className="text-xl mt-0.5">📋</div>
               <div className="flex-1 min-w-0">
