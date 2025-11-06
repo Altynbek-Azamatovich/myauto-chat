@@ -61,7 +61,15 @@ serve(async (req) => {
     console.log('SMSC response:', smsResult);
 
     if (smsResult.error) {
-      throw new Error(`SMSC error: ${smsResult.error} - ${smsResult.error_code}`);
+      let errorMessage = `SMSC error: ${smsResult.error}`;
+      
+      // Provide specific guidance based on error code
+      if (smsResult.error_code === 8) {
+        errorMessage = 'Не удалось отправить SMS. Пожалуйста, проверьте баланс на SMSC.kz или обратитесь в поддержку.';
+      }
+      
+      console.error('SMSC error details:', smsResult);
+      throw new Error(errorMessage);
     }
 
     return new Response(

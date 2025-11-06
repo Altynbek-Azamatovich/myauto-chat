@@ -109,11 +109,23 @@ const PhoneAuth = () => {
       navigate('/otp-verify');
     } catch (error: any) {
       console.error('Error in handleSubmit:', error);
+      
+      let errorDescription = error.message;
+      
+      // Provide user-friendly error messages
+      if (error.message?.includes('SMSC')) {
+        errorDescription = language === 'ru' 
+          ? "Проблема с SMS-сервисом. Попробуйте позже или свяжитесь с поддержкой."
+          : "SMS қызметінде ақау. Кейінірек қайталап көріңіз немесе қолдау қызметіне хабарласыңыз.";
+      } else if (!errorDescription) {
+        errorDescription = language === 'ru' 
+          ? "Не удалось отправить код" 
+          : "Кодты жіберу мүмкін болмады";
+      }
+      
       toast({
         title: language === 'ru' ? "Ошибка" : "Қате",
-        description: error.message || (language === 'ru' 
-          ? "Не удалось отправить код" 
-          : "Кодты жіберу мүмкін болмады"),
+        description: errorDescription,
         variant: "destructive",
       });
     } finally {
