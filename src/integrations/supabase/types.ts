@@ -203,39 +203,54 @@ export type Database = {
       }
       user_vehicles: {
         Row: {
+          average_consumption: number | null
           brand_id: string
           created_at: string
           id: string
+          insurance_expiry_date: string | null
           is_primary: boolean | null
           license_plate: string | null
           mileage: number
           model: string
+          next_service_date: string | null
+          oil_change_date: string | null
+          technical_condition: number | null
           updated_at: string
           user_id: string
           vin: string | null
           year: number
         }
         Insert: {
+          average_consumption?: number | null
           brand_id: string
           created_at?: string
           id?: string
+          insurance_expiry_date?: string | null
           is_primary?: boolean | null
           license_plate?: string | null
           mileage?: number
           model: string
+          next_service_date?: string | null
+          oil_change_date?: string | null
+          technical_condition?: number | null
           updated_at?: string
           user_id: string
           vin?: string | null
           year: number
         }
         Update: {
+          average_consumption?: number | null
           brand_id?: string
           created_at?: string
           id?: string
+          insurance_expiry_date?: string | null
           is_primary?: boolean | null
           license_plate?: string | null
           mileage?: number
           model?: string
+          next_service_date?: string | null
+          oil_change_date?: string | null
+          technical_condition?: number | null
           updated_at?: string
           user_id?: string
           vin?: string | null

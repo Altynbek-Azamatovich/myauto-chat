@@ -1,15 +1,21 @@
 import { useState, useEffect } from "react";
-import { Menu, User, RotateCcw, AlertTriangle, Clock, HeartPulse, Globe, Sun, Moon, Bell, Info, Car, History, UserCog, LogOut } from "lucide-react";
+import { Menu, User, RotateCcw, AlertTriangle, Clock, HeartPulse, Globe, Sun, Moon, Bell, Info, Car, History, UserCog, LogOut, CalendarIcon, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import { supabase } from '@/integrations/supabase/client';
+import { format } from "date-fns";
+import { ru, kk } from "date-fns/locale";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 import carMainImage from "@/assets/car-main.png";
 import logoImage from "@/assets/logo.png";
 import BottomNavigation from '@/components/BottomNavigation';
@@ -22,6 +28,11 @@ interface Vehicle {
   license_plate?: string;
   mileage: number;
   is_primary: boolean;
+  oil_change_date?: string;
+  insurance_expiry_date?: string;
+  technical_condition?: number;
+  average_consumption?: number;
+  next_service_date?: string;
 }
 
 interface CarBrand {
@@ -35,6 +46,12 @@ const Home = () => {
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
   const [isThemeOpen, setIsThemeOpen] = useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+  const [isOilChangeDateOpen, setIsOilChangeDateOpen] = useState(false);
+  const [isInsuranceDateOpen, setIsInsuranceDateOpen] = useState(false);
+  const [isNextServiceDateOpen, setIsNextServiceDateOpen] = useState(false);
+  const [oilChangeDate, setOilChangeDate] = useState<Date>();
+  const [insuranceDate, setInsuranceDate] = useState<Date>();
+  const [nextServiceDate, setNextServiceDate] = useState<Date>();
   const [primaryVehicle, setPrimaryVehicle] = useState<Vehicle | null>(null);
   const [brandName, setBrandName] = useState<string>('');
   const { t, language, setLanguage } = useLanguage();
@@ -61,6 +78,17 @@ const Home = () => {
       const vehicle = vehicles[0];
       setPrimaryVehicle(vehicle);
 
+      // Set dates if they exist
+      if (vehicle.oil_change_date) {
+        setOilChangeDate(new Date(vehicle.oil_change_date));
+      }
+      if (vehicle.insurance_expiry_date) {
+        setInsuranceDate(new Date(vehicle.insurance_expiry_date));
+      }
+      if (vehicle.next_service_date) {
+        setNextServiceDate(new Date(vehicle.next_service_date));
+      }
+
       // Fetch brand name
       const { data: brand } = await supabase
         .from('car_brands')
@@ -71,6 +99,22 @@ const Home = () => {
       if (brand) {
         setBrandName(brand.brand_name);
       }
+    }
+  };
+
+  const updateVehicleDate = async (field: string, date: Date | undefined) => {
+    if (!primaryVehicle || !date) return;
+
+    const { error } = await supabase
+      .from('user_vehicles')
+      .update({ [field]: format(date, 'yyyy-MM-dd') })
+      .eq('id', primaryVehicle.id);
+
+    if (error) {
+      toast.error(t('errorUpdating'));
+    } else {
+      toast.success(t('successUpdated'));
+      fetchPrimaryVehicle();
     }
   };
 
@@ -242,7 +286,7 @@ const Home = () => {
       {/* Car Info Cards */}
       <div className="px-4 space-y-4">
         <div className="grid grid-cols-2 gap-4">
-          <Card className="p-4 bg-muted/60 backdrop-blur-sm rounded-2xl border-border/30">
+          <Card className="p-4 bg-muted/80 backdrop-blur-sm rounded-2xl border-border/30">
             <div className="flex items-start space-x-3">
               <div className="text-muted-foreground mt-0.5">
                 <span className="text-xl">ⓘ</span>
@@ -264,20 +308,74 @@ const Home = () => {
             </div>
           </Card>
 
-          <Card className="p-4 bg-muted/60 backdrop-blur-sm rounded-2xl border-border/30">
+          <Card className="p-4 bg-muted/80 backdrop-blur-sm rounded-2xl border-border/30">
             <div className="space-y-3">
               <div className="flex items-start space-x-2">
                 <AlertTriangle className="h-5 w-5 text-yellow-500 mt-0.5 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium leading-tight">29.07.2025</p>
-                  <p className="text-xs text-muted-foreground">{t('oilChange')}</p>
+                  <Popover open={isOilChangeDateOpen} onOpenChange={setIsOilChangeDateOpen}>
+                    <PopoverTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
+                        <div className="text-left">
+                          <p className="text-sm font-medium leading-tight flex items-center gap-1">
+                            {oilChangeDate ? format(oilChangeDate, 'dd.MM.yyyy') : '—'}
+                            <Edit className="h-3 w-3 text-muted-foreground" />
+                          </p>
+                          <p className="text-xs text-muted-foreground">{t('oilChange')}</p>
+                        </div>
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={oilChangeDate}
+                        onSelect={(date) => {
+                          setOilChangeDate(date);
+                          if (date) {
+                            updateVehicleDate('oil_change_date', date);
+                            setIsOilChangeDateOpen(false);
+                          }
+                        }}
+                        initialFocus
+                        locale={language === 'ru' ? ru : kk}
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
               <div className="flex items-start space-x-2">
                 <Clock className="h-5 w-5 text-muted-foreground mt-0.5 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium leading-tight">22.09.2025</p>
-                  <p className="text-xs text-muted-foreground">{t('insuranceExpires')}</p>
+                  <Popover open={isInsuranceDateOpen} onOpenChange={setIsInsuranceDateOpen}>
+                    <PopoverTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
+                        <div className="text-left">
+                          <p className="text-sm font-medium leading-tight flex items-center gap-1">
+                            {insuranceDate ? format(insuranceDate, 'dd.MM.yyyy') : '—'}
+                            <Edit className="h-3 w-3 text-muted-foreground" />
+                          </p>
+                          <p className="text-xs text-muted-foreground">{t('insuranceExpires')}</p>
+                        </div>
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={insuranceDate}
+                        onSelect={(date) => {
+                          setInsuranceDate(date);
+                          if (date) {
+                            updateVehicleDate('insurance_expiry_date', date);
+                            setIsInsuranceDateOpen(false);
+                          }
+                        }}
+                        initialFocus
+                        locale={language === 'ru' ? ru : kk}
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
             </div>
@@ -285,41 +383,80 @@ const Home = () => {
         </div>
 
         {/* Technical Condition */}
-        <Card className="p-4 bg-muted/60 backdrop-blur-sm rounded-2xl border-border/30">
+        <Card className="p-4 bg-muted/80 backdrop-blur-sm rounded-2xl border-border/30">
           <div className="flex items-center space-x-3">
             <HeartPulse className="h-5 w-5 text-app-green flex-shrink-0" />
             <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium">{t('technicalCondition')}</span>
-                <span className="text-xl font-bold text-app-green">85%</span>
+                <span className="text-xl font-bold text-app-green">
+                  {primaryVehicle?.technical_condition || 0}%
+                </span>
               </div>
-              <Progress value={85} className="h-2 [&>div]:bg-app-green" />
+              <Progress value={primaryVehicle?.technical_condition || 0} className="h-2 [&>div]:bg-app-green" />
               <div className="flex justify-between text-xs text-muted-foreground mt-1">
                 <span>0%</span>
                 <span>100%</span>
               </div>
+              {(!primaryVehicle?.technical_condition || primaryVehicle.technical_condition === 0) && (
+                <p className="text-xs text-yellow-500 mt-2 flex items-center gap-1">
+                  <Bell className="h-3 w-3" />
+                  Актуальное состояние будет после прохождения ТО
+                </p>
+              )}
             </div>
           </div>
         </Card>
 
         {/* Additional Info */}
         <div className="grid grid-cols-2 gap-4 pb-20">
-          <Card className="p-4 bg-muted/60 backdrop-blur-sm rounded-2xl border-border/30">
+          <Card className="p-4 bg-muted/80 backdrop-blur-sm rounded-2xl border-border/30">
             <div className="flex items-start space-x-2">
               <div className="text-xl mt-0.5">⚡</div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-muted-foreground">{t('avgConsumption')}</p>
-                <p className="font-semibold text-sm">4.5 км/час</p>
+                {primaryVehicle?.average_consumption ? (
+                  <p className="font-semibold text-sm">{primaryVehicle.average_consumption} л/100км</p>
+                ) : (
+                  <p className="text-xs text-yellow-500 mt-1">Будет доступно после ТО</p>
+                )}
               </div>
             </div>
           </Card>
 
-          <Card className="p-4 bg-muted/60 backdrop-blur-sm rounded-2xl border-border/30">
+          <Card className="p-4 bg-muted/80 backdrop-blur-sm rounded-2xl border-border/30">
             <div className="flex items-start space-x-2">
               <div className="text-xl mt-0.5">📋</div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-muted-foreground">{t('nextService')}</p>
-                <p className="font-semibold text-sm">16.05.2025</p>
+                <Popover open={isNextServiceDateOpen} onOpenChange={setIsNextServiceDateOpen}>
+                  <PopoverTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
+                      <div className="text-left">
+                        <p className="font-semibold text-sm flex items-center gap-1">
+                          {nextServiceDate ? format(nextServiceDate, 'dd.MM.yyyy') : '—'}
+                          <Edit className="h-3 w-3 text-muted-foreground" />
+                        </p>
+                      </div>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={nextServiceDate}
+                      onSelect={(date) => {
+                        setNextServiceDate(date);
+                        if (date) {
+                          updateVehicleDate('next_service_date', date);
+                          setIsNextServiceDateOpen(false);
+                        }
+                      }}
+                      initialFocus
+                      locale={language === 'ru' ? ru : kk}
+                      className={cn("p-3 pointer-events-auto")}
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
           </Card>
