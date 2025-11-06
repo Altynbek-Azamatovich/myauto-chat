@@ -8,7 +8,7 @@ const PhotoDiagnostic = () => {
   const { t } = useLanguage();
 
   return (
-    <div className="h-screen bg-background flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="flex items-center justify-between px-4 py-4 flex-shrink-0">
         <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
@@ -21,7 +21,7 @@ const PhotoDiagnostic = () => {
       </header>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 pb-24">
+      <div className="flex-1 flex flex-col items-center justify-center px-4 pb-24">
         <Card className="max-w-md w-full p-8 text-center space-y-6 bg-gradient-to-br from-muted/30 to-muted/10 border-2 border-dashed">
           <div className="flex justify-center">
             <div className="relative">

@@ -409,7 +409,7 @@ const Home = () => {
         </Card>
 
         {/* Additional Info */}
-        <div className="grid grid-cols-2 gap-4 pb-20">
+        <div className="grid grid-cols-2 gap-4 pb-24">
           <Card className="p-4 bg-muted/90 backdrop-blur-sm rounded-2xl border-border/30">
             <div className="flex items-start space-x-2">
               <div className="text-xl mt-0.5">⚡</div>
