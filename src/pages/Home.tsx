@@ -16,7 +16,7 @@ import { format } from "date-fns";
 import { ru, kk } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import carCoveredImage from "@/assets/car-covered.png";
+import carCoveredImage from "@/assets/car-covered-new.png";
 import logoImage from "@/assets/logo-new.png";
 import BottomNavigation from '@/components/BottomNavigation';
 
@@ -49,6 +49,7 @@ const Home = () => {
   const [isOilChangeDateOpen, setIsOilChangeDateOpen] = useState(false);
   const [isInsuranceDateOpen, setIsInsuranceDateOpen] = useState(false);
   const [isNextServiceDateOpen, setIsNextServiceDateOpen] = useState(false);
+  const [isPartSelectOpen, setIsPartSelectOpen] = useState(false);
   const [oilChangeDate, setOilChangeDate] = useState<Date>();
   const [insuranceDate, setInsuranceDate] = useState<Date>();
   const [nextServiceDate, setNextServiceDate] = useState<Date>();
@@ -260,18 +261,30 @@ const Home = () => {
             className="w-full h-64 object-cover rounded-lg"
           />
           {/* Interactive points */}
-          <div className="absolute top-1/4 left-1/4 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center">
+          <button 
+            onClick={() => setIsPartSelectOpen(true)}
+            className="absolute top-1/4 left-1/4 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform"
+          >
             <div className="w-4 h-4 bg-muted-foreground rounded-full"></div>
-          </div>
-          <div className="absolute top-1/3 right-1/3 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center">
+          </button>
+          <button 
+            onClick={() => setIsPartSelectOpen(true)}
+            className="absolute top-1/3 right-1/3 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform"
+          >
             <div className="w-4 h-4 bg-muted-foreground rounded-full"></div>
-          </div>
-          <div className="absolute bottom-1/3 left-1/3 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center">
+          </button>
+          <button 
+            onClick={() => setIsPartSelectOpen(true)}
+            className="absolute bottom-1/3 left-1/3 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform"
+          >
             <div className="w-4 h-4 bg-muted-foreground rounded-full"></div>
-          </div>
-          <div className="absolute bottom-1/4 right-1/4 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center">
+          </button>
+          <button 
+            onClick={() => setIsPartSelectOpen(true)}
+            className="absolute bottom-1/4 right-1/4 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform"
+          >
             <div className="w-4 h-4 bg-muted-foreground rounded-full"></div>
-          </div>
+          </button>
           
           {/* 360 button */}
           <div className="absolute bottom-4 right-4">
@@ -528,6 +541,20 @@ const Home = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={isPartSelectOpen} onOpenChange={setIsPartSelectOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Выбор деталей авто</AlertDialogTitle>
+            <AlertDialogDescription>
+              Функция выбора деталей автомобиля пока находится в разработке и будет доступна в ближайшее время.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setIsPartSelectOpen(false)}>Понятно</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <AlertDialog open={isLogoutDialogOpen} onOpenChange={setIsLogoutDialogOpen}>
         <AlertDialogContent>
