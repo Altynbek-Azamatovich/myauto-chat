@@ -49,9 +49,18 @@ export default function MyVehicles() {
   });
 
   useEffect(() => {
+    checkAuthAndFetchData();
+  }, []);
+
+  const checkAuthAndFetchData = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      navigate('/phone-auth');
+      return;
+    }
     fetchVehicles();
     fetchBrands();
-  }, []);
+  };
 
   const fetchBrands = async () => {
     const { data, error } = await supabase

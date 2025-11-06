@@ -56,9 +56,18 @@ export default function ServiceHistory() {
   });
 
   useEffect(() => {
+    checkAuthAndFetchData();
+  }, []);
+
+  const checkAuthAndFetchData = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      navigate('/phone-auth');
+      return;
+    }
     fetchVehicles();
     fetchServices();
-  }, []);
+  };
 
   const fetchVehicles = async () => {
     const { data: { user } } = await supabase.auth.getUser();

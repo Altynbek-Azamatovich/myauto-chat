@@ -22,8 +22,17 @@ export default function ProfileSettings() {
   });
 
   useEffect(() => {
-    fetchProfile();
+    checkAuthAndFetchData();
   }, []);
+
+  const checkAuthAndFetchData = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      navigate('/phone-auth');
+      return;
+    }
+    fetchProfile();
+  };
 
   const fetchProfile = async () => {
     const { data: { user } } = await supabase.auth.getUser();
