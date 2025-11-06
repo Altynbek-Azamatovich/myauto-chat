@@ -1,24 +1,34 @@
 import { useState } from "react";
-import { Menu, User, RotateCcw, AlertTriangle, Clock, HeartPulse, Globe, Sun, Moon, Bell, Info } from "lucide-react";
+import { Menu, User, RotateCcw, AlertTriangle, Clock, HeartPulse, Globe, Sun, Moon, Bell, Info, Car, History, UserCog, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useNavigate } from "react-router-dom";
+import { supabase } from '@/integrations/supabase/client';
 import carMainImage from "@/assets/car-main.png";
 import logoImage from "@/assets/logo.png";
+import BottomNavigation from '@/components/BottomNavigation';
 
 const Home = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
   const [isThemeOpen, setIsThemeOpen] = useState(false);
+  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const { t, language, setLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
+
   const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/phone-auth');
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -88,32 +98,64 @@ const Home = () => {
 
         <img src={logoImage} alt="myAuto" className="h-12 w-auto" />
 
-        <Dialog open={isProfileOpen} onOpenChange={setIsProfileOpen}>
-          <DialogTrigger asChild>
+        <Sheet open={isProfileOpen} onOpenChange={setIsProfileOpen}>
+          <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
               <User className="h-6 w-6" />
             </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
+          </SheetTrigger>
+          <SheetContent>
             <div className="py-6">
-              <h3 className="text-lg font-semibold mb-4">{t('profile')}</h3>
-              <div className="space-y-4">
-                <Button variant="ghost" className="w-full justify-start">
-                  <span>{t('myCars')}</span>
+              <h3 className="text-lg font-semibold mb-4">{t('profileTitle')}</h3>
+              <div className="space-y-2">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start"
+                  onClick={() => {
+                    setIsProfileOpen(false);
+                    navigate('/my-vehicles');
+                  }}
+                >
+                  <Car className="mr-2 h-5 w-5" />
+                  {t('myVehicles')}
                 </Button>
-                <Button variant="ghost" className="w-full justify-start">
-                  <span>{t('serviceHistory')}</span>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start"
+                  onClick={() => {
+                    setIsProfileOpen(false);
+                    navigate('/service-history');
+                  }}
+                >
+                  <History className="mr-2 h-5 w-5" />
+                  {t('serviceHistoryTitle')}
                 </Button>
-                <Button variant="ghost" className="w-full justify-start">
-                  <span>{t('profileSettings')}</span>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start"
+                  onClick={() => {
+                    setIsProfileOpen(false);
+                    navigate('/profile-settings');
+                  }}
+                >
+                  <UserCog className="mr-2 h-5 w-5" />
+                  {t('profileSettingsTitle')}
                 </Button>
-                <Button variant="ghost" className="w-full justify-start">
-                  <span>{t('logout')}</span>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-destructive hover:text-destructive"
+                  onClick={() => {
+                    setIsProfileOpen(false);
+                    setIsLogoutDialogOpen(true);
+                  }}
+                >
+                  <LogOut className="mr-2 h-5 w-5" />
+                  {t('logoutTitle')}
                 </Button>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
+          </SheetContent>
+        </Sheet>
       </header>
 
       {/* Car Display */}
@@ -294,6 +336,21 @@ const Home = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={isLogoutDialogOpen} onOpenChange={setIsLogoutDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('logoutTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('logoutConfirm')}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleLogout}>{t('confirmLogout')}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <BottomNavigation />
     </div>
   );
 };

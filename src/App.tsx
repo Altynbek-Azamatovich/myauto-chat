@@ -9,6 +9,9 @@ import Welcome from "./pages/Welcome";
 import PhoneAuth from "./pages/PhoneAuth";
 import OTPVerify from "./pages/OTPVerify";
 import ProfileSetup from "./pages/ProfileSetup";
+import MyVehicles from "./pages/MyVehicles";
+import ServiceHistory from "./pages/ServiceHistory";
+import ProfileSettings from "./pages/ProfileSettings";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
 import PhotoDiagnostic from "./pages/PhotoDiagnostic";
@@ -20,7 +23,7 @@ import NotFound from "./pages/NotFound";
 
 const AppContent = () => {
   const location = useLocation();
-  const hideNavigation = ['/welcome', '/phone-auth', '/otp-verify', '/profile-setup', '/about-app', '/notification-settings'].includes(location.pathname);
+  const hideNavigation = ['/welcome', '/phone-auth', '/otp-verify', '/profile-setup', '/about-app', '/notification-settings', '/my-vehicles', '/service-history', '/profile-settings'].includes(location.pathname);
 
   return (
     <>
@@ -29,6 +32,9 @@ const AppContent = () => {
         <Route path="/phone-auth" element={<PhoneAuth />} />
         <Route path="/otp-verify" element={<OTPVerify />} />
         <Route path="/profile-setup" element={<ProfileSetup />} />
+        <Route path="/my-vehicles" element={<MyVehicles />} />
+        <Route path="/service-history" element={<ServiceHistory />} />
+        <Route path="/profile-settings" element={<ProfileSettings />} />
         <Route path="/" element={<Home />} />
         <Route path="/services" element={<Services />} />
         <Route path="/photo-diagnostic" element={<PhotoDiagnostic />} />
