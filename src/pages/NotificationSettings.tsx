@@ -42,7 +42,7 @@ const NotificationSettings = () => {
           variant="ghost" 
           size="icon" 
           onClick={() => navigate('/')}
-          className="rounded-full"
+          className="rounded-full hover:bg-muted/30 hover:text-foreground"
         >
           <ArrowLeft className="h-6 w-6" />
         </Button>

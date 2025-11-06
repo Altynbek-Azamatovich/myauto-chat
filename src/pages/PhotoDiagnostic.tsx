@@ -11,8 +11,8 @@ const PhotoDiagnostic = () => {
     <div className="h-screen bg-background flex flex-col overflow-hidden">
       {/* Header */}
       <header className="flex items-center justify-between px-4 pt-6 pb-3 flex-shrink-0">
-        <Button variant="ghost" size="icon" className="rounded-full bg-black/20 backdrop-blur-lg">
-          <Menu className="h-6 w-6 text-white" />
+        <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
+          <Menu className="h-6 w-6" />
         </Button>
 
         <img src={logoImage} alt="myAuto" className="h-12 w-auto" />
