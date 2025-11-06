@@ -181,10 +181,10 @@ const SuperChat = () => {
           <Menu className="h-6 w-6" />
         </Button>
 
-        <div className="flex items-center gap-1 bg-muted/50 backdrop-blur-lg rounded-full px-1 py-1">
+        <div className="flex items-center gap-0.5 bg-muted/50 backdrop-blur-lg rounded-full px-1 py-1">
           <button
             onClick={() => setActiveTab("chat")}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
               activeTab === "chat"
                 ? "bg-white/70 text-primary"
                 : "text-muted-foreground"
@@ -194,7 +194,7 @@ const SuperChat = () => {
           </button>
           <button
             onClick={() => setActiveTab("community")}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
               activeTab === "community"
                 ? "bg-white/70 text-primary"
                 : "text-muted-foreground"
@@ -303,7 +303,7 @@ const SuperChat = () => {
       {/* Input Area - Fixed at bottom */}
       <div className="fixed bottom-24 left-0 right-0 px-4 py-3 z-10">
         <div className="flex items-center justify-center space-x-2">
-          <div className="flex items-center bg-muted/30 backdrop-blur-lg rounded-full px-3 h-10 max-w-xl w-full">
+          <div className="flex items-center bg-muted/30 backdrop-blur-lg rounded-full px-3 h-10 max-w-lg w-full">
             <Button 
               variant="ghost" 
               size="icon" 
