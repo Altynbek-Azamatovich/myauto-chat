@@ -80,7 +80,34 @@ export default function MyVehicles() {
   };
 
   const formatLicensePlate = (value: string) => {
-    return value.toUpperCase().replace(/[^0-9A-Z]/g, '');
+    // Format: 3 digits + 3 letters + 2 digits (region)
+    const clean = value.toUpperCase().replace(/[^0-9A-Z]/g, '');
+    let formatted = '';
+    
+    // First 3 characters - digits only
+    for (let i = 0; i < Math.min(3, clean.length); i++) {
+      if (/\d/.test(clean[i])) formatted += clean[i];
+    }
+    
+    // Next 3 characters - letters only
+    let letterCount = 0;
+    for (let i = 0; i < clean.length && letterCount < 3; i++) {
+      if (/[A-Z]/.test(clean[i])) {
+        formatted += clean[i];
+        letterCount++;
+      }
+    }
+    
+    // Last 2 characters - digits only (region)
+    let digitCount = 0;
+    for (let i = formatted.length - letterCount; i < clean.length && digitCount < 2; i++) {
+      if (/\d/.test(clean[i]) && i >= 3) {
+        formatted += clean[i];
+        digitCount++;
+      }
+    }
+    
+    return formatted;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -241,8 +268,8 @@ export default function MyVehicles() {
                 <Input
                   value={formData.license_plate}
                   onChange={(e) => setFormData({ ...formData, license_plate: formatLicensePlate(e.target.value) })}
-                  placeholder="123ABC"
-                  maxLength={6}
+                  placeholder="123АВС77"
+                  maxLength={8}
                 />
               </div>
               <div>
@@ -261,7 +288,12 @@ export default function MyVehicles() {
                   onCheckedChange={(checked) => setFormData({ ...formData, is_primary: checked })}
                 />
               </div>
-              <Button type="submit" className="w-full">{t('save')}</Button>
+              <div className="flex gap-2">
+                <Button type="button" variant="outline" className="flex-1" onClick={() => setIsAddDialogOpen(false)}>
+                  {t('cancel')}
+                </Button>
+                <Button type="submit" className="flex-1">{t('save')}</Button>
+              </div>
             </form>
           </DialogContent>
         </Dialog>
@@ -377,8 +409,8 @@ export default function MyVehicles() {
               <Input
                 value={formData.license_plate}
                 onChange={(e) => setFormData({ ...formData, license_plate: formatLicensePlate(e.target.value) })}
-                placeholder="123ABC"
-                maxLength={6}
+                placeholder="123АВС77"
+                maxLength={8}
               />
             </div>
             <div>
@@ -397,7 +429,12 @@ export default function MyVehicles() {
                 onCheckedChange={(checked) => setFormData({ ...formData, is_primary: checked })}
               />
             </div>
-            <Button type="submit" className="w-full">{t('save')}</Button>
+            <div className="flex gap-2">
+              <Button type="button" variant="outline" className="flex-1" onClick={() => setIsEditDialogOpen(false)}>
+                {t('cancel')}
+              </Button>
+              <Button type="submit" className="flex-1">{t('save')}</Button>
+            </div>
           </form>
         </DialogContent>
       </Dialog>
