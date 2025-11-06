@@ -2,7 +2,7 @@ import { Menu, Camera, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
-import logoImage from "@/assets/logo.png";
+import logoImage from "@/assets/logo-new.png";
 
 const PhotoDiagnostic = () => {
   const { t } = useLanguage();

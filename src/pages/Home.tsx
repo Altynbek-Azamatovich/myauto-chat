@@ -17,7 +17,7 @@ import { ru, kk } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import carCoveredImage from "@/assets/car-covered.png";
-import logoImage from "@/assets/logo.png";
+import logoImage from "@/assets/logo-new.png";
 import BottomNavigation from '@/components/BottomNavigation';
 
 interface Vehicle {
