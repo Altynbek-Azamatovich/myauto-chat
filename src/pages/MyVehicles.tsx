@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -23,16 +24,22 @@ interface Vehicle {
   is_primary: boolean;
 }
 
+interface CarBrand {
+  id: string;
+  brand_name: string;
+}
+
 export default function MyVehicles() {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [brands, setBrands] = useState<CarBrand[]>([]);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [deleteVehicleId, setDeleteVehicleId] = useState<string | null>(null);
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
   const [formData, setFormData] = useState({
-    brand_id: '00000000-0000-0000-0000-000000000000',
+    brand_id: '',
     model: '',
     year: new Date().getFullYear(),
     vin: '',
@@ -43,7 +50,19 @@ export default function MyVehicles() {
 
   useEffect(() => {
     fetchVehicles();
+    fetchBrands();
   }, []);
+
+  const fetchBrands = async () => {
+    const { data, error } = await supabase
+      .from('car_brands')
+      .select('*')
+      .order('brand_name');
+
+    if (!error && data) {
+      setBrands(data);
+    }
+  };
 
   const fetchVehicles = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -60,8 +79,18 @@ export default function MyVehicles() {
     }
   };
 
+  const formatLicensePlate = (value: string) => {
+    return value.toUpperCase().replace(/[^0-9A-Z]/g, '');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.brand_id) {
+      toast.error(t('selectBrand'));
+      return;
+    }
+
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
@@ -76,7 +105,7 @@ export default function MyVehicles() {
       setIsAddDialogOpen(false);
       fetchVehicles();
       setFormData({
-        brand_id: '00000000-0000-0000-0000-000000000000',
+        brand_id: '',
         model: '',
         year: new Date().getFullYear(),
         vin: '',
@@ -162,17 +191,28 @@ export default function MyVehicles() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <Label>{t('brand')}</Label>
-                <Input
+                <Select
                   value={formData.brand_id}
-                  onChange={(e) => setFormData({ ...formData, brand_id: e.target.value })}
-                  required
-                />
+                  onValueChange={(value) => setFormData({ ...formData, brand_id: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={t('selectBrand')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {brands.map((brand) => (
+                      <SelectItem key={brand.id} value={brand.id}>
+                        {brand.brand_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label>{t('model')}</Label>
                 <Input
                   value={formData.model}
                   onChange={(e) => setFormData({ ...formData, model: e.target.value })}
+                  placeholder={t('enterModel')}
                   required
                 />
               </div>
@@ -182,6 +222,8 @@ export default function MyVehicles() {
                   type="number"
                   value={formData.year}
                   onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) })}
+                  min="1900"
+                  max={new Date().getFullYear() + 1}
                   required
                 />
               </div>
@@ -189,14 +231,18 @@ export default function MyVehicles() {
                 <Label>{t('vin')}</Label>
                 <Input
                   value={formData.vin}
-                  onChange={(e) => setFormData({ ...formData, vin: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, vin: e.target.value.toUpperCase() })}
+                  placeholder="WBAXXXXX12345678"
+                  maxLength={17}
                 />
               </div>
               <div>
                 <Label>{t('plate')}</Label>
                 <Input
                   value={formData.license_plate}
-                  onChange={(e) => setFormData({ ...formData, license_plate: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, license_plate: formatLicensePlate(e.target.value) })}
+                  placeholder="123ABC"
+                  maxLength={6}
                 />
               </div>
               <div>
@@ -281,17 +327,28 @@ export default function MyVehicles() {
           <form onSubmit={handleEdit} className="space-y-4">
             <div>
               <Label>{t('brand')}</Label>
-              <Input
+              <Select
                 value={formData.brand_id}
-                onChange={(e) => setFormData({ ...formData, brand_id: e.target.value })}
-                required
-              />
+                onValueChange={(value) => setFormData({ ...formData, brand_id: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={t('selectBrand')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {brands.map((brand) => (
+                    <SelectItem key={brand.id} value={brand.id}>
+                      {brand.brand_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <Label>{t('model')}</Label>
               <Input
                 value={formData.model}
                 onChange={(e) => setFormData({ ...formData, model: e.target.value })}
+                placeholder={t('enterModel')}
                 required
               />
             </div>
@@ -301,6 +358,8 @@ export default function MyVehicles() {
                 type="number"
                 value={formData.year}
                 onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) })}
+                min="1900"
+                max={new Date().getFullYear() + 1}
                 required
               />
             </div>
@@ -308,14 +367,18 @@ export default function MyVehicles() {
               <Label>{t('vin')}</Label>
               <Input
                 value={formData.vin}
-                onChange={(e) => setFormData({ ...formData, vin: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, vin: e.target.value.toUpperCase() })}
+                placeholder="WBAXXXXX12345678"
+                maxLength={17}
               />
             </div>
             <div>
               <Label>{t('plate')}</Label>
               <Input
                 value={formData.license_plate}
-                onChange={(e) => setFormData({ ...formData, license_plate: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, license_plate: formatLicensePlate(e.target.value) })}
+                placeholder="123ABC"
+                maxLength={6}
               />
             </div>
             <div>
