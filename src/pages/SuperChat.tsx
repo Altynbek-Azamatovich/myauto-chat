@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { format } from "date-fns";
 
 interface Message {
   id: number;
@@ -29,7 +30,7 @@ const SuperChat = () => {
         id: 1,
         text: t('chatAiHelper'),
         isBot: true,
-        timestamp: t('now')
+        timestamp: format(new Date(), 'HH:mm')
       }
     ];
   });
@@ -56,7 +57,7 @@ const SuperChat = () => {
       id: Date.now(),
       text: message,
       isBot: false,
-      timestamp: t('now')
+      timestamp: format(new Date(), 'HH:mm')
     };
 
     setMessages(prev => [...prev, userMessage]);
@@ -145,7 +146,7 @@ const SuperChat = () => {
                   id: assistantMessageId,
                   text: assistantText,
                   isBot: true,
-                  timestamp: t('now')
+                  timestamp: format(new Date(), 'HH:mm')
                 }];
               });
             }
@@ -283,7 +284,7 @@ const SuperChat = () => {
               }`}>
                 <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.text}</p>
                 <p className="text-xs mt-2 opacity-60">
-                  {msg.isBot ? 'Gemini AI' : t('you')} • {msg.timestamp}
+                  {msg.isBot ? 'myAuto AI' : t('you')} • {msg.timestamp}
                 </p>
               </Card>
             </div>

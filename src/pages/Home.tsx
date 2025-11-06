@@ -545,9 +545,9 @@ const Home = () => {
       <AlertDialog open={isPartSelectOpen} onOpenChange={setIsPartSelectOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Выбор деталей авто</AlertDialogTitle>
+            <AlertDialogTitle>4 выбора деталей</AlertDialogTitle>
             <AlertDialogDescription>
-              Функция выбора деталей автомобиля пока находится в разработке и будет доступна в ближайшее время.
+              Эта функция находится в разработке и скоро будет доступна.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
