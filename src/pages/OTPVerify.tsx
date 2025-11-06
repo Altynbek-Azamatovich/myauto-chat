@@ -40,19 +40,56 @@ const OTPVerify = () => {
       const phone = localStorage.getItem('auth_phone');
       if (!phone) throw new Error('Phone not found');
 
-      const { error } = await supabase.auth.verifyOtp({
-        phone: phone,
-        token: otp,
-        type: 'sms',
+      console.log('Verifying OTP:', { phone, code: otp });
+
+      const { data, error } = await supabase.functions.invoke('verify-otp', {
+        body: { phone, code: otp }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error verifying OTP:', error);
+        throw error;
+      }
 
-      navigate('/profile-setup');
+      if (!data?.success) {
+        throw new Error(data?.error || 'Invalid OTP code');
+      }
+
+      console.log('OTP verified successfully:', data);
+
+      // Use the session data to log in
+      if (data.session) {
+        const { error: signInError } = await supabase.auth.setSession({
+          access_token: data.session.properties.access_token,
+          refresh_token: data.session.properties.refresh_token
+        });
+
+        if (signInError) {
+          console.error('Error setting session:', signInError);
+          throw signInError;
+        }
+      }
+
+      toast({
+        title: language === 'ru' ? "Успешно" : "Сәтті",
+        description: language === 'ru' 
+          ? "Вы успешно вошли в систему" 
+          : "Сіз жүйеге сәтті кірдіңіз",
+      });
+
+      // Navigate based on whether user is new
+      if (data.isNewUser) {
+        navigate('/profile-setup');
+      } else {
+        navigate('/');
+      }
     } catch (error: any) {
+      console.error('Error in handleVerify:', error);
       toast({
         title: language === 'ru' ? "Ошибка" : "Қате",
-        description: error.message,
+        description: error.message || (language === 'ru' 
+          ? "Неверный код" 
+          : "Қате код"),
         variant: "destructive",
       });
     } finally {
@@ -65,15 +102,35 @@ const OTPVerify = () => {
     if (!phone) return;
 
     try {
-      await supabase.auth.signInWithOtp({ phone });
+      console.log('Resending OTP to:', phone);
+      
+      const { data, error } = await supabase.functions.invoke('send-otp', {
+        body: { phone }
+      });
+
+      if (error) {
+        console.error('Error resending OTP:', error);
+        throw error;
+      }
+
+      if (!data?.success) {
+        throw new Error(data?.error || 'Failed to resend OTP');
+      }
+
       setResendTimer(60);
       toast({
         title: language === 'ru' ? "Код отправлен" : "Код жіберілді",
+        description: language === 'ru' 
+          ? "Новый код отправлен на ваш номер" 
+          : "Жаңа код нөміріңізге жіберілді",
       });
     } catch (error: any) {
+      console.error('Error in handleResend:', error);
       toast({
         title: language === 'ru' ? "Ошибка" : "Қате",
-        description: error.message,
+        description: error.message || (language === 'ru' 
+          ? "Не удалось отправить код" 
+          : "Кодты жіберу мүмкін болмады"),
         variant: "destructive",
       });
     }

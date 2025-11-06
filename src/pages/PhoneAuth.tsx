@@ -41,23 +41,39 @@ const PhoneAuth = () => {
 
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOtp({
-        phone: phone,
-        options: {
-          data: {
-            preferred_language: language
-          }
-        }
+      console.log('Sending OTP to:', phone);
+      
+      const { data, error } = await supabase.functions.invoke('send-otp', {
+        body: { phone: phone }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error sending OTP:', error);
+        throw error;
+      }
 
+      if (!data?.success) {
+        throw new Error(data?.error || 'Failed to send OTP');
+      }
+
+      console.log('OTP sent successfully:', data);
+      
       localStorage.setItem('auth_phone', phone);
+      toast({
+        title: language === 'ru' ? "Код отправлен" : "Код жіберілді",
+        description: language === 'ru' 
+          ? "Проверьте SMS сообщения" 
+          : "SMS хабарламаларын тексеріңіз",
+      });
+      
       navigate('/otp-verify');
     } catch (error: any) {
+      console.error('Error in handleSubmit:', error);
       toast({
         title: language === 'ru' ? "Ошибка" : "Қате",
-        description: error.message,
+        description: error.message || (language === 'ru' 
+          ? "Не удалось отправить код" 
+          : "Кодты жіберу мүмкін болмады"),
         variant: "destructive",
       });
     } finally {
