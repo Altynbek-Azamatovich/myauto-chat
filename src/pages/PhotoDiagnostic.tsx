@@ -1,12 +1,11 @@
-import { Menu, User, Camera } from "lucide-react";
+import { Menu, Camera, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { useLanguage } from "@/contexts/LanguageContext";
 import logoImage from "@/assets/logo.png";
 
 const PhotoDiagnostic = () => {
-  const handleCameraClick = () => {
-    // Placeholder for camera functionality
-    console.log("Camera clicked - will be implemented with real camera access");
-  };
+  const { t } = useLanguage();
 
   return (
     <div className="h-screen bg-background flex flex-col overflow-hidden">
@@ -18,41 +17,54 @@ const PhotoDiagnostic = () => {
 
         <img src={logoImage} alt="myAuto" className="h-12 w-auto" />
 
-        <Button variant="ghost" size="icon" className="rounded-full bg-black/20 backdrop-blur-lg">
-          <User className="h-6 w-6 text-white" />
-        </Button>
+        <div className="w-10" /> {/* Spacer for center alignment */}
       </header>
 
       {/* Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 pb-24">
-        <div className="text-center space-y-4 max-w-md">
-          <div className="w-20 h-20 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-6">
-            <Camera className="h-10 w-10 text-primary" />
-          </div>
-          
-          <h1 className="text-2xl font-bold">
-            Фото-диагностика
-          </h1>
-          
-          <div className="space-y-3">
-            <p className="text-muted-foreground">
-              Мы работаем над созданием фото-диагностики:
-            </p>
-            
-            <div className="space-y-2 text-sm text-muted-foreground">
-              <p>🤖 ИИ распознает повреждения автомобиля</p>
-              <p>📸 Мгновенный анализ по фото</p>
-              <p>💡 Умные рекомендации по ремонту</p>
-              <p>💰 Оценка стоимости работ</p>
+        <Card className="max-w-md w-full p-8 text-center space-y-6 bg-gradient-to-br from-muted/30 to-muted/10 border-2 border-dashed">
+          <div className="flex justify-center">
+            <div className="relative">
+              <Camera className="h-16 w-16 text-primary" />
+              <Sparkles className="h-6 w-6 text-primary absolute -top-1 -right-1 animate-pulse" />
             </div>
           </div>
           
-          <div className="pt-4">
-            <p className="text-sm font-medium text-primary">
-              Скоро будет доступно! 🔥
+          <div className="space-y-3">
+            <h3 className="text-2xl font-bold">
+              {t('comingSoon')}
+            </h3>
+            <p className="text-muted-foreground leading-relaxed">
+              {t('workingOn')}
             </p>
           </div>
-        </div>
+
+          <div className="space-y-3 text-left">
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
+              <Camera className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="font-medium">{t('aiDamageRecognition')}</p>
+                <p className="text-sm text-muted-foreground">
+                  {t('instantPhotoAnalysis')}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
+              <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="font-medium">{t('smartRepairRecommendations')}</p>
+                <p className="text-sm text-muted-foreground">
+                  {t('costEstimation')}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <p className="text-sm text-muted-foreground italic">
+            {t('stayTuned')} 🚀
+          </p>
+        </Card>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Message {
   id: number;
@@ -15,6 +16,7 @@ interface Message {
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 
 const SuperChat = () => {
+  const { t } = useLanguage();
   const [message, setMessage] = useState("");
   const [activeTab, setActiveTab] = useState<"chat" | "community">("chat");
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -25,9 +27,9 @@ const SuperChat = () => {
     return [
       {
         id: 1,
-        text: "Привет! Я твой AI помощник по авто. Сейчас я в процессе обучения, что бы помогать тебе максимально эффективно! 🚗",
+        text: t('chatAiHelper'),
         isBot: true,
-        timestamp: "сейчас"
+        timestamp: t('now')
       }
     ];
   });
@@ -54,7 +56,7 @@ const SuperChat = () => {
       id: Date.now(),
       text: message,
       isBot: false,
-      timestamp: "сейчас"
+      timestamp: t('now')
     };
 
     setMessages(prev => [...prev, userMessage]);
@@ -83,18 +85,18 @@ const SuperChat = () => {
         const errorData = await response.json().catch(() => ({}));
         if (response.status === 429) {
           toast({
-            title: "Слишком много запросов",
-            description: "Пожалуйста, подождите немного перед следующим вопросом",
+            title: t('tooManyRequests'),
+            description: t('waitBefore'),
             variant: "destructive"
           });
         } else if (response.status === 402) {
           toast({
-            title: "Требуется оплата",
-            description: "Необходимо пополнить баланс Lovable AI",
+            title: t('paymentRequired'),
+            description: t('needTopUp'),
             variant: "destructive"
           });
         } else {
-          throw new Error(errorData.error || "Ошибка сервиса");
+          throw new Error(errorData.error || t('error'));
         }
         setIsLoading(false);
         return;
@@ -143,7 +145,7 @@ const SuperChat = () => {
                   id: assistantMessageId,
                   text: assistantText,
                   isBot: true,
-                  timestamp: "сейчас"
+                  timestamp: t('now')
                 }];
               });
             }
@@ -156,8 +158,8 @@ const SuperChat = () => {
     } catch (error) {
       console.error("Error:", error);
       toast({
-        title: "Ошибка",
-        description: error instanceof Error ? error.message : "Не удалось получить ответ",
+        title: t('error'),
+        description: error instanceof Error ? error.message : t('couldNotGetResponse'),
         variant: "destructive"
       });
     } finally {
@@ -188,7 +190,7 @@ const SuperChat = () => {
                 : "text-muted-foreground"
             }`}
           >
-            СуперЧат
+            {t('superChat')}
           </button>
           <button
             onClick={() => setActiveTab("community")}
@@ -198,7 +200,7 @@ const SuperChat = () => {
                 : "text-muted-foreground"
             }`}
           >
-            Сообщество
+            {t('community')}
           </button>
         </div>
 
@@ -221,10 +223,10 @@ const SuperChat = () => {
               
               <div className="space-y-3">
                 <h3 className="text-2xl font-bold">
-                  Сообщество скоро!
+                  {t('communitySoon')}
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Мы работаем над созданием сообщества:
+                  {t('workingOnCommunity')}
                 </p>
               </div>
 
@@ -232,9 +234,9 @@ const SuperChat = () => {
                 <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
                   <MessageCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium">Групповые чаты</p>
+                    <p className="font-medium">{t('groupChats')}</p>
                     <p className="text-sm text-muted-foreground">
-                      Общайтесь с другими автовладельцами
+                      {t('chatWithOthers')}
                     </p>
                   </div>
                 </div>
@@ -242,9 +244,9 @@ const SuperChat = () => {
                 <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
                   <Users className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium">Тематические группы</p>
+                    <p className="font-medium">{t('thematicGroups')}</p>
                     <p className="text-sm text-muted-foreground">
-                      Присоединяйтесь к группам по интересам
+                      {t('joinGroups')}
                     </p>
                   </div>
                 </div>
@@ -252,16 +254,16 @@ const SuperChat = () => {
                 <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
                   <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium">Обмен опытом</p>
+                    <p className="font-medium">{t('shareExperience')}</p>
                     <p className="text-sm text-muted-foreground">
-                      Делитесь советами и получайте помощь
+                      {t('shareTips')}
                     </p>
                   </div>
                 </div>
               </div>
 
               <p className="text-sm text-muted-foreground italic">
-                Следите за обновлениями! 🚀
+                {t('stayTuned')} 🚀
               </p>
             </Card>
           </div>
@@ -281,7 +283,7 @@ const SuperChat = () => {
               }`}>
                 <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.text}</p>
                 <p className="text-xs mt-2 opacity-60">
-                  {msg.isBot ? 'Gemini AI' : 'Вы'} • {msg.timestamp}
+                  {msg.isBot ? 'Gemini AI' : t('you')} • {msg.timestamp}
                 </p>
               </Card>
             </div>
@@ -289,7 +291,7 @@ const SuperChat = () => {
           {isLoading && messages[messages.length - 1]?.isBot !== true && (
             <div className="flex justify-start animate-fade-in">
               <Card className="max-w-[75%] p-4 rounded-2xl border-0 shadow-sm bg-muted/80 text-foreground">
-                <p className="text-sm">Думаю...</p>
+                <p className="text-sm">{t('thinking')}</p>
               </Card>
             </div>
           )}
@@ -314,7 +316,7 @@ const SuperChat = () => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Сообщение"
+              placeholder={t('message')}
               className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-2 h-8"
             />
 
@@ -324,8 +326,8 @@ const SuperChat = () => {
               className="h-8 w-8 flex-shrink-0"
               onClick={() => {
                 toast({
-                  title: "Голосовое общение будет доступно после обновления",
-                  description: "Мы работаем над этой функцией"
+                  title: t('voiceChatSoon'),
+                  description: t('workingOnFeature')
                 });
               }}
             >

@@ -1,16 +1,19 @@
 import { useState } from "react";
-import { Menu, User, RotateCcw, AlertTriangle, Clock, HeartPulse } from "lucide-react";
+import { Menu, User, RotateCcw, AlertTriangle, Clock, HeartPulse, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { useLanguage } from "@/contexts/LanguageContext";
 import carMainImage from "@/assets/car-main.png";
 import logoImage from "@/assets/logo.png";
 
 const Home = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+  const { t, language, setLanguage } = useLanguage();
 
   return (
     <div className="min-h-screen bg-background">
@@ -24,22 +27,30 @@ const Home = () => {
           </SheetTrigger>
           <SheetContent side="left" className="w-80">
             <div className="py-6">
-              <h3 className="text-lg font-semibold mb-4">Настройки</h3>
+              <h3 className="text-lg font-semibold mb-4">{t('settings')}</h3>
               <div className="space-y-4">
                 <Button variant="ghost" className="w-full justify-start">
-                  <span>Тема приложения</span>
+                  <span>{t('appTheme')}</span>
                 </Button>
                 <Button variant="ghost" className="w-full justify-start">
-                  <span>Настройки уведомлений</span>
+                  <span>{t('notificationSettings')}</span>
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setIsLanguageOpen(true);
+                  }}
+                >
+                  <Globe className="h-4 w-4 mr-2" />
+                  <span>{t('language')}</span>
                 </Button>
                 <Button variant="ghost" className="w-full justify-start">
-                  <span>Язык</span>
+                  <span>{t('aboutApp')}</span>
                 </Button>
                 <Button variant="ghost" className="w-full justify-start">
-                  <span>О приложении</span>
-                </Button>
-                <Button variant="ghost" className="w-full justify-start">
-                  <span>Поддержка</span>
+                  <span>{t('support')}</span>
                 </Button>
               </div>
             </div>
@@ -56,19 +67,19 @@ const Home = () => {
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
             <div className="py-6">
-              <h3 className="text-lg font-semibold mb-4">Профиль</h3>
+              <h3 className="text-lg font-semibold mb-4">{t('profile')}</h3>
               <div className="space-y-4">
                 <Button variant="ghost" className="w-full justify-start">
-                  <span>Мои автомобили</span>
+                  <span>{t('myCars')}</span>
                 </Button>
                 <Button variant="ghost" className="w-full justify-start">
-                  <span>История сервиса</span>
+                  <span>{t('serviceHistory')}</span>
                 </Button>
                 <Button variant="ghost" className="w-full justify-start">
-                  <span>Настройки профиля</span>
+                  <span>{t('profileSettings')}</span>
                 </Button>
                 <Button variant="ghost" className="w-full justify-start">
-                  <span>Выйти</span>
+                  <span>{t('logout')}</span>
                 </Button>
               </div>
             </div>
@@ -120,7 +131,7 @@ const Home = () => {
                 <h3 className="font-semibold text-lg">Toyota Camry 2019</h3>
                 <p className="text-sm text-muted-foreground">284 AVB 01</p>
                 <div className="mt-2">
-                  <p className="text-sm">Пробег</p>
+                  <p className="text-sm">{t('mileage')}</p>
                   <p className="font-semibold">143.450 км</p>
                 </div>
               </div>
@@ -133,14 +144,14 @@ const Home = () => {
                 <AlertTriangle className="h-5 w-5 text-yellow-500" />
                 <div>
                   <p className="text-sm font-medium">29.07.2025</p>
-                  <p className="text-xs text-muted-foreground">Замена масла</p>
+                  <p className="text-xs text-muted-foreground">{t('oilChange')}</p>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
                 <Clock className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-sm font-medium">22.09.2025</p>
-                  <p className="text-xs text-muted-foreground">Страховка истекает</p>
+                  <p className="text-xs text-muted-foreground">{t('insuranceExpires')}</p>
                 </div>
               </div>
             </div>
@@ -153,7 +164,7 @@ const Home = () => {
             <HeartPulse className="h-6 w-6 text-app-green" />
             <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Техническое состояние</span>
+                <span className="text-sm font-medium">{t('technicalCondition')}</span>
                 <span className="text-2xl font-bold text-app-green">85%</span>
               </div>
               <Progress value={85} className="h-2" />
@@ -171,7 +182,7 @@ const Home = () => {
             <div className="flex items-center space-x-2">
               <div className="text-2xl">⚡</div>
               <div>
-                <p className="text-xs text-muted-foreground">Средний расход</p>
+                <p className="text-xs text-muted-foreground">{t('avgConsumption')}</p>
                 <p className="font-semibold">4.5 км/час</p>
               </div>
             </div>
@@ -181,13 +192,46 @@ const Home = () => {
             <div className="flex items-center space-x-2">
               <div className="text-2xl">📋</div>
               <div>
-                <p className="text-xs text-muted-foreground">Следующее ТО</p>
+                <p className="text-xs text-muted-foreground">{t('nextService')}</p>
                 <p className="font-semibold">16.05.2025</p>
               </div>
             </div>
           </Card>
         </div>
       </div>
+
+      {/* Language Selection Dialog */}
+      <Dialog open={isLanguageOpen} onOpenChange={setIsLanguageOpen}>
+        <DialogContent className="sm:max-w-md">
+          <div className="py-6">
+            <h3 className="text-lg font-semibold mb-4">{t('selectLanguage')}</h3>
+            <div className="space-y-2">
+              <Button 
+                variant={language === 'ru' ? 'default' : 'outline'}
+                className="w-full justify-start"
+                onClick={() => {
+                  setLanguage('ru');
+                  setIsLanguageOpen(false);
+                }}
+              >
+                <Globe className="h-4 w-4 mr-2" />
+                <span>{t('russian')}</span>
+              </Button>
+              <Button 
+                variant={language === 'kk' ? 'default' : 'outline'}
+                className="w-full justify-start"
+                onClick={() => {
+                  setLanguage('kk');
+                  setIsLanguageOpen(false);
+                }}
+              >
+                <Globe className="h-4 w-4 mr-2" />
+                <span>{t('kazakh')}</span>
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

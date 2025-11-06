@@ -1,15 +1,17 @@
 import { Home, Settings, Camera, MessageCircle } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const BottomNavigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const navItems = [
-    { icon: Home, label: "Главная", path: "/" },
-    { icon: Settings, label: "Сервисы", path: "/services" },
-    { icon: Camera, label: "Фото диагностика", path: "/photo-diagnostic" },
+    { icon: Home, label: t('home'), path: "/" },
+    { icon: Settings, label: t('services'), path: "/services" },
+    { icon: Camera, label: t('photoDiagnostics'), path: "/photo-diagnostic" },
   ];
 
   const isActive = (path: string) => location.pathname === path;
