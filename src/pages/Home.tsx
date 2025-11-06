@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Menu, User, RotateCcw, AlertTriangle, Clock, HeartPulse, Globe } from "lucide-react";
+import { Menu, User, RotateCcw, AlertTriangle, Clock, HeartPulse, Globe, Sun, Moon, Bell, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/contexts/ThemeContext";
+import { useNavigate } from "react-router-dom";
 import carMainImage from "@/assets/car-main.png";
 import logoImage from "@/assets/logo.png";
 
@@ -13,7 +15,10 @@ const Home = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+  const [isThemeOpen, setIsThemeOpen] = useState(false);
   const { t, language, setLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background">
@@ -29,10 +34,26 @@ const Home = () => {
             <div className="py-6">
               <h3 className="text-lg font-semibold mb-4">{t('settings')}</h3>
               <div className="space-y-4">
-                <Button variant="ghost" className="w-full justify-start">
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setIsThemeOpen(true);
+                  }}
+                >
+                  {theme === 'dark' ? <Moon className="h-4 w-4 mr-2" /> : <Sun className="h-4 w-4 mr-2" />}
                   <span>{t('appTheme')}</span>
                 </Button>
-                <Button variant="ghost" className="w-full justify-start">
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    navigate('/notification-settings');
+                  }}
+                >
+                  <Bell className="h-4 w-4 mr-2" />
                   <span>{t('notificationSettings')}</span>
                 </Button>
                 <Button 
@@ -46,7 +67,15 @@ const Home = () => {
                   <Globe className="h-4 w-4 mr-2" />
                   <span>{t('language')}</span>
                 </Button>
-                <Button variant="ghost" className="w-full justify-start">
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    navigate('/about-app');
+                  }}
+                >
+                  <Info className="h-4 w-4 mr-2" />
                   <span>{t('aboutApp')}</span>
                 </Button>
                 <Button variant="ghost" className="w-full justify-start">
@@ -227,6 +256,39 @@ const Home = () => {
               >
                 <Globe className="h-4 w-4 mr-2" />
                 <span>{t('kazakh')}</span>
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Theme Selection Dialog */}
+      <Dialog open={isThemeOpen} onOpenChange={setIsThemeOpen}>
+        <DialogContent className="sm:max-w-md">
+          <div className="py-6">
+            <h3 className="text-lg font-semibold mb-4">{t('appTheme')}</h3>
+            <div className="space-y-2">
+              <Button 
+                variant={theme === 'light' ? 'default' : 'outline'}
+                className="w-full justify-start"
+                onClick={() => {
+                  setTheme('light');
+                  setIsThemeOpen(false);
+                }}
+              >
+                <Sun className="h-4 w-4 mr-2" />
+                <span>{t('lightTheme')}</span>
+              </Button>
+              <Button 
+                variant={theme === 'dark' ? 'default' : 'outline'}
+                className="w-full justify-start"
+                onClick={() => {
+                  setTheme('dark');
+                  setIsThemeOpen(false);
+                }}
+              >
+                <Moon className="h-4 w-4 mr-2" />
+                <span>{t('darkTheme')}</span>
               </Button>
             </div>
           </div>
