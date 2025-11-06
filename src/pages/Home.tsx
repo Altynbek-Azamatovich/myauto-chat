@@ -16,7 +16,7 @@ import { format } from "date-fns";
 import { ru, kk } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import carMainImage from "@/assets/car-main.png";
+import carCoveredImage from "@/assets/car-covered.png";
 import logoImage from "@/assets/logo.png";
 import BottomNavigation from '@/components/BottomNavigation';
 
@@ -255,22 +255,22 @@ const Home = () => {
       <div className="px-4 py-2">
         <div className="relative">
           <img 
-            src={carMainImage} 
+            src={carCoveredImage} 
             alt="Toyota Camry 2019" 
             className="w-full h-64 object-cover rounded-lg"
           />
           {/* Interactive points */}
           <div className="absolute top-1/4 left-1/4 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center">
-            <div className="w-4 h-4 bg-primary rounded-full"></div>
+            <div className="w-4 h-4 bg-muted-foreground rounded-full"></div>
           </div>
           <div className="absolute top-1/3 right-1/3 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center">
-            <div className="w-4 h-4 bg-primary rounded-full"></div>
+            <div className="w-4 h-4 bg-muted-foreground rounded-full"></div>
           </div>
           <div className="absolute bottom-1/3 left-1/3 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center">
-            <div className="w-4 h-4 bg-primary rounded-full"></div>
+            <div className="w-4 h-4 bg-muted-foreground rounded-full"></div>
           </div>
           <div className="absolute bottom-1/4 right-1/4 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center">
-            <div className="w-4 h-4 bg-primary rounded-full"></div>
+            <div className="w-4 h-4 bg-muted-foreground rounded-full"></div>
           </div>
           
           {/* 360 button */}
@@ -286,7 +286,7 @@ const Home = () => {
       {/* Car Info Cards */}
       <div className="px-4 space-y-4">
         <div className="grid grid-cols-2 gap-4">
-          <Card className="p-4 bg-muted/80 backdrop-blur-sm rounded-2xl border-border/30">
+          <Card className="p-4 bg-muted/90 backdrop-blur-sm rounded-2xl border-border/30">
             <div className="flex items-start space-x-3">
               <div className="text-muted-foreground mt-0.5">
                 <span className="text-xl">ⓘ</span>
@@ -308,7 +308,7 @@ const Home = () => {
             </div>
           </Card>
 
-          <Card className="p-4 bg-muted/80 backdrop-blur-sm rounded-2xl border-border/30">
+          <Card className="p-4 bg-muted/90 backdrop-blur-sm rounded-2xl border-border/30">
             <div className="space-y-3">
               <div className="flex items-start space-x-2">
                 <AlertTriangle className="h-5 w-5 text-yellow-500 mt-0.5 flex-shrink-0" />
@@ -383,7 +383,7 @@ const Home = () => {
         </div>
 
         {/* Technical Condition */}
-        <Card className="p-4 bg-muted/80 backdrop-blur-sm rounded-2xl border-border/30">
+        <Card className="p-4 bg-muted/90 backdrop-blur-sm rounded-2xl border-border/30">
           <div className="flex items-center space-x-3">
             <HeartPulse className="h-5 w-5 text-app-green flex-shrink-0" />
             <div className="flex-1">
@@ -410,7 +410,7 @@ const Home = () => {
 
         {/* Additional Info */}
         <div className="grid grid-cols-2 gap-4 pb-20">
-          <Card className="p-4 bg-muted/80 backdrop-blur-sm rounded-2xl border-border/30">
+          <Card className="p-4 bg-muted/90 backdrop-blur-sm rounded-2xl border-border/30">
             <div className="flex items-start space-x-2">
               <div className="text-xl mt-0.5">⚡</div>
               <div className="flex-1 min-w-0">
@@ -424,7 +424,7 @@ const Home = () => {
             </div>
           </Card>
 
-          <Card className="p-4 bg-muted/80 backdrop-blur-sm rounded-2xl border-border/30">
+          <Card className="p-4 bg-muted/90 backdrop-blur-sm rounded-2xl border-border/30">
             <div className="flex items-start space-x-2">
               <div className="text-xl mt-0.5">📋</div>
               <div className="flex-1 min-w-0">
