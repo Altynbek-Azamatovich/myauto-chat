@@ -45,15 +45,15 @@ serve(async (req) => {
     }
 
     // Send SMS via SMSC.kz
-    const smscLogin = Deno.env.get('SMSC_LOGIN');
-    const smscPassword = Deno.env.get('SMSC_PASSWORD'); // API key or password
+    const smscPassword = Deno.env.get('SMSC_PASSWORD'); // API key
 
-    if (!smscLogin || !smscPassword) {
-      throw new Error('SMSC credentials not configured');
+    if (!smscPassword) {
+      throw new Error('SMSC API key not configured');
     }
 
     const message = `Ваш код подтверждения myAuto: ${code}`;
-    const smscUrl = `https://smsc.kz/sys/send.php?login=${encodeURIComponent(smscLogin)}&psw=${encodeURIComponent(smscPassword)}&phones=${encodeURIComponent(phone)}&mes=${encodeURIComponent(message)}&charset=utf-8&fmt=3`;
+    // When using API key, pass it in psw parameter without login
+    const smscUrl = `https://smsc.kz/sys/send.php?psw=${encodeURIComponent(smscPassword)}&phones=${encodeURIComponent(phone)}&mes=${encodeURIComponent(message)}&charset=utf-8&fmt=3`;
 
     console.log('Sending SMS to SMSC.kz...');
     const smsResponse = await fetch(smscUrl);
