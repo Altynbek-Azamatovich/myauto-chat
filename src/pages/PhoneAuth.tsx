@@ -114,22 +114,25 @@ const PhoneAuth = () => {
     setLoading(true);
     try {
       const cleanPhone = phone.replace(/\s/g, '');
-      // Convert phone to email format to avoid SMS verification
-      const emailFromPhone = `${cleanPhone.replace('+', '')}@phone.app`;
+      // Convert phone to email format
+      const emailFromPhone = `${cleanPhone.replace(/[^0-9]/g, '')}@phone.app`;
       
       if (isRegisterMode) {
-        // Register with email format (no SMS required)
-        const { error } = await supabase.auth.signUp({
-          email: emailFromPhone,
-          password: password,
-          options: {
-            data: {
-              phone: cleanPhone
-            }
-          }
+        // Register using edge function (bypasses email signup restrictions)
+        const { data, error: registerError } = await supabase.functions.invoke('register-user', {
+          body: { phone: cleanPhone, password: password }
         });
 
-        if (error) throw error;
+        if (registerError) throw registerError;
+        if (data?.error) throw new Error(data.error);
+
+        // After successful registration, sign in
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: emailFromPhone,
+          password: password,
+        });
+
+        if (signInError) throw signInError;
 
         toast({
           title: language === 'ru' ? "Успешно" : "Сәтті",
