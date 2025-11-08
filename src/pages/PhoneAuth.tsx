@@ -114,25 +114,15 @@ const PhoneAuth = () => {
     setLoading(true);
     try {
       const cleanPhone = phone.replace(/\s/g, '');
-      // Convert phone to email format
-      const emailFromPhone = `${cleanPhone.replace(/[^0-9]/g, '')}@phone.app`;
       
       if (isRegisterMode) {
-        // Register using edge function (bypasses email signup restrictions)
-        const { data, error: registerError } = await supabase.functions.invoke('register-user', {
-          body: { phone: cleanPhone, password: password }
-        });
-
-        if (registerError) throw registerError;
-        if (data?.error) throw new Error(data.error);
-
-        // After successful registration, sign in
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email: emailFromPhone,
+        // Register
+        const { error } = await supabase.auth.signUp({
+          phone: cleanPhone,
           password: password,
         });
 
-        if (signInError) throw signInError;
+        if (error) throw error;
 
         toast({
           title: language === 'ru' ? "Успешно" : "Сәтті",
@@ -143,9 +133,9 @@ const PhoneAuth = () => {
         
         navigate('/profile-setup');
       } else {
-        // Login with email format
+        // Login
         const { error } = await supabase.auth.signInWithPassword({
-          email: emailFromPhone,
+          phone: cleanPhone,
           password: password,
         });
 
