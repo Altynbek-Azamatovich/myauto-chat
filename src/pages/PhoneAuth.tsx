@@ -6,13 +6,18 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Globe } from "lucide-react";
+import { Globe, Eye, EyeOff } from "lucide-react";
 
 const PhoneAuth = () => {
   const navigate = useNavigate();
   const { t, language, setLanguage } = useLanguage();
   const { toast } = useToast();
   const [phone, setPhone] = useState("+7");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -52,18 +57,17 @@ const PhoneAuth = () => {
     return phoneRegex.test(phone);
   };
 
-  const handleSubmit = async () => {
-    if (!agreed) {
-      toast({
-        title: language === 'ru' ? "Ошибка" : "Қате",
-        description: language === 'ru' 
-          ? "Необходимо согласие с пользовательским соглашением" 
-          : "Пайдаланушы келісіміне келісу қажет",
-        variant: "destructive",
-      });
-      return;
+  const validatePassword = (password: string) => {
+    if (password.length < 6) {
+      return { valid: false, error: t('passwordTooShort') };
     }
+    if (!/\d/.test(password)) {
+      return { valid: false, error: t('passwordNeedsNumber') };
+    }
+    return { valid: true };
+  };
 
+  const handleSubmit = async () => {
     if (!isPhoneValid(phone)) {
       toast({
         title: language === 'ru' ? "Ошибка" : "Қате",
@@ -75,57 +79,83 @@ const PhoneAuth = () => {
       return;
     }
 
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.valid) {
+      toast({
+        title: language === 'ru' ? "Ошибка" : "Қате",
+        description: passwordValidation.error,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (isRegisterMode) {
+      if (password !== confirmPassword) {
+        toast({
+          title: language === 'ru' ? "Ошибка" : "Қате",
+          description: t('passwordsNotMatch'),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!agreed) {
+        toast({
+          title: language === 'ru' ? "Ошибка" : "Қате",
+          description: language === 'ru' 
+            ? "Необходимо согласие с пользовательским соглашением" 
+            : "Пайдаланушы келісіміне келісу қажет",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
     setLoading(true);
     try {
-      console.log('Sending OTP to:', phone);
-      
-      // Remove spaces from phone number before sending
       const cleanPhone = phone.replace(/\s/g, '');
       
-      const { data, error } = await supabase.functions.invoke('send-otp', {
-        body: { phone: cleanPhone }
-      });
+      if (isRegisterMode) {
+        // Register
+        const { error } = await supabase.auth.signUp({
+          phone: cleanPhone,
+          password: password,
+        });
 
-      if (error) {
-        console.error('Error sending OTP:', error);
-        throw error;
+        if (error) throw error;
+
+        toast({
+          title: language === 'ru' ? "Успешно" : "Сәтті",
+          description: language === 'ru' 
+            ? "Регистрация завершена" 
+            : "Тіркелу аяқталды",
+        });
+        
+        navigate('/profile-setup');
+      } else {
+        // Login
+        const { error } = await supabase.auth.signInWithPassword({
+          phone: cleanPhone,
+          password: password,
+        });
+
+        if (error) throw error;
+
+        toast({
+          title: language === 'ru' ? "Успешно" : "Сәтті",
+          description: language === 'ru' 
+            ? "Вход выполнен" 
+            : "Кіру орындалды",
+        });
+        
+        navigate('/');
       }
-
-      if (!data?.success) {
-        throw new Error(data?.error || 'Failed to send OTP');
-      }
-
-      console.log('OTP sent successfully:', data);
-      
-      // Store phone without spaces
-      localStorage.setItem('auth_phone', cleanPhone);
-      toast({
-        title: language === 'ru' ? "Код отправлен" : "Код жіберілді",
-        description: language === 'ru' 
-          ? "Проверьте SMS сообщения" 
-          : "SMS хабарламаларын тексеріңіз",
-      });
-      
-      navigate('/otp-verify');
     } catch (error: any) {
       console.error('Error in handleSubmit:', error);
       
-      let errorDescription = error.message;
-      
-      // Provide user-friendly error messages
-      if (error.message?.includes('SMSC')) {
-        errorDescription = language === 'ru' 
-          ? "Проблема с SMS-сервисом. Попробуйте позже или свяжитесь с поддержкой."
-          : "SMS қызметінде ақау. Кейінірек қайталап көріңіз немесе қолдау қызметіне хабарласыңыз.";
-      } else if (!errorDescription) {
-        errorDescription = language === 'ru' 
-          ? "Не удалось отправить код" 
-          : "Кодты жіберу мүмкін болмады";
-      }
-      
       toast({
         title: language === 'ru' ? "Ошибка" : "Қате",
-        description: errorDescription,
+        description: error.message || (language === 'ru' ? "Произошла ошибка" : "Қате орын алды"),
         variant: "destructive",
       });
     } finally {
@@ -151,7 +181,7 @@ const PhoneAuth = () => {
       <div className="flex-1 flex flex-col justify-center max-w-md mx-auto w-full">
         {/* Title */}
         <h1 className="text-3xl font-bold text-foreground mb-2">
-          {t('phoneAuth')}
+          {isRegisterMode ? t('register') : t('login')}
         </h1>
 
         {/* Subtitle */}
@@ -160,7 +190,7 @@ const PhoneAuth = () => {
         </p>
 
         {/* Phone Input */}
-        <div className="mb-6">
+        <div className="mb-4">
           <div className="flex items-center gap-2 p-4 border border-input rounded-2xl bg-background">
             <span className="text-2xl">🇰🇿</span>
             <Input
@@ -173,30 +203,104 @@ const PhoneAuth = () => {
           </div>
         </div>
 
-        {/* Agreement Checkbox */}
-        <div className="flex items-start gap-3 mb-8">
-          <Checkbox
-            id="agree"
-            checked={agreed}
-            onCheckedChange={(checked) => setAgreed(checked as boolean)}
-            className="mt-1"
-          />
-          <label htmlFor="agree" className="text-sm text-foreground">
-            {t('agree')}{' '}
-            <span className="text-primary underline cursor-pointer">
-              {t('userAgreement')}
-            </span>
-          </label>
+        {/* Password Input */}
+        <div className="mb-4">
+          <div className="flex items-center gap-2 p-4 border border-input rounded-2xl bg-background">
+            <Input
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder={t('password')}
+              className="border-0 text-lg focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+            </button>
+          </div>
         </div>
+
+        {/* Confirm Password Input (only in register mode) */}
+        {isRegisterMode && (
+          <div className="mb-4">
+            <div className="flex items-center gap-2 p-4 border border-input rounded-2xl bg-background">
+              <Input
+                type={showConfirmPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder={t('confirmPassword')}
+                className="border-0 text-lg focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Forgot Password Link (only in login mode) */}
+        {!isRegisterMode && (
+          <div className="mb-6 text-right">
+            <button
+              onClick={() => navigate('/forgot-password')}
+              className="text-sm text-primary hover:underline"
+            >
+              {t('forgotPassword')}
+            </button>
+          </div>
+        )}
+
+        {/* Agreement Checkbox (only in register mode) */}
+        {isRegisterMode && (
+          <div className="flex items-start gap-3 mb-6">
+            <Checkbox
+              id="agree"
+              checked={agreed}
+              onCheckedChange={(checked) => setAgreed(checked as boolean)}
+              className="mt-1"
+            />
+            <label htmlFor="agree" className="text-sm text-foreground">
+              {t('agree')}{' '}
+              <span className="text-primary underline cursor-pointer">
+                {t('userAgreement')}
+              </span>
+            </label>
+          </div>
+        )}
 
         {/* Submit Button */}
         <Button
           onClick={handleSubmit}
-          disabled={loading || !agreed}
-          className="w-full h-14 text-lg rounded-2xl bg-primary hover:bg-primary/90"
+          disabled={loading || (isRegisterMode && !agreed)}
+          className="w-full h-14 text-lg rounded-2xl bg-primary hover:bg-primary/90 mb-4"
         >
-          {t('next')}
+          {isRegisterMode ? t('register') : t('login')}
         </Button>
+
+        {/* Toggle Mode Link */}
+        <div className="text-center">
+          <button
+            onClick={() => {
+              setIsRegisterMode(!isRegisterMode);
+              setPassword("");
+              setConfirmPassword("");
+              setAgreed(false);
+            }}
+            className="text-sm text-muted-foreground"
+          >
+            {isRegisterMode ? t('haveAccount') : t('noAccount')}{' '}
+            <span className="text-primary hover:underline">
+              {isRegisterMode ? t('login') : t('register')}
+            </span>
+          </button>
+        </div>
       </div>
     </div>
   );
