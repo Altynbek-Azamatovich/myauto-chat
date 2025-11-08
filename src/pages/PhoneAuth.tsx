@@ -114,12 +114,19 @@ const PhoneAuth = () => {
     setLoading(true);
     try {
       const cleanPhone = phone.replace(/\s/g, '');
+      // Convert phone to email format to avoid SMS verification
+      const emailFromPhone = `${cleanPhone.replace('+', '')}@phone.app`;
       
       if (isRegisterMode) {
-        // Register
+        // Register with email format (no SMS required)
         const { error } = await supabase.auth.signUp({
-          phone: cleanPhone,
+          email: emailFromPhone,
           password: password,
+          options: {
+            data: {
+              phone: cleanPhone
+            }
+          }
         });
 
         if (error) throw error;
@@ -133,9 +140,9 @@ const PhoneAuth = () => {
         
         navigate('/profile-setup');
       } else {
-        // Login
+        // Login with email format
         const { error } = await supabase.auth.signInWithPassword({
-          phone: cleanPhone,
+          email: emailFromPhone,
           password: password,
         });
 
