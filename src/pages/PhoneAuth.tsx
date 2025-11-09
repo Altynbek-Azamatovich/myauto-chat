@@ -153,9 +153,26 @@ const PhoneAuth = () => {
     } catch (error: any) {
       console.error('Error in handleSubmit:', error);
       
+      let errorMessage = error.message || (language === 'ru' ? "Произошла ошибка" : "Қате орын алды");
+      
+      // Handle specific error cases
+      if (error.message?.includes('User already registered')) {
+        errorMessage = language === 'ru' 
+          ? "Пользователь с таким номером уже зарегистрирован. Попробуйте войти." 
+          : "Бұл нөмірмен пайдаланушы тіркелген. Кіруге тырысыңыз.";
+      } else if (error.message?.includes('Invalid login credentials')) {
+        errorMessage = language === 'ru' 
+          ? "Неверный номер телефона или пароль" 
+          : "Телефон нөмірі немесе құпия сөз қате";
+      } else if (error.message?.includes('Database error')) {
+        errorMessage = language === 'ru' 
+          ? "Ошибка базы данных. Попробуйте позже." 
+          : "Деректер базасының қатесі. Кейінірек көріңіз.";
+      }
+      
       toast({
         title: language === 'ru' ? "Ошибка" : "Қате",
-        description: error.message || (language === 'ru' ? "Произошла ошибка" : "Қате орын алды"),
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
