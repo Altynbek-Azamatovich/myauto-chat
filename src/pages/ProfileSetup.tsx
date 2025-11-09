@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ChevronLeft, Check, ChevronsUpDown } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Slider } from "@/components/ui/slider";
+
 import { cn } from "@/lib/utils";
 import { kazakhstanCities } from "@/data/kazakhstan-cities";
 import { carBrands, getCarModels } from "@/data/car-brands";
@@ -37,7 +37,11 @@ const ProfileSetup = () => {
   const [openBrand, setOpenBrand] = useState(false);
   const [openModel, setOpenModel] = useState(false);
   const [openColor, setOpenColor] = useState(false);
+  const [openYear, setOpenYear] = useState(false);
   const [availableModels, setAvailableModels] = useState<string[]>([]);
+  
+  // Generate years array from 2026 to 1950 in descending order
+  const years = Array.from({ length: 2026 - 1950 + 1 }, (_, i) => 2026 - i);
 
   const handleChange = (field: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -326,13 +330,10 @@ const ProfileSetup = () => {
             id="licensePlate"
             value={formData.licensePlate}
             onChange={(e) => handleChange('licensePlate', e.target.value.toUpperCase())}
-            placeholder="123ABC45"
+            placeholder="123ABC01"
             maxLength={9}
             className="h-12 rounded-xl uppercase"
           />
-          <p className="text-xs text-muted-foreground mt-1">
-            Формат: 3 цифры + 2-3 буквы + 2 цифры (например: 123ABC45)
-          </p>
         </div>
 
         {/* Car Color */}
@@ -393,19 +394,48 @@ const ProfileSetup = () => {
 
         {/* Car Year */}
         <div>
-          <Label>{t('carYear')}: {formData.carYear}</Label>
-          <Slider
-            value={[formData.carYear]}
-            onValueChange={(value) => handleChange('carYear', value[0])}
-            min={1950}
-            max={new Date().getFullYear()}
-            step={1}
-            className="mt-4"
-          />
-          <div className="flex justify-between text-xs text-muted-foreground mt-2">
-            <span>1950</span>
-            <span>{new Date().getFullYear()}</span>
-          </div>
+          <Label>{t('carYear')}</Label>
+          <Popover open={openYear} onOpenChange={setOpenYear}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={openYear}
+                className="w-full h-12 rounded-xl justify-between"
+              >
+                {formData.carYear || "Выберите год..."}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0">
+              <Command>
+                <CommandInput placeholder="Поиск года..." />
+                <CommandList>
+                  <CommandEmpty>Год не найден.</CommandEmpty>
+                  <CommandGroup>
+                    {years.map((year) => (
+                      <CommandItem
+                        key={year}
+                        value={year.toString()}
+                        onSelect={(currentValue) => {
+                          handleChange('carYear', parseInt(currentValue));
+                          setOpenYear(false);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            formData.carYear === year ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        {year}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
 

@@ -3,7 +3,7 @@ export interface CarBrand {
   models: string[];
 }
 
-export const carBrands: CarBrand[] = [
+const brandsData: CarBrand[] = [
   {
     name: "Toyota",
     models: ["Camry", "Corolla", "RAV4", "Land Cruiser", "Highlander", "Prius", "Yaris", "Avalon", "4Runner", "Tacoma", "Tundra", "Sienna", "Sequoia", "Venza", "C-HR", "Supra", "86", "Fortuner", "Hilux", "Prado"]
@@ -229,6 +229,9 @@ export const carBrands: CarBrand[] = [
     models: ["GT", "Artura", "720S", "765LT"]
   }
 ];
+
+// Сортируем марки по алфавиту
+export const carBrands: CarBrand[] = brandsData.sort((a, b) => a.name.localeCompare(b.name, 'en'));
 
 export const getCarBrands = (): string[] => {
   return carBrands.map(brand => brand.name).sort((a, b) => a.localeCompare(b, 'en'));
