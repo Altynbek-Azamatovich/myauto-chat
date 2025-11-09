@@ -24,6 +24,47 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
+    // Rate limiting check - phone number (1 SMS per minute)
+    const phoneRateLimit = await supabase
+      .from('rate_limits')
+      .select('*')
+      .eq('identifier', phone)
+      .eq('request_type', 'send_otp')
+      .gt('last_attempt_at', new Date(Date.now() - 60 * 1000).toISOString())
+      .maybeSingle();
+
+    if (phoneRateLimit.data) {
+      console.log('Rate limit exceeded for phone:', phone);
+      return new Response(
+        JSON.stringify({ error: 'Слишком много попыток. Подождите минуту.' }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 429 
+        }
+      );
+    }
+
+    // Rate limiting check - IP address (3 requests per 5 minutes)
+    const clientIp = req.headers.get('x-forwarded-for') || 'unknown';
+    const ipRateLimit = await supabase
+      .from('rate_limits')
+      .select('*')
+      .eq('identifier', clientIp)
+      .eq('request_type', 'send_otp_ip')
+      .gt('first_attempt_at', new Date(Date.now() - 5 * 60 * 1000).toISOString())
+      .maybeSingle();
+
+    if (ipRateLimit.data && ipRateLimit.data.attempt_count >= 3) {
+      console.log('Rate limit exceeded for IP:', clientIp);
+      return new Response(
+        JSON.stringify({ error: 'Слишком много попыток. Подождите 5 минут.' }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 429 
+        }
+      );
+    }
+
     // Generate 6-digit OTP code
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     console.log('Generated OTP code:', code);
@@ -70,6 +111,32 @@ serve(async (req) => {
       
       console.error('SMSC error details:', smsResult);
       throw new Error(errorMessage);
+    }
+
+    // Update rate limit records after successful SMS send
+    await supabase.from('rate_limits').upsert({
+      identifier: phone,
+      request_type: 'send_otp',
+      attempt_count: 1,
+      first_attempt_at: new Date().toISOString(),
+      last_attempt_at: new Date().toISOString()
+    }, { onConflict: 'identifier,request_type' });
+
+    if (ipRateLimit.data) {
+      await supabase.from('rate_limits')
+        .update({
+          attempt_count: ipRateLimit.data.attempt_count + 1,
+          last_attempt_at: new Date().toISOString()
+        })
+        .eq('id', ipRateLimit.data.id);
+    } else {
+      await supabase.from('rate_limits').insert({
+        identifier: clientIp,
+        request_type: 'send_otp_ip',
+        attempt_count: 1,
+        first_attempt_at: new Date().toISOString(),
+        last_attempt_at: new Date().toISOString()
+      });
     }
 
     return new Response(

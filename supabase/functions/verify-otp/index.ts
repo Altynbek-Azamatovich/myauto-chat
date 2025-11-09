@@ -24,6 +24,46 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
+    // Rate limiting check - phone number (5 attempts max, then 15 min block)
+    const phoneRateLimit = await supabase
+      .from('rate_limits')
+      .select('*')
+      .eq('identifier', phone)
+      .eq('request_type', 'verify_otp')
+      .maybeSingle();
+
+    if (phoneRateLimit.data) {
+      // Check if blocked
+      if (phoneRateLimit.data.blocked_until && new Date(phoneRateLimit.data.blocked_until) > new Date()) {
+        const minutesLeft = Math.ceil((new Date(phoneRateLimit.data.blocked_until).getTime() - Date.now()) / 60000);
+        console.log('Phone blocked until:', phoneRateLimit.data.blocked_until);
+        return new Response(
+          JSON.stringify({ error: `Слишком много неудачных попыток. Подождите ${minutesLeft} минут.` }),
+          { 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 429 
+          }
+        );
+      }
+
+      // Check attempt count
+      if (phoneRateLimit.data.attempt_count >= 5) {
+        const blockedUntil = new Date(Date.now() + 15 * 60 * 1000).toISOString();
+        await supabase.from('rate_limits')
+          .update({ blocked_until: blockedUntil })
+          .eq('id', phoneRateLimit.data.id);
+        
+        console.log('Too many failed attempts, blocking phone:', phone);
+        return new Response(
+          JSON.stringify({ error: 'Слишком много неудачных попыток. Подождите 15 минут.' }),
+          { 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 429 
+          }
+        );
+      }
+    }
+
     // Find valid OTP code
     const { data: otpData, error: otpError } = await supabase
       .from('otp_codes')
@@ -43,6 +83,25 @@ serve(async (req) => {
 
     if (!otpData) {
       console.log('Invalid or expired OTP code');
+      
+      // Track failed attempt
+      if (phoneRateLimit.data) {
+        await supabase.from('rate_limits')
+          .update({
+            attempt_count: phoneRateLimit.data.attempt_count + 1,
+            last_attempt_at: new Date().toISOString()
+          })
+          .eq('id', phoneRateLimit.data.id);
+      } else {
+        await supabase.from('rate_limits').insert({
+          identifier: phone,
+          request_type: 'verify_otp',
+          attempt_count: 1,
+          first_attempt_at: new Date().toISOString(),
+          last_attempt_at: new Date().toISOString()
+        });
+      }
+      
       return new Response(
         JSON.stringify({ 
           success: false, 
@@ -64,6 +123,12 @@ serve(async (req) => {
     if (updateError) {
       console.error('Failed to update OTP:', updateError);
     }
+
+    // Clear rate limit after successful verification
+    await supabase.from('rate_limits')
+      .delete()
+      .eq('identifier', phone)
+      .eq('request_type', 'verify_otp');
 
     // Check if user exists
     const { data: existingUser } = await supabase.auth.admin.listUsers();
