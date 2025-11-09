@@ -1,4 +1,4 @@
-import { Home, Settings, Camera, MessageCircle } from "lucide-react";
+import { Home, Settings, Camera, MessageCircle, Bell } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -16,9 +16,15 @@ const BottomNavigation = () => {
 
   const isActive = (path: string) => location.pathname === path;
   const isChatActive = location.pathname === "/super-chat";
+  
+  // Показываем дополнительные кнопки только на определенных страницах
+  const showExtraButtons = ["/", "/photo-diagnostic", "/super-chat"].includes(location.pathname);
+  
+  // Показываем кнопку уведомлений только в чате
+  const showNotifications = location.pathname === "/super-chat";
 
   return (
-    <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
+    <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
       <div className="flex items-center space-x-4">
         {/* Main navigation buttons */}
         <div className="flex items-center space-x-3 bg-black/20 backdrop-blur-lg rounded-full p-3">
@@ -53,6 +59,20 @@ const BottomNavigation = () => {
             <MessageCircle size={64} strokeWidth={1.5} className="text-white" />
           </Button>
         </div>
+        
+        {/* Notification button - только в чате */}
+        {showNotifications && (
+          <div className="bg-black/20 backdrop-blur-lg rounded-full shadow-lg p-3">
+            <Button
+              size="lg"
+              variant="ghost"
+              className="rounded-full aspect-square p-2 text-white/70 hover:bg-white/10 hover:text-white"
+              onClick={() => navigate("/chat-notifications")}
+            >
+              <Bell size={64} strokeWidth={1.5} />
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

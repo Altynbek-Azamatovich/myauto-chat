@@ -205,7 +205,12 @@ const SuperChat = () => {
           </button>
         </div>
 
-        <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="rounded-full hover:bg-muted/30 hover:text-foreground"
+          onClick={() => window.location.href = "/chat-notifications"}
+        >
           <Bell className="h-6 w-6" />
         </Button>
       </header>

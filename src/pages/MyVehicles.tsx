@@ -10,6 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -123,7 +124,8 @@ export default function MyVehicles() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.brand_name || !formData.model) {
+    // Валидация обязательных полей
+    if (!formData.brand_name || !formData.model || !formData.year || !formData.color || !formData.license_plate || !formData.mileage) {
       toast.error('Заполните все обязательные поля');
       return;
     }
@@ -185,6 +187,12 @@ export default function MyVehicles() {
   const handleEdit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingVehicle) return;
+
+    // Валидация обязательных полей
+    if (!formData.brand_name || !formData.model || !formData.year || !formData.color || !formData.license_plate || formData.mileage === undefined) {
+      toast.error('Заполните все обязательные поля');
+      return;
+    }
 
     // Find or create car brand
     const { data: existingBrand } = await supabase
@@ -349,9 +357,10 @@ export default function MyVehicles() {
                       <CommandInput placeholder="Поиск марки..." />
                       <CommandList>
                         <CommandEmpty>Марка не найдена.</CommandEmpty>
-                        <CommandGroup>
-                          {carBrands.map((brand) => (
-                            <CommandItem
+                        <ScrollArea className="h-[200px]">
+                          <CommandGroup>
+                            {carBrands.map((brand) => (
+                              <CommandItem
                               key={brand.name}
                               value={brand.name}
                               onSelect={(value) => {
@@ -368,7 +377,8 @@ export default function MyVehicles() {
                               {brand.name}
                             </CommandItem>
                           ))}
-                        </CommandGroup>
+                          </CommandGroup>
+                        </ScrollArea>
                       </CommandList>
                     </Command>
                   </PopoverContent>
@@ -396,9 +406,10 @@ export default function MyVehicles() {
                       <CommandInput placeholder="Поиск модели..." />
                       <CommandList>
                         <CommandEmpty>Модель не найдена.</CommandEmpty>
-                        <CommandGroup>
-                          {availableModelsAdd.map((model) => (
-                            <CommandItem
+                        <ScrollArea className="h-[200px]">
+                          <CommandGroup>
+                            {availableModelsAdd.map((model) => (
+                              <CommandItem
                               key={model}
                               value={model}
                               onSelect={(value) => {
@@ -415,7 +426,8 @@ export default function MyVehicles() {
                               {model}
                             </CommandItem>
                           ))}
-                        </CommandGroup>
+                          </CommandGroup>
+                        </ScrollArea>
                       </CommandList>
                     </Command>
                   </PopoverContent>
@@ -442,9 +454,10 @@ export default function MyVehicles() {
                       <CommandInput placeholder="Поиск года..." />
                       <CommandList>
                         <CommandEmpty>Год не найден.</CommandEmpty>
-                        <CommandGroup>
-                          {years.map((year) => (
-                            <CommandItem
+                        <ScrollArea className="h-[200px]">
+                          <CommandGroup>
+                            {years.map((year) => (
+                              <CommandItem
                               key={year}
                               value={year.toString()}
                               onSelect={(value) => {
@@ -461,7 +474,8 @@ export default function MyVehicles() {
                               {year}
                             </CommandItem>
                           ))}
-                        </CommandGroup>
+                          </CommandGroup>
+                        </ScrollArea>
                       </CommandList>
                     </Command>
                   </PopoverContent>
@@ -488,9 +502,10 @@ export default function MyVehicles() {
                       <CommandInput placeholder="Поиск цвета..." />
                       <CommandList>
                         <CommandEmpty>Цвет не найден.</CommandEmpty>
-                        <CommandGroup>
-                          {carColors.map((color) => (
-                            <CommandItem
+                        <ScrollArea className="h-[200px]">
+                          <CommandGroup>
+                            {carColors.map((color) => (
+                              <CommandItem
                               key={color}
                               value={color}
                               onSelect={(value) => {
@@ -507,7 +522,8 @@ export default function MyVehicles() {
                               {color}
                             </CommandItem>
                           ))}
-                        </CommandGroup>
+                          </CommandGroup>
+                        </ScrollArea>
                       </CommandList>
                     </Command>
                   </PopoverContent>
@@ -668,9 +684,10 @@ export default function MyVehicles() {
                     <CommandInput placeholder="Поиск марки..." />
                     <CommandList>
                       <CommandEmpty>Марка не найдена.</CommandEmpty>
-                      <CommandGroup>
-                        {carBrands.map((brand) => (
-                          <CommandItem
+                      <ScrollArea className="h-[200px]">
+                        <CommandGroup>
+                          {carBrands.map((brand) => (
+                            <CommandItem
                             key={brand.name}
                             value={brand.name}
                             onSelect={(value) => {
@@ -687,7 +704,8 @@ export default function MyVehicles() {
                             {brand.name}
                           </CommandItem>
                         ))}
-                      </CommandGroup>
+                        </CommandGroup>
+                      </ScrollArea>
                     </CommandList>
                   </Command>
                 </PopoverContent>
@@ -715,9 +733,10 @@ export default function MyVehicles() {
                     <CommandInput placeholder="Поиск модели..." />
                     <CommandList>
                       <CommandEmpty>Модель не найдена.</CommandEmpty>
-                      <CommandGroup>
-                        {availableModelsEdit.map((model) => (
-                          <CommandItem
+                      <ScrollArea className="h-[200px]">
+                        <CommandGroup>
+                          {availableModelsEdit.map((model) => (
+                            <CommandItem
                             key={model}
                             value={model}
                             onSelect={(value) => {
@@ -734,7 +753,8 @@ export default function MyVehicles() {
                             {model}
                           </CommandItem>
                         ))}
-                      </CommandGroup>
+                        </CommandGroup>
+                      </ScrollArea>
                     </CommandList>
                   </Command>
                 </PopoverContent>
@@ -761,9 +781,10 @@ export default function MyVehicles() {
                     <CommandInput placeholder="Поиск года..." />
                     <CommandList>
                       <CommandEmpty>Год не найден.</CommandEmpty>
-                      <CommandGroup>
-                        {years.map((year) => (
-                          <CommandItem
+                      <ScrollArea className="h-[200px]">
+                        <CommandGroup>
+                          {years.map((year) => (
+                            <CommandItem
                             key={year}
                             value={year.toString()}
                             onSelect={(value) => {
@@ -780,7 +801,8 @@ export default function MyVehicles() {
                             {year}
                           </CommandItem>
                         ))}
-                      </CommandGroup>
+                        </CommandGroup>
+                      </ScrollArea>
                     </CommandList>
                   </Command>
                 </PopoverContent>
@@ -807,9 +829,10 @@ export default function MyVehicles() {
                     <CommandInput placeholder="Поиск цвета..." />
                     <CommandList>
                       <CommandEmpty>Цвет не найден.</CommandEmpty>
-                      <CommandGroup>
-                        {carColors.map((color) => (
-                          <CommandItem
+                      <ScrollArea className="h-[200px]">
+                        <CommandGroup>
+                          {carColors.map((color) => (
+                            <CommandItem
                             key={color}
                             value={color}
                             onSelect={(value) => {
@@ -826,7 +849,8 @@ export default function MyVehicles() {
                             {color}
                           </CommandItem>
                         ))}
-                      </CommandGroup>
+                        </CommandGroup>
+                      </ScrollArea>
                     </CommandList>
                   </Command>
                 </PopoverContent>
