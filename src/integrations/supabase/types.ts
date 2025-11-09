@@ -265,6 +265,7 @@ export type Database = {
         Row: {
           average_consumption: number | null
           brand_id: string
+          color: string | null
           created_at: string
           id: string
           insurance_expiry_date: string | null
@@ -283,6 +284,7 @@ export type Database = {
         Insert: {
           average_consumption?: number | null
           brand_id: string
+          color?: string | null
           created_at?: string
           id?: string
           insurance_expiry_date?: string | null
@@ -301,6 +303,7 @@ export type Database = {
         Update: {
           average_consumption?: number | null
           brand_id?: string
+          color?: string | null
           created_at?: string
           id?: string
           insurance_expiry_date?: string | null
