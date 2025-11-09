@@ -3,7 +3,7 @@ export interface City {
   region: string;
 }
 
-export const kazakhstanCities: City[] = [
+const allCities: City[] = [
   // Акмолинская область
   { name: "Кокшетау", region: "Акмолинская область" },
   { name: "Степногорск", region: "Акмолинская область" },
@@ -114,14 +114,23 @@ export const kazakhstanCities: City[] = [
   { name: "Шымкент", region: "Шымкент" },
 ];
 
+// Приоритетные города (республиканского значения)
+const priorityCities = ["Астана", "Алматы", "Шымкент"];
+
+// Сортируем города: сначала приоритетные, потом остальные по алфавиту
+export const kazakhstanCities: City[] = [
+  ...allCities.filter(city => priorityCities.includes(city.name)),
+  ...allCities.filter(city => !priorityCities.includes(city.name)).sort((a, b) => a.name.localeCompare(b.name, 'ru'))
+];
+
 export const getRegions = (): string[] => {
   const regions = new Set(kazakhstanCities.map(city => city.region));
-  return Array.from(regions).sort();
+  return Array.from(regions).sort((a, b) => a.localeCompare(b, 'ru'));
 };
 
 export const getCitiesByRegion = (region: string): string[] => {
   return kazakhstanCities
     .filter(city => city.region === region)
     .map(city => city.name)
-    .sort();
+    .sort((a, b) => a.localeCompare(b, 'ru'));
 };

@@ -231,10 +231,10 @@ export const carBrands: CarBrand[] = [
 ];
 
 export const getCarBrands = (): string[] => {
-  return carBrands.map(brand => brand.name).sort();
+  return carBrands.map(brand => brand.name).sort((a, b) => a.localeCompare(b, 'en'));
 };
 
 export const getCarModels = (brandName: string): string[] => {
   const brand = carBrands.find(b => b.name === brandName);
-  return brand ? brand.models : [];
+  return brand ? brand.models.sort((a, b) => a.localeCompare(b, 'en')) : [];
 };
