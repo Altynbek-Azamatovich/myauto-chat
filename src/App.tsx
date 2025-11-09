@@ -18,14 +18,12 @@ import PhotoDiagnostic from "./pages/PhotoDiagnostic";
 import SuperChat from "./pages/SuperChat";
 import AboutApp from "./pages/AboutApp";
 import NotificationSettings from "./pages/NotificationSettings";
-import ChatNotifications from "./pages/ChatNotifications";
-import ServiceProfile from "./pages/ServiceProfile";
 import BottomNavigation from "./components/BottomNavigation";
 import NotFound from "./pages/NotFound";
 
 const AppContent = () => {
   const location = useLocation();
-  const hideNavigation = ['/welcome', '/phone-auth', '/forgot-password', '/profile-setup', '/about-app', '/notification-settings', '/my-vehicles', '/service-history', '/profile-settings', '/chat-notifications', '/service-profile'].includes(location.pathname);
+  const hideNavigation = ['/welcome', '/phone-auth', '/forgot-password', '/profile-setup', '/about-app', '/notification-settings', '/my-vehicles', '/service-history', '/profile-settings'].includes(location.pathname);
 
   return (
     <>
@@ -43,8 +41,6 @@ const AppContent = () => {
         <Route path="/super-chat" element={<SuperChat />} />
         <Route path="/about-app" element={<AboutApp />} />
         <Route path="/notification-settings" element={<NotificationSettings />} />
-        <Route path="/chat-notifications" element={<ChatNotifications />} />
-        <Route path="/service-profile" element={<ServiceProfile />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       {!hideNavigation && <BottomNavigation />}

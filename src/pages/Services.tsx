@@ -16,12 +16,7 @@ const Services = () => {
 
         <img src={logoImage} alt="myAuto" className="h-10 w-auto" />
 
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="rounded-full hover:bg-muted/30 hover:text-foreground"
-          onClick={() => window.location.href = "/service-profile"}
-        >
+        <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
           <User className="h-6 w-6" />
         </Button>
       </header>
