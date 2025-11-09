@@ -9,11 +9,9 @@ import { useToast } from "@/hooks/use-toast";
 import { ChevronLeft, Check, ChevronsUpDown } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-
 import { cn } from "@/lib/utils";
 import { kazakhstanCities } from "@/data/kazakhstan-cities";
-import { carBrands, getCarModels } from "@/data/car-brands";
-import { carColors } from "@/data/car-colors";
+import { Card } from "@/components/ui/card";
 
 const ProfileSetup = () => {
   const navigate = useNavigate();
@@ -24,74 +22,21 @@ const ProfileSetup = () => {
     city: '',
     firstName: '',
     lastName: '',
-    patronymic: '',
-    carBrand: '',
-    carModel: '',
-    licensePlate: '',
-    carColor: '',
-    carYear: new Date().getFullYear(),
-    customColor: '',
   });
   
-  const [openCity, setOpenCity] = useState(false);
-  const [openBrand, setOpenBrand] = useState(false);
-  const [openModel, setOpenModel] = useState(false);
-  const [openColor, setOpenColor] = useState(false);
-  const [openYear, setOpenYear] = useState(false);
-  const [availableModels, setAvailableModels] = useState<string[]>([]);
-  
-  // Generate years array from 2026 to 1950 in descending order
-  const years = Array.from({ length: 2026 - 1950 + 1 }, (_, i) => 2026 - i);
+  const [isCityOpen, setIsCityOpen] = useState(false);
 
-  const handleChange = (field: string, value: string | number) => {
+  const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     
-    // When brand changes, reset model and update available models
-    if (field === 'carBrand') {
-      setFormData(prev => ({ ...prev, carModel: '' }));
-      setAvailableModels(getCarModels(value as string));
-    }
-  };
-
-  const validateLicensePlate = (plate: string): boolean => {
-    // Казахстанский формат: 3 цифры + 2-3 латинские буквы + 2 цифры
-    // Примеры: 123ABC45, 456AB78
-    const plateRegex = /^\d{3}[A-Z]{2,3}\d{2}$/;
-    return plateRegex.test(plate.toUpperCase());
-  };
-
-  const handleSubmit = async () => {
-    const requiredFields = ['city', 'firstName', 'lastName', 'carBrand', 'carModel', 'licensePlate', 'carColor'];
-    const missingFields = requiredFields.filter(field => !formData[field as keyof typeof formData]);
-
-    if (missingFields.length > 0) {
+    if (!formData.city || !formData.firstName || !formData.lastName) {
       toast({
         title: "Ошибка",
         description: "Заполните все обязательные поля",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Validate license plate format
-    if (!validateLicensePlate(formData.licensePlate)) {
-      toast({
-        title: "Ошибка",
-        description: "Неверный формат гос. номера. Используйте формат: 123ABC45",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // If "Другой цвет" is selected, check if custom color is provided
-    const finalColor = formData.carColor === "Другой цвет (указать вручную)" 
-      ? formData.customColor 
-      : formData.carColor;
-
-    if (!finalColor) {
-      toast({
-        title: "Ошибка",
-        description: "Укажите цвет автомобиля",
         variant: "destructive",
       });
       return;
@@ -109,52 +54,11 @@ const ProfileSetup = () => {
           city: formData.city,
           first_name: formData.firstName,
           last_name: formData.lastName,
-          patronymic: formData.patronymic || null,
-          car_brand: formData.carBrand,
-          car_model: formData.carModel,
-          license_plate: formData.licensePlate.toUpperCase(),
-          car_color: finalColor,
-          car_year: formData.carYear,
           onboarding_completed: true,
         })
         .eq('id', user.id);
 
       if (profileError) throw profileError;
-
-      // Find or create car brand in car_brands table
-      const { data: existingBrand } = await supabase
-        .from('car_brands')
-        .select('id')
-        .eq('brand_name', formData.carBrand)
-        .single();
-
-      let brandId = existingBrand?.id;
-
-      if (!brandId) {
-        const { data: newBrand, error: brandError } = await supabase
-          .from('car_brands')
-          .insert({ brand_name: formData.carBrand })
-          .select('id')
-          .single();
-
-        if (brandError) throw brandError;
-        brandId = newBrand.id;
-      }
-
-      // Create vehicle entry in user_vehicles table
-      const { error: vehicleError } = await supabase
-        .from('user_vehicles')
-        .insert({
-          user_id: user.id,
-          brand_id: brandId,
-          model: formData.carModel,
-          year: formData.carYear,
-          license_plate: formData.licensePlate.toUpperCase(),
-          mileage: 0,
-          is_primary: true,
-        });
-
-      if (vehicleError) throw vehicleError;
 
       navigate('/');
     } catch (error: any) {
@@ -169,322 +73,100 @@ const ProfileSetup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col p-6 pb-24">
+    <div className="min-h-screen bg-background p-6">
       {/* Header */}
-      <div className="flex items-center mb-6">
+      <div className="flex items-center mb-8">
         <Button
           variant="ghost"
           size="icon"
           onClick={() => navigate(-1)}
-          className="bg-black/20 backdrop-blur-lg text-white hover:bg-black/30"
+          className="rounded-full"
         >
           <ChevronLeft className="h-5 w-5" />
         </Button>
-        <h1 className="text-xl font-bold ml-4">{t('profileSetup')}</h1>
+        <h1 className="text-2xl font-bold ml-4">{t('profileSetup')}</h1>
       </div>
 
-      <div className="flex-1 space-y-4 max-w-md mx-auto w-full">
-        {/* City */}
-        <div>
-          <Label>{t('city')}</Label>
-          <Popover open={openCity} onOpenChange={setOpenCity}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                role="combobox"
-                aria-expanded={openCity}
-                className="w-full h-12 rounded-xl justify-between"
-              >
-                {formData.city || "Выберите город..."}
-                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-full p-0">
-              <Command>
-                <CommandInput placeholder="Поиск города..." />
-                <CommandList>
-                  <CommandEmpty>Город не найден.</CommandEmpty>
-                  <CommandGroup>
-                    {kazakhstanCities.map((city) => (
-                      <CommandItem
-                        key={city.name}
-                        value={city.name}
-                        onSelect={(currentValue) => {
-                          handleChange('city', currentValue === formData.city ? "" : currentValue);
-                          setOpenCity(false);
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            formData.city === city.name ? "opacity-100" : "opacity-0"
-                          )}
-                        />
-                        <div>
-                          <div>{city.name}</div>
-                          <div className="text-xs text-muted-foreground">{city.region}</div>
-                        </div>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
-        </div>
+      <Card className="p-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-4">
+            {/* City */}
+            <div className="space-y-2">
+              <Label htmlFor="city">{t('city')}</Label>
+              <Popover open={isCityOpen} onOpenChange={setIsCityOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={isCityOpen}
+                    className="w-full justify-between"
+                  >
+                    {formData.city || t('selectCity')}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0">
+                  <Command>
+                    <CommandInput placeholder={t('searchCity')} />
+                    <CommandList>
+                      <CommandEmpty>{t('noCityFound')}</CommandEmpty>
+                      <CommandGroup>
+                        {kazakhstanCities.map((city) => (
+                          <CommandItem
+                            key={city.name}
+                            value={city.name}
+                            onSelect={(currentValue) => {
+                              handleChange('city', currentValue);
+                              setIsCityOpen(false);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                formData.city === city.name ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            <div>
+                              <div>{city.name}</div>
+                              <div className="text-xs text-muted-foreground">{city.region}</div>
+                            </div>
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
 
-        {/* First Name */}
-        <div>
-          <Label htmlFor="firstName">{t('firstName')}</Label>
-          <Input
-            id="firstName"
-            value={formData.firstName}
-            onChange={(e) => handleChange('firstName', e.target.value)}
-            className="h-12 rounded-xl"
-          />
-        </div>
+            {/* First Name */}
+            <div className="space-y-2">
+              <Label htmlFor="firstName">{t('firstName')}</Label>
+              <Input
+                id="firstName"
+                value={formData.firstName}
+                onChange={(e) => handleChange('firstName', e.target.value)}
+                placeholder={t('firstName')}
+              />
+            </div>
 
-        {/* Last Name */}
-        <div>
-          <Label htmlFor="lastName">{t('lastName')}</Label>
-          <Input
-            id="lastName"
-            value={formData.lastName}
-            onChange={(e) => handleChange('lastName', e.target.value)}
-            className="h-12 rounded-xl"
-          />
-        </div>
+            {/* Last Name */}
+            <div className="space-y-2">
+              <Label htmlFor="lastName">{t('lastName')}</Label>
+              <Input
+                id="lastName"
+                value={formData.lastName}
+                onChange={(e) => handleChange('lastName', e.target.value)}
+                placeholder={t('lastName')}
+              />
+            </div>
+          </div>
 
-        {/* Patronymic */}
-        <div>
-          <Label htmlFor="patronymic">{t('patronymic')}</Label>
-          <Input
-            id="patronymic"
-            value={formData.patronymic}
-            onChange={(e) => handleChange('patronymic', e.target.value)}
-            className="h-12 rounded-xl"
-          />
-        </div>
-
-        {/* Car Brand */}
-        <div>
-          <Label>{t('carBrand')}</Label>
-          <Popover open={openBrand} onOpenChange={setOpenBrand}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                role="combobox"
-                aria-expanded={openBrand}
-                className="w-full h-12 rounded-xl justify-between"
-              >
-                {formData.carBrand || "Выберите марку..."}
-                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-full p-0">
-              <Command>
-                <CommandInput placeholder="Поиск марки..." />
-                <CommandList>
-                  <CommandEmpty>Марка не найдена.</CommandEmpty>
-                  <CommandGroup>
-                    {carBrands.map((brand) => (
-                      <CommandItem
-                        key={brand.name}
-                        value={brand.name}
-                        onSelect={(currentValue) => {
-                          handleChange('carBrand', currentValue === formData.carBrand ? "" : currentValue);
-                          setOpenBrand(false);
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            formData.carBrand === brand.name ? "opacity-100" : "opacity-0"
-                          )}
-                        />
-                        {brand.name}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
-        </div>
-
-        {/* Car Model */}
-        <div>
-          <Label>{t('carModel')}</Label>
-          <Popover open={openModel} onOpenChange={setOpenModel}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                role="combobox"
-                aria-expanded={openModel}
-                disabled={!formData.carBrand}
-                className="w-full h-12 rounded-xl justify-between"
-              >
-                {formData.carModel || "Выберите модель..."}
-                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-full p-0">
-              <Command>
-                <CommandInput placeholder="Поиск модели..." />
-                <CommandList>
-                  <CommandEmpty>Модель не найдена.</CommandEmpty>
-                  <CommandGroup>
-                    {availableModels.map((model) => (
-                      <CommandItem
-                        key={model}
-                        value={model}
-                        onSelect={(currentValue) => {
-                          handleChange('carModel', currentValue === formData.carModel ? "" : currentValue);
-                          setOpenModel(false);
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            formData.carModel === model ? "opacity-100" : "opacity-0"
-                          )}
-                        />
-                        {model}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
-        </div>
-
-        {/* License Plate */}
-        <div>
-          <Label htmlFor="licensePlate">{t('licensePlate')}</Label>
-          <Input
-            id="licensePlate"
-            value={formData.licensePlate}
-            onChange={(e) => handleChange('licensePlate', e.target.value.toUpperCase())}
-            placeholder="123ABC01"
-            maxLength={9}
-            className="h-12 rounded-xl uppercase"
-          />
-        </div>
-
-        {/* Car Color */}
-        <div>
-          <Label>{t('carColor')}</Label>
-          <Popover open={openColor} onOpenChange={setOpenColor}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                role="combobox"
-                aria-expanded={openColor}
-                className="w-full h-12 rounded-xl justify-between"
-              >
-                {formData.carColor || "Выберите цвет..."}
-                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-full p-0">
-              <Command>
-                <CommandInput placeholder="Поиск цвета..." />
-                <CommandList>
-                  <CommandEmpty>Цвет не найден.</CommandEmpty>
-                  <CommandGroup>
-                    {carColors.map((color) => (
-                      <CommandItem
-                        key={color}
-                        value={color}
-                        onSelect={(currentValue) => {
-                          handleChange('carColor', currentValue === formData.carColor ? "" : currentValue);
-                          setOpenColor(false);
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            formData.carColor === color ? "opacity-100" : "opacity-0"
-                          )}
-                        />
-                        {color}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
-          
-          {/* Custom color input - show only if "Другой цвет" is selected */}
-          {formData.carColor === "Другой цвет (указать вручную)" && (
-            <Input
-              value={formData.customColor}
-              onChange={(e) => handleChange('customColor', e.target.value)}
-              placeholder="Введите цвет"
-              className="h-12 rounded-xl mt-2"
-            />
-          )}
-        </div>
-
-        {/* Car Year */}
-        <div>
-          <Label>{t('carYear')}</Label>
-          <Popover open={openYear} onOpenChange={setOpenYear}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                role="combobox"
-                aria-expanded={openYear}
-                className="w-full h-12 rounded-xl justify-between"
-              >
-                {formData.carYear || "Выберите год..."}
-                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-full p-0">
-              <Command>
-                <CommandInput placeholder="Поиск года..." />
-                <CommandList>
-                  <CommandEmpty>Год не найден.</CommandEmpty>
-                  <CommandGroup>
-                    {years.map((year) => (
-                      <CommandItem
-                        key={year}
-                        value={year.toString()}
-                        onSelect={(currentValue) => {
-                          handleChange('carYear', parseInt(currentValue));
-                          setOpenYear(false);
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            formData.carYear === year ? "opacity-100" : "opacity-0"
-                          )}
-                        />
-                        {year}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
-        </div>
-      </div>
-
-      {/* Submit Button - Fixed at bottom */}
-      <div className="fixed bottom-0 left-0 right-0 p-6 bg-background border-t">
-        <Button
-          onClick={handleSubmit}
-          disabled={loading}
-          className="w-full h-14 text-lg rounded-2xl bg-primary hover:bg-primary/90"
-        >
-          {t('complete')}
-        </Button>
-      </div>
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? t('loading') : t('complete')}
+          </Button>
+        </form>
+      </Card>
     </div>
   );
 };

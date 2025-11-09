@@ -173,6 +173,7 @@ const translations: Translations = {
   confirmLogout: { ru: 'Выйти', kk: 'Шығу' },
   addVehicle: { ru: 'Добавить автомобиль', kk: 'Көлік қосу' },
   noVehicles: { ru: 'У вас пока нет автомобилей', kk: 'Сізде әлі көлік жоқ' },
+  addYourCar: { ru: 'Добавить свое авто', kk: 'Көлігіңізді қосыңыз' },
   addFirstVehicle: { ru: 'Добавьте свой первый автомобиль', kk: 'Бірінші көлігіңізді қосыңыз' },
   brand: { ru: 'Марка', kk: 'Маркасы' },
   selectBrand: { ru: 'Выберите марку', kk: 'Маркасын таңдаңыз' },

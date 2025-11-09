@@ -315,7 +315,16 @@ const Home = () => {
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-base leading-tight mb-1">
-                  {primaryVehicle ? `${brandName} ${primaryVehicle.model} ${primaryVehicle.year}` : t('noVehicles')}
+                  {primaryVehicle ? (
+                    `${brandName} ${primaryVehicle.model} ${primaryVehicle.year}`
+                  ) : (
+                    <button 
+                      onClick={() => navigate('/my-vehicles')}
+                      className="text-primary hover:underline text-left"
+                    >
+                      {t('addYourCar')}
+                    </button>
+                  )}
                 </h3>
                 {primaryVehicle?.license_plate && (
                   <p className="text-sm text-muted-foreground mb-3">{primaryVehicle.license_plate}</p>
