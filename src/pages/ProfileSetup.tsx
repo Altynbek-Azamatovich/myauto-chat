@@ -102,7 +102,8 @@ const ProfileSetup = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not found');
 
-      const { error } = await supabase
+      // Update profile
+      const { error: profileError } = await supabase
         .from('profiles')
         .update({
           city: formData.city,
@@ -118,7 +119,42 @@ const ProfileSetup = () => {
         })
         .eq('id', user.id);
 
-      if (error) throw error;
+      if (profileError) throw profileError;
+
+      // Find or create car brand in car_brands table
+      const { data: existingBrand } = await supabase
+        .from('car_brands')
+        .select('id')
+        .eq('brand_name', formData.carBrand)
+        .single();
+
+      let brandId = existingBrand?.id;
+
+      if (!brandId) {
+        const { data: newBrand, error: brandError } = await supabase
+          .from('car_brands')
+          .insert({ brand_name: formData.carBrand })
+          .select('id')
+          .single();
+
+        if (brandError) throw brandError;
+        brandId = newBrand.id;
+      }
+
+      // Create vehicle entry in user_vehicles table
+      const { error: vehicleError } = await supabase
+        .from('user_vehicles')
+        .insert({
+          user_id: user.id,
+          brand_id: brandId,
+          model: formData.carModel,
+          year: formData.carYear,
+          license_plate: formData.licensePlate.toUpperCase(),
+          mileage: 0,
+          is_primary: true,
+        });
+
+      if (vehicleError) throw vehicleError;
 
       navigate('/');
     } catch (error: any) {
