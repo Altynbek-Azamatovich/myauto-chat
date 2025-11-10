@@ -9,7 +9,6 @@ import { useToast } from "@/hooks/use-toast";
 import { ChevronLeft, Check, ChevronsUpDown } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { kazakhstanCities } from "@/data/kazakhstan-cities";
 import { Card } from "@/components/ui/card";
@@ -109,33 +108,31 @@ const ProfileSetup = () => {
                 <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                   <Command>
                     <CommandInput placeholder={t('searchCity')} />
-                    <CommandList>
+                    <CommandList className="max-h-[300px]">
                       <CommandEmpty>{t('noCityFound')}</CommandEmpty>
-                      <ScrollArea className="h-[300px]">
-                        <CommandGroup>
-                          {kazakhstanCities.map((city) => (
-                          <CommandItem
-                            key={city.name}
-                            value={city.name}
-                            onSelect={(currentValue) => {
-                              handleChange('city', currentValue);
-                              setIsCityOpen(false);
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                formData.city === city.name ? "opacity-100" : "opacity-0"
-                              )}
-                            />
-                            <div>
-                              <div>{city.name}</div>
-                              <div className="text-xs text-muted-foreground">{city.region}</div>
-                            </div>
-                          </CommandItem>
-                        ))}
-                        </CommandGroup>
-                      </ScrollArea>
+                      <CommandGroup>
+                        {kazakhstanCities.map((city) => (
+                        <CommandItem
+                          key={city.name}
+                          value={city.name}
+                          onSelect={(currentValue) => {
+                            handleChange('city', currentValue);
+                            setIsCityOpen(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              formData.city === city.name ? "opacity-100" : "opacity-0"
+                            )}
+                          />
+                          <div>
+                            <div>{city.name}</div>
+                            <div className="text-xs text-muted-foreground">{city.region}</div>
+                          </div>
+                        </CommandItem>
+                      ))}
+                      </CommandGroup>
                     </CommandList>
                   </Command>
                 </PopoverContent>

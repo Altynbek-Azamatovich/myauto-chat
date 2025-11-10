@@ -10,7 +10,6 @@ import { Switch } from '@/components/ui/switch';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -348,30 +347,28 @@ export default function MyVehicles() {
                   <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                     <Command>
                       <CommandInput placeholder="Поиск марки..." />
-                      <CommandList>
+                      <CommandList className="max-h-[300px]">
                         <CommandEmpty>Марка не найдена.</CommandEmpty>
-                        <ScrollArea className="h-[300px]">
-                          <CommandGroup>
-                            {carBrands.map((brand) => (
-                            <CommandItem
-                              key={brand.name}
-                              value={brand.name}
-                              onSelect={(value) => {
-                                handleBrandChange(value, false);
-                                setOpenAddBrand(false);
-                              }}
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  formData.brand_name === brand.name ? "opacity-100" : "opacity-0"
-                                )}
-                              />
-                              {brand.name}
-                            </CommandItem>
-                          ))}
-                          </CommandGroup>
-                        </ScrollArea>
+                        <CommandGroup>
+                          {carBrands.map((brand) => (
+                          <CommandItem
+                            key={brand.name}
+                            value={brand.name}
+                            onSelect={(value) => {
+                              handleBrandChange(value, false);
+                              setOpenAddBrand(false);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                formData.brand_name === brand.name ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            {brand.name}
+                          </CommandItem>
+                        ))}
+                        </CommandGroup>
                       </CommandList>
                     </Command>
                   </PopoverContent>
@@ -397,30 +394,28 @@ export default function MyVehicles() {
                   <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                     <Command>
                       <CommandInput placeholder="Поиск модели..." />
-                      <CommandList>
+                      <CommandList className="max-h-[300px]">
                         <CommandEmpty>Модель не найдена.</CommandEmpty>
-                        <ScrollArea className="h-[300px]">
-                          <CommandGroup>
-                            {availableModelsAdd.map((model) => (
-                            <CommandItem
-                              key={model}
-                              value={model}
-                              onSelect={(value) => {
-                                setFormData(prev => ({ ...prev, model: value }));
-                                setOpenAddModel(false);
-                              }}
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  formData.model === model ? "opacity-100" : "opacity-0"
-                                )}
-                              />
-                              {model}
-                            </CommandItem>
-                          ))}
-                          </CommandGroup>
-                        </ScrollArea>
+                        <CommandGroup>
+                          {availableModelsAdd.map((model) => (
+                          <CommandItem
+                            key={model}
+                            value={model}
+                            onSelect={(value) => {
+                              setFormData(prev => ({ ...prev, model: value }));
+                              setOpenAddModel(false);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                formData.model === model ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            {model}
+                          </CommandItem>
+                        ))}
+                        </CommandGroup>
                       </CommandList>
                     </Command>
                   </PopoverContent>
@@ -445,30 +440,28 @@ export default function MyVehicles() {
                   <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                     <Command>
                       <CommandInput placeholder="Поиск года..." />
-                      <CommandList>
+                      <CommandList className="max-h-[300px]">
                         <CommandEmpty>Год не найден.</CommandEmpty>
-                        <ScrollArea className="h-[300px]">
-                          <CommandGroup>
-                            {years.map((year) => (
-                            <CommandItem
-                              key={year}
-                              value={year.toString()}
-                              onSelect={(value) => {
-                                setFormData(prev => ({ ...prev, year: parseInt(value) }));
-                                setOpenAddYear(false);
-                              }}
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  formData.year === year ? "opacity-100" : "opacity-0"
-                                )}
-                              />
-                              {year}
-                            </CommandItem>
-                          ))}
-                          </CommandGroup>
-                        </ScrollArea>
+                        <CommandGroup>
+                          {years.map((year) => (
+                          <CommandItem
+                            key={year}
+                            value={year.toString()}
+                            onSelect={(value) => {
+                              setFormData(prev => ({ ...prev, year: parseInt(value) }));
+                              setOpenAddYear(false);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                formData.year === year ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            {year}
+                          </CommandItem>
+                        ))}
+                        </CommandGroup>
                       </CommandList>
                     </Command>
                   </PopoverContent>
@@ -493,30 +486,28 @@ export default function MyVehicles() {
                   <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                     <Command>
                       <CommandInput placeholder="Поиск цвета..." />
-                      <CommandList>
+                      <CommandList className="max-h-[300px]">
                         <CommandEmpty>Цвет не найден.</CommandEmpty>
-                        <ScrollArea className="h-[300px]">
-                          <CommandGroup>
-                            {carColors.map((color) => (
-                            <CommandItem
-                              key={color}
-                              value={color}
-                              onSelect={(value) => {
-                                setFormData(prev => ({ ...prev, color: value }));
-                                setOpenAddColor(false);
-                              }}
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  formData.color === color ? "opacity-100" : "opacity-0"
-                                )}
-                              />
-                              {color}
-                            </CommandItem>
-                          ))}
-                          </CommandGroup>
-                        </ScrollArea>
+                        <CommandGroup>
+                          {carColors.map((color) => (
+                          <CommandItem
+                            key={color}
+                            value={color}
+                            onSelect={(value) => {
+                              setFormData(prev => ({ ...prev, color: value }));
+                              setOpenAddColor(false);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                formData.color === color ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            {color}
+                          </CommandItem>
+                        ))}
+                        </CommandGroup>
                       </CommandList>
                     </Command>
                   </PopoverContent>
@@ -676,30 +667,28 @@ export default function MyVehicles() {
                 <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                   <Command>
                     <CommandInput placeholder="Поиск марки..." />
-                    <CommandList>
+                    <CommandList className="max-h-[300px]">
                       <CommandEmpty>Марка не найдена.</CommandEmpty>
-                      <ScrollArea className="h-[300px]">
-                        <CommandGroup>
-                          {carBrands.map((brand) => (
-                          <CommandItem
-                            key={brand.name}
-                            value={brand.name}
-                            onSelect={(value) => {
-                              handleBrandChange(value, true);
-                              setOpenEditBrand(false);
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                formData.brand_name === brand.name ? "opacity-100" : "opacity-0"
-                              )}
-                            />
-                            {brand.name}
-                          </CommandItem>
-                        ))}
-                        </CommandGroup>
-                      </ScrollArea>
+                      <CommandGroup>
+                        {carBrands.map((brand) => (
+                        <CommandItem
+                          key={brand.name}
+                          value={brand.name}
+                          onSelect={(value) => {
+                            handleBrandChange(value, true);
+                            setOpenEditBrand(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              formData.brand_name === brand.name ? "opacity-100" : "opacity-0"
+                            )}
+                          />
+                          {brand.name}
+                        </CommandItem>
+                      ))}
+                      </CommandGroup>
                     </CommandList>
                   </Command>
                 </PopoverContent>
@@ -725,30 +714,28 @@ export default function MyVehicles() {
                 <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                   <Command>
                     <CommandInput placeholder="Поиск модели..." />
-                    <CommandList>
+                    <CommandList className="max-h-[300px]">
                       <CommandEmpty>Модель не найдена.</CommandEmpty>
-                      <ScrollArea className="h-[300px]">
-                        <CommandGroup>
-                          {availableModelsEdit.map((model) => (
-                          <CommandItem
-                            key={model}
-                            value={model}
-                            onSelect={(value) => {
-                              setFormData(prev => ({ ...prev, model: value }));
-                              setOpenEditModel(false);
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                formData.model === model ? "opacity-100" : "opacity-0"
-                              )}
-                            />
-                            {model}
-                          </CommandItem>
-                        ))}
-                        </CommandGroup>
-                      </ScrollArea>
+                      <CommandGroup>
+                        {availableModelsEdit.map((model) => (
+                        <CommandItem
+                          key={model}
+                          value={model}
+                          onSelect={(value) => {
+                            setFormData(prev => ({ ...prev, model: value }));
+                            setOpenEditModel(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              formData.model === model ? "opacity-100" : "opacity-0"
+                            )}
+                          />
+                          {model}
+                        </CommandItem>
+                      ))}
+                      </CommandGroup>
                     </CommandList>
                   </Command>
                 </PopoverContent>
@@ -773,30 +760,28 @@ export default function MyVehicles() {
                 <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                   <Command>
                     <CommandInput placeholder="Поиск года..." />
-                    <CommandList>
+                    <CommandList className="max-h-[300px]">
                       <CommandEmpty>Год не найден.</CommandEmpty>
-                      <ScrollArea className="h-[300px]">
-                        <CommandGroup>
-                          {years.map((year) => (
-                          <CommandItem
-                            key={year}
-                            value={year.toString()}
-                            onSelect={(value) => {
-                              setFormData(prev => ({ ...prev, year: parseInt(value) }));
-                              setOpenEditYear(false);
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                formData.year === year ? "opacity-100" : "opacity-0"
-                              )}
-                            />
-                            {year}
-                          </CommandItem>
-                        ))}
-                        </CommandGroup>
-                      </ScrollArea>
+                      <CommandGroup>
+                        {years.map((year) => (
+                        <CommandItem
+                          key={year}
+                          value={year.toString()}
+                          onSelect={(value) => {
+                            setFormData(prev => ({ ...prev, year: parseInt(value) }));
+                            setOpenEditYear(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              formData.year === year ? "opacity-100" : "opacity-0"
+                            )}
+                          />
+                          {year}
+                        </CommandItem>
+                      ))}
+                      </CommandGroup>
                     </CommandList>
                   </Command>
                 </PopoverContent>
@@ -821,30 +806,28 @@ export default function MyVehicles() {
                 <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                   <Command>
                     <CommandInput placeholder="Поиск цвета..." />
-                    <CommandList>
+                    <CommandList className="max-h-[300px]">
                       <CommandEmpty>Цвет не найден.</CommandEmpty>
-                      <ScrollArea className="h-[300px]">
-                        <CommandGroup>
-                          {carColors.map((color) => (
-                          <CommandItem
-                            key={color}
-                            value={color}
-                            onSelect={(value) => {
-                              setFormData(prev => ({ ...prev, color: value }));
-                              setOpenEditColor(false);
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                formData.color === color ? "opacity-100" : "opacity-0"
-                              )}
-                            />
-                            {color}
-                          </CommandItem>
-                        ))}
-                        </CommandGroup>
-                      </ScrollArea>
+                      <CommandGroup>
+                        {carColors.map((color) => (
+                        <CommandItem
+                          key={color}
+                          value={color}
+                          onSelect={(value) => {
+                            setFormData(prev => ({ ...prev, color: value }));
+                            setOpenEditColor(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              formData.color === color ? "opacity-100" : "opacity-0"
+                            )}
+                          />
+                          {color}
+                        </CommandItem>
+                      ))}
+                      </CommandGroup>
                     </CommandList>
                   </Command>
                 </PopoverContent>
