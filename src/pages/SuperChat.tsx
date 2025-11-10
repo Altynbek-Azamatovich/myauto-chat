@@ -6,6 +6,9 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import logoImage from "@/assets/logo-new.png";
+import { AppSidebar } from "@/components/AppSidebar";
 
 interface Message {
   id: number;
@@ -18,6 +21,7 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 
 const SuperChat = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
   const [message, setMessage] = useState("");
   const [activeTab, setActiveTab] = useState<"chat" | "community">("chat");
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -178,9 +182,13 @@ const SuperChat = () => {
     <div className="h-screen bg-background flex flex-col overflow-hidden">
       {/* Header - Fixed at top */}
       <header className="fixed top-0 left-0 right-0 flex items-center justify-between px-4 py-4 z-20">
-        <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
-          <Menu className="h-6 w-6" />
-        </Button>
+        <AppSidebar 
+          trigger={
+            <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
+              <Menu className="h-6 w-6" />
+            </Button>
+          }
+        />
 
         <div className="flex items-center gap-0.5 bg-muted/50 backdrop-blur-lg rounded-full px-1 py-1">
           <button
@@ -205,7 +213,12 @@ const SuperChat = () => {
           </button>
         </div>
 
-        <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="rounded-full hover:bg-muted/30 hover:text-foreground"
+          onClick={() => navigate('/notifications')}
+        >
           <Bell className="h-6 w-6" />
         </Button>
       </header>

@@ -1,23 +1,37 @@
-import { Menu, Camera, Sparkles } from "lucide-react";
+import { Menu, Bell, Camera, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import logoImage from "@/assets/logo-new.png";
+import { AppSidebar } from "@/components/AppSidebar";
 
 const PhotoDiagnostic = () => {
+  const navigate = useNavigate();
   const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="flex items-center justify-between px-4 py-4 flex-shrink-0">
-        <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
-          <Menu className="h-6 w-6" />
-        </Button>
+        <AppSidebar 
+          trigger={
+            <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
+              <Menu className="h-6 w-6" />
+            </Button>
+          }
+        />
 
         <img src={logoImage} alt="myAuto" className="h-10 w-auto" />
 
-        <div className="w-10" /> {/* Spacer for center alignment */}
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="rounded-full hover:bg-muted/30 hover:text-foreground"
+          onClick={() => navigate('/notifications')}
+        >
+          <Bell className="h-6 w-6" />
+        </Button>
       </header>
 
       {/* Content */}

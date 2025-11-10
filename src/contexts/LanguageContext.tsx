@@ -223,6 +223,13 @@ const translations: Translations = {
   back: { ru: 'Назад', kk: 'Артқа' },
   cancel: { ru: 'Отмена', kk: 'Болдырмау' },
   save: { ru: 'Сохранить', kk: 'Сақтау' },
+  confirm: { ru: 'Подтвердить', kk: 'Растау' },
+  main: { ru: 'Основное', kk: 'Негізгі' },
+  notifications: { ru: 'Уведомления', kk: 'Хабарламалар' },
+  noNotifications: { ru: 'У вас пока нет уведомлений', kk: 'Сізде әлі хабарламалар жоқ' },
+  cart: { ru: 'Корзина', kk: 'Себет' },
+  emptyCart: { ru: 'Корзина пуста', kk: 'Себет бос' },
+  logoutConfirmation: { ru: 'Вы уверены, что хотите выйти из аккаунта?', kk: 'Аккаунттан шығуға сенімдісіз бе?' },
 };
 
 interface LanguageContextType {

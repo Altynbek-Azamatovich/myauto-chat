@@ -1,0 +1,188 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Car, History, UserCog, LogOut, Globe, Sun, Moon, Bell, Info } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import { supabase } from '@/integrations/supabase/client';
+import { Separator } from '@/components/ui/separator';
+
+interface AppSidebarProps {
+  trigger: React.ReactNode;
+}
+
+export function AppSidebar({ trigger }: AppSidebarProps) {
+  const navigate = useNavigate();
+  const { t, language, setLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+  const [userProfile, setUserProfile] = useState<{
+    first_name: string;
+    last_name: string;
+    phone_number: string;
+  } | null>(null);
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data } = await supabase
+      .from('profiles')
+      .select('first_name, last_name, phone_number')
+      .eq('id', user.id)
+      .single();
+
+    if (data) {
+      setUserProfile(data);
+    }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/phone-auth');
+  };
+
+  const handleNavigation = (path: string) => {
+    setIsOpen(false);
+    navigate(path);
+  };
+
+  return (
+    <>
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <SheetTrigger asChild>
+          {trigger}
+        </SheetTrigger>
+        <SheetContent side="left" className="w-80 pt-6">
+          {/* User Profile Section */}
+          <div className="mb-6">
+            <div className="flex items-center space-x-3 mb-2">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <UserCog className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                {userProfile?.first_name || userProfile?.last_name ? (
+                  <p className="font-semibold text-base">
+                    {userProfile.first_name} {userProfile.last_name}
+                  </p>
+                ) : (
+                  <p className="font-semibold text-base">{t('profileTitle')}</p>
+                )}
+                <p className="text-sm text-muted-foreground">{userProfile?.phone_number}</p>
+              </div>
+            </div>
+          </div>
+
+          <Separator className="mb-4" />
+
+          {/* Main Actions */}
+          <div className="mb-6">
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase mb-3 px-2">{t('main')}</h3>
+            <div className="space-y-1">
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => handleNavigation('/my-vehicles')}
+              >
+                <Car className="mr-3 h-5 w-5" />
+                {t('myVehicles')}
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => handleNavigation('/service-history')}
+              >
+                <History className="mr-3 h-5 w-5" />
+                {t('serviceHistoryTitle')}
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => handleNavigation('/profile-settings')}
+              >
+                <UserCog className="mr-3 h-5 w-5" />
+                {t('profileSettingsTitle')}
+              </Button>
+            </div>
+          </div>
+
+          <Separator className="mb-4" />
+
+          {/* Settings */}
+          <div className="mb-6">
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase mb-3 px-2">{t('settings')}</h3>
+            <div className="space-y-1">
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              >
+                {theme === 'dark' ? <Sun className="mr-3 h-5 w-5" /> : <Moon className="mr-3 h-5 w-5" />}
+                {t('appTheme')}
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => setLanguage(language === 'ru' ? 'kk' : 'ru')}
+              >
+                <Globe className="mr-3 h-5 w-5" />
+                {t('language')}
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => handleNavigation('/notification-settings')}
+              >
+                <Bell className="mr-3 h-5 w-5" />
+                {t('notificationSettings')}
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => handleNavigation('/about-app')}
+              >
+                <Info className="mr-3 h-5 w-5" />
+                {t('aboutApp')}
+              </Button>
+            </div>
+          </div>
+
+          <Separator className="mb-4" />
+
+          {/* Logout */}
+          <Button
+            variant="ghost"
+            className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
+            onClick={() => {
+              setIsOpen(false);
+              setIsLogoutDialogOpen(true);
+            }}
+          >
+            <LogOut className="mr-3 h-5 w-5" />
+            {t('logoutTitle')}
+          </Button>
+        </SheetContent>
+      </Sheet>
+
+      <AlertDialog open={isLogoutDialogOpen} onOpenChange={setIsLogoutDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('logoutTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('logoutConfirmation')}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleLogout}>{t('confirm')}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+}
