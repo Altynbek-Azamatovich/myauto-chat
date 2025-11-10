@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ChevronLeft, Check, ChevronsUpDown } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { kazakhstanCities } from "@/data/kazakhstan-cities";
 import { Card } from "@/components/ui/card";
@@ -105,13 +106,14 @@ const ProfileSetup = () => {
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
+                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                   <Command>
                     <CommandInput placeholder={t('searchCity')} />
                     <CommandList>
                       <CommandEmpty>{t('noCityFound')}</CommandEmpty>
-                      <CommandGroup>
-                        {kazakhstanCities.map((city) => (
+                      <ScrollArea className="h-[300px]">
+                        <CommandGroup>
+                          {kazakhstanCities.map((city) => (
                           <CommandItem
                             key={city.name}
                             value={city.name}
@@ -132,7 +134,8 @@ const ProfileSetup = () => {
                             </div>
                           </CommandItem>
                         ))}
-                      </CommandGroup>
+                        </CommandGroup>
+                      </ScrollArea>
                     </CommandList>
                   </Command>
                 </PopoverContent>

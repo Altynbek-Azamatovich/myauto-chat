@@ -10,6 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -344,13 +345,14 @@ export default function MyVehicles() {
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-full p-0">
+                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                     <Command>
                       <CommandInput placeholder="Поиск марки..." />
                       <CommandList>
                         <CommandEmpty>Марка не найдена.</CommandEmpty>
-                        <CommandGroup>
-                          {carBrands.map((brand) => (
+                        <ScrollArea className="h-[300px]">
+                          <CommandGroup>
+                            {carBrands.map((brand) => (
                             <CommandItem
                               key={brand.name}
                               value={brand.name}
@@ -368,7 +370,8 @@ export default function MyVehicles() {
                               {brand.name}
                             </CommandItem>
                           ))}
-                        </CommandGroup>
+                          </CommandGroup>
+                        </ScrollArea>
                       </CommandList>
                     </Command>
                   </PopoverContent>
@@ -391,13 +394,14 @@ export default function MyVehicles() {
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-full p-0">
+                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                     <Command>
                       <CommandInput placeholder="Поиск модели..." />
                       <CommandList>
                         <CommandEmpty>Модель не найдена.</CommandEmpty>
-                        <CommandGroup>
-                          {availableModelsAdd.map((model) => (
+                        <ScrollArea className="h-[300px]">
+                          <CommandGroup>
+                            {availableModelsAdd.map((model) => (
                             <CommandItem
                               key={model}
                               value={model}
@@ -415,7 +419,8 @@ export default function MyVehicles() {
                               {model}
                             </CommandItem>
                           ))}
-                        </CommandGroup>
+                          </CommandGroup>
+                        </ScrollArea>
                       </CommandList>
                     </Command>
                   </PopoverContent>
@@ -437,13 +442,14 @@ export default function MyVehicles() {
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-full p-0">
+                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                     <Command>
                       <CommandInput placeholder="Поиск года..." />
                       <CommandList>
                         <CommandEmpty>Год не найден.</CommandEmpty>
-                        <CommandGroup>
-                          {years.map((year) => (
+                        <ScrollArea className="h-[300px]">
+                          <CommandGroup>
+                            {years.map((year) => (
                             <CommandItem
                               key={year}
                               value={year.toString()}
@@ -461,7 +467,8 @@ export default function MyVehicles() {
                               {year}
                             </CommandItem>
                           ))}
-                        </CommandGroup>
+                          </CommandGroup>
+                        </ScrollArea>
                       </CommandList>
                     </Command>
                   </PopoverContent>
@@ -483,13 +490,14 @@ export default function MyVehicles() {
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-full p-0">
+                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                     <Command>
                       <CommandInput placeholder="Поиск цвета..." />
                       <CommandList>
                         <CommandEmpty>Цвет не найден.</CommandEmpty>
-                        <CommandGroup>
-                          {carColors.map((color) => (
+                        <ScrollArea className="h-[300px]">
+                          <CommandGroup>
+                            {carColors.map((color) => (
                             <CommandItem
                               key={color}
                               value={color}
@@ -507,7 +515,8 @@ export default function MyVehicles() {
                               {color}
                             </CommandItem>
                           ))}
-                        </CommandGroup>
+                          </CommandGroup>
+                        </ScrollArea>
                       </CommandList>
                     </Command>
                   </PopoverContent>
@@ -549,8 +558,9 @@ export default function MyVehicles() {
                 <Label>{t('vehicleMileage')}</Label>
                 <Input
                   type="number"
-                  value={formData.mileage}
+                  value={formData.mileage === 0 ? '' : formData.mileage}
                   onChange={(e) => setFormData(prev => ({ ...prev, mileage: parseInt(e.target.value) || 0 }))}
+                  placeholder="0"
                   required
                 />
               </div>
@@ -663,13 +673,14 @@ export default function MyVehicles() {
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
+                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                   <Command>
                     <CommandInput placeholder="Поиск марки..." />
                     <CommandList>
                       <CommandEmpty>Марка не найдена.</CommandEmpty>
-                      <CommandGroup>
-                        {carBrands.map((brand) => (
+                      <ScrollArea className="h-[300px]">
+                        <CommandGroup>
+                          {carBrands.map((brand) => (
                           <CommandItem
                             key={brand.name}
                             value={brand.name}
@@ -687,7 +698,8 @@ export default function MyVehicles() {
                             {brand.name}
                           </CommandItem>
                         ))}
-                      </CommandGroup>
+                        </CommandGroup>
+                      </ScrollArea>
                     </CommandList>
                   </Command>
                 </PopoverContent>
@@ -710,13 +722,14 @@ export default function MyVehicles() {
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
+                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                   <Command>
                     <CommandInput placeholder="Поиск модели..." />
                     <CommandList>
                       <CommandEmpty>Модель не найдена.</CommandEmpty>
-                      <CommandGroup>
-                        {availableModelsEdit.map((model) => (
+                      <ScrollArea className="h-[300px]">
+                        <CommandGroup>
+                          {availableModelsEdit.map((model) => (
                           <CommandItem
                             key={model}
                             value={model}
@@ -734,7 +747,8 @@ export default function MyVehicles() {
                             {model}
                           </CommandItem>
                         ))}
-                      </CommandGroup>
+                        </CommandGroup>
+                      </ScrollArea>
                     </CommandList>
                   </Command>
                 </PopoverContent>
@@ -756,13 +770,14 @@ export default function MyVehicles() {
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
+                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                   <Command>
                     <CommandInput placeholder="Поиск года..." />
                     <CommandList>
                       <CommandEmpty>Год не найден.</CommandEmpty>
-                      <CommandGroup>
-                        {years.map((year) => (
+                      <ScrollArea className="h-[300px]">
+                        <CommandGroup>
+                          {years.map((year) => (
                           <CommandItem
                             key={year}
                             value={year.toString()}
@@ -780,7 +795,8 @@ export default function MyVehicles() {
                             {year}
                           </CommandItem>
                         ))}
-                      </CommandGroup>
+                        </CommandGroup>
+                      </ScrollArea>
                     </CommandList>
                   </Command>
                 </PopoverContent>
@@ -802,13 +818,14 @@ export default function MyVehicles() {
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
+                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                   <Command>
                     <CommandInput placeholder="Поиск цвета..." />
                     <CommandList>
                       <CommandEmpty>Цвет не найден.</CommandEmpty>
-                      <CommandGroup>
-                        {carColors.map((color) => (
+                      <ScrollArea className="h-[300px]">
+                        <CommandGroup>
+                          {carColors.map((color) => (
                           <CommandItem
                             key={color}
                             value={color}
@@ -826,7 +843,8 @@ export default function MyVehicles() {
                             {color}
                           </CommandItem>
                         ))}
-                      </CommandGroup>
+                        </CommandGroup>
+                      </ScrollArea>
                     </CommandList>
                   </Command>
                 </PopoverContent>
@@ -868,8 +886,9 @@ export default function MyVehicles() {
               <Label>{t('vehicleMileage')}</Label>
               <Input
                 type="number"
-                value={formData.mileage}
+                value={formData.mileage === 0 ? '' : formData.mileage}
                 onChange={(e) => setFormData(prev => ({ ...prev, mileage: parseInt(e.target.value) || 0 }))}
+                placeholder="0"
                 required
               />
             </div>
