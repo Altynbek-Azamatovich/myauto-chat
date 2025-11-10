@@ -180,7 +180,11 @@ const Home = () => {
           
           {/* 360 button */}
           <div className="absolute bottom-4 right-4">
-            <Button size="sm" className="rounded-full bg-white/90 text-foreground hover:bg-white">
+            <Button 
+              size="sm" 
+              className="rounded-full bg-white/90 text-foreground hover:bg-white"
+              onClick={() => toast.info('3D модели автомобилей находятся в разработке')}
+            >
               <RotateCcw className="h-4 w-4 mr-1" />
               360°
             </Button>
@@ -190,9 +194,9 @@ const Home = () => {
 
       {/* Car Info Cards */}
       <div className="px-4 space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <Card className="p-4 bg-muted/90 backdrop-blur-sm rounded-2xl border-border/30">
-            <div className="flex items-start space-x-3">
+      <div className="grid grid-cols-2 gap-4">
+        <Card className="p-4 bg-card/95 backdrop-blur-sm rounded-2xl border-border/30">
+          <div className="flex items-start space-x-3">
               <div className="text-muted-foreground mt-0.5">
                 <span className="text-xl">ⓘ</span>
               </div>
@@ -222,8 +226,8 @@ const Home = () => {
             </div>
           </Card>
 
-          <Card className="p-4 bg-muted/90 backdrop-blur-sm rounded-2xl border-border/30">
-            <div className="space-y-3">
+        <Card className="p-4 bg-card/95 backdrop-blur-sm rounded-2xl border-border/30">
+          <div className="space-y-3">
               <div className="flex items-start space-x-2">
                 <AlertTriangle className="h-5 w-5 text-yellow-500 mt-0.5 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
@@ -296,9 +300,9 @@ const Home = () => {
           </Card>
         </div>
 
-        {/* Technical Condition */}
-        <Card className="p-4 bg-muted/90 backdrop-blur-sm rounded-2xl border-border/30">
-          <div className="flex items-center space-x-3">
+      {/* Technical Condition */}
+      <Card className="p-4 bg-card/95 backdrop-blur-sm rounded-2xl border-border/30">
+        <div className="flex items-center space-x-3">
             <HeartPulse className="h-5 w-5 text-app-green flex-shrink-0" />
             <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
@@ -322,10 +326,10 @@ const Home = () => {
           </div>
         </Card>
 
-        {/* Additional Info */}
-        <div className="grid grid-cols-2 gap-4 pb-24">
-          <Card className="p-4 bg-muted/90 backdrop-blur-sm rounded-2xl border-border/30">
-            <div className="flex items-start space-x-2">
+      {/* Additional Info */}
+      <div className="grid grid-cols-2 gap-4 pb-24">
+        <Card className="p-4 bg-card/95 backdrop-blur-sm rounded-2xl border-border/30">
+          <div className="flex items-start space-x-2">
               <div className="text-xl mt-0.5">⚡</div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-muted-foreground">{t('avgConsumption')}</p>
@@ -338,8 +342,8 @@ const Home = () => {
             </div>
           </Card>
 
-          <Card className="p-4 bg-muted/90 backdrop-blur-sm rounded-2xl border-border/30">
-            <div className="flex items-start space-x-2">
+        <Card className="p-4 bg-card/95 backdrop-blur-sm rounded-2xl border-border/30">
+          <div className="flex items-start space-x-2">
               <div className="text-xl mt-0.5">📋</div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-muted-foreground">{t('nextService')}</p>

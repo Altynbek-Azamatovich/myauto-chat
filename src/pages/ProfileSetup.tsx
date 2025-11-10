@@ -108,7 +108,7 @@ const ProfileSetup = () => {
                 <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                   <Command>
                     <CommandInput placeholder={t('searchCity')} />
-                    <CommandList className="max-h-[300px]">
+                    <CommandList className="max-h-[300px] overflow-y-auto">
                       <CommandEmpty>{t('noCityFound')}</CommandEmpty>
                       <CommandGroup>
                         {kazakhstanCities.map((city) => (

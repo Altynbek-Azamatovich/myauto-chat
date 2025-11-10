@@ -347,7 +347,7 @@ export default function MyVehicles() {
                   <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                     <Command>
                       <CommandInput placeholder="Поиск марки..." />
-                      <CommandList className="max-h-[300px]">
+                      <CommandList className="max-h-[300px] overflow-y-auto">
                         <CommandEmpty>Марка не найдена.</CommandEmpty>
                         <CommandGroup>
                           {carBrands.map((brand) => (
@@ -394,7 +394,7 @@ export default function MyVehicles() {
                   <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                     <Command>
                       <CommandInput placeholder="Поиск модели..." />
-                      <CommandList className="max-h-[300px]">
+                      <CommandList className="max-h-[300px] overflow-y-auto">
                         <CommandEmpty>Модель не найдена.</CommandEmpty>
                         <CommandGroup>
                           {availableModelsAdd.map((model) => (
@@ -440,7 +440,7 @@ export default function MyVehicles() {
                   <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                     <Command>
                       <CommandInput placeholder="Поиск года..." />
-                      <CommandList className="max-h-[300px]">
+                      <CommandList className="max-h-[300px] overflow-y-auto">
                         <CommandEmpty>Год не найден.</CommandEmpty>
                         <CommandGroup>
                           {years.map((year) => (
@@ -486,7 +486,7 @@ export default function MyVehicles() {
                   <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                     <Command>
                       <CommandInput placeholder="Поиск цвета..." />
-                      <CommandList className="max-h-[300px]">
+                      <CommandList className="max-h-[300px] overflow-y-auto">
                         <CommandEmpty>Цвет не найден.</CommandEmpty>
                         <CommandGroup>
                           {carColors.map((color) => (
@@ -667,7 +667,7 @@ export default function MyVehicles() {
                 <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                   <Command>
                     <CommandInput placeholder="Поиск марки..." />
-                    <CommandList className="max-h-[300px]">
+                    <CommandList className="max-h-[300px] overflow-y-auto">
                       <CommandEmpty>Марка не найдена.</CommandEmpty>
                       <CommandGroup>
                         {carBrands.map((brand) => (
@@ -714,7 +714,7 @@ export default function MyVehicles() {
                 <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                   <Command>
                     <CommandInput placeholder="Поиск модели..." />
-                    <CommandList className="max-h-[300px]">
+                    <CommandList className="max-h-[300px] overflow-y-auto">
                       <CommandEmpty>Модель не найдена.</CommandEmpty>
                       <CommandGroup>
                         {availableModelsEdit.map((model) => (
@@ -760,7 +760,7 @@ export default function MyVehicles() {
                 <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                   <Command>
                     <CommandInput placeholder="Поиск года..." />
-                    <CommandList className="max-h-[300px]">
+                    <CommandList className="max-h-[300px] overflow-y-auto">
                       <CommandEmpty>Год не найден.</CommandEmpty>
                       <CommandGroup>
                         {years.map((year) => (
@@ -806,7 +806,7 @@ export default function MyVehicles() {
                 <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                   <Command>
                     <CommandInput placeholder="Поиск цвета..." />
-                    <CommandList className="max-h-[300px]">
+                    <CommandList className="max-h-[300px] overflow-y-auto">
                       <CommandEmpty>Цвет не найден.</CommandEmpty>
                       <CommandGroup>
                         {carColors.map((color) => (
