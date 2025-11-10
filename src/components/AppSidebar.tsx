@@ -118,23 +118,57 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
           {/* Settings */}
           <div className="mb-6">
             <h3 className="text-xs font-semibold text-muted-foreground uppercase mb-3 px-2">{t('settings')}</h3>
-            <div className="space-y-1">
-              <Button
-                variant="ghost"
-                className="w-full justify-start"
-                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              >
-                {theme === 'dark' ? <Sun className="mr-3 h-5 w-5" /> : <Moon className="mr-3 h-5 w-5" />}
-                {t('appTheme')}
-              </Button>
-              <Button
-                variant="ghost"
-                className="w-full justify-start"
-                onClick={() => setLanguage(language === 'ru' ? 'kk' : 'ru')}
-              >
-                <Globe className="mr-3 h-5 w-5" />
-                {t('language')}
-              </Button>
+            <div className="space-y-3">
+              {/* Theme Toggle */}
+              <div className="px-2">
+                <p className="text-sm font-medium mb-2">{t('appTheme')}</p>
+                <div className="flex gap-2">
+                  <Button
+                    variant={theme === 'light' ? 'default' : 'outline'}
+                    size="sm"
+                    className="flex-1 rounded-full"
+                    onClick={() => setTheme('light')}
+                  >
+                    <Sun className="mr-2 h-4 w-4" />
+                    {language === 'kk' ? 'Ашық' : 'Светлая'}
+                  </Button>
+                  <Button
+                    variant={theme === 'dark' ? 'default' : 'outline'}
+                    size="sm"
+                    className="flex-1 rounded-full"
+                    onClick={() => setTheme('dark')}
+                  >
+                    <Moon className="mr-2 h-4 w-4" />
+                    {language === 'kk' ? 'Қараңғы' : 'Темная'}
+                  </Button>
+                </div>
+              </div>
+
+              {/* Language Toggle */}
+              <div className="px-2">
+                <p className="text-sm font-medium mb-2">{t('language')}</p>
+                <div className="flex gap-2">
+                  <Button
+                    variant={language === 'kk' ? 'default' : 'outline'}
+                    size="sm"
+                    className="flex-1 rounded-full"
+                    onClick={() => setLanguage('kk')}
+                  >
+                    <Globe className="mr-2 h-4 w-4" />
+                    Қазақша
+                  </Button>
+                  <Button
+                    variant={language === 'ru' ? 'default' : 'outline'}
+                    size="sm"
+                    className="flex-1 rounded-full"
+                    onClick={() => setLanguage('ru')}
+                  >
+                    <Globe className="mr-2 h-4 w-4" />
+                    Русский
+                  </Button>
+                </div>
+              </div>
+
               <Button
                 variant="ghost"
                 className="w-full justify-start"
