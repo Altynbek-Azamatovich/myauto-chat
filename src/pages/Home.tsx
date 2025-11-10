@@ -180,11 +180,7 @@ const Home = () => {
           
           {/* 360 button */}
           <div className="absolute bottom-4 right-4">
-            <Button 
-              size="sm" 
-              className="rounded-full bg-white/90 text-foreground hover:bg-white font-medium"
-              onClick={() => toast.info(language === 'ru' ? '3D модели автомобилей в разработке' : 'Көліктердің 3D модельдері әзірленуде')}
-            >
+            <Button size="sm" className="rounded-full bg-white/90 text-foreground hover:bg-white">
               <RotateCcw className="h-4 w-4 mr-1" />
               360°
             </Button>
@@ -195,13 +191,13 @@ const Home = () => {
       {/* Car Info Cards */}
       <div className="px-4 space-y-4">
         <div className="grid grid-cols-2 gap-4">
-          <Card className="p-4 bg-card/95 backdrop-blur-md rounded-2xl border-border/20 shadow-lg">
+          <Card className="p-4 bg-muted/90 backdrop-blur-sm rounded-2xl border-border/30">
             <div className="flex items-start space-x-3">
               <div className="text-muted-foreground mt-0.5">
                 <span className="text-xl">ⓘ</span>
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-base leading-tight mb-1">
+                <h3 className="font-semibold text-base leading-tight mb-1">
                   {primaryVehicle ? (
                     `${brandName} ${primaryVehicle.model} ${primaryVehicle.year}`
                   ) : (
@@ -217,8 +213,8 @@ const Home = () => {
                   <p className="text-sm text-muted-foreground mb-3">{primaryVehicle.license_plate}</p>
                 )}
                 <div>
-                  <p className="text-xs text-muted-foreground font-medium">{t('mileage')}</p>
-                  <p className="font-bold text-sm">
+                  <p className="text-xs text-muted-foreground">{t('mileage')}</p>
+                  <p className="font-semibold text-sm">
                     {primaryVehicle ? primaryVehicle.mileage.toLocaleString() : '0'} км
                   </p>
                 </div>
@@ -226,7 +222,7 @@ const Home = () => {
             </div>
           </Card>
 
-          <Card className="p-4 bg-card/95 backdrop-blur-md rounded-2xl border-border/20 shadow-lg">
+          <Card className="p-4 bg-muted/90 backdrop-blur-sm rounded-2xl border-border/30">
             <div className="space-y-3">
               <div className="flex items-start space-x-2">
                 <AlertTriangle className="h-5 w-5 text-yellow-500 mt-0.5 flex-shrink-0" />
@@ -235,7 +231,7 @@ const Home = () => {
                     <PopoverTrigger asChild>
                       <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
                         <div className="text-left">
-                          <p className="text-sm font-semibold leading-tight flex items-center gap-1">
+                          <p className="text-sm font-medium leading-tight flex items-center gap-1">
                             {oilChangeDate ? format(oilChangeDate, 'dd.MM.yyyy') : '—'}
                             <Edit className="h-3 w-3 text-muted-foreground" />
                           </p>
@@ -269,7 +265,7 @@ const Home = () => {
                     <PopoverTrigger asChild>
                       <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
                         <div className="text-left">
-                          <p className="text-sm font-semibold leading-tight flex items-center gap-1">
+                          <p className="text-sm font-medium leading-tight flex items-center gap-1">
                             {insuranceDate ? format(insuranceDate, 'dd.MM.yyyy') : '—'}
                             <Edit className="h-3 w-3 text-muted-foreground" />
                           </p>
@@ -301,13 +297,13 @@ const Home = () => {
         </div>
 
         {/* Technical Condition */}
-        <Card className="p-4 bg-card/95 backdrop-blur-md rounded-2xl border-border/20 shadow-lg">
+        <Card className="p-4 bg-muted/90 backdrop-blur-sm rounded-2xl border-border/30">
           <div className="flex items-center space-x-3">
             <HeartPulse className="h-5 w-5 text-app-green flex-shrink-0" />
             <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold">{t('technicalCondition')}</span>
-                <span className="text-xl font-extrabold text-app-green">
+                <span className="text-sm font-medium">{t('technicalCondition')}</span>
+                <span className="text-xl font-bold text-app-green">
                   {primaryVehicle?.technical_condition || 0}%
                 </span>
               </div>
@@ -328,13 +324,13 @@ const Home = () => {
 
         {/* Additional Info */}
         <div className="grid grid-cols-2 gap-4 pb-24">
-          <Card className="p-4 bg-card/95 backdrop-blur-md rounded-2xl border-border/20 shadow-lg">
+          <Card className="p-4 bg-muted/90 backdrop-blur-sm rounded-2xl border-border/30">
             <div className="flex items-start space-x-2">
               <div className="text-xl mt-0.5">⚡</div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground font-medium">{t('avgConsumption')}</p>
+                <p className="text-xs text-muted-foreground">{t('avgConsumption')}</p>
                 {primaryVehicle?.average_consumption ? (
-                  <p className="font-bold text-sm">{primaryVehicle.average_consumption} л/100км</p>
+                  <p className="font-semibold text-sm">{primaryVehicle.average_consumption} л/100км</p>
                 ) : (
                   <p className="text-xs text-yellow-500 mt-1">Будет доступно после ТО</p>
                 )}
@@ -342,16 +338,16 @@ const Home = () => {
             </div>
           </Card>
 
-          <Card className="p-4 bg-card/95 backdrop-blur-md rounded-2xl border-border/20 shadow-lg">
+          <Card className="p-4 bg-muted/90 backdrop-blur-sm rounded-2xl border-border/30">
             <div className="flex items-start space-x-2">
               <div className="text-xl mt-0.5">📋</div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground font-medium">{t('nextService')}</p>
+                <p className="text-xs text-muted-foreground">{t('nextService')}</p>
                 <Popover open={isNextServiceDateOpen} onOpenChange={setIsNextServiceDateOpen}>
                   <PopoverTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
                       <div className="text-left">
-                        <p className="font-bold text-sm flex items-center gap-1">
+                        <p className="font-semibold text-sm flex items-center gap-1">
                           {nextServiceDate ? format(nextServiceDate, 'dd.MM.yyyy') : '—'}
                           <Edit className="h-3 w-3 text-muted-foreground" />
                         </p>
