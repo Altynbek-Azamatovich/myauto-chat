@@ -35,22 +35,22 @@ export default function Settings() {
       if (!session) return;
 
       const { data, error } = await supabase
-        .from("profiles")
+        .from("service_partners")
         .select("*")
-        .eq("user_id", session.user.id)
+        .eq("owner_id", session.user.id)
         .single();
 
       if (error) throw error;
       if (data) {
         setFormData({
-          service_name: data.service_name || "",
-          phone: data.phone || "",
-          service_address: data.service_address || "",
-          workplaces_count: data.workplaces_count || 1,
-          working_hours_from: data.working_hours_from || "09:00",
-          working_hours_to: data.working_hours_to || "18:00",
-          notifications_new_orders: data.notifications_new_orders ?? true,
-          notifications_completed_orders: data.notifications_completed_orders ?? true,
+          service_name: data.name || "",
+          phone: data.phone_number || "",
+          service_address: data.address || "",
+          workplaces_count: 1,
+          working_hours_from: "09:00",
+          working_hours_to: "18:00",
+          notifications_new_orders: true,
+          notifications_completed_orders: true,
         });
       }
     } catch (error: any) {
@@ -65,9 +65,13 @@ export default function Settings() {
       if (!session) return;
 
       const { error } = await supabase
-        .from("profiles")
-        .update(formData)
-        .eq("user_id", session.user.id);
+        .from("service_partners")
+        .update({
+          name: formData.service_name,
+          phone_number: formData.phone,
+          address: formData.service_address,
+        })
+        .eq("owner_id", session.user.id);
 
       if (error) throw error;
       toast.success(t("settings.save"));

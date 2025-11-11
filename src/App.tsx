@@ -24,6 +24,13 @@ import Notifications from "./pages/Notifications";
 import ServiceCart from "./pages/ServiceCart";
 import BottomNavigation from "./components/BottomNavigation";
 import NotFound from "./pages/NotFound";
+import RoadsideHelp from "./pages/RoadsideHelp";
+import AutoForum from "./pages/AutoForum";
+import AutoShops from "./pages/AutoShops";
+import Detailing from "./pages/Detailing";
+import PaintShop from "./pages/PaintShop";
+import PartsDismantling from "./pages/PartsDismantling";
+import CarWash from "./pages/CarWash";
 
 // Partner Pages
 import PartnerDashboard from "./pages/partner/Dashboard";
@@ -77,6 +84,15 @@ const AppContent = () => {
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/notification-settings" element={<NotificationSettings />} />
         <Route path="/about-app" element={<AboutApp />} />
+        
+        {/* Service Pages */}
+        <Route path="/roadside-help" element={<RoadsideHelp />} />
+        <Route path="/auto-forum" element={<AutoForum />} />
+        <Route path="/auto-shops" element={<AutoShops />} />
+        <Route path="/detailing" element={<Detailing />} />
+        <Route path="/paint-shop" element={<PaintShop />} />
+        <Route path="/parts-dismantling" element={<PartsDismantling />} />
+        <Route path="/car-wash" element={<CarWash />} />
         
         {/* Partner Routes */}
         <Route path="/partner/dashboard" element={<PartnerDashboard />} />

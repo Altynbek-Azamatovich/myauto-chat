@@ -139,17 +139,11 @@ export default function Dashboard() {
         setShiftOpen(false);
         setCurrentShift(null);
       } else {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("full_name")
-          .eq("user_id", session.user.id)
-          .single();
-
         const { data: newShift, error } = await supabase
           .from("shifts")
           .insert({
             partner_id: session.user.id,
-            employee_name: profile?.full_name || t("shifts.employee"),
+            opened_at: new Date().toISOString(),
           })
           .select()
           .single();
