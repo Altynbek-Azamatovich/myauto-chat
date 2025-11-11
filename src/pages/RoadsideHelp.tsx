@@ -1,27 +1,80 @@
-import { useState } from "react";
-import { ArrowLeft, MapPin, Users, MessageSquare } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { ArrowLeft, MapPin, Users, MessageSquare, Send } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 const RoadsideHelp = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const [message, setMessage] = useState("");
   const [locationShared, setLocationShared] = useState(false);
+  const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const map = useRef<mapboxgl.Map | null>(null);
+  const marker = useRef<mapboxgl.Marker | null>(null);
+
+  useEffect(() => {
+    if (!mapContainer.current || map.current) return;
+
+    // Initialize map - Using a public token for demo (replace with project secret in production)
+    mapboxgl.accessToken = 'pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbTRocmRwdGgwMGJoMmpzaGF0bzZ5dDA3In0.4k7x-uUbw0_y1CfWZZQZkw';
+    
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: 'mapbox://styles/mapbox/streets-v12',
+      center: [76.9286, 43.2220], // Almaty, Kazakhstan
+      zoom: 12,
+      pitch: 0,
+    });
+
+    map.current.addControl(
+      new mapboxgl.NavigationControl({
+        visualizePitch: true,
+      }),
+      'top-right'
+    );
+
+    return () => {
+      map.current?.remove();
+    };
+  }, []);
 
   const handleShareLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        () => {
+        (position) => {
+          const coords: [number, number] = [position.coords.longitude, position.coords.latitude];
+          setUserLocation(coords);
           setLocationShared(true);
-          toast.success(t('roadHelp') + " - Location shared!");
+          
+          if (map.current) {
+            map.current.flyTo({
+              center: coords,
+              zoom: 15,
+              duration: 2000
+            });
+
+            // Add or update marker
+            if (marker.current) {
+              marker.current.setLngLat(coords);
+            } else {
+              marker.current = new mapboxgl.Marker({ color: '#ef4444' })
+                .setLngLat(coords)
+                .setPopup(new mapboxgl.Popup().setHTML('<p>' + t('yourLocation') + '</p>'))
+                .addTo(map.current);
+            }
+          }
+          
+          toast.success(t('locationShared'));
         },
         () => {
-          toast.error("Unable to get location");
+          toast.error("Не удалось получить локацию");
         }
       );
     }
@@ -29,20 +82,20 @@ const RoadsideHelp = () => {
 
   const handleSendHelp = () => {
     if (!message.trim()) {
-      toast.error("Please enter a message");
+      toast.error("Пожалуйста, введите сообщение");
       return;
     }
     if (!locationShared) {
-      toast.error("Please share your location first");
+      toast.error("Пожалуйста, поделитесь локацией");
       return;
     }
-    toast.success("Help request sent!");
+    toast.success("Запрос на помощь отправлен!");
     setMessage("");
   };
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <header className="flex items-center gap-4 px-4 py-4 border-b border-border">
+      <header className="flex items-center gap-4 px-4 py-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <Button variant="ghost" size="icon" onClick={() => navigate('/services')}>
           <ArrowLeft className="h-6 w-6" />
         </Button>
@@ -50,55 +103,62 @@ const RoadsideHelp = () => {
       </header>
 
       <div className="p-4 space-y-4">
-        <Card className="bg-card">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MapPin className="h-5 w-5 text-primary" />
-              Your Location
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+        {/* Map */}
+        <Card className="overflow-hidden">
+          <div ref={mapContainer} className="h-[300px] w-full" />
+          <CardContent className="pt-4">
             <Button 
               onClick={handleShareLocation}
               variant={locationShared ? "secondary" : "default"}
               className="w-full"
+              size="lg"
             >
-              {locationShared ? "Location Shared ✓" : "Share My Location"}
+              <MapPin className="h-5 w-5 mr-2" />
+              {locationShared ? t('locationShared') + ' ✓' : t('shareMyLocation')}
             </Button>
           </CardContent>
         </Card>
 
-        <Card className="bg-card">
+        {/* Request Help Card */}
+        <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-lg">
               <MessageSquare className="h-5 w-5 text-primary" />
-              Request Help
+              {t('requestHelp')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <Textarea
-              placeholder="Describe your problem..."
+              placeholder={t('describeProblem')}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={4}
+              className="resize-none"
             />
-            <Button onClick={handleSendHelp} className="w-full">
-              Send Help Request
+            <Button onClick={handleSendHelp} className="w-full" size="lg">
+              <Send className="h-5 w-5 mr-2" />
+              {t('sendHelpRequest')}
             </Button>
           </CardContent>
         </Card>
 
-        <Card className="bg-card">
+        {/* Active Helpers */}
+        <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-lg">
               <Users className="h-5 w-5 text-primary" />
-              Active Helpers Nearby
+              {t('activeHelpersNearby')}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground text-center py-4">
-              3 drivers online in your area
-            </p>
+            <div className="text-center py-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-3">
+                <span className="text-2xl font-bold text-primary">3</span>
+              </div>
+              <p className="text-muted-foreground">
+                {t('driversOnline')}
+              </p>
+            </div>
           </CardContent>
         </Card>
       </div>

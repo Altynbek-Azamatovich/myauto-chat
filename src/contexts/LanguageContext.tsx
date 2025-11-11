@@ -135,6 +135,79 @@ const translations: Translations = {
   partsDismantling: { ru: 'Авторазборы', kk: 'Авто бөлшектері' },
   carWash: { ru: 'Автомойки', kk: 'Автожуғыш' },
   
+  // Cart and Notifications
+  cart: { ru: 'Корзина', kk: 'Себет' },
+  emptyCart: { ru: 'Корзина пуста', kk: 'Себет бос' },
+  addToCart: { ru: 'Добавить в корзину', kk: 'Себетке қосу' },
+  notifications: { ru: 'Уведомления', kk: 'Хабарландырулар' },
+  noNotifications: { ru: 'Нет уведомлений', kk: 'Хабарландырулар жоқ' },
+  
+  // Roadside Help
+  shareLocation: { ru: 'Поделиться геолокацией', kk: 'Геолокацияны бөлісу' },
+  locationShared: { ru: 'Локация отправлена', kk: 'Локация жіберілді' },
+  requestHelp: { ru: 'Запросить помощь', kk: 'Көмек сұрау' },
+  describeProblem: { ru: 'Опишите вашу проблему...', kk: 'Мәселеңізді сипаттаңыз...' },
+  sendHelpRequest: { ru: 'Отправить запрос', kk: 'Сұрауды жіберу' },
+  activeHelpersNearby: { ru: 'Активные помощники рядом', kk: 'Жақын жердегі белсенді көмекшілер' },
+  driversOnline: { ru: 'водителей онлайн в вашем районе', kk: 'жүргізушілер сіздің аймағыңызда онлайн' },
+  yourLocation: { ru: 'Ваша локация', kk: 'Сіздің орныңыз' },
+  shareMyLocation: { ru: 'Поделиться моей локацией', kk: 'Менің орнымды бөлісу' },
+  
+  // Auto Forum
+  trendingTopics: { ru: 'Популярные темы', kk: 'Танымал тақырыптар' },
+  joinConversation: { ru: 'Присоединяйтесь к обсуждению', kk: 'Талқылауға қосылыңыз' },
+  createNewPost: { ru: 'Создать пост', kk: 'Пост жасау' },
+  by: { ru: 'от', kk: 'арқылы' },
+  replies: { ru: 'Ответы', kk: 'Жауаптар' },
+  likes: { ru: 'Нравится', kk: 'Ұнайды' },
+  
+  // Auto Shops
+  open: { ru: 'Открыто', kk: 'Ашық' },
+  closed: { ru: 'Закрыто', kk: 'Жабық' },
+  partsAccessories: { ru: 'Запчасти и аксессуары', kk: 'Бөлшектер мен аксессуарлар' },
+  tires: { ru: 'Шины', kk: 'Шиналар' },
+  maintenance: { ru: 'Обслуживание', kk: 'Қызмет көрсету' },
+  
+  // Detailing
+  exteriorDetailing: { ru: 'Наружная детейлинг', kk: 'Сыртқы детейлинг' },
+  interiorDetailing: { ru: 'Внутренняя детейлинг', kk: 'Ішкі детейлинг' },
+  fullDetailingPackage: { ru: 'Полный детейлинг', kk: 'Толық детейлинг' },
+  ceramicCoating: { ru: 'Керамическое покрытие', kk: 'Керамикалық жабын' },
+  fullExteriorClean: { ru: 'Полная наружная очистка и полировка', kk: 'Толық сыртқы тазалау және жылтырату' },
+  deepInteriorClean: { ru: 'Глубокая внутренняя очистка', kk: 'Терең ішкі тазалау' },
+  completeDetailing: { ru: 'Полная внутренняя и наружная детейлинг', kk: 'Толық ішкі және сыртқы детейлинг' },
+  professionalCeramic: { ru: 'Профессиональное керамическое покрытие', kk: 'Кәсіби керамикалық жабын' },
+  book: { ru: 'Записаться', kk: 'Жазылу' },
+  
+  // Paint Shop
+  scratchRemoval: { ru: 'Удаление царапин', kk: 'Сызаттарды жою' },
+  panelPainting: { ru: 'Покраска панели', kk: 'Панельді бояу' },
+  bumperRepairPaint: { ru: 'Ремонт и покраска бампера', kk: 'Бамперді жөндеу және бояу' },
+  fullCarRepaint: { ru: 'Полная покраска авто', kk: 'Автокөлікті толық бояу' },
+  minorScratch: { ru: 'Удаление мелких царапин', kk: 'Шағын сызаттарды жою' },
+  singlePanel: { ru: 'Профессиональная покраска одной панели', kk: 'Бір панельді кәсіби бояу' },
+  completeBumper: { ru: 'Полная реставрация бампера', kk: 'Бамперді толық қалпына келтіру' },
+  professionalRepaint: { ru: 'Профессиональная полная покраска', kk: 'Кәсіби толық бояу' },
+  
+  // Parts Dismantling
+  searchParts: { ru: 'Поиск запчастей...', kk: 'Бөлшектерді іздеу...' },
+  condition: { ru: 'Состояние', kk: 'Жағдайы' },
+  good: { ru: 'Хорошее', kk: 'Жақсы' },
+  excellent: { ru: 'Отличное', kk: 'Тамаша' },
+  fair: { ru: 'Удовлетворительное', kk: 'Қанағаттанарлық' },
+  
+  // Car Wash
+  servicesLabel: { ru: 'Услуги', kk: 'Қызметтер' },
+  nearbyLocations: { ru: 'Ближайшие локации', kk: 'Жақын орындар' },
+  expressWash: { ru: 'Экспресс мойка', kk: 'Экспресс жуу' },
+  standardWash: { ru: 'Стандартная мойка', kk: 'Стандартты жуу' },
+  premiumWash: { ru: 'Премиум мойка', kk: 'Премиум жуу' },
+  deluxePackage: { ru: 'Делюкс пакет', kk: 'Делюкс пакет' },
+  quickExterior: { ru: 'Быстрая наружная мойка', kk: 'Жылдам сыртқы жуу' },
+  exteriorVacuum: { ru: 'Наружная мойка + внутренняя уборка', kk: 'Сыртқы жуу + ішкі тазалау' },
+  fullServiceWax: { ru: 'Полная мойка с воском', kk: 'Балаумен толық жуу' },
+  completeCleanInOut: { ru: 'Полная очистка внутри и снаружи', kk: 'Ішінде және сыртында толық тазалау' },
+  
   // Role Selection
   roleSelectionTitle: { ru: 'Выберите роль', kk: 'Рөлді таңдаңыз' },
   roleSelectionSubtitle: { ru: 'Как вы хотите использовать myAuto?', kk: 'myAuto-ны қалай пайдаланғыңыз келеді?' },
@@ -222,7 +295,7 @@ const translations: Translations = {
   notes: { ru: 'Примечания', kk: 'Ескертпелер' },
   nextServiceDate: { ru: 'Следующее обслуживание', kk: 'Келесі қызмет' },
   mileageAtService: { ru: 'Пробег при обслуживании', kk: 'Қызмет кезіндегі жүгірген жол' },
-  maintenance: { ru: 'ТО', kk: 'ТҚ' },
+  maintenanceType: { ru: 'ТО', kk: 'ТҚ' },
   repair: { ru: 'Ремонт', kk: 'Жөндеу' },
   diagnostics: { ru: 'Диагностика', kk: 'Диагностика' },
   tireService: { ru: 'Шиномонтаж', kk: 'Шина монтажы' },
@@ -246,10 +319,6 @@ const translations: Translations = {
   save: { ru: 'Сохранить', kk: 'Сақтау' },
   confirm: { ru: 'Подтвердить', kk: 'Растау' },
   main: { ru: 'Основное', kk: 'Негізгі' },
-  notifications: { ru: 'Уведомления', kk: 'Хабарламалар' },
-  noNotifications: { ru: 'У вас пока нет уведомлений', kk: 'Сізде әлі хабарламалар жоқ' },
-  cart: { ru: 'Корзина', kk: 'Себет' },
-  emptyCart: { ru: 'Корзина пуста', kk: 'Себет бос' },
   logoutConfirmation: { ru: 'Вы уверены, что хотите выйти из аккаунта?', kk: 'Аккаунттан шығуға сенімдісіз бе?' },
 };
 

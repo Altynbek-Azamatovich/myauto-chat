@@ -1,4 +1,4 @@
-import { Menu, Bell, ShoppingCart, Wrench, HelpCircle, MessageSquare, Store, Sparkles, Paintbrush, Recycle, Droplet } from "lucide-react";
+import { Menu, ShoppingCart, Wrench, HelpCircle, MessageSquare, Store, Sparkles, Paintbrush, Recycle, Droplet } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -24,24 +24,14 @@ const Services = () => {
 
         <img src={logoImage} alt="myAuto" className="h-10 w-auto" />
 
-        <div className="flex items-center gap-2">
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="rounded-full hover:bg-muted/30 hover:text-foreground"
-            onClick={() => navigate('/notifications')}
-          >
-            <Bell className="h-6 w-6" />
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="rounded-full hover:bg-muted/30 hover:text-foreground"
-            onClick={() => navigate('/service-cart')}
-          >
-            <ShoppingCart className="h-6 w-6" />
-          </Button>
-        </div>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="rounded-full hover:bg-muted/30 hover:text-foreground relative"
+          onClick={() => navigate('/service-cart')}
+        >
+          <ShoppingCart className="h-6 w-6" />
+        </Button>
       </header>
 
       {/* Services Grid */}
