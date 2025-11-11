@@ -9,8 +9,9 @@ import Welcome from "./pages/Welcome";
 import PhoneAuth from "./pages/PhoneAuth";
 import ForgotPassword from "./pages/ForgotPassword";
 import ProfileSetup from "./pages/ProfileSetup";
-import MyVehicles from "./pages/MyVehicles";
 import ServiceHistory from "./pages/ServiceHistory";
+import MyVehicles from "./pages/MyVehicles";
+import ServiceBooking from "./pages/ServiceBooking";
 import ProfileSettings from "./pages/ProfileSettings";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
@@ -25,7 +26,7 @@ import NotFound from "./pages/NotFound";
 
 const AppContent = () => {
   const location = useLocation();
-  const hideNavigation = ['/welcome', '/phone-auth', '/forgot-password', '/profile-setup', '/about-app', '/notification-settings', '/my-vehicles', '/service-history', '/profile-settings', '/notifications', '/service-cart'].includes(location.pathname);
+  const hideNavigation = ['/welcome', '/phone-auth', '/forgot-password', '/profile-setup', '/about-app', '/notification-settings', '/my-vehicles', '/service-history', '/profile-settings', '/notifications', '/service-cart', '/service-booking'].includes(location.pathname);
 
   return (
     <>
@@ -45,6 +46,7 @@ const AppContent = () => {
         <Route path="/notification-settings" element={<NotificationSettings />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/service-cart" element={<ServiceCart />} />
+        <Route path="/service-booking" element={<ServiceBooking />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       {!hideNavigation && <BottomNavigation />}

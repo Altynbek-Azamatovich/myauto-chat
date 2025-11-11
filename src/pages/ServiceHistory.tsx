@@ -26,6 +26,11 @@ interface ServiceRecord {
   notes?: string;
   mileage_at_service?: number;
   next_service_date?: string;
+  source?: 'manual' | 'partner';
+  partner_name?: string;
+  master_name?: string;
+  work_name?: string;
+  request_status?: string;
 }
 
 interface Vehicle {
@@ -97,15 +102,67 @@ export default function ServiceHistory() {
 
     if (vehiclesData) {
       const vehicleIds = vehiclesData.map(v => v.id);
-      const { data, error } = await supabase
+      
+      // Fetch manual service history
+      const { data: manualServices, error: manualError } = await supabase
         .from('service_history')
         .select('*')
-        .in('vehicle_id', vehicleIds)
-        .order('service_date', { ascending: false });
+        .in('vehicle_id', vehicleIds);
 
-      if (!error && data) {
-        setServices(data);
+      // Fetch service works from requests
+      const { data: serviceWorks, error: worksError } = await supabase
+        .from('service_works')
+        .select(`
+          *,
+          service_requests!inner (
+            vehicle_id,
+            status,
+            service_type,
+            user_id,
+            service_partners (name)
+          ),
+          masters (full_name)
+        `)
+        .eq('service_requests.user_id', user.id)
+        .in('service_requests.vehicle_id', vehicleIds);
+
+      const allServices: ServiceRecord[] = [];
+
+      // Add manual services
+      if (!manualError && manualServices) {
+        allServices.push(...manualServices.map(s => ({
+          ...s,
+          source: 'manual' as const
+        })));
       }
+
+      // Add service works
+      if (!worksError && serviceWorks) {
+        allServices.push(...serviceWorks.map((work: any) => ({
+          id: work.id,
+          vehicle_id: work.service_requests.vehicle_id,
+          service_type: work.service_requests.service_type,
+          service_date: work.completed_at || work.created_at,
+          service_provider: work.service_requests.service_partners?.name,
+          cost: work.cost,
+          description: work.description,
+          notes: work.work_name,
+          mileage_at_service: null,
+          next_service_date: null,
+          source: 'partner' as const,
+          partner_name: work.service_requests.service_partners?.name,
+          master_name: work.masters?.full_name,
+          work_name: work.work_name,
+          request_status: work.service_requests.status
+        })));
+      }
+
+      // Sort by date
+      allServices.sort((a, b) => 
+        new Date(b.service_date).getTime() - new Date(a.service_date).getTime()
+      );
+
+      setServices(allServices);
     }
   };
 
@@ -356,11 +413,18 @@ export default function ServiceHistory() {
         ) : (
           services.map((service) => {
             const vehicle = vehicles.find(v => v.id === service.vehicle_id);
+            const isPartnerService = service.source === 'partner';
             return (
-              <Card key={service.id} className="p-4">
+              <Card key={service.id} className={`p-4 ${isPartnerService ? 'border-primary/50 bg-primary/5' : ''}`}>
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h3 className="font-semibold">{getServiceTypeLabel(service.service_type)}</h3>
+                    {isPartnerService && (
+                      <div className="inline-flex items-center gap-1 px-2 py-1 bg-primary/20 text-primary rounded-full text-xs font-medium mb-2">
+                        <span>✓</span>
+                        <span>{t('language') === 'ru' ? 'Сервисный центр' : 'Қызмет орталығы'}</span>
+                      </div>
+                    )}
+                    <h3 className="font-semibold">{service.work_name || getServiceTypeLabel(service.service_type)}</h3>
                     <p className="text-sm text-muted-foreground">
                       {vehicle?.model} ({vehicle?.year})
                     </p>
@@ -368,27 +432,35 @@ export default function ServiceHistory() {
                       {new Date(service.service_date).toLocaleDateString()}
                     </p>
                   </div>
-                  <div className="flex gap-2">
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={() => openEditDialog(service)}
-                      className="h-8 w-8"
-                    >
-                      <Edit2 className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={() => setDeleteServiceId(service.id)}
-                      className="h-8 w-8"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
+                  {!isPartnerService && (
+                    <div className="flex gap-2">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => openEditDialog(service)}
+                        className="h-8 w-8"
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => setDeleteServiceId(service.id)}
+                        className="h-8 w-8"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
                 </div>
                 <div className="space-y-1 text-sm">
-                  {service.service_provider && (
+                  {service.partner_name && (
+                    <p><span className="text-muted-foreground">{t('serviceProvider')}:</span> {service.partner_name}</p>
+                  )}
+                  {service.master_name && (
+                    <p><span className="text-muted-foreground">{t('language') === 'ru' ? 'Мастер' : 'Шебер'}:</span> {service.master_name}</p>
+                  )}
+                  {service.service_provider && !isPartnerService && (
                     <p><span className="text-muted-foreground">{t('serviceProvider')}:</span> {service.service_provider}</p>
                   )}
                   {service.cost && (
