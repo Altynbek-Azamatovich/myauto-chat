@@ -42,7 +42,6 @@ const Home = () => {
   const [isOilChangeDateOpen, setIsOilChangeDateOpen] = useState(false);
   const [isInsuranceDateOpen, setIsInsuranceDateOpen] = useState(false);
   const [isNextServiceDateOpen, setIsNextServiceDateOpen] = useState(false);
-  const [isPartSelectOpen, setIsPartSelectOpen] = useState(false);
   const [oilChangeDate, setOilChangeDate] = useState<Date>();
   const [insuranceDate, setInsuranceDate] = useState<Date>();
   const [nextServiceDate, setNextServiceDate] = useState<Date>();
@@ -146,36 +145,36 @@ const Home = () => {
 
       {/* Car Display */}
       <div className="px-4 py-2">
-        <div className="relative">
+        <div className="relative bg-background rounded-lg p-4">
           <img 
             src={carCoveredImage} 
             alt="Toyota Camry 2019" 
-            className="w-full h-64 object-cover rounded-lg"
+            className="w-full h-auto object-contain scale-150"
           />
           {/* Interactive points */}
           <button 
-            onClick={() => setIsPartSelectOpen(true)}
-            className="absolute top-1/4 left-1/4 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform"
+            onClick={() => toast.info('Выбор деталей ещё в разработке')}
+            className="absolute top-1/4 left-1/4 w-6 h-6 rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform border border-muted-foreground/40 bg-background"
           >
-            <div className="w-4 h-4 bg-muted-foreground rounded-full"></div>
+            <div className="w-3 h-3 bg-background rounded-full border border-muted-foreground/60"></div>
           </button>
           <button 
-            onClick={() => setIsPartSelectOpen(true)}
-            className="absolute top-1/3 right-1/3 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform"
+            onClick={() => toast.info('Выбор деталей ещё в разработке')}
+            className="absolute top-1/3 right-1/3 w-6 h-6 rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform border border-muted-foreground/40 bg-background"
           >
-            <div className="w-4 h-4 bg-muted-foreground rounded-full"></div>
+            <div className="w-3 h-3 bg-background rounded-full border border-muted-foreground/60"></div>
           </button>
           <button 
-            onClick={() => setIsPartSelectOpen(true)}
-            className="absolute bottom-1/3 left-1/3 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform"
+            onClick={() => toast.info('Выбор деталей ещё в разработке')}
+            className="absolute bottom-1/3 left-1/3 w-6 h-6 rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform border border-muted-foreground/40 bg-background"
           >
-            <div className="w-4 h-4 bg-muted-foreground rounded-full"></div>
+            <div className="w-3 h-3 bg-background rounded-full border border-muted-foreground/60"></div>
           </button>
           <button 
-            onClick={() => setIsPartSelectOpen(true)}
-            className="absolute bottom-1/4 right-1/4 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform"
+            onClick={() => toast.info('Выбор деталей ещё в разработке')}
+            className="absolute bottom-1/4 right-1/4 w-6 h-6 rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform border border-muted-foreground/40 bg-background"
           >
-            <div className="w-4 h-4 bg-muted-foreground rounded-full"></div>
+            <div className="w-3 h-3 bg-background rounded-full border border-muted-foreground/60"></div>
           </button>
           
           {/* 360 button */}

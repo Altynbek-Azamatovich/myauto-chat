@@ -344,10 +344,10 @@ export default function MyVehicles() {
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
-                    <Command>
+                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 z-50" align="start" sideOffset={5}>
+                    <Command className="max-h-[350px]">
                       <CommandInput placeholder="Поиск марки..." />
-                      <CommandList className="max-h-[300px] overflow-y-auto">
+                      <CommandList className="max-h-[300px] overflow-y-auto overflow-x-hidden" style={{ WebkitOverflowScrolling: 'touch' }}>
                         <CommandEmpty>Марка не найдена.</CommandEmpty>
                         <CommandGroup>
                           {carBrands.map((brand) => (
@@ -391,10 +391,10 @@ export default function MyVehicles() {
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
-                    <Command>
+                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 z-50" align="start" sideOffset={5}>
+                    <Command className="max-h-[350px]">
                       <CommandInput placeholder="Поиск модели..." />
-                      <CommandList className="max-h-[300px] overflow-y-auto">
+                      <CommandList className="max-h-[300px] overflow-y-auto overflow-x-hidden" style={{ WebkitOverflowScrolling: 'touch' }}>
                         <CommandEmpty>Модель не найдена.</CommandEmpty>
                         <CommandGroup>
                           {availableModelsAdd.map((model) => (
@@ -437,10 +437,10 @@ export default function MyVehicles() {
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
-                    <Command>
+                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 z-50" align="start" sideOffset={5}>
+                    <Command className="max-h-[350px]">
                       <CommandInput placeholder="Поиск года..." />
-                      <CommandList className="max-h-[300px] overflow-y-auto">
+                      <CommandList className="max-h-[300px] overflow-y-auto overflow-x-hidden" style={{ WebkitOverflowScrolling: 'touch' }}>
                         <CommandEmpty>Год не найден.</CommandEmpty>
                         <CommandGroup>
                           {years.map((year) => (
@@ -483,10 +483,10 @@ export default function MyVehicles() {
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
-                    <Command>
+                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 z-50" align="start" sideOffset={5}>
+                    <Command className="max-h-[350px]">
                       <CommandInput placeholder="Поиск цвета..." />
-                      <CommandList className="max-h-[300px] overflow-y-auto">
+                      <CommandList className="max-h-[300px] overflow-y-auto overflow-x-hidden" style={{ WebkitOverflowScrolling: 'touch' }}>
                         <CommandEmpty>Цвет не найден.</CommandEmpty>
                         <CommandGroup>
                           {carColors.map((color) => (

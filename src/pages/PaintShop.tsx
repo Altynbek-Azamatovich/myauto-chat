@@ -4,11 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 
 const PaintShop = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const { addToCart } = useCart();
   const [selectedService, setSelectedService] = useState<number | null>(null);
 
   const services = [
@@ -59,8 +61,20 @@ const PaintShop = () => {
   ];
 
   const handleBook = (serviceId: number) => {
+    const service = services.find(s => s.id === serviceId);
+    if (!service) return;
+    
     setSelectedService(serviceId);
-    toast.success("Услуга добавлена в корзину!");
+    
+    // Add to cart
+    addToCart({
+      id: `paint-${serviceId}`,
+      name: service.name,
+      price: parseInt(service.price.replace(/[^0-9]/g, '')),
+      category: 'Автомаляры',
+      partner_id: 'demo-partner-paint',
+      partner_name: 'Автомаляры',
+    });
   };
 
   return (

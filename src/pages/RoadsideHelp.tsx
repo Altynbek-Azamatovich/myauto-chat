@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -15,14 +16,16 @@ const RoadsideHelp = () => {
   const [message, setMessage] = useState("");
   const [locationShared, setLocationShared] = useState(false);
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
+  const [activeHelpers, setActiveHelpers] = useState(0);
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const marker = useRef<mapboxgl.Marker | null>(null);
+  const helpersMarkersRef = useRef<mapboxgl.Marker[]>([]);
 
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
 
-    // Initialize map - Using a public token for demo (replace with project secret in production)
+    // Initialize map
     mapboxgl.accessToken = 'pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbTRocmRwdGgwMGJoMmpzaGF0bzZ5dDA3In0.4k7x-uUbw0_y1CfWZZQZkw';
     
     map.current = new mapboxgl.Map({
@@ -40,7 +43,33 @@ const RoadsideHelp = () => {
       'top-right'
     );
 
+    // Simulate nearby helpers (demo data)
+    const simulateHelpers = () => {
+      const helpers = [
+        { lng: 76.9286 + 0.01, lat: 43.2220 + 0.01, name: 'Водитель 1' },
+        { lng: 76.9286 - 0.015, lat: 43.2220 + 0.005, name: 'Водитель 2' },
+        { lng: 76.9286 + 0.005, lat: 43.2220 - 0.012, name: 'Водитель 3' },
+      ];
+
+      if (map.current) {
+        helpers.forEach((helper) => {
+          const helperMarker = new mapboxgl.Marker({ color: '#22c55e' })
+            .setLngLat([helper.lng, helper.lat])
+            .setPopup(new mapboxgl.Popup().setHTML(`<p>${helper.name}</p>`))
+            .addTo(map.current!);
+          
+          helpersMarkersRef.current.push(helperMarker);
+        });
+      }
+
+      setActiveHelpers(helpers.length);
+    };
+
+    // Wait for map to load before adding markers
+    map.current.on('load', simulateHelpers);
+
     return () => {
+      helpersMarkersRef.current.forEach(m => m.remove());
       map.current?.remove();
     };
   }, []);
@@ -60,7 +89,7 @@ const RoadsideHelp = () => {
               duration: 2000
             });
 
-            // Add or update marker
+            // Add or update user marker
             if (marker.current) {
               marker.current.setLngLat(coords);
             } else {
@@ -80,17 +109,57 @@ const RoadsideHelp = () => {
     }
   };
 
-  const handleSendHelp = () => {
+  const handleSendHelp = async () => {
     if (!message.trim()) {
       toast.error("Пожалуйста, введите сообщение");
       return;
     }
-    if (!locationShared) {
+    if (!locationShared || !userLocation) {
       toast.error("Пожалуйста, поделитесь локацией");
       return;
     }
-    toast.success("Запрос на помощь отправлен!");
-    setMessage("");
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('Пожалуйста, войдите в систему');
+        navigate('/phone-auth');
+        return;
+      }
+
+      // Get user's vehicles
+      const { data: vehicles } = await supabase
+        .from('user_vehicles')
+        .select('id')
+        .eq('user_id', user.id)
+        .limit(1);
+
+      if (!vehicles || vehicles.length === 0) {
+        toast.error('Добавьте автомобиль в профиль');
+        navigate('/my-vehicles');
+        return;
+      }
+
+      // Create help request as service request
+      const { error } = await supabase
+        .from('service_requests')
+        .insert({
+          user_id: user.id,
+          vehicle_id: vehicles[0].id,
+          partner_id: 'roadside-help-system',
+          service_type: 'maintenance' as const,
+          description: `Помощь на дороге: ${message}\nЛокация: ${userLocation[1]}, ${userLocation[0]}`,
+          estimated_cost: 0
+        });
+
+      if (error) throw error;
+
+      toast.success("Запрос на помощь отправлен!");
+      setMessage("");
+    } catch (error: any) {
+      console.error('Help request error:', error);
+      toast.error(error.message || 'Ошибка отправки запроса');
+    }
   };
 
   return (
@@ -153,10 +222,13 @@ const RoadsideHelp = () => {
           <CardContent>
             <div className="text-center py-6">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-3">
-                <span className="text-2xl font-bold text-primary">3</span>
+                <span className="text-2xl font-bold text-primary">{activeHelpers}</span>
               </div>
               <p className="text-muted-foreground">
                 {t('driversOnline')}
+              </p>
+              <p className="text-xs text-muted-foreground mt-2">
+                Зеленые маркеры на карте — доступные водители
               </p>
             </div>
           </CardContent>
