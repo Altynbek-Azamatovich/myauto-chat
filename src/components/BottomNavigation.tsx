@@ -28,27 +28,44 @@ const BottomNavigation = () => {
     <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
       <div className="flex items-center space-x-4">
         {/* Main navigation buttons */}
-        <div className="flex items-center space-x-3 bg-black/20 backdrop-blur-lg rounded-full p-3">
-          {navItems.map((item) => (
-            <Button
-              key={item.path}
-              variant="ghost"
-              size="lg"
-              className={`rounded-full aspect-square p-2 relative ${
-                isActive(item.path) 
-                  ? "bg-white/40 text-white hover:bg-white/50" 
-                  : "text-white/70 hover:bg-white/10 hover:text-white"
-              }`}
-              onClick={() => navigate(item.path)}
-            >
-              <item.icon size={64} strokeWidth={1.5} />
-              <NotificationBadge count={item.count} size="sm" className="absolute -top-1 -right-1" />
-            </Button>
-          ))}
+        <div className="flex items-center bg-black/20 backdrop-blur-lg rounded-[32px] p-4 min-w-[280px]">
+          <div className="flex items-center justify-between w-full relative">
+            {navItems.map((item, index) => {
+              const active = isActive(item.path);
+              const firstActive = isActive(navItems[0].path);
+              const lastActive = isActive(navItems[2].path);
+              
+              let marginClass = '';
+              if (index === 0) {
+                marginClass = lastActive ? 'mr-auto' : '';
+              } else if (index === 1) {
+                marginClass = firstActive ? 'ml-auto' : lastActive ? 'mr-auto' : 'mx-auto';
+              } else if (index === 2) {
+                marginClass = firstActive ? 'ml-auto' : '';
+              }
+              
+              return (
+                <Button
+                  key={item.path}
+                  variant="ghost"
+                  size="lg"
+                  className={`rounded-[24px] aspect-square p-2 relative transition-all duration-300 ${
+                    active 
+                      ? "bg-white/40 text-white hover:bg-white/50 ring-2 ring-white/60" 
+                      : "text-white/70 hover:bg-white/10 hover:text-white"
+                  } ${marginClass}`}
+                  onClick={() => navigate(item.path)}
+                >
+                  <item.icon size={64} strokeWidth={1.5} />
+                  <NotificationBadge count={item.count} size="sm" className="absolute -top-1 -right-1" />
+                </Button>
+              );
+            })}
+          </div>
         </div>
 
         {/* SuperChat FAB */}
-        <div className={`bg-black/20 backdrop-blur-lg rounded-full shadow-lg p-3 border-2 ${
+        <div className={`bg-black/20 backdrop-blur-lg rounded-full shadow-lg p-3 border-2 transition-colors ${
           isChatActive 
             ? "border-app-green" 
             : "border-transparent"
