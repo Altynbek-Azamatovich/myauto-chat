@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
+import { usePersistedState } from "@/hooks/usePersistedState";
 
 const Detailing = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const [selectedService, setSelectedService] = useState<number | null>(null);
+  const [selectedService, setSelectedService] = usePersistedState<number | null>("detailing_selected_service", null);
 
   const services = [
     {

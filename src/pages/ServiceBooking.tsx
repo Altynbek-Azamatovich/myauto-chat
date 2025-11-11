@@ -15,6 +15,7 @@ import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
+import { usePersistedState } from "@/hooks/usePersistedState";
 
 interface ServicePartner {
   id: string;
@@ -70,13 +71,13 @@ const ServiceBooking = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Form state
-  const [vehicleId, setVehicleId] = useState("");
-  const [masterId, setMasterId] = useState("");
-  const [serviceType, setServiceType] = useState("");
-  const [description, setDescription] = useState("");
-  const [selectedDate, setSelectedDate] = useState<Date>();
-  const [selectedTime, setSelectedTime] = useState("");
+  // Form state with persistence
+  const [vehicleId, setVehicleId] = usePersistedState("booking_vehicle_id", "");
+  const [masterId, setMasterId] = usePersistedState("booking_master_id", "");
+  const [serviceType, setServiceType] = usePersistedState("booking_service_type", "");
+  const [description, setDescription] = usePersistedState("booking_description", "");
+  const [selectedDate, setSelectedDate] = usePersistedState<Date | undefined>("booking_selected_date", undefined);
+  const [selectedTime, setSelectedTime] = usePersistedState("booking_selected_time", "");
 
   useEffect(() => {
     fetchPartners();

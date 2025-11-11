@@ -6,12 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
+import { usePersistedState } from "@/hooks/usePersistedState";
 
 const PaintShop = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const { addToCart } = useCart();
-  const [selectedService, setSelectedService] = useState<number | null>(null);
+  const [selectedService, setSelectedService] = usePersistedState<number | null>("paintshop_selected_service", null);
 
   const services = [
     {

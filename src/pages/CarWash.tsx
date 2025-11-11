@@ -6,11 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
+import { usePersistedState } from "@/hooks/usePersistedState";
 
 const CarWash = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const [selectedService, setSelectedService] = useState<number | null>(null);
+  const [selectedService, setSelectedService] = usePersistedState<number | null>("carwash_selected_service", null);
 
   const services = [
     {

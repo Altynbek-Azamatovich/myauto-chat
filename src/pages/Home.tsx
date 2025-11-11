@@ -195,28 +195,30 @@ const Home = () => {
       <div className="px-4 space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <Card className="p-4 bg-card-dark backdrop-blur-sm rounded-2xl border-border/30">
-          <div className="space-y-2">
-            <div className="text-muted-foreground">
-              <span className="text-xl">ⓘ</span>
+          <div className="space-y-3">
+            <div className="flex items-start space-x-3">
+              <div className="text-muted-foreground">
+                <span className="text-xl">ⓘ</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-base leading-tight">
+                  {primaryVehicle ? (
+                    `${brandName} ${primaryVehicle.model} ${primaryVehicle.year}`
+                  ) : (
+                    <button 
+                      onClick={() => navigate('/my-vehicles')}
+                      className="text-primary hover:underline text-left"
+                    >
+                      {t('addYourCar')}
+                    </button>
+                  )}
+                </h3>
+                {primaryVehicle?.license_plate && (
+                  <p className="text-sm text-muted-foreground mt-1">{primaryVehicle.license_plate}</p>
+                )}
+              </div>
             </div>
             <div>
-              <h3 className="font-semibold text-base leading-tight">
-                {primaryVehicle ? (
-                  `${brandName} ${primaryVehicle.model} ${primaryVehicle.year}`
-                ) : (
-                  <button 
-                    onClick={() => navigate('/my-vehicles')}
-                    className="text-primary hover:underline text-left"
-                  >
-                    {t('addYourCar')}
-                  </button>
-                )}
-              </h3>
-              {primaryVehicle?.license_plate && (
-                <p className="text-sm text-muted-foreground mt-1">{primaryVehicle.license_plate}</p>
-              )}
-            </div>
-            <div className="pt-1">
               <p className="text-xs text-muted-foreground">{t('mileage')}</p>
               <p className="font-semibold text-sm">
                 {primaryVehicle ? primaryVehicle.mileage.toLocaleString() : '0'} км
@@ -227,10 +229,10 @@ const Home = () => {
 
         <Card className="p-4 bg-card-dark backdrop-blur-sm rounded-2xl border-border/30">
           <div className="space-y-3">
-            <div className="space-y-2">
+            <div className="flex items-start space-x-2">
               <AlertTriangle className="h-5 w-5 text-yellow-500 flex-shrink-0" />
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">{t('oilChange')}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-muted-foreground">{t('oilChange')}</p>
                 <Popover open={isOilChangeDateOpen} onOpenChange={setIsOilChangeDateOpen}>
                   <PopoverTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
@@ -261,10 +263,10 @@ const Home = () => {
                 </Popover>
               </div>
             </div>
-            <div className="space-y-2">
+            <div className="flex items-start space-x-2">
               <Clock className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">{t('insuranceExpires')}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-muted-foreground">{t('insuranceExpires')}</p>
                 <Popover open={isInsuranceDateOpen} onOpenChange={setIsInsuranceDateOpen}>
                   <PopoverTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">

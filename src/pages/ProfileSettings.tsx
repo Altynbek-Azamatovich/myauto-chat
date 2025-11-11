@@ -8,12 +8,13 @@ import { Card } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { usePersistedState } from '@/hooks/usePersistedState';
 
 export default function ProfileSettings() {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = usePersistedState('profile_settings_form', {
     phone_number: '',
     first_name: '',
     last_name: '',
