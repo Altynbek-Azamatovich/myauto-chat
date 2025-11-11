@@ -91,6 +91,42 @@ export type Database = {
           },
         ]
       }
+      clients: {
+        Row: {
+          car_model: string | null
+          car_number: string | null
+          created_at: string | null
+          full_name: string
+          id: string
+          notes: string | null
+          partner_id: string
+          phone: string
+          updated_at: string | null
+        }
+        Insert: {
+          car_model?: string | null
+          car_number?: string | null
+          created_at?: string | null
+          full_name: string
+          id?: string
+          notes?: string | null
+          partner_id: string
+          phone: string
+          updated_at?: string | null
+        }
+        Update: {
+          car_model?: string | null
+          car_number?: string | null
+          created_at?: string | null
+          full_name?: string
+          id?: string
+          notes?: string | null
+          partner_id?: string
+          phone?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       masters: {
         Row: {
           avatar_url: string | null
@@ -137,6 +173,95 @@ export type Database = {
             columns: ["partner_id"]
             isOneToOne: false
             referencedRelation: "service_partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_services: {
+        Row: {
+          created_at: string | null
+          id: string
+          order_id: string
+          price: number
+          quantity: number
+          service_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          order_id: string
+          price: number
+          quantity?: number
+          service_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          order_id?: string
+          price?: number
+          quantity?: number
+          service_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_services_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_services_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          client_id: string
+          closed_at: string | null
+          created_at: string | null
+          id: string
+          notes: string | null
+          opened_at: string | null
+          partner_id: string
+          status: string
+          total_price: number
+          updated_at: string | null
+        }
+        Insert: {
+          client_id: string
+          closed_at?: string | null
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          opened_at?: string | null
+          partner_id: string
+          status?: string
+          total_price?: number
+          updated_at?: string | null
+        }
+        Update: {
+          client_id?: string
+          closed_at?: string | null
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          opened_at?: string | null
+          partner_id?: string
+          status?: string
+          total_price?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
             referencedColumns: ["id"]
           },
         ]
@@ -487,6 +612,84 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      services: {
+        Row: {
+          category: string
+          created_at: string | null
+          duration_minutes: number | null
+          id: string
+          is_active: boolean | null
+          name: string
+          partner_id: string
+          price: number
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          partner_id: string
+          price: number
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          partner_id?: string
+          price?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      shifts: {
+        Row: {
+          card_amount: number | null
+          cash_amount: number | null
+          closed_at: string | null
+          closing_balance: number | null
+          created_at: string | null
+          id: string
+          notes: string | null
+          opened_at: string
+          opening_balance: number | null
+          partner_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          card_amount?: number | null
+          cash_amount?: number | null
+          closed_at?: string | null
+          closing_balance?: number | null
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          opened_at: string
+          opening_balance?: number | null
+          partner_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          card_amount?: number | null
+          cash_amount?: number | null
+          closed_at?: string | null
+          closing_balance?: number | null
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          opened_at?: string
+          opening_balance?: number | null
+          partner_id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
