@@ -148,24 +148,7 @@ const PhoneAuth = () => {
             : "Кіру орындалды",
         });
         
-        // Check if user has a role
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-          const { data: userRole } = await supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', session.user.id)
-            .limit(1)
-            .single();
-
-          if (!userRole) {
-            navigate('/role-selection');
-          } else {
-            navigate('/');
-          }
-        } else {
-          navigate('/');
-        }
+        navigate('/');
       }
     } catch (error: any) {
       console.error('Error in handleSubmit:', error);

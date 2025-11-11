@@ -121,12 +121,6 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    min-height: 100vh;
-  }
-  
-  #root {
-    min-height: 100vh;
-    background: hsl(var(--background));
   }
 
   /* Remove browser scrollbar colors */
