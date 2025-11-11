@@ -5,10 +5,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import logoImage from "@/assets/logo-new.png";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useNotifications } from "@/contexts/NotificationContext";
+import NotificationBadge from "@/components/NotificationBadge";
 
 const Services = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const { unreadByCategory } = useNotifications();
+  
+  const cartCount = unreadByCategory['cart'] || 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -31,6 +36,7 @@ const Services = () => {
           onClick={() => navigate('/service-cart')}
         >
           <ShoppingCart className="h-6 w-6" />
+          <NotificationBadge count={cartCount} />
         </Button>
       </header>
 
