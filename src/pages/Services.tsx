@@ -42,7 +42,7 @@ const Services = () => {
       <div className="grid grid-cols-2 gap-4 px-4 pb-24">
         {/* Помощь на дороге */}
         <Card 
-          className="aspect-square bg-card hover:bg-accent transition-colors cursor-pointer flex items-center justify-center"
+          className="aspect-square bg-card hover:bg-muted/30 transition-colors cursor-pointer flex items-center justify-center"
           onClick={() => navigate('/roadside-help')}
         >
           <CardContent className="flex flex-col items-center justify-center p-4 text-center">
@@ -53,7 +53,7 @@ const Services = () => {
         
         {/* Авто Форум */}
         <Card 
-          className="aspect-square bg-card hover:bg-accent transition-colors cursor-pointer flex items-center justify-center"
+          className="aspect-square bg-card hover:bg-muted/30 transition-colors cursor-pointer flex items-center justify-center"
           onClick={() => navigate('/auto-forum')}
         >
           <CardContent className="flex flex-col items-center justify-center p-4 text-center">
@@ -64,7 +64,7 @@ const Services = () => {
 
         {/* Автосервисы */}
         <Card 
-          className="aspect-square bg-card hover:bg-accent transition-colors cursor-pointer flex items-center justify-center"
+          className="aspect-square bg-card hover:bg-muted/30 transition-colors cursor-pointer flex items-center justify-center"
           onClick={() => navigate('/service-booking')}
         >
           <CardContent className="flex flex-col items-center justify-center p-4 text-center">
@@ -75,7 +75,7 @@ const Services = () => {
 
         {/* Автомагазины */}
         <Card 
-          className="aspect-square bg-card hover:bg-accent transition-colors cursor-pointer flex items-center justify-center"
+          className="aspect-square bg-card hover:bg-muted/30 transition-colors cursor-pointer flex items-center justify-center"
           onClick={() => navigate('/auto-shops')}
         >
           <CardContent className="flex flex-col items-center justify-center p-4 text-center">
@@ -86,7 +86,7 @@ const Services = () => {
 
         {/* Детейлинг */}
         <Card 
-          className="aspect-square bg-card hover:bg-accent transition-colors cursor-pointer flex items-center justify-center"
+          className="aspect-square bg-card hover:bg-muted/30 transition-colors cursor-pointer flex items-center justify-center"
           onClick={() => navigate('/detailing')}
         >
           <CardContent className="flex flex-col items-center justify-center p-4 text-center">
@@ -97,7 +97,7 @@ const Services = () => {
 
         {/* Автомаляры */}
         <Card 
-          className="aspect-square bg-card hover:bg-accent transition-colors cursor-pointer flex items-center justify-center"
+          className="aspect-square bg-card hover:bg-muted/30 transition-colors cursor-pointer flex items-center justify-center"
           onClick={() => navigate('/paint-shop')}
         >
           <CardContent className="flex flex-col items-center justify-center p-4 text-center">
@@ -108,7 +108,7 @@ const Services = () => {
 
         {/* Авторазборы */}
         <Card 
-          className="aspect-square bg-card hover:bg-accent transition-colors cursor-pointer flex items-center justify-center"
+          className="aspect-square bg-card hover:bg-muted/30 transition-colors cursor-pointer flex items-center justify-center"
           onClick={() => navigate('/parts-dismantling')}
         >
           <CardContent className="flex flex-col items-center justify-center p-4 text-center">
@@ -119,7 +119,7 @@ const Services = () => {
 
         {/* Автомойки */}
         <Card 
-          className="aspect-square bg-card hover:bg-accent transition-colors cursor-pointer flex items-center justify-center"
+          className="aspect-square bg-card hover:bg-muted/30 transition-colors cursor-pointer flex items-center justify-center"
           onClick={() => navigate('/car-wash')}
         >
           <CardContent className="flex flex-col items-center justify-center p-4 text-center">
