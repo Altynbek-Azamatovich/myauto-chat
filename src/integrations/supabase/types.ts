@@ -91,6 +91,56 @@ export type Database = {
           },
         ]
       }
+      masters: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          experience_years: number | null
+          full_name: string
+          id: string
+          is_active: boolean | null
+          partner_id: string
+          phone_number: string | null
+          specialization: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          experience_years?: number | null
+          full_name: string
+          id?: string
+          is_active?: boolean | null
+          partner_id: string
+          phone_number?: string | null
+          specialization?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          experience_years?: number | null
+          full_name?: string
+          id?: string
+          is_active?: boolean | null
+          partner_id?: string
+          phone_number?: string | null
+          specialization?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "masters_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "service_partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       otp_codes: {
         Row: {
           code: string
@@ -261,6 +311,204 @@ export type Database = {
           },
         ]
       }
+      service_partners: {
+        Row: {
+          address: string | null
+          city: string | null
+          created_at: string
+          description: string | null
+          email: string | null
+          id: string
+          is_verified: boolean | null
+          logo_url: string | null
+          name: string
+          owner_id: string
+          phone_number: string | null
+          rating: number | null
+          updated_at: string
+          working_hours: Json | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          id?: string
+          is_verified?: boolean | null
+          logo_url?: string | null
+          name: string
+          owner_id: string
+          phone_number?: string | null
+          rating?: number | null
+          updated_at?: string
+          working_hours?: Json | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          id?: string
+          is_verified?: boolean | null
+          logo_url?: string | null
+          name?: string
+          owner_id?: string
+          phone_number?: string | null
+          rating?: number | null
+          updated_at?: string
+          working_hours?: Json | null
+        }
+        Relationships: []
+      }
+      service_requests: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          description: string
+          estimated_cost: number | null
+          final_cost: number | null
+          id: string
+          notes: string | null
+          partner_id: string
+          preferred_date: string | null
+          preferred_time: string | null
+          service_type: Database["public"]["Enums"]["service_type"]
+          status: Database["public"]["Enums"]["service_request_status"]
+          updated_at: string
+          user_id: string
+          vehicle_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          description: string
+          estimated_cost?: number | null
+          final_cost?: number | null
+          id?: string
+          notes?: string | null
+          partner_id: string
+          preferred_date?: string | null
+          preferred_time?: string | null
+          service_type: Database["public"]["Enums"]["service_type"]
+          status?: Database["public"]["Enums"]["service_request_status"]
+          updated_at?: string
+          user_id: string
+          vehicle_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          description?: string
+          estimated_cost?: number | null
+          final_cost?: number | null
+          id?: string
+          notes?: string | null
+          partner_id?: string
+          preferred_date?: string | null
+          preferred_time?: string | null
+          service_type?: Database["public"]["Enums"]["service_type"]
+          status?: Database["public"]["Enums"]["service_request_status"]
+          updated_at?: string
+          user_id?: string
+          vehicle_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_requests_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "service_partners"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_requests_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "user_vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_works: {
+        Row: {
+          completed_at: string | null
+          cost: number
+          created_at: string
+          description: string | null
+          id: string
+          master_id: string | null
+          parts_used: Json | null
+          request_id: string
+          started_at: string | null
+          updated_at: string
+          work_name: string
+        }
+        Insert: {
+          completed_at?: string | null
+          cost: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          master_id?: string | null
+          parts_used?: Json | null
+          request_id: string
+          started_at?: string | null
+          updated_at?: string
+          work_name: string
+        }
+        Update: {
+          completed_at?: string | null
+          cost?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          master_id?: string | null
+          parts_used?: Json | null
+          request_id?: string
+          started_at?: string | null
+          updated_at?: string
+          work_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_works_master_id_fkey"
+            columns: ["master_id"]
+            isOneToOne: false
+            referencedRelation: "masters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_works_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_vehicles: {
         Row: {
           average_consumption: number | null
@@ -343,8 +591,23 @@ export type Database = {
     Functions: {
       cleanup_rate_limits: { Args: never; Returns: undefined }
       delete_expired_otp_codes: { Args: never; Returns: undefined }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
+      app_role: "user" | "partner" | "master" | "admin"
+      service_request_status:
+        | "pending"
+        | "confirmed"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
+        | "rejected"
       service_type:
         | "maintenance"
         | "repair"
@@ -479,6 +742,15 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["user", "partner", "master", "admin"],
+      service_request_status: [
+        "pending",
+        "confirmed",
+        "in_progress",
+        "completed",
+        "cancelled",
+        "rejected",
+      ],
       service_type: [
         "maintenance",
         "repair",
