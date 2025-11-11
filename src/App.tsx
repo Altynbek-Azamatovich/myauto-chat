@@ -117,15 +117,15 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
       <LanguageProvider>
-        <NotificationProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <NotificationProvider>
               <AppContent />
-            </BrowserRouter>
-          </TooltipProvider>
-        </NotificationProvider>
+            </NotificationProvider>
+          </BrowserRouter>
+        </TooltipProvider>
       </LanguageProvider>
     </ThemeProvider>
   </QueryClientProvider>
