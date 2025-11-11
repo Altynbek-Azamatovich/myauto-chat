@@ -47,10 +47,9 @@ const ServiceCart = () => {
         user_id: user.id,
         vehicle_id: vehicles[0].id,
         partner_id: item.partner_id,
-        service_type: 'maintenance',
+        service_type: 'maintenance' as const,
         description: `Заказ услуги: ${item.name}`,
-        estimated_cost: item.price * item.quantity,
-        status: 'pending'
+        estimated_cost: item.price * item.quantity
       }));
 
       const { error } = await supabase

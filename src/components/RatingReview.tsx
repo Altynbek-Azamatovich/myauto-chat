@@ -38,7 +38,7 @@ const RatingReview = ({ partnerId, orderId, onReviewSubmitted }: RatingReviewPro
         order_id: orderId,
         rating,
         comment: comment.trim() || null,
-      });
+      }) as any;
 
       if (error) throw error;
 

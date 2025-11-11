@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
+import { CartProvider } from "./contexts/CartContext";
 import Welcome from "./pages/Welcome";
 import PhoneAuth from "./pages/PhoneAuth";
 import RoleSelection from "./pages/RoleSelection";
@@ -122,7 +123,9 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <NotificationProvider>
-              <AppContent />
+              <CartProvider>
+                <AppContent />
+              </CartProvider>
             </NotificationProvider>
           </BrowserRouter>
         </TooltipProvider>
