@@ -28,7 +28,7 @@ const BottomNavigation = () => {
     <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
       <div className="flex items-center space-x-4">
         {/* Main navigation buttons */}
-        <div className="flex items-center bg-black/20 backdrop-blur-lg rounded-[32px] p-4 min-w-[280px]">
+        <div className="flex items-center bg-black/20 backdrop-blur-lg rounded-[20px] p-3 min-w-[220px]">
           <div className="flex items-center justify-between w-full relative">
             {navItems.map((item, index) => {
               const active = isActive(item.path);
@@ -49,14 +49,14 @@ const BottomNavigation = () => {
                   key={item.path}
                   variant="ghost"
                   size="lg"
-                  className={`rounded-[24px] aspect-square p-2 relative transition-all duration-300 ${
+                  className={`rounded-[16px] aspect-square p-2 relative transition-all duration-300 ${
                     active 
                       ? "bg-white/40 text-white hover:bg-white/50 ring-2 ring-white/60" 
                       : "text-white/70 hover:bg-white/10 hover:text-white"
                   } ${marginClass}`}
                   onClick={() => navigate(item.path)}
                 >
-                  <item.icon size={64} strokeWidth={1.5} />
+                  <item.icon size={24} strokeWidth={1.5} />
                   <NotificationBadge count={item.count} size="sm" className="absolute -top-1 -right-1" />
                 </Button>
               );
@@ -75,7 +75,7 @@ const BottomNavigation = () => {
             className="rounded-full aspect-square p-2 bg-transparent hover:bg-transparent relative"
             onClick={() => navigate("/super-chat")}
           >
-            <MessageCircle size={64} strokeWidth={1.5} className="text-white" />
+            <MessageCircle size={24} strokeWidth={1.5} className="text-white" />
             <NotificationBadge count={chatCount} size="sm" className="absolute -top-1 -right-1" />
           </Button>
         </div>
