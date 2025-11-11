@@ -28,7 +28,7 @@ const BottomNavigation = () => {
     <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
       <div className="flex items-center space-x-4">
         {/* Main navigation buttons */}
-        <div className="flex items-center bg-black/20 backdrop-blur-lg rounded-[20px] p-3 min-w-[220px]">
+        <div className="flex items-center bg-black/20 backdrop-blur-lg rounded-full p-3 min-w-[220px]">
           <div className="flex items-center justify-between w-full relative">
             {navItems.map((item, index) => {
               const active = isActive(item.path);
@@ -49,7 +49,7 @@ const BottomNavigation = () => {
                   key={item.path}
                   variant="ghost"
                   size="lg"
-                  className={`rounded-[16px] aspect-square p-2 relative transition-all duration-300 ${
+                  className={`rounded-full aspect-square p-2 relative transition-all duration-300 ${
                     active 
                       ? "bg-white/40 text-white hover:bg-white/50 ring-2 ring-white/60" 
                       : "text-white/70 hover:bg-white/10 hover:text-white"
