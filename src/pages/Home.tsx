@@ -149,7 +149,7 @@ const Home = () => {
           <img 
             src={carCoveredImage} 
             alt="Toyota Camry 2019" 
-            className="w-full h-auto object-contain scale-150"
+            className="w-full h-auto object-contain"
           />
           {/* Interactive points */}
           <button 
@@ -195,12 +195,13 @@ const Home = () => {
       <div className="px-4 space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <Card className="p-4 bg-card-dark backdrop-blur-sm rounded-2xl border-border/30">
-          <div className="flex items-start space-x-3">
-              <div className="text-muted-foreground mt-0.5">
+          <div className="space-y-3">
+            <div className="flex items-start space-x-3">
+              <div className="text-muted-foreground">
                 <span className="text-xl">ⓘ</span>
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-base leading-tight mb-1">
+                <h3 className="font-semibold text-base leading-tight">
                   {primaryVehicle ? (
                     `${brandName} ${primaryVehicle.model} ${primaryVehicle.year}`
                   ) : (
@@ -213,90 +214,91 @@ const Home = () => {
                   )}
                 </h3>
                 {primaryVehicle?.license_plate && (
-                  <p className="text-sm text-muted-foreground mb-3">{primaryVehicle.license_plate}</p>
+                  <p className="text-sm text-muted-foreground">{primaryVehicle.license_plate}</p>
                 )}
-                <div>
-                  <p className="text-xs text-muted-foreground">{t('mileage')}</p>
-                  <p className="font-semibold text-sm">
-                    {primaryVehicle ? primaryVehicle.mileage.toLocaleString() : '0'} км
-                  </p>
-                </div>
               </div>
             </div>
-          </Card>
+            <div>
+              <p className="text-xs text-muted-foreground">{t('mileage')}</p>
+              <p className="font-semibold text-sm">
+                {primaryVehicle ? primaryVehicle.mileage.toLocaleString() : '0'} км
+              </p>
+            </div>
+          </div>
+        </Card>
 
         <Card className="p-4 bg-card-dark backdrop-blur-sm rounded-2xl border-border/30">
           <div className="space-y-3">
-              <div className="flex items-start space-x-2">
-                <AlertTriangle className="h-5 w-5 text-yellow-500 mt-0.5 flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <Popover open={isOilChangeDateOpen} onOpenChange={setIsOilChangeDateOpen}>
-                    <PopoverTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
-                        <div className="text-left">
-                          <p className="text-sm font-medium leading-tight flex items-center gap-1">
-                            {oilChangeDate ? format(oilChangeDate, 'dd.MM.yyyy') : '—'}
-                            <Edit className="h-3 w-3 text-muted-foreground" />
-                          </p>
-                          <p className="text-xs text-muted-foreground">{t('oilChange')}</p>
-                        </div>
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={oilChangeDate}
-                        onSelect={(date) => {
-                          setOilChangeDate(date);
-                          if (date) {
-                            updateVehicleDate('oil_change_date', date);
-                            setIsOilChangeDateOpen(false);
-                          }
-                        }}
-                        initialFocus
-                        locale={language === 'ru' ? ru : kk}
-                        className={cn("p-3 pointer-events-auto")}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-              </div>
-              <div className="flex items-start space-x-2">
-                <Clock className="h-5 w-5 text-muted-foreground mt-0.5 flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <Popover open={isInsuranceDateOpen} onOpenChange={setIsInsuranceDateOpen}>
-                    <PopoverTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
-                        <div className="text-left">
-                          <p className="text-sm font-medium leading-tight flex items-center gap-1">
-                            {insuranceDate ? format(insuranceDate, 'dd.MM.yyyy') : '—'}
-                            <Edit className="h-3 w-3 text-muted-foreground" />
-                          </p>
-                          <p className="text-xs text-muted-foreground">{t('insuranceExpires')}</p>
-                        </div>
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={insuranceDate}
-                        onSelect={(date) => {
-                          setInsuranceDate(date);
-                          if (date) {
-                            updateVehicleDate('insurance_expiry_date', date);
-                            setIsInsuranceDateOpen(false);
-                          }
-                        }}
-                        initialFocus
-                        locale={language === 'ru' ? ru : kk}
-                        className={cn("p-3 pointer-events-auto")}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
+            <div className="flex items-start space-x-3">
+              <AlertTriangle className="h-5 w-5 text-yellow-500 flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-muted-foreground mb-1">{t('oilChange')}</p>
+                <Popover open={isOilChangeDateOpen} onOpenChange={setIsOilChangeDateOpen}>
+                  <PopoverTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
+                      <div className="text-left">
+                        <p className="text-sm font-medium leading-tight flex items-center gap-1">
+                          {oilChangeDate ? format(oilChangeDate, 'dd.MM.yyyy') : '—'}
+                          <Edit className="h-3 w-3 text-muted-foreground" />
+                        </p>
+                      </div>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={oilChangeDate}
+                      onSelect={(date) => {
+                        setOilChangeDate(date);
+                        if (date) {
+                          updateVehicleDate('oil_change_date', date);
+                          setIsOilChangeDateOpen(false);
+                        }
+                      }}
+                      initialFocus
+                      locale={language === 'ru' ? ru : kk}
+                      className={cn("p-3 pointer-events-auto")}
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
-          </Card>
+            <div className="flex items-start space-x-3">
+              <Clock className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-muted-foreground mb-1">{t('insuranceExpires')}</p>
+                <Popover open={isInsuranceDateOpen} onOpenChange={setIsInsuranceDateOpen}>
+                  <PopoverTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
+                      <div className="text-left">
+                        <p className="text-sm font-medium leading-tight flex items-center gap-1">
+                          {insuranceDate ? format(insuranceDate, 'dd.MM.yyyy') : '—'}
+                          <Edit className="h-3 w-3 text-muted-foreground" />
+                        </p>
+                      </div>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={insuranceDate}
+                      onSelect={(date) => {
+                        setInsuranceDate(date);
+                        if (date) {
+                          updateVehicleDate('insurance_expiry_date', date);
+                          setIsInsuranceDateOpen(false);
+                        }
+                      }}
+                      initialFocus
+                      locale={language === 'ru' ? ru : kk}
+                      className={cn("p-3 pointer-events-auto")}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </div>
+          </div>
+        </Card>
         </div>
 
       {/* Technical Condition */}
