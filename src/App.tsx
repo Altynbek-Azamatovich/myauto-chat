@@ -7,6 +7,7 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Welcome from "./pages/Welcome";
 import PhoneAuth from "./pages/PhoneAuth";
+import RoleSelection from "./pages/RoleSelection";
 import ForgotPassword from "./pages/ForgotPassword";
 import ProfileSetup from "./pages/ProfileSetup";
 import ServiceHistory from "./pages/ServiceHistory";
@@ -24,32 +25,71 @@ import ServiceCart from "./pages/ServiceCart";
 import BottomNavigation from "./components/BottomNavigation";
 import NotFound from "./pages/NotFound";
 
+// Partner Pages
+import PartnerDashboard from "./pages/partner/Dashboard";
+import PartnerOrders from "./pages/partner/Orders";
+import PartnerClients from "./pages/partner/Clients";
+import PartnerServices from "./pages/partner/Services";
+import PartnerAnalytics from "./pages/partner/Analytics";
+import PartnerShifts from "./pages/partner/Shifts";
+import PartnerSettings from "./pages/partner/Settings";
+
 const AppContent = () => {
   const location = useLocation();
-  const hideNavigation = ['/welcome', '/phone-auth', '/forgot-password', '/profile-setup', '/about-app', '/notification-settings', '/my-vehicles', '/service-history', '/profile-settings', '/notifications', '/service-cart', '/service-booking'].includes(location.pathname);
+  const hideNavigation = [
+    '/welcome', 
+    '/phone-auth', 
+    '/role-selection',
+    '/forgot-password', 
+    '/profile-setup', 
+    '/about-app', 
+    '/notification-settings', 
+    '/my-vehicles', 
+    '/service-history', 
+    '/profile-settings', 
+    '/notifications', 
+    '/service-cart', 
+    '/service-booking'
+  ].includes(location.pathname);
+  
+  const isPartnerRoute = location.pathname.startsWith('/partner');
 
   return (
     <>
       <Routes>
+        {/* Auth & Onboarding */}
         <Route path="/welcome" element={<Welcome />} />
         <Route path="/phone-auth" element={<PhoneAuth />} />
+        <Route path="/role-selection" element={<RoleSelection />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/profile-setup" element={<ProfileSetup />} />
-        <Route path="/my-vehicles" element={<MyVehicles />} />
-        <Route path="/service-history" element={<ServiceHistory />} />
-        <Route path="/profile-settings" element={<ProfileSettings />} />
+        
+        {/* User Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/services" element={<Services />} />
         <Route path="/photo-diagnostic" element={<PhotoDiagnostic />} />
         <Route path="/super-chat" element={<SuperChat />} />
-        <Route path="/about-app" element={<AboutApp />} />
-        <Route path="/notification-settings" element={<NotificationSettings />} />
-        <Route path="/notifications" element={<Notifications />} />
-        <Route path="/service-cart" element={<ServiceCart />} />
+        <Route path="/my-vehicles" element={<MyVehicles />} />
+        <Route path="/service-history" element={<ServiceHistory />} />
         <Route path="/service-booking" element={<ServiceBooking />} />
+        <Route path="/service-cart" element={<ServiceCart />} />
+        <Route path="/profile-settings" element={<ProfileSettings />} />
+        <Route path="/notifications" element={<Notifications />} />
+        <Route path="/notification-settings" element={<NotificationSettings />} />
+        <Route path="/about-app" element={<AboutApp />} />
+        
+        {/* Partner Routes */}
+        <Route path="/partner/dashboard" element={<PartnerDashboard />} />
+        <Route path="/partner/orders" element={<PartnerOrders />} />
+        <Route path="/partner/clients" element={<PartnerClients />} />
+        <Route path="/partner/services" element={<PartnerServices />} />
+        <Route path="/partner/analytics" element={<PartnerAnalytics />} />
+        <Route path="/partner/shifts" element={<PartnerShifts />} />
+        <Route path="/partner/settings" element={<PartnerSettings />} />
+        
         <Route path="*" element={<NotFound />} />
       </Routes>
-      {!hideNavigation && <BottomNavigation />}
+      {!hideNavigation && !isPartnerRoute && <BottomNavigation />}
     </>
   );
 };
