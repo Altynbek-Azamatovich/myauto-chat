@@ -209,8 +209,8 @@ const translations: Translations = {
   completeCleanInOut: { ru: 'Полная очистка внутри и снаружи', kk: 'Ішінде және сыртында толық тазалау' },
   
   // Role Selection
-  roleSelectionTitle: { ru: 'Выберите роль', kk: 'Рөлді таңдаңыз' },
-  roleSelectionSubtitle: { ru: 'Как вы хотите использовать myAuto?', kk: 'myAuto-ны қалай пайдаланғыңыз келеді?' },
+  roleSelectionTitle: { ru: 'Как вы хотите использовать myAuto?', kk: 'myAuto-ны қалай пайдаланғыңыз келеді?' },
+  roleSelectionSubtitle: { ru: 'Выберите роль для продолжения', kk: 'Жалғастыру үшін рөлді таңдаңыз' },
   carOwner: { ru: 'Автовладелец', kk: 'Автокөлік иесі' },
   carOwnerDesc: { ru: 'Следите за своим автомобилем и записывайтесь на сервис', kk: 'Көлігіңізді бақылаңыз және сервиске жазылыңыз' },
   partner: { ru: 'Партнер', kk: 'Серіктес' },

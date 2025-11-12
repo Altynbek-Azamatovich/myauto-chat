@@ -73,30 +73,27 @@ const RoleSelection = () => {
         {t('back')}
       </Button>
 
-      <div className="flex-1 flex flex-col items-center justify-center max-w-5xl mx-auto w-full">
-        <h1 className="text-4xl font-bold text-foreground mb-3 text-center">
+      <div className="flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto w-full">
+        <h1 className="text-3xl font-bold text-foreground mb-12 text-center">
           {t('roleSelectionTitle')}
         </h1>
-        <p className="text-lg text-muted-foreground mb-12 text-center">
-          {t('roleSelectionSubtitle')}
-        </p>
 
-        <div className="grid md:grid-cols-2 gap-8 w-full">
+        <div className="flex gap-6 w-full justify-center items-stretch">
           {/* User Role - Автовладелец */}
           <Card 
-            className="relative overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-primary group"
+            className="relative overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer border-2 hover:border-primary group flex-1 max-w-xs"
             onClick={() => !loading && handleRoleSelection('user')}
           >
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="relative p-8 flex flex-col items-center text-center space-y-6">
-              <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Car className="h-12 w-12 text-primary" />
+            <div className="relative p-6 flex flex-col items-center text-center space-y-4">
+              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Car className="h-10 w-10 text-primary" />
               </div>
               <div className="space-y-2">
-                <h2 className="text-2xl font-bold text-foreground">
+                <h2 className="text-xl font-bold text-foreground">
                   {t('carOwner')}
                 </h2>
-                <p className="text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   {t('carOwnerDesc')}
                 </p>
               </div>
@@ -106,8 +103,7 @@ const RoleSelection = () => {
                   handleRoleSelection('user');
                 }}
                 disabled={loading}
-                className="w-full mt-4"
-                size="lg"
+                className="w-full"
               >
                 {t('continueAsUser')}
               </Button>
@@ -116,19 +112,19 @@ const RoleSelection = () => {
 
           {/* Partner Role - Партнер Автосервис */}
           <Card 
-            className="relative overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-primary group"
+            className="relative overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer border-2 hover:border-primary group flex-1 max-w-xs"
             onClick={() => !loading && handleRoleSelection('partner')}
           >
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="relative p-8 flex flex-col items-center text-center space-y-6">
-              <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Wrench className="h-12 w-12 text-primary" />
+            <div className="relative p-6 flex flex-col items-center text-center space-y-4">
+              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Wrench className="h-10 w-10 text-primary" />
               </div>
               <div className="space-y-2">
-                <h2 className="text-2xl font-bold text-foreground">
+                <h2 className="text-xl font-bold text-foreground">
                   {t('partner')}
                 </h2>
-                <p className="text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   {t('partnerDesc')}
                 </p>
               </div>
@@ -138,8 +134,7 @@ const RoleSelection = () => {
                   handleRoleSelection('partner');
                 }}
                 disabled={loading}
-                className="w-full mt-4"
-                size="lg"
+                className="w-full"
                 variant="outline"
               >
                 {t('continueAsPartner')}
