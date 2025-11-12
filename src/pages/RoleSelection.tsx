@@ -2,10 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Car, Wrench, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useState } from "react";
+import carOwnerImage from "@/assets/role-car-owner.png";
+import partnerImage from "@/assets/role-partner.png";
 
 const RoleSelection = () => {
   const navigate = useNavigate();
@@ -74,7 +76,7 @@ const RoleSelection = () => {
       </Button>
 
       <div className="flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto w-full">
-        <h1 className="text-3xl font-bold text-foreground mb-12 text-center">
+        <h1 className="text-2xl font-bold text-foreground mb-8 text-center">
           {t('roleSelectionTitle')}
         </h1>
 
@@ -84,29 +86,34 @@ const RoleSelection = () => {
             className="relative overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer border-2 hover:border-primary group flex-1 max-w-xs"
             onClick={() => !loading && handleRoleSelection('user')}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="relative p-6 flex flex-col items-center text-center space-y-4">
-              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Car className="h-10 w-10 text-primary" />
+            <div className="relative flex flex-col">
+              <div className="w-full h-36 overflow-hidden">
+                <img 
+                  src={carOwnerImage} 
+                  alt="Car Owner" 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
               </div>
-              <div className="space-y-2">
-                <h2 className="text-xl font-bold text-foreground">
-                  {t('carOwner')}
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  {t('carOwnerDesc')}
-                </p>
+              <div className="p-5 flex flex-col items-center text-center space-y-3">
+                <div className="space-y-2">
+                  <h2 className="text-lg font-bold text-foreground">
+                    {t('carOwner')}
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    {t('carOwnerDesc')}
+                  </p>
+                </div>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRoleSelection('user');
+                  }}
+                  disabled={loading}
+                  className="w-full"
+                >
+                  Продолжить
+                </Button>
               </div>
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRoleSelection('user');
-                }}
-                disabled={loading}
-                className="w-full"
-              >
-                {t('continueAsUser')}
-              </Button>
             </div>
           </Card>
 
@@ -115,30 +122,34 @@ const RoleSelection = () => {
             className="relative overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer border-2 hover:border-primary group flex-1 max-w-xs"
             onClick={() => !loading && handleRoleSelection('partner')}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="relative p-6 flex flex-col items-center text-center space-y-4">
-              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Wrench className="h-10 w-10 text-primary" />
+            <div className="relative flex flex-col">
+              <div className="w-full h-36 overflow-hidden">
+                <img 
+                  src={partnerImage} 
+                  alt="Partner" 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
               </div>
-              <div className="space-y-2">
-                <h2 className="text-xl font-bold text-foreground">
-                  {t('partner')}
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  {t('partnerDesc')}
-                </p>
+              <div className="p-5 flex flex-col items-center text-center space-y-3">
+                <div className="space-y-2">
+                  <h2 className="text-lg font-bold text-foreground">
+                    {t('partner')}
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    {t('partnerDesc')}
+                  </p>
+                </div>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRoleSelection('partner');
+                  }}
+                  disabled={loading}
+                  className="w-full"
+                >
+                  Продолжить
+                </Button>
               </div>
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRoleSelection('partner');
-                }}
-                disabled={loading}
-                className="w-full"
-                variant="outline"
-              >
-                {t('continueAsPartner')}
-              </Button>
             </div>
           </Card>
         </div>
