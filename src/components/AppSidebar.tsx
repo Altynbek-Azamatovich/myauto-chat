@@ -46,7 +46,7 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate('/phone-auth');
+    navigate('/welcome');
   };
 
   const handleNavigation = (path: string) => {

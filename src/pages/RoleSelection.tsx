@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Car, Wrench, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -63,80 +63,88 @@ const RoleSelection = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col p-4">
+    <div className="min-h-screen bg-background flex flex-col p-6">
       <Button
         variant="ghost"
         onClick={() => navigate('/welcome')}
         className="self-start mb-8"
       >
-        <ArrowLeft className="h-4 w-4 mr-2" />
+        <ArrowLeft className="h-5 w-5 mr-2" />
         {t('back')}
       </Button>
 
-      <div className="flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto w-full">
-        <h1 className="text-3xl font-bold text-foreground mb-2 text-center">
-          {t('roleSelection.title')}
+      <div className="flex-1 flex flex-col items-center justify-center max-w-5xl mx-auto w-full">
+        <h1 className="text-4xl font-bold text-foreground mb-3 text-center">
+          {t('roleSelectionTitle')}
         </h1>
-        <p className="text-muted-foreground mb-8 text-center">
-          {t('roleSelection.subtitle')}
+        <p className="text-lg text-muted-foreground mb-12 text-center">
+          {t('roleSelectionSubtitle')}
         </p>
 
-        <div className="grid md:grid-cols-2 gap-6 w-full">
-          {/* User Role */}
-          <Card className="hover:border-primary transition-colors cursor-pointer">
-            <CardHeader>
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                <Car className="h-8 w-8 text-primary" />
+        <div className="grid md:grid-cols-2 gap-8 w-full">
+          {/* User Role - Автовладелец */}
+          <Card 
+            className="relative overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-primary group"
+            onClick={() => !loading && handleRoleSelection('user')}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="relative p-8 flex flex-col items-center text-center space-y-6">
+              <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Car className="h-12 w-12 text-primary" />
               </div>
-              <CardTitle className="text-center">{t('roleSelection.user.title')}</CardTitle>
-              <CardDescription className="text-center">
-                {t('roleSelection.user.description')}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 mb-6 text-sm text-muted-foreground">
-                <li>✓ {t('roleSelection.user.feature1')}</li>
-                <li>✓ {t('roleSelection.user.feature2')}</li>
-                <li>✓ {t('roleSelection.user.feature3')}</li>
-                <li>✓ {t('roleSelection.user.feature4')}</li>
-              </ul>
+              <div className="space-y-2">
+                <h2 className="text-2xl font-bold text-foreground">
+                  {t('carOwner')}
+                </h2>
+                <p className="text-muted-foreground">
+                  {t('carOwnerDesc')}
+                </p>
+              </div>
               <Button
-                onClick={() => handleRoleSelection('user')}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRoleSelection('user');
+                }}
                 disabled={loading}
-                className="w-full"
+                className="w-full mt-4"
+                size="lg"
               >
-                {t('roleSelection.continueAsUser')}
+                {t('continueAsUser')}
               </Button>
-            </CardContent>
+            </div>
           </Card>
 
-          {/* Partner Role */}
-          <Card className="hover:border-primary transition-colors cursor-pointer">
-            <CardHeader>
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                <Wrench className="h-8 w-8 text-primary" />
+          {/* Partner Role - Партнер Автосервис */}
+          <Card 
+            className="relative overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-primary group"
+            onClick={() => !loading && handleRoleSelection('partner')}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="relative p-8 flex flex-col items-center text-center space-y-6">
+              <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Wrench className="h-12 w-12 text-primary" />
               </div>
-              <CardTitle className="text-center">{t('roleSelection.partner.title')}</CardTitle>
-              <CardDescription className="text-center">
-                {t('roleSelection.partner.description')}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 mb-6 text-sm text-muted-foreground">
-                <li>✓ {t('roleSelection.partner.feature1')}</li>
-                <li>✓ {t('roleSelection.partner.feature2')}</li>
-                <li>✓ {t('roleSelection.partner.feature3')}</li>
-                <li>✓ {t('roleSelection.partner.feature4')}</li>
-              </ul>
+              <div className="space-y-2">
+                <h2 className="text-2xl font-bold text-foreground">
+                  {t('partner')}
+                </h2>
+                <p className="text-muted-foreground">
+                  {t('partnerDesc')}
+                </p>
+              </div>
               <Button
-                onClick={() => handleRoleSelection('partner')}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRoleSelection('partner');
+                }}
                 disabled={loading}
-                className="w-full"
+                className="w-full mt-4"
+                size="lg"
                 variant="outline"
               >
-                {t('roleSelection.continueAsPartner')}
+                {t('continueAsPartner')}
               </Button>
-            </CardContent>
+            </div>
           </Card>
         </div>
       </div>
