@@ -76,17 +76,17 @@ const RoleSelection = () => {
       </Button>
 
       <div className="flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto w-full">
-        <h1 className="text-2xl font-bold text-foreground mb-8 text-center">
+        <h1 className="text-xl font-bold text-foreground mb-8 text-center">
           {t('roleSelectionTitle')}
         </h1>
 
         <div className="flex gap-6 w-full justify-center items-stretch">
           {/* User Role - Автовладелец */}
           <Card 
-            className="relative overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer border-2 hover:border-primary group flex-1 max-w-xs"
+            className="relative overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer border-2 hover:border-primary group flex-1 max-w-xs flex flex-col"
             onClick={() => !loading && handleRoleSelection('user')}
           >
-            <div className="relative flex flex-col">
+            <div className="relative flex flex-col h-full">
               <div className="w-full h-36 overflow-hidden">
                 <img 
                   src={carOwnerImage} 
@@ -94,12 +94,12 @@ const RoleSelection = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
-              <div className="p-5 flex flex-col items-center text-center space-y-3">
+              <div className="p-5 flex flex-col items-center text-center flex-1 flex flex-col justify-between">
                 <div className="space-y-2">
-                  <h2 className="text-lg font-bold text-foreground">
+                  <h2 className="text-base font-bold text-foreground">
                     {t('carOwner')}
                   </h2>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs text-muted-foreground whitespace-pre-line">
                     {t('carOwnerDesc')}
                   </p>
                 </div>
@@ -109,7 +109,7 @@ const RoleSelection = () => {
                     handleRoleSelection('user');
                   }}
                   disabled={loading}
-                  className="w-full"
+                  className="w-full mt-4"
                 >
                   Продолжить
                 </Button>
@@ -119,10 +119,10 @@ const RoleSelection = () => {
 
           {/* Partner Role - Партнер Автосервис */}
           <Card 
-            className="relative overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer border-2 hover:border-primary group flex-1 max-w-xs"
+            className="relative overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer border-2 hover:border-primary group flex-1 max-w-xs flex flex-col"
             onClick={() => !loading && handleRoleSelection('partner')}
           >
-            <div className="relative flex flex-col">
+            <div className="relative flex flex-col h-full">
               <div className="w-full h-36 overflow-hidden">
                 <img 
                   src={partnerImage} 
@@ -130,12 +130,12 @@ const RoleSelection = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
-              <div className="p-5 flex flex-col items-center text-center space-y-3">
+              <div className="p-5 flex flex-col items-center text-center flex-1 flex flex-col justify-between">
                 <div className="space-y-2">
-                  <h2 className="text-lg font-bold text-foreground">
+                  <h2 className="text-base font-bold text-foreground">
                     {t('partner')}
                   </h2>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs text-muted-foreground whitespace-pre-line">
                     {t('partnerDesc')}
                   </p>
                 </div>
@@ -145,7 +145,7 @@ const RoleSelection = () => {
                     handleRoleSelection('partner');
                   }}
                   disabled={loading}
-                  className="w-full"
+                  className="w-full mt-4"
                 >
                   Продолжить
                 </Button>
