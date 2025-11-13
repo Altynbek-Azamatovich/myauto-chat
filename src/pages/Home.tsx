@@ -58,7 +58,7 @@ const Home = () => {
   const checkAuthAndFetchData = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
-      navigate('/phone-auth');
+      navigate('/welcome');
       return;
     }
     fetchPrimaryVehicle();

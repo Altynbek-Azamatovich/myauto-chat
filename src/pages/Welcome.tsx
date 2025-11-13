@@ -41,7 +41,7 @@ const Welcome = () => {
 
       {/* Start Button */}
       <div className="px-4 pb-8">
-        <Button onClick={() => navigate('/phone-auth')} className="w-full h-14 text-lg rounded-2xl bg-primary hover:bg-primary/90">
+        <Button onClick={() => navigate('/role-selection')} className="w-full h-14 text-lg rounded-2xl bg-primary hover:bg-primary/90">
           {t('getStarted')}
         </Button>
       </div>

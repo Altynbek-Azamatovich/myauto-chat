@@ -20,14 +20,14 @@ const AuthGuard = ({ children, requireAuth = true }: AuthGuardProps) => {
         setAuthenticated(!!session);
         
         if (requireAuth && !session) {
-          navigate('/phone-auth', { replace: true });
+          navigate('/welcome', { replace: true });
         } else if (!requireAuth && session) {
           navigate('/', { replace: true });
         }
       } catch (error) {
         console.error('Auth check error:', error);
         if (requireAuth) {
-          navigate('/phone-auth', { replace: true });
+          navigate('/welcome', { replace: true });
         }
       } finally {
         setLoading(false);
@@ -40,7 +40,7 @@ const AuthGuard = ({ children, requireAuth = true }: AuthGuardProps) => {
       setAuthenticated(!!session);
       
       if (requireAuth && !session) {
-        navigate('/phone-auth', { replace: true });
+        navigate('/welcome', { replace: true });
       } else if (!requireAuth && session) {
         navigate('/', { replace: true });
       }

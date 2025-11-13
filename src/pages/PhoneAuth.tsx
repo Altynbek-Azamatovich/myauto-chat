@@ -131,7 +131,7 @@ const PhoneAuth = () => {
             : "Тіркелу аяқталды",
         });
         
-        navigate('/profile-setup');
+        navigate('/role-selection');
       } else {
         // Login
         const { error } = await supabase.auth.signInWithPassword({
@@ -148,7 +148,7 @@ const PhoneAuth = () => {
             : "Кіру орындалды",
         });
         
-        navigate('/');
+        navigate('/role-selection');
       }
     } catch (error: any) {
       console.error('Error in handleSubmit:', error);

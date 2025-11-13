@@ -19,6 +19,8 @@ const RoleSelection = () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
+        // Store selected role in localStorage and redirect to auth
+        localStorage.setItem('pending_role', role);
         navigate('/phone-auth');
         return;
       }
