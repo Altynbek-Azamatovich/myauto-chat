@@ -316,7 +316,7 @@ const SuperChat = () => {
       {/* Input Area - Fixed at bottom */}
       <div className="fixed bottom-24 left-0 right-0 px-4 py-3 z-10">
         <div className="flex items-center justify-center space-x-2">
-          <div className="flex items-center bg-black/25 dark:bg-muted/50 backdrop-blur-[4px] rounded-full px-3 h-10 max-w-lg w-full">
+          <div className="flex items-center bg-black/20 dark:bg-muted/50 backdrop-blur-[2px] rounded-full px-3 h-10 max-w-lg w-full">
             <Button 
               variant="ghost" 
               size="icon" 
