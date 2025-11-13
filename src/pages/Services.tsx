@@ -29,7 +29,7 @@ const Services = () => {
           }
         />
 
-        <img src={logoImage} alt="myAuto" className="h-10 w-auto" />
+        <img src={logoImage} alt="myAuto" className="h-12 w-auto" />
 
         <Button 
           variant="ghost" 

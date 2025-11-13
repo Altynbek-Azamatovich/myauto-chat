@@ -25,7 +25,7 @@ const Notifications = () => {
           <ArrowLeft className="h-6 w-6" />
         </Button>
 
-        <img src={logoImage} alt="myAuto" className="h-10 w-auto" />
+        <img src={logoImage} alt="myAuto" className="h-12 w-auto" />
 
         <div className="w-10" /> {/* Spacer for centering */}
       </header>
