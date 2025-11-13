@@ -61,37 +61,29 @@ const PhotoDiagnostic = () => {
         <div className="w-10" />
       </header>
 
-      <div className="py-4 space-y-3 pb-32">
+      <div className="py-2 space-y-2 pb-32">
         <div className="text-center px-4">
-          <p className="text-muted-foreground text-sm">
+          <p className="text-muted-foreground text-xs leading-tight">
             Сделай фото автомобиля<br />
             ИИ распознает повреждения<br />
             и предложит решение
           </p>
         </div>
 
-        <div className="w-full relative">
+        <div className="w-full relative px-4">
           <img src={carDiagnosticImage} alt="Автомобиль для диагностики" className="w-full h-auto object-contain" />
-          {/* Camera viewfinder overlay */}
+          {/* Minimal camera frame overlay */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-[85%] h-[75%] border-4 border-primary rounded-3xl shadow-lg" style={{
-              boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(59, 130, 246, 0.3)'
-            }}>
-              {/* Corner decorations */}
-              <div className="absolute top-2 left-2 w-8 h-8 border-t-4 border-l-4 border-primary rounded-tl-lg"></div>
-              <div className="absolute top-2 right-2 w-8 h-8 border-t-4 border-r-4 border-primary rounded-tr-lg"></div>
-              <div className="absolute bottom-2 left-2 w-8 h-8 border-b-4 border-l-4 border-primary rounded-bl-lg"></div>
-              <div className="absolute bottom-2 right-2 w-8 h-8 border-b-4 border-r-4 border-primary rounded-br-lg"></div>
-            </div>
+            <div className="w-[80%] h-[70%] border-2 border-primary/60 rounded-2xl"></div>
           </div>
         </div>
 
-        <div className="px-4 space-y-3">
-          {!image ? <label className="flex flex-col items-center justify-center min-h-[200px] cursor-pointer">
+        <div className="px-4 space-y-2">
+          {!image ? <label className="flex flex-col items-center justify-center min-h-[120px] cursor-pointer">
               <input type="file" accept="image/*" capture="environment" onChange={handleImageCapture} className="hidden" />
-              <Camera className="h-16 w-16 text-primary mb-4" />
-              <div className="bg-white px-8 py-3 rounded-full">
-                <p className="text-lg font-semibold text-primary">Запустить камеру</p>
+              <Camera className="h-10 w-10 text-primary mb-2" />
+              <div className="bg-white px-6 py-2 rounded-full">
+                <p className="text-sm font-semibold text-primary">Запустить камеру</p>
               </div>
             </label> : <div className="space-y-4">
               <div className="relative">
