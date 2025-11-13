@@ -157,40 +157,41 @@ const Home = () => {
         
         {/* Interactive Points */}
         <button 
-          onClick={() => toast.info(t('featureInDevelopment') || 'Выбор деталей в разработке')}
-          className="absolute top-[25%] left-[30%] w-6 h-6 rounded-full border-2 border-primary bg-primary/20 backdrop-blur-sm hover:scale-110 transition-transform"
+          onClick={() => toast.info('Выбор деталей в разработке')}
+          className="absolute top-[25%] left-[30%] w-6 h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform"
         >
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-primary" />
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white" />
         </button>
         
         <button 
-          onClick={() => toast.info(t('featureInDevelopment') || 'Выбор деталей в разработке')}
-          className="absolute top-[30%] right-[25%] w-6 h-6 rounded-full border-2 border-primary bg-primary/20 backdrop-blur-sm hover:scale-110 transition-transform"
+          onClick={() => toast.info('Выбор деталей в разработке')}
+          className="absolute top-[30%] right-[25%] w-6 h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform"
         >
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-primary" />
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white" />
         </button>
         
         <button 
-          onClick={() => toast.info(t('featureInDevelopment') || 'Выбор деталей в разработке')}
-          className="absolute top-[50%] left-[20%] w-6 h-6 rounded-full border-2 border-primary bg-primary/20 backdrop-blur-sm hover:scale-110 transition-transform"
+          onClick={() => toast.info('Выбор деталей в разработке')}
+          className="absolute top-[50%] left-[20%] w-6 h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform"
         >
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-primary" />
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white" />
         </button>
         
         <button 
-          onClick={() => toast.info(t('featureInDevelopment') || 'Выбор деталей в разработке')}
-          className="absolute top-[55%] right-[30%] w-6 h-6 rounded-full border-2 border-primary bg-primary/20 backdrop-blur-sm hover:scale-110 transition-transform"
+          onClick={() => toast.info('Выбор деталей в разработке')}
+          className="absolute top-[55%] right-[30%] w-6 h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform"
         >
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-primary" />
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white" />
         </button>
 
         {/* 360 Button */}
         <Button
-          onClick={() => toast.info(t('featureInDevelopment') || '3D модели авто в разработке')}
-          className="absolute bottom-4 right-4 rounded-full bg-white/15 backdrop-blur-md border-white/20 hover:bg-white/25"
+          onClick={() => toast.info('3D модели авто в разработке')}
+          className="absolute bottom-4 right-4 rounded-full bg-white/15 backdrop-blur-md border-white/20 hover:bg-white/25 flex items-center justify-center gap-1"
           size="icon"
         >
-          <RotateCcw className="h-5 w-5" />
+          <RotateCcw className="h-4 w-4" />
+          <span className="text-xs font-semibold">360</span>
         </Button>
       </div>
 
