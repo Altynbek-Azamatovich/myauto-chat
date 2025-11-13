@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import logoImage from "@/assets/logo-new.png";
+import homeBackground from "@/assets/home-background.png";
 
 const PhotoDiagnostic = () => {
   const navigate = useNavigate();
@@ -55,7 +56,10 @@ const PhotoDiagnostic = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div 
+      className="min-h-screen bg-background bg-cover bg-center bg-no-repeat bg-fixed"
+      style={{ backgroundImage: `url(${homeBackground})` }}
+    >
       <header className="flex items-center justify-between px-4 py-4 border-b">
         <Button 
           variant="ghost" 
@@ -79,7 +83,7 @@ const PhotoDiagnostic = () => {
           </p>
         </div>
 
-        <Card className="p-6 space-y-4">
+        <Card className="p-6 space-y-4 bg-white/15 backdrop-blur-md border-white/20">
           {!image ? (
             <label className="flex flex-col items-center justify-center min-h-[300px] border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
               <input
