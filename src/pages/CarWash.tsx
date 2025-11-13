@@ -134,7 +134,7 @@ const CarWash = () => {
           <h2 className="text-lg font-semibold mb-3">{t('nearbyLocations')}</h2>
           <div className="space-y-2">
             {locations.map((location) => (
-              <Card key={location.id} className="bg-card hover:bg-accent transition-colors cursor-pointer">
+              <Card key={location.id} className="bg-card hover:bg-muted/30 transition-colors cursor-pointer">
                 <CardContent className="py-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">

@@ -50,66 +50,66 @@ const Services = () => {
       <div className="grid grid-cols-2 gap-4 px-4 pb-24">
         {/* Помощь на дороге */}
         <Card 
-          className="h-48 relative overflow-hidden border-0 cursor-pointer group"
+          className="h-48 relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
           onClick={() => navigate('/roadside-help')}
         >
-          <img src={roadsideHelpImg} alt={t('roadHelp')} className="w-full h-full object-cover transition-opacity group-hover:opacity-80" />
+          <img src={roadsideHelpImg} alt={t('roadHelp')} className="w-full h-full object-cover" />
         </Card>
         
         {/* Авто Форум */}
         <Card 
-          className="h-48 relative overflow-hidden border-0 cursor-pointer group"
+          className="h-48 relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
           onClick={() => navigate('/auto-forum')}
         >
-          <img src={autoForumImg} alt={t('autoForum')} className="w-full h-full object-cover transition-opacity group-hover:opacity-80" />
+          <img src={autoForumImg} alt={t('autoForum')} className="w-full h-full object-cover" />
         </Card>
 
         {/* Автосервисы */}
         <Card 
-          className="h-48 relative overflow-hidden border-0 cursor-pointer group"
+          className="h-48 relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
           onClick={() => navigate('/service-booking')}
         >
-          <img src={autoServicesImg} alt={t('servicesTitle')} className="w-full h-full object-cover transition-opacity group-hover:opacity-80" />
+          <img src={autoServicesImg} alt={t('servicesTitle')} className="w-full h-full object-cover" />
         </Card>
 
         {/* Автомагазины */}
         <Card 
-          className="h-48 relative overflow-hidden border-0 cursor-pointer group"
+          className="h-48 relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
           onClick={() => navigate('/auto-shops')}
         >
-          <img src={autoShopsImg} alt={t('autoShops')} className="w-full h-full object-cover transition-opacity group-hover:opacity-80" />
+          <img src={autoShopsImg} alt={t('autoShops')} className="w-full h-full object-cover" />
         </Card>
 
         {/* Детейлинг */}
         <Card 
-          className="h-48 relative overflow-hidden border-0 cursor-pointer group"
+          className="h-48 relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
           onClick={() => navigate('/detailing')}
         >
-          <img src={detailingImg} alt={t('detailing')} className="w-full h-full object-cover transition-opacity group-hover:opacity-80" />
+          <img src={detailingImg} alt={t('detailing')} className="w-full h-full object-cover" />
         </Card>
 
         {/* Автомаляры */}
         <Card 
-          className="h-48 relative overflow-hidden border-0 cursor-pointer group"
+          className="h-48 relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
           onClick={() => navigate('/paint-shop')}
         >
-          <img src={paintShopImg} alt={t('paintShop')} className="w-full h-full object-cover transition-opacity group-hover:opacity-80" />
+          <img src={paintShopImg} alt={t('paintShop')} className="w-full h-full object-cover" />
         </Card>
 
         {/* Авторазборы */}
         <Card 
-          className="h-48 relative overflow-hidden border-0 cursor-pointer group"
+          className="h-48 relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
           onClick={() => navigate('/parts-dismantling')}
         >
-          <img src={partsDismantlingImg} alt={t('partsDismantling')} className="w-full h-full object-cover transition-opacity group-hover:opacity-80" />
+          <img src={partsDismantlingImg} alt={t('partsDismantling')} className="w-full h-full object-cover" />
         </Card>
 
         {/* Автомойки */}
         <Card 
-          className="h-48 relative overflow-hidden border-0 cursor-pointer group"
+          className="h-48 relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
           onClick={() => navigate('/car-wash')}
         >
-          <img src={carWashImg} alt={t('carWash')} className="w-full h-full object-cover transition-opacity group-hover:opacity-80" />
+          <img src={carWashImg} alt={t('carWash')} className="w-full h-full object-cover" />
         </Card>
       </div>
     </div>
