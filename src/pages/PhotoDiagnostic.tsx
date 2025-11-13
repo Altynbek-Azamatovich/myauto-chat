@@ -7,7 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import logoImage from "@/assets/logo.svg";
-import carDiagnosticImage from "@/assets/car-diagnostic.png";
+import carDiagnosticImage from "@/assets/car-diagnostic-new.png";
 const PhotoDiagnostic = () => {
   const navigate = useNavigate();
   const [image, setImage] = useState<string | null>(null);
@@ -63,25 +63,34 @@ const PhotoDiagnostic = () => {
 
       <div className="py-2 space-y-2 pb-32">
         <div className="text-center px-4">
-          <p className="text-muted-foreground text-xs leading-tight">
+          <h1 className="text-2xl font-bold mb-2">Фотодиагностика</h1>
+          <p className="text-muted-foreground text-sm">
             Сделай фото автомобиля<br />
             ИИ распознает повреждения<br />
             и предложит решение
           </p>
         </div>
 
-        <div className="w-full relative px-4">
+        <div className="w-full relative">
           <img src={carDiagnosticImage} alt="Автомобиль для диагностики" className="w-full h-auto object-contain" />
-          {/* Minimal camera frame overlay */}
+          {/* Camera viewfinder overlay */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-[80%] h-[70%] border-2 border-primary/60 rounded-2xl"></div>
+            <div className="relative w-[75%] h-[60%]">
+              {/* Main frame */}
+              <div className="absolute inset-0 border-2 border-white/80 rounded-xl"></div>
+              {/* Corner brackets */}
+              <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-primary"></div>
+              <div className="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-primary"></div>
+              <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-primary"></div>
+              <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-primary"></div>
+            </div>
           </div>
         </div>
 
         <div className="px-4 space-y-2">
           {!image ? <label className="flex flex-col items-center justify-center min-h-[120px] cursor-pointer">
               <input type="file" accept="image/*" capture="environment" onChange={handleImageCapture} className="hidden" />
-              <Camera className="h-10 w-10 text-primary mb-2" />
+              <Camera className="h-16 w-16 text-primary mb-2" />
               <div className="bg-white px-6 py-2 rounded-full">
                 <p className="text-sm font-semibold text-primary">Запустить камеру</p>
               </div>
