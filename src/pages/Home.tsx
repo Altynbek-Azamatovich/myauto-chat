@@ -149,51 +149,11 @@ const Home = () => {
 
       {/* Car Display */}
       <div className="py-2">
-        <div className="relative">
-          <img 
-            src={carCoveredImage} 
-            alt="Toyota Camry 2019" 
-            className="w-full h-auto object-contain"
-          />
-          
-          {/* Interactive points */}
-          <button 
-            onClick={() => toast.info('Выбор деталей ещё в разработке')}
-            className="absolute top-1/4 left-1/4 w-6 h-6 rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform border border-muted-foreground/40 bg-background"
-          >
-            <div className="w-3 h-3 bg-background rounded-full border border-muted-foreground/60"></div>
-          </button>
-          <button 
-            onClick={() => toast.info('Выбор деталей ещё в разработке')}
-            className="absolute top-1/3 right-1/3 w-6 h-6 rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform border border-muted-foreground/40 bg-background"
-          >
-            <div className="w-3 h-3 bg-background rounded-full border border-muted-foreground/60"></div>
-          </button>
-          <button 
-            onClick={() => toast.info('Выбор деталей ещё в разработке')}
-            className="absolute bottom-1/3 left-1/3 w-6 h-6 rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform border border-muted-foreground/40 bg-background"
-          >
-            <div className="w-3 h-3 bg-background rounded-full border border-muted-foreground/60"></div>
-          </button>
-          <button 
-            onClick={() => toast.info('Выбор деталей ещё в разработке')}
-            className="absolute bottom-1/4 right-1/4 w-6 h-6 rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform border border-muted-foreground/40 bg-background"
-          >
-            <div className="w-3 h-3 bg-background rounded-full border border-muted-foreground/60"></div>
-          </button>
-          
-          {/* 360 button */}
-          <div className="absolute bottom-4 right-4">
-            <Button 
-              size="sm" 
-              className="rounded-full bg-white/90 text-foreground hover:bg-white"
-              onClick={() => toast.info('3D модели автомобилей находятся в разработке')}
-            >
-              <RotateCcw className="h-4 w-4 mr-1" />
-              360°
-            </Button>
-          </div>
-        </div>
+        <img 
+          src={carCoveredImage} 
+          alt="Toyota Camry 2019" 
+          className="w-full h-auto object-contain"
+        />
       </div>
 
       {/* Car Info Cards */}
