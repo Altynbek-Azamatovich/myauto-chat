@@ -2,7 +2,7 @@ import { Menu, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import logoImage from "@/assets/logo.svg";
+import logoImage from "@/assets/logo-main.png";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCart } from "@/contexts/CartContext";
