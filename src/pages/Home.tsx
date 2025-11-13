@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import carCoveredImage from "@/assets/car-covered-new.png";
 import logoImage from "@/assets/logo-main.png";
+import icon360 from "@/assets/360-icon.png";
 import BottomNavigation from '@/components/BottomNavigation';
 import { AppSidebar } from '@/components/AppSidebar';
 import { usePersistedState } from '@/hooks/usePersistedState';
@@ -149,9 +150,8 @@ const Home = () => {
         </button>
 
         {/* 360 Button */}
-        <Button onClick={() => toast.info('3D модели авто в разработке')} className="absolute bottom-4 right-4 px-6 py-3 rounded-full bg-black/35 backdrop-blur-md border-white/20 hover:bg-black/45 text-white flex items-center gap-2 font-semibold font-sans text-base">
-          <RotateCcw size={18} />
-          360
+        <Button onClick={() => toast.info('3D модели авто в разработке')} className="absolute bottom-4 right-4 p-0 rounded-full bg-black/35 backdrop-blur-md hover:bg-black/45 border-0">
+          <img src={icon360} alt="360" className="w-16 h-16" />
         </Button>
       </div>
 
