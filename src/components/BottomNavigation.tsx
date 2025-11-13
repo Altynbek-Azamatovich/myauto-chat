@@ -56,7 +56,7 @@ const BottomNavigation = () => {
                   } ${marginClass}`}
                   onClick={() => navigate(item.path)}
                 >
-                  <item.icon size={24} strokeWidth={1.5} />
+                  <item.icon size={32} strokeWidth={1.5} />
                   <NotificationBadge count={item.count} size="sm" className="absolute -top-1 -right-1" />
                 </Button>
               );
@@ -75,7 +75,7 @@ const BottomNavigation = () => {
             className="rounded-full aspect-square p-2 bg-transparent hover:bg-transparent relative"
             onClick={() => navigate("/super-chat")}
           >
-            <MessageCircle size={24} strokeWidth={1.5} className="text-white" />
+            <MessageCircle size={32} strokeWidth={1.5} className="text-white" />
             <NotificationBadge count={chatCount} size="sm" className="absolute -top-1 -right-1" />
           </Button>
         </div>
