@@ -74,7 +74,7 @@ const PhotoDiagnostic = () => {
           <img src={carDiagnosticImage} alt="Автомобиль для диагностики" className="w-full h-auto object-contain" />
           {/* Scanner overlay */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="relative w-[70%] h-[55%]">
+            <div className="relative w-[70%] h-[75%]">
               {/* Scanner corners with glow effect */}
               <div className="absolute -top-1 -left-1 w-12 h-12 border-t-[5px] border-l-[5px] border-primary rounded-tl-2xl animate-pulse" 
                    style={{ filter: 'drop-shadow(0 0 8px hsl(var(--primary)))' }}></div>
