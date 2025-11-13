@@ -1,12 +1,20 @@
-import { Menu, ShoppingCart, Wrench, HelpCircle, MessageSquare, Store, Sparkles, Paintbrush, Recycle, Droplet } from "lucide-react";
+import { Menu, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import logoImage from "@/assets/logo.svg";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCart } from "@/contexts/CartContext";
 import NotificationBadge from "@/components/NotificationBadge";
+import roadsideHelpImg from "@/assets/services/roadside-help.png";
+import autoForumImg from "@/assets/services/auto-forum.png";
+import autoServicesImg from "@/assets/services/auto-services.png";
+import autoShopsImg from "@/assets/services/auto-shops.png";
+import detailingImg from "@/assets/services/detailing.png";
+import paintShopImg from "@/assets/services/paint-shop.png";
+import partsDismantlingImg from "@/assets/services/parts-dismantling.png";
+import carWashImg from "@/assets/services/car-wash.png";
 
 const Services = () => {
   const navigate = useNavigate();
@@ -42,90 +50,90 @@ const Services = () => {
       <div className="grid grid-cols-2 gap-4 px-4 pb-24">
         {/* Помощь на дороге */}
         <Card 
-          className="aspect-square bg-white/15 backdrop-blur-md border-white/20 hover:bg-white/20 transition-colors cursor-pointer flex items-center justify-center"
+          className="aspect-square relative overflow-hidden border-white/20 hover:scale-105 transition-transform cursor-pointer"
           onClick={() => navigate('/roadside-help')}
         >
-          <CardContent className="flex flex-col items-center justify-center p-4 text-center">
-            <HelpCircle className="h-12 w-12 text-primary mb-3" />
-            <h3 className="font-semibold text-foreground">{t('roadHelp')}</h3>
-          </CardContent>
+          <img src={roadsideHelpImg} alt={t('roadHelp')} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-x-0 top-0 p-4 bg-gradient-to-b from-black/60 to-transparent">
+            <h3 className="font-semibold text-white text-lg">{t('roadHelp')}</h3>
+          </div>
         </Card>
         
         {/* Авто Форум */}
         <Card 
-          className="aspect-square bg-white/15 backdrop-blur-md border-white/20 hover:bg-white/20 transition-colors cursor-pointer flex items-center justify-center"
+          className="aspect-square relative overflow-hidden border-white/20 hover:scale-105 transition-transform cursor-pointer"
           onClick={() => navigate('/auto-forum')}
         >
-          <CardContent className="flex flex-col items-center justify-center p-4 text-center">
-            <MessageSquare className="h-12 w-12 text-primary mb-3" />
-            <h3 className="font-semibold text-foreground">{t('autoForum')}</h3>
-          </CardContent>
+          <img src={autoForumImg} alt={t('autoForum')} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-x-0 top-0 p-4 bg-gradient-to-b from-black/60 to-transparent">
+            <h3 className="font-semibold text-white text-lg">{t('autoForum')}</h3>
+          </div>
         </Card>
 
         {/* Автосервисы */}
         <Card 
-          className="aspect-square bg-white/15 backdrop-blur-md border-white/20 hover:bg-white/20 transition-colors cursor-pointer flex items-center justify-center"
+          className="aspect-square relative overflow-hidden border-white/20 hover:scale-105 transition-transform cursor-pointer"
           onClick={() => navigate('/service-booking')}
         >
-          <CardContent className="flex flex-col items-center justify-center p-4 text-center">
-            <Wrench className="h-12 w-12 text-primary mb-3" />
-            <h3 className="font-semibold text-foreground">{t('servicesTitle')}</h3>
-          </CardContent>
+          <img src={autoServicesImg} alt={t('servicesTitle')} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-x-0 top-0 p-4 bg-gradient-to-b from-black/60 to-transparent">
+            <h3 className="font-semibold text-white text-lg">{t('servicesTitle')}</h3>
+          </div>
         </Card>
 
         {/* Автомагазины */}
         <Card 
-          className="aspect-square bg-white/15 backdrop-blur-md border-white/20 hover:bg-white/20 transition-colors cursor-pointer flex items-center justify-center"
+          className="aspect-square relative overflow-hidden border-white/20 hover:scale-105 transition-transform cursor-pointer"
           onClick={() => navigate('/auto-shops')}
         >
-          <CardContent className="flex flex-col items-center justify-center p-4 text-center">
-            <Store className="h-12 w-12 text-primary mb-3" />
-            <h3 className="font-semibold text-foreground">{t('autoShops')}</h3>
-          </CardContent>
+          <img src={autoShopsImg} alt={t('autoShops')} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-x-0 top-0 p-4 bg-gradient-to-b from-black/60 to-transparent">
+            <h3 className="font-semibold text-white text-lg">{t('autoShops')}</h3>
+          </div>
         </Card>
 
         {/* Детейлинг */}
         <Card 
-          className="aspect-square bg-white/15 backdrop-blur-md border-white/20 hover:bg-white/20 transition-colors cursor-pointer flex items-center justify-center"
+          className="aspect-square relative overflow-hidden border-white/20 hover:scale-105 transition-transform cursor-pointer"
           onClick={() => navigate('/detailing')}
         >
-          <CardContent className="flex flex-col items-center justify-center p-4 text-center">
-            <Sparkles className="h-12 w-12 text-primary mb-3" />
-            <h3 className="font-semibold text-foreground">{t('detailing')}</h3>
-          </CardContent>
+          <img src={detailingImg} alt={t('detailing')} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-x-0 top-0 p-4 bg-gradient-to-b from-black/60 to-transparent">
+            <h3 className="font-semibold text-white text-lg">{t('detailing')}</h3>
+          </div>
         </Card>
 
         {/* Автомаляры */}
         <Card 
-          className="aspect-square bg-white/15 backdrop-blur-md border-white/20 hover:bg-white/20 transition-colors cursor-pointer flex items-center justify-center"
+          className="aspect-square relative overflow-hidden border-white/20 hover:scale-105 transition-transform cursor-pointer"
           onClick={() => navigate('/paint-shop')}
         >
-          <CardContent className="flex flex-col items-center justify-center p-4 text-center">
-            <Paintbrush className="h-12 w-12 text-primary mb-3" />
-            <h3 className="font-semibold text-foreground">{t('paintShop')}</h3>
-          </CardContent>
+          <img src={paintShopImg} alt={t('paintShop')} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-x-0 top-0 p-4 bg-gradient-to-b from-black/60 to-transparent">
+            <h3 className="font-semibold text-white text-lg">{t('paintShop')}</h3>
+          </div>
         </Card>
 
         {/* Авторазборы */}
         <Card 
-          className="aspect-square bg-white/15 backdrop-blur-md border-white/20 hover:bg-white/20 transition-colors cursor-pointer flex items-center justify-center"
+          className="aspect-square relative overflow-hidden border-white/20 hover:scale-105 transition-transform cursor-pointer"
           onClick={() => navigate('/parts-dismantling')}
         >
-          <CardContent className="flex flex-col items-center justify-center p-4 text-center">
-            <Recycle className="h-12 w-12 text-primary mb-3" />
-            <h3 className="font-semibold text-foreground">{t('partsDismantling')}</h3>
-          </CardContent>
+          <img src={partsDismantlingImg} alt={t('partsDismantling')} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-x-0 top-0 p-4 bg-gradient-to-b from-black/60 to-transparent">
+            <h3 className="font-semibold text-white text-lg">{t('partsDismantling')}</h3>
+          </div>
         </Card>
 
         {/* Автомойки */}
         <Card 
-          className="aspect-square bg-white/15 backdrop-blur-md border-white/20 hover:bg-white/20 transition-colors cursor-pointer flex items-center justify-center"
+          className="aspect-square relative overflow-hidden border-white/20 hover:scale-105 transition-transform cursor-pointer"
           onClick={() => navigate('/car-wash')}
         >
-          <CardContent className="flex flex-col items-center justify-center p-4 text-center">
-            <Droplet className="h-12 w-12 text-primary mb-3" />
-            <h3 className="font-semibold text-foreground">{t('carWash')}</h3>
-          </CardContent>
+          <img src={carWashImg} alt={t('carWash')} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-x-0 top-0 p-4 bg-gradient-to-b from-black/60 to-transparent">
+            <h3 className="font-semibold text-white text-lg">{t('carWash')}</h3>
+          </div>
         </Card>
       </div>
     </div>
