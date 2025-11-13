@@ -7,7 +7,6 @@ import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from 
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useTheme } from "@/contexts/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import { supabase } from '@/integrations/supabase/client';
 import { format } from "date-fns";
@@ -15,8 +14,7 @@ import { ru, kk } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import carCoveredImage from "@/assets/car-covered-new.png";
-import logoImageLight from "@/assets/logo.svg";
-import logoImageDark from "@/assets/logo-dark.svg";
+import logoImage from "@/assets/logo.svg";
 import homeBackground from "@/assets/home-background.png";
 import BottomNavigation from '@/components/BottomNavigation';
 import { AppSidebar } from '@/components/AppSidebar';
@@ -51,11 +49,8 @@ const Home = () => {
   const [primaryVehicle, setPrimaryVehicle] = useState<Vehicle | null>(null);
   const [brandName, setBrandName] = useState<string>('');
   const { t, language } = useLanguage();
-  const { theme } = useTheme();
 
   const navigate = useNavigate();
-
-  const logoImage = theme === 'dark' ? logoImageDark : logoImageLight;
 
   useEffect(() => {
     checkAuthAndFetchData();

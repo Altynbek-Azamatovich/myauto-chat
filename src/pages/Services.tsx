@@ -2,22 +2,17 @@ import { Menu, ShoppingCart, Wrench, HelpCircle, MessageSquare, Store, Sparkles,
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import logoImageLight from "@/assets/logo.svg";
-import logoImageDark from "@/assets/logo-dark.svg";
+import logoImage from "@/assets/logo.svg";
 import homeBackground from "@/assets/home-background.png";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCart } from "@/contexts/CartContext";
-import { useTheme } from "@/contexts/ThemeContext";
 import NotificationBadge from "@/components/NotificationBadge";
 
 const Services = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const { itemCount } = useCart();
-  const { theme } = useTheme();
-  
-  const logoImage = theme === 'dark' ? logoImageDark : logoImageLight;
 
   return (
     <div 

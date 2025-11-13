@@ -4,9 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCart } from "@/contexts/CartContext";
-import { useTheme } from "@/contexts/ThemeContext";
-import logoImageLight from "@/assets/logo.svg";
-import logoImageDark from "@/assets/logo-dark.svg";
+import logoImage from "@/assets/logo.svg";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -17,9 +15,6 @@ const ServiceCart = () => {
   const navigate = useNavigate();
   const { items, removeFromCart, updateQuantity, clearCart, totalPrice } = useCart();
   const [submitting, setSubmitting] = useState(false);
-  const { theme } = useTheme();
-  
-  const logoImage = theme === 'dark' ? logoImageDark : logoImageLight;
 
   const handleCheckout = async () => {
     if (items.length === 0) return;
