@@ -28,7 +28,7 @@ const BottomNavigation = () => {
     <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
       <div className="flex items-center space-x-4">
         {/* Main navigation buttons */}
-        <div className="flex items-center bg-black/15 rounded-full p-3 min-w-[220px]">
+        <div className="flex items-center bg-black/15 backdrop-blur-[5px] rounded-full p-3 min-w-[220px]">
           <div className="flex items-center justify-between w-full relative">
             {navItems.map((item, index) => {
               const active = isActive(item.path);
@@ -65,7 +65,7 @@ const BottomNavigation = () => {
         </div>
 
         {/* SuperChat FAB */}
-        <div className={`bg-black/15 rounded-full shadow-lg p-3 border-2 transition-colors ${
+        <div className={`bg-black/15 backdrop-blur-[5px] rounded-full shadow-lg p-3 border-2 transition-colors ${
           isChatActive 
             ? "border-app-green" 
             : "border-transparent"
