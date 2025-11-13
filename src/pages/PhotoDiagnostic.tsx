@@ -61,21 +61,32 @@ const PhotoDiagnostic = () => {
         <div className="w-10" />
       </header>
 
-      <div className="py-6 space-y-4 pb-32">
+      <div className="py-4 space-y-3 pb-32">
         <div className="text-center px-4">
-          <h1 className="text-2xl font-bold mb-2">Фотодиагностика</h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             Сделай фото автомобиля<br />
             ИИ распознает повреждения<br />
             и предложит решение
           </p>
         </div>
 
-        <div className="w-full">
+        <div className="w-full relative">
           <img src={carDiagnosticImage} alt="Автомобиль для диагностики" className="w-full h-auto object-contain" />
+          {/* Camera viewfinder overlay */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="w-[85%] h-[75%] border-4 border-primary rounded-3xl shadow-lg" style={{
+              boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(59, 130, 246, 0.3)'
+            }}>
+              {/* Corner decorations */}
+              <div className="absolute top-2 left-2 w-8 h-8 border-t-4 border-l-4 border-primary rounded-tl-lg"></div>
+              <div className="absolute top-2 right-2 w-8 h-8 border-t-4 border-r-4 border-primary rounded-tr-lg"></div>
+              <div className="absolute bottom-2 left-2 w-8 h-8 border-b-4 border-l-4 border-primary rounded-bl-lg"></div>
+              <div className="absolute bottom-2 right-2 w-8 h-8 border-b-4 border-r-4 border-primary rounded-br-lg"></div>
+            </div>
+          </div>
         </div>
 
-        <div className="px-4 space-y-4">
+        <div className="px-4 space-y-3">
           {!image ? <label className="flex flex-col items-center justify-center min-h-[200px] cursor-pointer">
               <input type="file" accept="image/*" capture="environment" onChange={handleImageCapture} className="hidden" />
               <Camera className="h-16 w-16 text-primary mb-4" />
