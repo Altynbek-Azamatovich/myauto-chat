@@ -56,7 +56,7 @@ const PhotoDiagnostic = () => {
 
   return (
     <div className="min-h-screen">
-      <header className="flex items-center justify-between px-4 py-4 border-b">
+      <header className="flex items-center justify-between px-4 py-4">
         <Button 
           variant="ghost" 
           size="icon" 
@@ -72,10 +72,12 @@ const PhotoDiagnostic = () => {
       </header>
 
       <div className="px-4 py-6 space-y-6 pb-32">
-        <div>
+        <div className="text-center">
           <h1 className="text-2xl font-bold mb-2">Фотодиагностика</h1>
           <p className="text-muted-foreground">
-            Загрузите фото повреждения или проблемной части автомобиля для AI-анализа
+            Сделай фото автомобиля<br />
+            ИИ распознает повреждения<br />
+            и предложит решение
           </p>
         </div>
 
@@ -89,9 +91,10 @@ const PhotoDiagnostic = () => {
                 onChange={handleImageCapture}
                 className="hidden"
               />
-              <Camera className="h-16 w-16 text-muted-foreground mb-4" />
-              <p className="text-lg font-semibold">Сделать фото</p>
-              <p className="text-sm text-muted-foreground">или выбрать из галереи</p>
+              <Camera className="h-16 w-16 text-primary mb-4" />
+              <div className="bg-white px-8 py-3 rounded-lg">
+                <p className="text-lg font-semibold text-primary">Запустить камеру</p>
+              </div>
             </label>
           ) : (
             <div className="space-y-4">
