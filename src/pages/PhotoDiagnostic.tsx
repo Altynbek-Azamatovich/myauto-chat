@@ -72,16 +72,31 @@ const PhotoDiagnostic = () => {
 
         <div className="w-full relative">
           <img src={carDiagnosticImage} alt="Автомобиль для диагностики" className="w-full h-auto object-contain" />
-          {/* Camera viewfinder overlay */}
+          {/* Scanner overlay */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="relative w-[70%] h-[55%]">
-              {/* Main frame with rounded corners */}
-              <div className="absolute inset-0 border-[3px] border-white rounded-2xl shadow-lg"></div>
-              {/* Corner accents */}
-              <div className="absolute -top-1 -left-1 w-8 h-8 border-t-[4px] border-l-[4px] border-primary rounded-tl-lg"></div>
-              <div className="absolute -top-1 -right-1 w-8 h-8 border-t-[4px] border-r-[4px] border-primary rounded-tr-lg"></div>
-              <div className="absolute -bottom-1 -left-1 w-8 h-8 border-b-[4px] border-l-[4px] border-primary rounded-bl-lg"></div>
-              <div className="absolute -bottom-1 -right-1 w-8 h-8 border-b-[4px] border-r-[4px] border-primary rounded-br-lg"></div>
+              {/* Scanner corners with glow effect */}
+              <div className="absolute -top-1 -left-1 w-12 h-12 border-t-[5px] border-l-[5px] border-primary rounded-tl-2xl animate-pulse" 
+                   style={{ filter: 'drop-shadow(0 0 8px hsl(var(--primary)))' }}></div>
+              <div className="absolute -top-1 -right-1 w-12 h-12 border-t-[5px] border-r-[5px] border-primary rounded-tr-2xl animate-pulse" 
+                   style={{ filter: 'drop-shadow(0 0 8px hsl(var(--primary)))' }}></div>
+              <div className="absolute -bottom-1 -left-1 w-12 h-12 border-b-[5px] border-l-[5px] border-primary rounded-bl-2xl animate-pulse" 
+                   style={{ filter: 'drop-shadow(0 0 8px hsl(var(--primary)))' }}></div>
+              <div className="absolute -bottom-1 -right-1 w-12 h-12 border-b-[5px] border-r-[5px] border-primary rounded-br-2xl animate-pulse" 
+                   style={{ filter: 'drop-shadow(0 0 8px hsl(var(--primary)))' }}></div>
+              
+              {/* Scanning line animation */}
+              {!image && (
+                <div className="absolute inset-0 overflow-hidden rounded-2xl">
+                  <div 
+                    className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-80"
+                    style={{
+                      animation: 'scan 2s ease-in-out infinite',
+                      filter: 'drop-shadow(0 0 6px hsl(var(--primary)))',
+                    }}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
