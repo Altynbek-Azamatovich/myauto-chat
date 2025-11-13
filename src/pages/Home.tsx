@@ -125,8 +125,8 @@ const Home = () => {
       <header className="flex items-center justify-between px-4 py-4">
         <AppSidebar 
           trigger={
-            <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
-              <Menu className="h-6 w-6" />
+            <Button variant="ghost" size="icon" className="rounded-full bg-white/10 hover:bg-white/20">
+              <Menu className="h-7 w-7 text-white" />
             </Button>
           }
         />
@@ -136,10 +136,10 @@ const Home = () => {
         <Button 
           variant="ghost" 
           size="icon" 
-          className="rounded-full hover:bg-muted/30 hover:text-foreground"
+          className="rounded-full bg-white/10 hover:bg-white/20"
           onClick={() => navigate('/notifications')}
         >
-          <Bell className="h-6 w-6" />
+          <Bell className="h-7 w-7 text-white" />
         </Button>
       </header>
 
@@ -183,7 +183,7 @@ const Home = () => {
         {/* 360 Button */}
         <Button
           onClick={() => toast.info('3D модели авто в разработке')}
-          className="absolute bottom-4 right-4 px-6 py-3 rounded-full bg-white/15 backdrop-blur-md border-white/20 hover:bg-white/25 text-foreground font-semibold flex items-center gap-2"
+          className="absolute bottom-4 right-4 px-6 py-3 rounded-full bg-black/20 backdrop-blur-md border-white/20 hover:bg-black/30 text-white font-semibold flex items-center gap-2"
         >
           <RotateCcw size={18} />
           360
@@ -193,14 +193,14 @@ const Home = () => {
       {/* Car Info Cards */}
       <div className="px-4 space-y-4">
       <div className="grid grid-cols-2 gap-4">
-        <Card className="p-4 bg-white/15 backdrop-blur-md rounded-2xl border-white/20">
+        <Card className="p-4 bg-black/20 backdrop-blur-md rounded-2xl border-white/20">
           <div className="space-y-3">
             <div className="flex items-start space-x-3">
-              <div className="text-muted-foreground">
+              <div className="text-white/90">
                 <span className="text-xl">ⓘ</span>
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-base leading-tight">
+                <h3 className="font-semibold text-base leading-tight text-white">
                   {primaryVehicle ? (
                     `${brandName} ${primaryVehicle.model} ${primaryVehicle.year}`
                   ) : (
@@ -212,88 +212,6 @@ const Home = () => {
                     </button>
                   )}
                 </h3>
-                {primaryVehicle?.license_plate && (
-                  <p className="text-sm text-muted-foreground mt-1">{primaryVehicle.license_plate}</p>
-                )}
-              </div>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">{t('mileage')}</p>
-              <p className="font-semibold text-sm">
-                {primaryVehicle ? primaryVehicle.mileage.toLocaleString() : '0'} км
-              </p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-4 bg-white/15 backdrop-blur-md rounded-2xl border-white/20">
-          <div className="space-y-3">
-            <div className="flex items-start space-x-2">
-              <AlertTriangle className="h-5 w-5 text-yellow-500 flex-shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground">{t('oilChange')}</p>
-                <Popover open={isOilChangeDateOpen} onOpenChange={setIsOilChangeDateOpen}>
-                  <PopoverTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
-                      <div className="text-left">
-                        <p className="text-sm font-medium leading-tight flex items-center gap-1">
-                          {oilChangeDate ? format(oilChangeDate, 'dd.MM.yyyy') : '—'}
-                          <Edit className="h-3 w-3 text-muted-foreground" />
-                        </p>
-                      </div>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={oilChangeDate}
-                      onSelect={(date) => {
-                        setOilChangeDate(date);
-                        if (date) {
-                          updateVehicleDate('oil_change_date', date);
-                          setIsOilChangeDateOpen(false);
-                        }
-                      }}
-                      initialFocus
-                      locale={language === 'ru' ? ru : kk}
-                      className={cn("p-3 pointer-events-auto")}
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-            </div>
-            <div className="flex items-start space-x-2">
-              <Clock className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground">{t('insuranceExpires')}</p>
-                <Popover open={isInsuranceDateOpen} onOpenChange={setIsInsuranceDateOpen}>
-                  <PopoverTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
-                      <div className="text-left">
-                        <p className="text-sm font-medium leading-tight flex items-center gap-1">
-                          {insuranceDate ? format(insuranceDate, 'dd.MM.yyyy') : '—'}
-                          <Edit className="h-3 w-3 text-muted-foreground" />
-                        </p>
-                      </div>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={insuranceDate}
-                      onSelect={(date) => {
-                        setInsuranceDate(date);
-                        if (date) {
-                          updateVehicleDate('insurance_expiry_date', date);
-                          setIsInsuranceDateOpen(false);
-                        }
-                      }}
-                      initialFocus
-                      locale={language === 'ru' ? ru : kk}
-                      className={cn("p-3 pointer-events-auto")}
-                    />
-                  </PopoverContent>
-                </Popover>
               </div>
             </div>
           </div>
@@ -301,18 +219,18 @@ const Home = () => {
         </div>
 
       {/* Technical Condition */}
-      <Card className="p-4 bg-white/15 backdrop-blur-md rounded-2xl border-white/20">
+      <Card className="p-4 bg-black/20 backdrop-blur-md rounded-2xl border-white/20">
         <div className="flex items-center space-x-3">
             <HeartPulse className="h-5 w-5 text-app-green flex-shrink-0" />
             <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">{t('technicalCondition')}</span>
+                <span className="text-sm font-medium text-white">{t('technicalCondition')}</span>
                 <span className="text-xl font-bold text-app-green">
                   {primaryVehicle?.technical_condition || 0}%
                 </span>
               </div>
               <Progress value={primaryVehicle?.technical_condition || 0} className="h-2 [&>div]:bg-app-green" />
-              <div className="flex justify-between text-xs text-muted-foreground mt-1">
+              <div className="flex justify-between text-xs text-white/70 mt-1">
                 <span>0%</span>
                 <span>100%</span>
               </div>
@@ -328,13 +246,13 @@ const Home = () => {
 
       {/* Additional Info */}
       <div className="grid grid-cols-2 gap-4 pb-24">
-        <Card className="p-4 bg-white/15 backdrop-blur-md rounded-2xl border-white/20">
+        <Card className="p-4 bg-black/20 backdrop-blur-md rounded-2xl border-white/20">
           <div className="flex items-start space-x-2">
               <div className="text-xl mt-0.5">⚡</div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground">{t('avgConsumption')}</p>
+                <p className="text-xs text-white/70">{t('avgConsumption')}</p>
                 {primaryVehicle?.average_consumption ? (
-                  <p className="font-semibold text-sm">{primaryVehicle.average_consumption} л/100км</p>
+                  <p className="font-semibold text-sm text-white">{primaryVehicle.average_consumption} л/100км</p>
                 ) : (
                   <p className="text-xs text-yellow-500 mt-1">Будет доступно после ТО</p>
                 )}
@@ -342,18 +260,18 @@ const Home = () => {
             </div>
           </Card>
 
-        <Card className="p-4 bg-white/15 backdrop-blur-md rounded-2xl border-white/20">
+        <Card className="p-4 bg-black/20 backdrop-blur-md rounded-2xl border-white/20">
           <div className="flex items-start space-x-2">
               <div className="text-xl mt-0.5">📋</div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground">{t('nextService')}</p>
+                <p className="text-xs text-white/70">{t('nextService')}</p>
                 <Popover open={isNextServiceDateOpen} onOpenChange={setIsNextServiceDateOpen}>
                   <PopoverTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
                       <div className="text-left">
-                        <p className="font-semibold text-sm flex items-center gap-1">
+                        <p className="font-semibold text-sm flex items-center gap-1 text-white">
                           {nextServiceDate ? format(nextServiceDate, 'dd.MM.yyyy') : '—'}
-                          <Edit className="h-3 w-3 text-muted-foreground" />
+                          <Edit className="h-3 w-3 text-white/70" />
                         </p>
                       </div>
                     </Button>
