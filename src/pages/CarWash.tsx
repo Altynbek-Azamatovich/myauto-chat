@@ -75,7 +75,7 @@ const CarWash = () => {
     <div className="min-h-screen bg-background pb-20">
       <header className="flex items-center gap-4 px-4 py-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <Button variant="ghost" size="icon" onClick={() => navigate('/services')}>
-          <ArrowLeft className="h-6 w-6" />
+          <ArrowLeft className="h-8 w-8" />
         </Button>
         <h1 className="text-xl font-bold text-foreground">{t('carWash')}</h1>
       </header>
