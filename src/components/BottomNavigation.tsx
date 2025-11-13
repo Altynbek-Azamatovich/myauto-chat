@@ -49,7 +49,7 @@ const BottomNavigation = () => {
                   key={item.path}
                   variant="ghost"
                   size="lg"
-                  className={`rounded-full aspect-square p-2 relative transition-all duration-300 ${
+                  className={`rounded-full aspect-square p-3 relative transition-all duration-300 ${
                     active 
                       ? "bg-white/40 text-white hover:bg-white/50 ring-2 ring-white/60" 
                       : "text-white/70 hover:bg-white/10 hover:text-white"
@@ -72,7 +72,7 @@ const BottomNavigation = () => {
         }`}>
           <Button
             size="lg"
-            className="rounded-full aspect-square p-2 bg-transparent hover:bg-transparent relative"
+            className="rounded-full aspect-square p-3 bg-transparent hover:bg-transparent relative"
             onClick={() => navigate("/super-chat")}
           >
             <MessageCircle size={32} strokeWidth={1.5} className="text-white" />
