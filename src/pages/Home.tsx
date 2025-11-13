@@ -159,34 +159,30 @@ const Home = () => {
           {/* Interactive points */}
           <button 
             onClick={() => toast.info('Выбор деталей ещё в разработке')}
-            className="absolute top-1/4 left-1/4 w-6 h-6 rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform border border-muted-foreground/40 bg-background"
+            className="absolute top-[15%] right-[35%] w-6 h-6 rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform border-2 border-muted-foreground/40"
           >
-            <div className="w-3 h-3 bg-background rounded-full border border-muted-foreground/60"></div>
           </button>
           <button 
             onClick={() => toast.info('Выбор деталей ещё в разработке')}
-            className="absolute top-1/3 right-1/3 w-6 h-6 rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform border border-muted-foreground/40 bg-background"
+            className="absolute top-1/3 right-1/3 w-6 h-6 rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform border-2 border-muted-foreground/40"
           >
-            <div className="w-3 h-3 bg-background rounded-full border border-muted-foreground/60"></div>
           </button>
           <button 
             onClick={() => toast.info('Выбор деталей ещё в разработке')}
-            className="absolute bottom-1/3 left-1/3 w-6 h-6 rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform border border-muted-foreground/40 bg-background"
+            className="absolute bottom-1/3 left-1/3 w-6 h-6 rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform border-2 border-muted-foreground/40"
           >
-            <div className="w-3 h-3 bg-background rounded-full border border-muted-foreground/60"></div>
           </button>
           <button 
             onClick={() => toast.info('Выбор деталей ещё в разработке')}
-            className="absolute bottom-1/4 right-1/4 w-6 h-6 rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform border border-muted-foreground/40 bg-background"
+            className="absolute bottom-1/4 right-1/4 w-6 h-6 rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform border-2 border-muted-foreground/40"
           >
-            <div className="w-3 h-3 bg-background rounded-full border border-muted-foreground/60"></div>
           </button>
           
           {/* 360 button */}
           <div className="absolute bottom-4 right-4">
             <Button 
               size="sm" 
-              className="rounded-full bg-white/90 text-foreground hover:bg-white"
+              className="rounded-full bg-white/90 text-foreground hover:bg-white border-0"
               onClick={() => toast.info('3D модели автомобилей находятся в разработке')}
             >
               <RotateCcw className="h-4 w-4 mr-1" />
