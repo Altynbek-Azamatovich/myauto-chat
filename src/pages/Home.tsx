@@ -150,7 +150,7 @@ const Home = () => {
         </button>
 
         {/* 360 Button */}
-        <button onClick={() => toast.info('3D модели авто в разработке')} className="absolute bottom-12 right-4 p-0 bg-transparent hover:opacity-80 transition-opacity border-0 outline-none">
+        <button onClick={() => toast.info('3D модели авто в разработке')} className="absolute -bottom-2 right-4 p-0 bg-transparent hover:opacity-80 transition-opacity border-0 outline-none">
           <img src={icon360} alt="360" className="w-16 h-16" />
         </button>
       </div>
