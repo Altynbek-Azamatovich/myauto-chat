@@ -13,7 +13,7 @@ import { format } from "date-fns";
 import { ru, kk } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import carCoveredImage from "@/assets/car-covered-new.png";
+import carCoveredImage from "@/assets/car-covered.svg";
 import logoImage from "@/assets/logo.svg";
 import homeBackground from "@/assets/home-background.png";
 import BottomNavigation from '@/components/BottomNavigation';
@@ -153,7 +153,7 @@ const Home = () => {
           <img 
             src={carCoveredImage} 
             alt="Toyota Camry 2019" 
-            className="w-full h-auto object-contain"
+            className="w-full h-auto object-contain max-h-[60vh]"
           />
           {/* Interactive points */}
           <button 
