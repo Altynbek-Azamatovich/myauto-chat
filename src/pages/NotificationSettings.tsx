@@ -44,7 +44,7 @@ const NotificationSettings = () => {
           onClick={() => navigate('/')}
           className="rounded-full hover:bg-muted/30 hover:text-foreground"
         >
-          <ArrowLeft className="h-6 w-6" />
+          <ArrowLeft className="h-8 w-8" />
         </Button>
         <h1 className="text-xl font-bold ml-4">{t('notificationSettings')}</h1>
       </header>

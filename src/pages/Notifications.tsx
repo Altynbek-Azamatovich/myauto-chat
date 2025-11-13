@@ -22,7 +22,7 @@ const Notifications = () => {
           onClick={() => navigate(-1)}
           className="rounded-full hover:bg-muted/30 hover:text-foreground"
         >
-          <ArrowLeft className="h-6 w-6" />
+          <ArrowLeft className="h-8 w-8" />
         </Button>
 
         <img src={logoImage} alt="myAuto" className="h-12 w-auto" />

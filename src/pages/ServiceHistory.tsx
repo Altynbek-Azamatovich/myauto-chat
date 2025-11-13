@@ -294,7 +294,7 @@ export default function ServiceHistory() {
           onClick={() => navigate('/')}
           className="rounded-full hover:bg-muted/30 hover:text-foreground"
         >
-          <ArrowLeft className="h-6 w-6" />
+          <ArrowLeft className="h-8 w-8" />
         </Button>
         <h1 className="text-lg font-semibold">{t('serviceHistoryTitle')}</h1>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>

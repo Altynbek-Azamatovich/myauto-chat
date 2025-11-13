@@ -20,7 +20,7 @@ const Services = () => {
         <AppSidebar 
           trigger={
             <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
-              <Menu className="h-6 w-6" />
+              <Menu className="h-8 w-8" />
             </Button>
           }
         />
@@ -33,7 +33,7 @@ const Services = () => {
           className="rounded-full hover:bg-muted/30 hover:text-foreground relative"
           onClick={() => navigate('/service-cart')}
         >
-          <ShoppingCart className="h-6 w-6" />
+          <ShoppingCart className="h-8 w-8" />
           <NotificationBadge count={itemCount} />
         </Button>
       </header>
