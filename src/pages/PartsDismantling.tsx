@@ -6,11 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { usePersistedState } from "@/hooks/usePersistedState";
 
 const PartsDismantling = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = usePersistedState("parts_dismantling_search_query", "");
 
   const parts = [
     {

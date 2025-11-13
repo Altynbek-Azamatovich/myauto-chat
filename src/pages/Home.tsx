@@ -17,6 +17,7 @@ import carCoveredImage from "@/assets/car-covered-new.png";
 import logoImage from "@/assets/logo-main.png";
 import BottomNavigation from '@/components/BottomNavigation';
 import { AppSidebar } from '@/components/AppSidebar';
+import { usePersistedState } from '@/hooks/usePersistedState';
 interface Vehicle {
   id: string;
   brand_id: string;
@@ -42,8 +43,8 @@ const Home = () => {
   const [oilChangeDate, setOilChangeDate] = useState<Date>();
   const [insuranceDate, setInsuranceDate] = useState<Date>();
   const [nextServiceDate, setNextServiceDate] = useState<Date>();
-  const [primaryVehicle, setPrimaryVehicle] = useState<Vehicle | null>(null);
-  const [brandName, setBrandName] = useState<string>('');
+  const [primaryVehicle, setPrimaryVehicle] = usePersistedState<Vehicle | null>('home-primary-vehicle', null);
+  const [brandName, setBrandName] = usePersistedState<string>('home-brand-name', '');
   const {
     t,
     language
