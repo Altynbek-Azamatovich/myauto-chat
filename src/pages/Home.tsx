@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import carCoveredImage from "@/assets/car-covered-new.png";
 import logoImage from "@/assets/logo-new.png";
+import homeBackground from "@/assets/home-background.png";
 import BottomNavigation from '@/components/BottomNavigation';
 import { AppSidebar } from '@/components/AppSidebar';
 
@@ -120,7 +121,10 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div 
+      className="min-h-screen bg-background bg-cover bg-center bg-no-repeat bg-fixed"
+      style={{ backgroundImage: `url(${homeBackground})` }}
+    >
       {/* Header */}
       <header className="flex items-center justify-between px-4 py-4">
         <AppSidebar 
