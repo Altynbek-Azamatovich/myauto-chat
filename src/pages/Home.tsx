@@ -183,11 +183,9 @@ const Home = () => {
         {/* 360 Button */}
         <Button
           onClick={() => toast.info('3D модели авто в разработке')}
-          className="absolute bottom-4 right-4 rounded-full bg-white/15 backdrop-blur-md border-white/20 hover:bg-white/25 flex items-center justify-center gap-1"
-          size="icon"
+          className="absolute bottom-4 right-4 px-6 py-3 rounded-full bg-white/15 backdrop-blur-md border-white/20 hover:bg-white/25 text-foreground font-semibold"
         >
-          <RotateCcw className="h-4 w-4" />
-          <span className="text-xs font-semibold">360</span>
+          360
         </Button>
       </div>
 
