@@ -4,13 +4,18 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useNotifications } from "@/contexts/NotificationContext";
-import logoImage from "@/assets/logo.svg";
+import { useTheme } from "@/contexts/ThemeContext";
+import logoImageLight from "@/assets/logo.svg";
+import logoImageDark from "@/assets/logo-dark.svg";
 import NotificationBadge from "@/components/NotificationBadge";
 
 const Notifications = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const { notifications, unreadCount, markAsRead, markAllAsRead, deleteNotification } = useNotifications();
+  const { theme } = useTheme();
+  
+  const logoImage = theme === 'dark' ? logoImageDark : logoImageLight;
 
   return (
     <div className="min-h-screen bg-background">

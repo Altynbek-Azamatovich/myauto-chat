@@ -6,7 +6,9 @@ import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import logoImage from "@/assets/logo.svg";
+import { useTheme } from "@/contexts/ThemeContext";
+import logoImageLight from "@/assets/logo.svg";
+import logoImageDark from "@/assets/logo-dark.svg";
 import homeBackground from "@/assets/home-background.png";
 
 const PhotoDiagnostic = () => {
@@ -14,6 +16,9 @@ const PhotoDiagnostic = () => {
   const [image, setImage] = useState<string | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState<string | null>(null);
+  const { theme } = useTheme();
+  
+  const logoImage = theme === 'dark' ? logoImageDark : logoImageLight;
 
   const handleImageCapture = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
