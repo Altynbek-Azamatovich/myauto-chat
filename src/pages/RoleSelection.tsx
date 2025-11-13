@@ -3,67 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ArrowLeft } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { useState } from "react";
 import carOwnerImage from "@/assets/role-car-owner.png";
 import partnerImage from "@/assets/role-partner.png";
 
 const RoleSelection = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const [loading, setLoading] = useState(false);
 
-  const handleRoleSelection = async (role: 'user' | 'partner') => {
-    setLoading(true);
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        // Store selected role in localStorage and redirect to auth
-        localStorage.setItem('pending_role', role);
-        navigate('/phone-auth');
-        return;
-      }
-
-      // Check if user already has this role
-      const { data: existingRole } = await supabase
-        .from('user_roles')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .eq('role', role)
-        .single();
-
-      // Add role if doesn't exist
-      if (!existingRole) {
-        const { error } = await supabase
-          .from('user_roles')
-          .insert({ user_id: session.user.id, role });
-
-        if (error) throw error;
-      }
-
-      // Navigate based on role
-      if (role === 'partner') {
-        navigate('/partner/dashboard');
-      } else {
-        // Check if profile setup is complete
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('onboarding_completed')
-          .eq('id', session.user.id)
-          .single();
-
-        if (!profile?.onboarding_completed) {
-          navigate('/profile-setup');
-        } else {
-          navigate('/');
-        }
-      }
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
-    }
+  const handleRoleSelection = (role: 'user' | 'partner') => {
+    // Store selected role and redirect to auth
+    localStorage.setItem('pending_role', role);
+    navigate('/phone-auth');
   };
 
   return (
@@ -86,7 +36,7 @@ const RoleSelection = () => {
           {/* User Role - Автовладелец */}
           <Card 
             className="relative overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer border-2 hover:border-primary group flex-1 max-w-xs flex flex-col"
-            onClick={() => !loading && handleRoleSelection('user')}
+            onClick={() => handleRoleSelection('user')}
           >
             <div className="relative flex flex-col h-full">
               <div className="w-full h-36 overflow-hidden">
@@ -110,7 +60,6 @@ const RoleSelection = () => {
                     e.stopPropagation();
                     handleRoleSelection('user');
                   }}
-                  disabled={loading}
                   className="w-full mt-4"
                 >
                   Продолжить
@@ -122,7 +71,7 @@ const RoleSelection = () => {
           {/* Partner Role - Партнер Автосервис */}
           <Card 
             className="relative overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer border-2 hover:border-primary group flex-1 max-w-xs flex flex-col"
-            onClick={() => !loading && handleRoleSelection('partner')}
+            onClick={() => handleRoleSelection('partner')}
           >
             <div className="relative flex flex-col h-full">
               <div className="w-full h-36 overflow-hidden">
@@ -146,7 +95,6 @@ const RoleSelection = () => {
                     e.stopPropagation();
                     handleRoleSelection('partner');
                   }}
-                  disabled={loading}
                   className="w-full mt-4"
                 >
                   Продолжить

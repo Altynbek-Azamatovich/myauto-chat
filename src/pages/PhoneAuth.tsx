@@ -114,12 +114,18 @@ const PhoneAuth = () => {
     setLoading(true);
     try {
       const cleanPhone = phone.replace(/\s/g, '');
+      const pendingRole = localStorage.getItem('pending_role') || 'user';
       
       if (isRegisterMode) {
-        // Register
+        // Register with role in metadata
         const { error } = await supabase.auth.signUp({
           phone: cleanPhone,
           password: password,
+          options: {
+            data: {
+              role: pendingRole
+            }
+          }
         });
 
         if (error) throw error;
@@ -131,10 +137,17 @@ const PhoneAuth = () => {
             : "Тіркелу аяқталды",
         });
         
-        navigate('/role-selection');
+        localStorage.removeItem('pending_role');
+        
+        // Navigate based on role
+        if (pendingRole === 'partner') {
+          navigate('/partner/dashboard');
+        } else {
+          navigate('/profile-setup');
+        }
       } else {
         // Login
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           phone: cleanPhone,
           password: password,
         });
@@ -148,7 +161,13 @@ const PhoneAuth = () => {
             : "Кіру орындалды",
         });
         
-        navigate('/role-selection');
+        // Navigate based on user's role from metadata
+        const userRole = data.user?.user_metadata?.role || 'user';
+        if (userRole === 'partner') {
+          navigate('/partner/dashboard');
+        } else {
+          navigate('/');
+        }
       }
     } catch (error: any) {
       console.error('Error in handleSubmit:', error);
