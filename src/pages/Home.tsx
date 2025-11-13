@@ -132,7 +132,7 @@ const Home = () => {
         <img src={carCoveredImage} alt="Toyota Camry 2019" className="w-full h-auto object-contain" />
         
         {/* Interactive Points */}
-        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[25%] left-[30%] w-6 h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform mx-0">
+        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[25%] left-[30%] w-6 h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform mx-[50px]">
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white" />
         </button>
         
