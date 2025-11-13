@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLeft, Camera, Loader2, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -8,11 +8,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import logoImage from "@/assets/logo-main.png";
 import carDiagnosticImage from "@/assets/car-diagnostic-new.png";
+import { usePersistedState } from '@/hooks/usePersistedState';
+
 const PhotoDiagnostic = () => {
   const navigate = useNavigate();
-  const [image, setImage] = useState<string | null>(null);
+  const [image, setImage] = usePersistedState<string | null>('photo-diagnostic-image', null);
   const [analyzing, setAnalyzing] = useState(false);
-  const [analysis, setAnalysis] = useState<string | null>(null);
+  const [analysis, setAnalysis] = usePersistedState<string | null>('photo-diagnostic-analysis', null);
   const handleImageCapture = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -61,7 +63,7 @@ const PhotoDiagnostic = () => {
         <div className="w-10" />
       </header>
 
-      <div className="py-6 space-y-8 pb-32">
+      <div className="py-6 space-y-6 pb-32">
         <div className="text-center px-4 pt-4">
           <p className="text-foreground text-base font-bold leading-tight">
             Сделай фото автомобиля<br />
@@ -70,7 +72,7 @@ const PhotoDiagnostic = () => {
           </p>
         </div>
 
-        <div className="w-full relative px-2">
+        <div className="w-full relative mt-8">
           <img src={carDiagnosticImage} alt="Автомобиль для диагностики" className="w-full h-auto object-contain" />
           {/* Scanner overlay */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
