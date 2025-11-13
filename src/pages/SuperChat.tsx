@@ -178,7 +178,7 @@ const SuperChat = () => {
   };
 
   return (
-    <div className="h-screen bg-background flex flex-col overflow-hidden">
+    <div className="h-screen bg-white dark:bg-background flex flex-col overflow-hidden">
       {/* Header - Fixed at top */}
       <header className="fixed top-0 left-0 right-0 flex items-center justify-between px-4 py-4 z-20">
         <AppSidebar 
