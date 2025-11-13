@@ -61,8 +61,8 @@ const PhotoDiagnostic = () => {
         <div className="w-10" />
       </header>
 
-      <div className="py-4 space-y-3 pb-32">
-        <div className="text-center px-4">
+      <div className="py-6 space-y-8 pb-32">
+        <div className="text-center px-4 pt-4">
           <p className="text-foreground text-base font-bold leading-tight">
             Сделай фото автомобиля<br />
             ИИ распознает повреждения<br />
@@ -70,7 +70,7 @@ const PhotoDiagnostic = () => {
           </p>
         </div>
 
-        <div className="w-full relative">
+        <div className="w-full relative px-2">
           <img src={carDiagnosticImage} alt="Автомобиль для диагностики" className="w-full h-auto object-contain" />
           {/* Scanner overlay */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -101,7 +101,7 @@ const PhotoDiagnostic = () => {
           </div>
         </div>
 
-        <div className="px-4 space-y-2">
+        <div className="px-4 space-y-4 pt-4">
           {!image ? <label className="flex flex-col items-center justify-center min-h-[120px] cursor-pointer">
               <input type="file" accept="image/*" capture="environment" onChange={handleImageCapture} className="hidden" />
               <Camera className="h-16 w-16 text-primary mb-2" />
