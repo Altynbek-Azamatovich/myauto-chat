@@ -92,7 +92,7 @@ const PartsDismantling = () => {
 
         <div className="space-y-3">
           {parts.map((part) => (
-            <Card key={part.id} className="bg-card hover:bg-accent transition-all cursor-pointer hover:shadow-md">
+            <Card key={part.id} className="bg-card hover:bg-muted/30 transition-all cursor-pointer hover:shadow-md">
               <CardHeader>
                 <div className="flex items-start gap-3">
                   <div className="bg-primary/10 p-3 rounded-lg">

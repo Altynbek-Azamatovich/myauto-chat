@@ -77,7 +77,7 @@ const AutoShops = () => {
         </div>
 
         {shops.map((shop) => (
-          <Card key={shop.id} className="bg-card hover:bg-accent transition-all cursor-pointer hover:shadow-md">
+          <Card key={shop.id} className="bg-card hover:bg-muted/30 transition-all cursor-pointer hover:shadow-md">
             <CardHeader>
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3 flex-1">

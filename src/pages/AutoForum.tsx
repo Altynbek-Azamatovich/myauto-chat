@@ -103,7 +103,7 @@ const AutoForum = () => {
         {/* Forum Posts */}
         <div className="space-y-3">
           {posts.map((post) => (
-            <Card key={post.id} className="bg-card hover:bg-accent transition-colors cursor-pointer hover:shadow-md">
+            <Card key={post.id} className="bg-card hover:bg-muted/30 transition-colors cursor-pointer hover:shadow-md">
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-2 flex-1">
@@ -120,11 +120,11 @@ const AutoForum = () => {
               </CardHeader>
               <CardContent className="pt-0">
                 <div className="flex items-center gap-6 text-sm">
-                  <span className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                  <span className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
                     <MessageCircle className="h-4 w-4" />
                     <span className="font-medium">{post.replies}</span>
                   </span>
-                  <span className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                  <span className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
                     <ThumbsUp className="h-4 w-4" />
                     <span className="font-medium">{post.likes}</span>
                   </span>
