@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import logoImage from "@/assets/logo.svg";
-import homeBackground from "@/assets/home-background.png";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCart } from "@/contexts/CartContext";
@@ -15,10 +14,7 @@ const Services = () => {
   const { itemCount } = useCart();
 
   return (
-    <div 
-      className="min-h-screen bg-background bg-cover bg-center bg-no-repeat bg-fixed"
-      style={{ backgroundImage: `url(${homeBackground})` }}
-    >
+    <div className="min-h-screen">
       {/* Header */}
       <header className="flex items-center justify-between px-4 py-4">
         <AppSidebar 

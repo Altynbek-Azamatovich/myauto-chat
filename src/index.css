@@ -123,6 +123,14 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 
+  .dark body {
+    background-image: url('/src/assets/dark-background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+
   /* Remove browser scrollbar colors */
   ::-webkit-scrollbar {
     width: 8px;
