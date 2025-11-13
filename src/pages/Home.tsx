@@ -148,12 +148,50 @@ const Home = () => {
       </header>
 
       {/* Car Display */}
-      <div className="py-2">
+      <div className="py-2 relative">
         <img 
           src={carCoveredImage} 
           alt="Toyota Camry 2019" 
-          className="w-full h-auto object-contain"
+          className="w-full h-auto object-contain max-h-[60vh]"
         />
+        
+        {/* Interactive Points */}
+        <button 
+          onClick={() => toast.info(t('featureInDevelopment') || 'Выбор деталей в разработке')}
+          className="absolute top-[25%] left-[30%] w-6 h-6 rounded-full border-2 border-primary bg-primary/20 backdrop-blur-sm hover:scale-110 transition-transform"
+        >
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-primary" />
+        </button>
+        
+        <button 
+          onClick={() => toast.info(t('featureInDevelopment') || 'Выбор деталей в разработке')}
+          className="absolute top-[30%] right-[25%] w-6 h-6 rounded-full border-2 border-primary bg-primary/20 backdrop-blur-sm hover:scale-110 transition-transform"
+        >
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-primary" />
+        </button>
+        
+        <button 
+          onClick={() => toast.info(t('featureInDevelopment') || 'Выбор деталей в разработке')}
+          className="absolute top-[50%] left-[20%] w-6 h-6 rounded-full border-2 border-primary bg-primary/20 backdrop-blur-sm hover:scale-110 transition-transform"
+        >
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-primary" />
+        </button>
+        
+        <button 
+          onClick={() => toast.info(t('featureInDevelopment') || 'Выбор деталей в разработке')}
+          className="absolute top-[55%] right-[30%] w-6 h-6 rounded-full border-2 border-primary bg-primary/20 backdrop-blur-sm hover:scale-110 transition-transform"
+        >
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-primary" />
+        </button>
+
+        {/* 360 Button */}
+        <Button
+          onClick={() => toast.info(t('featureInDevelopment') || '3D модели авто в разработке')}
+          className="absolute bottom-4 right-4 rounded-full bg-white/15 backdrop-blur-md border-white/20 hover:bg-white/25"
+          size="icon"
+        >
+          <RotateCcw className="h-5 w-5" />
+        </Button>
       </div>
 
       {/* Car Info Cards */}
