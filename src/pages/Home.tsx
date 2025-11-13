@@ -149,7 +149,7 @@ const Home = () => {
 
       {/* Car Display */}
       <div className="px-4 py-2">
-        <div className="relative bg-background rounded-lg p-4">
+        <div className="relative bg-white/15 backdrop-blur-md rounded-lg p-4 border border-white/20">
           <img 
             src={carCoveredImage} 
             alt="Toyota Camry 2019" 
@@ -198,7 +198,7 @@ const Home = () => {
       {/* Car Info Cards */}
       <div className="px-4 space-y-4">
       <div className="grid grid-cols-2 gap-4">
-        <Card className="p-4 bg-card-dark backdrop-blur-sm rounded-2xl border-border/30">
+        <Card className="p-4 bg-white/15 backdrop-blur-md rounded-2xl border-white/20">
           <div className="space-y-3">
             <div className="flex items-start space-x-3">
               <div className="text-muted-foreground">
@@ -231,7 +231,7 @@ const Home = () => {
           </div>
         </Card>
 
-        <Card className="p-4 bg-card-dark backdrop-blur-sm rounded-2xl border-border/30">
+        <Card className="p-4 bg-white/15 backdrop-blur-md rounded-2xl border-white/20">
           <div className="space-y-3">
             <div className="flex items-start space-x-2">
               <AlertTriangle className="h-5 w-5 text-yellow-500 flex-shrink-0" />
@@ -306,7 +306,7 @@ const Home = () => {
         </div>
 
       {/* Technical Condition */}
-      <Card className="p-4 bg-card-dark backdrop-blur-sm rounded-2xl border-border/30">
+      <Card className="p-4 bg-white/15 backdrop-blur-md rounded-2xl border-white/20">
         <div className="flex items-center space-x-3">
             <HeartPulse className="h-5 w-5 text-app-green flex-shrink-0" />
             <div className="flex-1">
@@ -333,7 +333,7 @@ const Home = () => {
 
       {/* Additional Info */}
       <div className="grid grid-cols-2 gap-4 pb-24">
-        <Card className="p-4 bg-card-dark backdrop-blur-sm rounded-2xl border-border/30">
+        <Card className="p-4 bg-white/15 backdrop-blur-md rounded-2xl border-white/20">
           <div className="flex items-start space-x-2">
               <div className="text-xl mt-0.5">⚡</div>
               <div className="flex-1 min-w-0">
@@ -347,7 +347,7 @@ const Home = () => {
             </div>
           </Card>
 
-        <Card className="p-4 bg-card-dark backdrop-blur-sm rounded-2xl border-border/30">
+        <Card className="p-4 bg-white/15 backdrop-blur-md rounded-2xl border-white/20">
           <div className="flex items-start space-x-2">
               <div className="text-xl mt-0.5">📋</div>
               <div className="flex-1 min-w-0">
