@@ -2,7 +2,7 @@ import { Menu, ShoppingCart, Wrench, HelpCircle, MessageSquare, Store, Sparkles,
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import logoImage from "@/assets/logo-new.png";
+import logoImage from "@/assets/logo.svg";
 import homeBackground from "@/assets/home-background.png";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useLanguage } from "@/contexts/LanguageContext";

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useNotifications } from "@/contexts/NotificationContext";
-import logoImage from "@/assets/logo-new.png";
+import logoImage from "@/assets/logo.svg";
 import NotificationBadge from "@/components/NotificationBadge";
 
 const Notifications = () => {

@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import logoImage from "@/assets/logo-new.png";
+import logoImage from "@/assets/logo.svg";
 import { AppSidebar } from "@/components/AppSidebar";
 
 interface Message {

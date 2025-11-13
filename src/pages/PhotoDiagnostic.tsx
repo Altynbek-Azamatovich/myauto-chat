@@ -6,7 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import logoImage from "@/assets/logo-new.png";
+import logoImage from "@/assets/logo.svg";
 import homeBackground from "@/assets/home-background.png";
 
 const PhotoDiagnostic = () => {
