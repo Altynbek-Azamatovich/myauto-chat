@@ -9,11 +9,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { usePersistedState } from "@/hooks/usePersistedState";
 
 const RoadsideHelp = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = usePersistedState("roadside_help_message", "");
   const [locationShared, setLocationShared] = useState(false);
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [activeHelpers, setActiveHelpers] = useState(0);
