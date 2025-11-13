@@ -61,10 +61,9 @@ const PhotoDiagnostic = () => {
         <div className="w-10" />
       </header>
 
-      <div className="py-2 space-y-2 pb-32">
+      <div className="py-4 space-y-3 pb-32">
         <div className="text-center px-4">
-          <h1 className="text-2xl font-bold mb-2">Фотодиагностика</h1>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-foreground text-base font-bold leading-tight">
             Сделай фото автомобиля<br />
             ИИ распознает повреждения<br />
             и предложит решение
@@ -75,14 +74,14 @@ const PhotoDiagnostic = () => {
           <img src={carDiagnosticImage} alt="Автомобиль для диагностики" className="w-full h-auto object-contain" />
           {/* Camera viewfinder overlay */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="relative w-[75%] h-[60%]">
-              {/* Main frame */}
-              <div className="absolute inset-0 border-2 border-white/80 rounded-xl"></div>
-              {/* Corner brackets */}
-              <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-primary"></div>
-              <div className="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-primary"></div>
-              <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-primary"></div>
-              <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-primary"></div>
+            <div className="relative w-[70%] h-[55%]">
+              {/* Main frame with rounded corners */}
+              <div className="absolute inset-0 border-[3px] border-white rounded-2xl shadow-lg"></div>
+              {/* Corner accents */}
+              <div className="absolute -top-1 -left-1 w-8 h-8 border-t-[4px] border-l-[4px] border-primary rounded-tl-lg"></div>
+              <div className="absolute -top-1 -right-1 w-8 h-8 border-t-[4px] border-r-[4px] border-primary rounded-tr-lg"></div>
+              <div className="absolute -bottom-1 -left-1 w-8 h-8 border-b-[4px] border-l-[4px] border-primary rounded-bl-lg"></div>
+              <div className="absolute -bottom-1 -right-1 w-8 h-8 border-b-[4px] border-r-[4px] border-primary rounded-br-lg"></div>
             </div>
           </div>
         </div>
