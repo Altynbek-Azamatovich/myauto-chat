@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import logoImage from "@/assets/logo.svg";
+import carDiagnosticImage from "@/assets/car-diagnostic.png";
 const PhotoDiagnostic = () => {
   const navigate = useNavigate();
   const [image, setImage] = useState<string | null>(null);
@@ -70,8 +71,12 @@ const PhotoDiagnostic = () => {
           </p>
         </div>
 
-        <Card className="p-6 space-y-4 bg-white/15 backdrop-blur-md border-white/20">
-          {!image ? <label className="flex flex-col items-center justify-center min-h-[300px] border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+        <div className="w-full px-4">
+          <img src={carDiagnosticImage} alt="Автомобиль для диагностики" className="w-full h-auto" />
+        </div>
+
+        <div className="space-y-4">
+          {!image ? <label className="flex flex-col items-center justify-center min-h-[200px] cursor-pointer">
               <input type="file" accept="image/*" capture="environment" onChange={handleImageCapture} className="hidden" />
               <Camera className="h-16 w-16 text-primary mb-4" />
               <div className="bg-white px-8 py-3 rounded-full">
@@ -93,9 +98,9 @@ const PhotoDiagnostic = () => {
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Анализ...
                     </> : 'Проанализировать'}
-                </Button>}
+                 </Button>}
             </div>}
-        </Card>
+        </div>
 
         {analysis && <Alert>
             <AlertCircle className="h-4 w-4" />
