@@ -61,8 +61,8 @@ const PhotoDiagnostic = () => {
         <div className="w-10" />
       </header>
 
-      <div className="px-4 py-6 space-y-6 pb-32">
-        <div className="text-center">
+      <div className="py-6 space-y-4 pb-32">
+        <div className="text-center px-4">
           <h1 className="text-2xl font-bold mb-2">Фотодиагностика</h1>
           <p className="text-muted-foreground">
             Сделай фото автомобиля<br />
@@ -71,11 +71,11 @@ const PhotoDiagnostic = () => {
           </p>
         </div>
 
-        <div className="w-full px-4">
-          <img src={carDiagnosticImage} alt="Автомобиль для диагностики" className="w-full h-auto" />
+        <div className="w-full">
+          <img src={carDiagnosticImage} alt="Автомобиль для диагностики" className="w-full h-auto object-contain" />
         </div>
 
-        <div className="space-y-4">
+        <div className="px-4 space-y-4">
           {!image ? <label className="flex flex-col items-center justify-center min-h-[200px] cursor-pointer">
               <input type="file" accept="image/*" capture="environment" onChange={handleImageCapture} className="hidden" />
               <Camera className="h-16 w-16 text-primary mb-4" />
