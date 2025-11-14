@@ -117,23 +117,38 @@ const PhoneAuth = () => {
       const pendingRole = (localStorage.getItem('pending_role') || 'user') as 'user' | 'partner';
       
       if (isRegisterMode) {
-        // Check if user already exists with this phone
-        const { data: existingUser, error: checkError } = await supabase.auth.signInWithPassword({
+        // Try to create new user
+        const { data: authData, error: signUpError } = await supabase.auth.signUp({
           phone: cleanPhone,
           password: password,
         });
 
-        if (existingUser?.user) {
-          // User exists and password is correct - check if they already have this role
+        // If user already exists, try to sign in and add role
+        if (signUpError?.message?.includes('already') || signUpError?.message?.includes('registered')) {
+          const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+            phone: cleanPhone,
+            password: password,
+          });
+
+          if (signInError) {
+            throw new Error(
+              language === 'ru' 
+                ? 'Пользователь с таким номером уже существует. Проверьте пароль или войдите в систему.'
+                : 'Бұл нөмірдегі пайдаланушы бар. Құпия сөзді тексеріңіз немесе жүйеге кіріңіз.'
+            );
+          }
+
+          if (!signInData.user) throw new Error('Sign in failed');
+
+          // Check if user already has this role
           const { data: existingRole } = await supabase
             .from('user_roles')
             .select('role')
-            .eq('user_id', existingUser.user.id)
+            .eq('user_id', signInData.user.id)
             .eq('role', pendingRole)
             .maybeSingle();
 
           if (existingRole) {
-            // User already has this role
             const roleNames = {
               user: language === 'ru' ? 'пользователя' : 'пайдаланушының',
               partner: language === 'ru' ? 'партнера' : 'серіктестің'
@@ -144,22 +159,24 @@ const PhoneAuth = () => {
             );
           }
 
-          // Add the new role to existing user
-          const { error: roleError } = await supabase
-            .from('user_roles')
-            .insert([{
-              user_id: existingUser.user.id,
-              role: pendingRole as any
-            }]);
+          // Add the new role to existing user (only if it's not 'user' role, as trigger adds it automatically)
+          if (pendingRole !== 'user') {
+            const { error: roleError } = await supabase
+              .from('user_roles')
+              .insert([{
+                user_id: signInData.user.id,
+                role: pendingRole as any
+              }]);
 
-          if (roleError) throw roleError;
+            if (roleError) throw roleError;
+          }
 
           // If partner, create service_partners entry (unverified)
           if (pendingRole === 'partner') {
             const { error: partnerError } = await supabase
               .from('service_partners')
               .insert([{
-                owner_id: existingUser.user.id,
+                owner_id: signInData.user.id,
                 name: '',
                 is_verified: false
               }]);
@@ -183,19 +200,29 @@ const PhoneAuth = () => {
           if (pendingRole === 'partner') {
             navigate('/partner/pending-verification');
           } else {
-            navigate('/profile-setup');
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('onboarding_completed')
+              .eq('id', signInData.user.id)
+              .single();
+            
+            if (profile?.onboarding_completed) {
+              navigate('/home');
+            } else {
+              navigate('/profile-setup');
+            }
           }
-        } else {
-          // User doesn't exist or wrong password - create new user
-          const { data: authData, error } = await supabase.auth.signUp({
-            phone: cleanPhone,
-            password: password,
-          });
+          return;
+        }
 
-          if (error) throw error;
-          if (!authData.user) throw new Error('Registration failed');
+        // Handle other signup errors
+        if (signUpError) throw signUpError;
+        if (!authData.user) throw new Error('Registration failed');
 
-          // Add role to user_roles table
+        // User was created successfully
+        // Note: 'user' role is automatically added by trigger assign_user_role
+        // Only add role if it's not 'user'
+        if (pendingRole !== 'user') {
           const { error: roleError } = await supabase
             .from('user_roles')
             .insert([{
@@ -204,35 +231,35 @@ const PhoneAuth = () => {
             }]);
 
           if (roleError) throw roleError;
+        }
 
-          // If partner, create service_partners entry (unverified)
-          if (pendingRole === 'partner') {
-            const { error: partnerError } = await supabase
-              .from('service_partners')
-              .insert([{
-                owner_id: authData.user.id,
-                name: '',
-                is_verified: false
-              }]);
+        // If partner, create service_partners entry (unverified)
+        if (pendingRole === 'partner') {
+          const { error: partnerError } = await supabase
+            .from('service_partners')
+            .insert([{
+              owner_id: authData.user.id,
+              name: '',
+              is_verified: false
+            }]);
 
-            if (partnerError) throw partnerError;
-          }
+          if (partnerError) throw partnerError;
+        }
 
-          toast({
-            title: language === 'ru' ? "Успешно" : "Сәтті",
-            description: language === 'ru' 
-              ? "Регистрация завершена" 
-              : "Тіркелу аяқталды",
-          });
-          
-          localStorage.removeItem('pending_role');
-          
-          // Navigate based on role
-          if (pendingRole === 'partner') {
-            navigate('/partner/pending-verification');
-          } else {
-            navigate('/profile-setup');
-          }
+        toast({
+          title: language === 'ru' ? "Успешно" : "Сәтті",
+          description: language === 'ru' 
+            ? "Регистрация завершена" 
+            : "Тіркелу аяқталды",
+        });
+        
+        localStorage.removeItem('pending_role');
+        
+        // Navigate based on role
+        if (pendingRole === 'partner') {
+          navigate('/partner/pending-verification');
+        } else {
+          navigate('/profile-setup');
         }
       } else {
         // Login - check if user has the selected role
