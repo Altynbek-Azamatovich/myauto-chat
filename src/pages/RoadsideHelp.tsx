@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { ArrowLeft, MapPin, AlertCircle } from "lucide-react";
+import { ArrowLeft, MapPin, AlertCircle, Info, Navigation } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,9 +41,13 @@ const RoadsideHelp = () => {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [isCreatingRequest, setIsCreatingRequest] = useState(false);
   const [showRequestDialog, setShowRequestDialog] = useState(false);
+  const [showInfoCard, setShowInfoCard] = useState(false);
+  const [isTrackingLocation, setIsTrackingLocation] = useState(false);
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<L.Map | null>(null);
   const markersRef = useRef<Map<string, L.Marker>>(new Map());
+  const userLocationMarker = useRef<L.Marker | null>(null);
+  const watchIdRef = useRef<number | null>(null);
 
   useEffect(() => {
     checkAuthAndInit();
@@ -360,38 +364,171 @@ const RoadsideHelp = () => {
     }
   };
 
+  const toggleLocationTracking = () => {
+    if (isTrackingLocation) {
+      // Остановить отслеживание
+      if (watchIdRef.current !== null) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+        watchIdRef.current = null;
+      }
+      if (userLocationMarker.current && map.current) {
+        map.current.removeLayer(userLocationMarker.current);
+        userLocationMarker.current = null;
+      }
+      setIsTrackingLocation(false);
+      toast.info('Отслеживание местоположения остановлено');
+    } else {
+      // Начать отслеживание
+      if (navigator.geolocation) {
+        const watchId = navigator.geolocation.watchPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            
+            if (map.current) {
+              // Создаем или обновляем маркер
+              if (!userLocationMarker.current) {
+                const icon = L.icon({
+                  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+                  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+                  iconSize: [25, 41],
+                  iconAnchor: [12, 41],
+                  popupAnchor: [1, -34],
+                  shadowSize: [41, 41]
+                });
+                
+                userLocationMarker.current = L.marker([latitude, longitude], { icon })
+                  .addTo(map.current)
+                  .bindPopup('📍 Ваше местоположение');
+              } else {
+                userLocationMarker.current.setLatLng([latitude, longitude]);
+              }
+              
+              // Центрируем карту на первом обновлении
+              if (!isTrackingLocation) {
+                map.current.setView([latitude, longitude], 15, { animate: true });
+              }
+            }
+          },
+          (error) => {
+            console.error('Geolocation error:', error);
+            toast.error('Не удалось отследить местоположение');
+            setIsTrackingLocation(false);
+          },
+          {
+            enableHighAccuracy: true,
+            maximumAge: 0,
+            timeout: 5000
+          }
+        );
+        
+        watchIdRef.current = watchId;
+        setIsTrackingLocation(true);
+        toast.success('Отслеживание местоположения активно');
+      } else {
+        toast.error('Геолокация не поддерживается');
+      }
+    }
+  };
+
+  // Очистка при размонтировании
+  useEffect(() => {
+    return () => {
+      if (watchIdRef.current !== null) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+      }
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <div className="bg-card border-b border-border px-4 py-3 flex items-center justify-between">
+    <div className="min-h-screen bg-background flex flex-col relative">
+      {/* Header - прозрачный с тенью */}
+      <div className="absolute top-0 left-0 right-0 z-[1001] bg-background/80 backdrop-blur-md shadow-md px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate(-1)}
+            className="shadow-sm"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-lg font-semibold">Помощь на дороге</h1>
+          <h1 className="text-lg font-semibold drop-shadow">Помощь на дороге</h1>
         </div>
       </div>
 
-      {/* Map */}
-      <div className="flex-1 relative">
-        <div ref={mapContainer} className="absolute inset-0" />
+      {/* Map - на весь экран */}
+      <div className="absolute inset-0">
+        <div ref={mapContainer} className="w-full h-full" />
         
-        {/* Кнопка моей геолокации */}
-        <Button
-          onClick={handleLocateMe}
-          size="icon"
-          className="absolute right-4 top-20 z-[1000] shadow-lg bg-card hover:bg-card/90"
-          variant="outline"
-        >
-          <MapPin className="h-5 w-5" />
-        </Button>
+        {/* Информационная кнопка/карточка - левый верхний угол */}
+        <div className="absolute top-20 left-4 z-[1001]">
+          {!showInfoCard ? (
+            <Button
+              onClick={() => setShowInfoCard(true)}
+              variant="outline"
+              size="sm"
+              className="shadow-lg bg-card/95 backdrop-blur hover:bg-card"
+            >
+              <Info className="h-4 w-4 mr-2" />
+              Информация
+            </Button>
+          ) : (
+            <Card className="shadow-lg bg-card/95 backdrop-blur w-80">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <AlertCircle className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex-1 text-sm">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="font-medium">Как это работает:</p>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={() => setShowInfoCard(false)}
+                      >
+                        <Info className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <ul className="text-muted-foreground space-y-1 text-xs">
+                      <li>🔴 Красный маркер - ваш запрос о помощи</li>
+                      <li>🟢 Зелёные маркеры - другие водители</li>
+                      <li>🔵 Синий маркер - ваше местоположение</li>
+                      <li>Нажмите на маркер для деталей</li>
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
         
-        {/* Floating action button */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000]">
+        {/* Кнопки навигации - справа по центру */}
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 z-[1000] flex flex-col gap-2">
+          {/* Кнопка отслеживания местоположения */}
+          <Button
+            onClick={toggleLocationTracking}
+            size="icon"
+            className={`shadow-lg ${isTrackingLocation ? 'bg-primary text-primary-foreground' : 'bg-card hover:bg-card/90'}`}
+            variant={isTrackingLocation ? "default" : "outline"}
+          >
+            <Navigation className="h-5 w-5" />
+          </Button>
+          
+          {/* Кнопка моей геолокации (одноразово) */}
+          <Button
+            onClick={handleLocateMe}
+            size="icon"
+            className="shadow-lg bg-card hover:bg-card/90"
+            variant="outline"
+          >
+            <MapPin className="h-5 w-5" />
+          </Button>
+        </div>
+        
+        {/* Floating action button - внизу по центру */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1100]">
           {!myActiveRequest ? (
             <Dialog open={showRequestDialog} onOpenChange={setShowRequestDialog}>
               <DialogTrigger asChild>
@@ -400,7 +537,7 @@ const RoadsideHelp = () => {
                   Нужна помощь
                 </Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="z-[1200]">
                 <DialogHeader>
                   <DialogTitle>Запрос о помощи</DialogTitle>
                 </DialogHeader>
@@ -424,7 +561,7 @@ const RoadsideHelp = () => {
               </DialogContent>
             </Dialog>
           ) : (
-            <Card className="shadow-lg">
+            <Card className="shadow-lg bg-card/95 backdrop-blur">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm">Ваш активный запрос</CardTitle>
               </CardHeader>
@@ -441,27 +578,6 @@ const RoadsideHelp = () => {
               </CardContent>
             </Card>
           )}
-        </div>
-
-        {/* Info card */}
-        <div className="absolute top-4 left-4 right-4 z-[1000]">
-          <Card className="shadow-lg bg-card/95 backdrop-blur">
-            <CardContent className="p-4">
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                  <AlertCircle className="h-5 w-5 text-primary" />
-                </div>
-                <div className="flex-1 text-sm">
-                  <p className="font-medium mb-1">Как это работает:</p>
-                  <ul className="text-muted-foreground space-y-1 text-xs">
-                    <li>🔴 Красный маркер - ваш запрос о помощи</li>
-                    <li>🟢 Зелёные маркеры - другие водители, которым нужна помощь</li>
-                    <li>Нажмите на маркер, чтобы увидеть детали и откликнуться</li>
-                  </ul>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>
