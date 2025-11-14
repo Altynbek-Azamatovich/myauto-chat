@@ -17,14 +17,33 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
       if (!session) {
-      navigate("/welcome");
+        navigate("/welcome");
+        setLoading(false);
+        return;
       }
+
+      // Check if partner is verified
+      const { data: partnerData } = await supabase
+        .from('service_partners')
+        .select('is_verified')
+        .eq('owner_id', session.user.id)
+        .maybeSingle();
+
+      if (partnerData && !partnerData.is_verified) {
+        navigate('/partner/pending-verification');
+        setLoading(false);
+        return;
+      }
+
+      setSession(session);
       setLoading(false);
-    });
+    };
+
+    checkAuth();
 
     // Listen for auth changes
     const {

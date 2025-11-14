@@ -14,19 +14,36 @@ const Index = () => {
         return;
       }
 
-      // Check user role from metadata
-      const userRole = session.user?.user_metadata?.role || 'user';
-      
-      if (userRole === 'partner') {
-        navigate('/partner/dashboard');
+      // Check if user has partner role
+      const { data: partnerRole } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .eq('role', 'partner')
+        .maybeSingle();
+
+      if (partnerRole) {
+        // Check verification status
+        const { data: partnerData } = await supabase
+          .from('service_partners')
+          .select('is_verified')
+          .eq('owner_id', session.user.id)
+          .single();
+
+        if (partnerData && !partnerData.is_verified) {
+          navigate('/partner/pending-verification');
+        } else {
+          navigate('/partner/dashboard');
+        }
         return;
       }
 
+      // User role - check profile
       const { data: profile } = await supabase
         .from('profiles')
         .select('onboarding_completed')
         .eq('id', session.user.id)
-        .single();
+        .maybeSingle();
 
       if (!profile?.onboarding_completed) {
         navigate('/profile-setup');

@@ -114,21 +114,40 @@ const PhoneAuth = () => {
     setLoading(true);
     try {
       const cleanPhone = phone.replace(/\s/g, '');
-      const pendingRole = localStorage.getItem('pending_role') || 'user';
+      const pendingRole = (localStorage.getItem('pending_role') || 'user') as 'user' | 'partner';
       
       if (isRegisterMode) {
-        // Register with role in metadata
-        const { error } = await supabase.auth.signUp({
+        // Register new user
+        const { data: authData, error } = await supabase.auth.signUp({
           phone: cleanPhone,
           password: password,
-          options: {
-            data: {
-              role: pendingRole
-            }
-          }
         });
 
         if (error) throw error;
+        if (!authData.user) throw new Error('Registration failed');
+
+        // Add role to user_roles table
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert([{
+            user_id: authData.user.id,
+            role: pendingRole as any
+          }]);
+
+        if (roleError) throw roleError;
+
+        // If partner, create service_partners entry (unverified)
+        if (pendingRole === 'partner') {
+          const { error: partnerError } = await supabase
+            .from('service_partners')
+            .insert([{
+              owner_id: authData.user.id,
+              name: '',
+              is_verified: false
+            }]);
+
+          if (partnerError) throw partnerError;
+        }
 
         toast({
           title: language === 'ru' ? "Успешно" : "Сәтті",
@@ -141,12 +160,12 @@ const PhoneAuth = () => {
         
         // Navigate based on role
         if (pendingRole === 'partner') {
-          navigate('/partner/dashboard');
+          navigate('/partner/pending-verification');
         } else {
           navigate('/profile-setup');
         }
       } else {
-        // Login - check if role matches
+        // Login - check if user has the selected role
         const { data, error } = await supabase.auth.signInWithPassword({
           phone: cleanPhone,
           password: password,
@@ -154,22 +173,29 @@ const PhoneAuth = () => {
 
         if (error) throw error;
 
-        // Check if the user's role matches the selected role
-        const userRole = data.user?.user_metadata?.role || 'user';
-        
-        if (userRole !== pendingRole) {
-          // Role mismatch - sign out and show error
+        // Check if the user has the selected role in user_roles table
+        const { data: roleData, error: roleError } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', data.user.id)
+          .eq('role', pendingRole)
+          .maybeSingle();
+
+        if (roleError) throw roleError;
+
+        if (!roleData) {
+          // User doesn't have this role - sign out and show error
           await supabase.auth.signOut();
           
           const roleNames = {
-            user: language === 'ru' ? 'пользователя' : 'пайдаланушы',
-            partner: language === 'ru' ? 'партнера' : 'серіктес'
+            user: language === 'ru' ? 'пользователь' : 'пайдаланушы',
+            partner: language === 'ru' ? 'партнер' : 'серіктес'
           };
           
           throw new Error(
             language === 'ru' 
-              ? `Этот номер зарегистрирован как ${roleNames[userRole as 'user' | 'partner']}. Для входа как ${roleNames[pendingRole as 'user' | 'partner']} используйте другой номер телефона.`
-              : `Бұл нөмір ${roleNames[userRole as 'user' | 'partner']} ретінде тіркелген. ${roleNames[pendingRole as 'user' | 'partner']} ретінде кіру үшін басқа телефон нөмірін пайдаланыңыз.`
+              ? `У вас нет аккаунта ${roleNames[pendingRole as 'user' | 'partner']}. Пожалуйста, пройдите регистрацию для этой роли.`
+              : `Сізде ${roleNames[pendingRole as 'user' | 'partner']} аккаунты жоқ. Бұл рөл үшін тіркеуден өтіңіз.`
           );
         }
 
@@ -183,8 +209,19 @@ const PhoneAuth = () => {
         localStorage.removeItem('pending_role');
         
         // Navigate based on role
-        if (userRole === 'partner') {
-          navigate('/partner/dashboard');
+        if (pendingRole === 'partner') {
+          // Check if partner is verified
+          const { data: partnerData } = await supabase
+            .from('service_partners')
+            .select('is_verified')
+            .eq('owner_id', data.user.id)
+            .single();
+
+          if (partnerData && !partnerData.is_verified) {
+            navigate('/partner/pending-verification');
+          } else {
+            navigate('/partner/dashboard');
+          }
         } else {
           navigate('/');
         }
