@@ -7,9 +7,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import { usePersistedState } from "@/hooks/usePersistedState";
+
+declare global {
+  interface Window {
+    ymaps3: any;
+  }
+}
 
 const RoadsideHelp = () => {
   const navigate = useNavigate();
@@ -19,72 +23,87 @@ const RoadsideHelp = () => {
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [activeHelpers, setActiveHelpers] = useState(0);
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const marker = useRef<mapboxgl.Marker | null>(null);
-  const helpersMarkersRef = useRef<mapboxgl.Marker[]>([]);
+  const map = useRef<any>(null);
+  const marker = useRef<any>(null);
+  const helpersMarkersRef = useRef<any[]>([]);
 
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
 
-    // Initialize map
-    mapboxgl.accessToken = 'pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbTRocmRwdGgwMGJoMmpzaGF0bzZ5dDA3In0.4k7x-uUbw0_y1CfWZZQZkw';
-    
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/streets-v12',
-      center: [76.9286, 43.2220], // Almaty, Kazakhstan
-      zoom: 12,
-      pitch: 0,
-    });
+    const initMap = async () => {
+      await window.ymaps3.ready;
+      
+      const { YMap, YMapDefaultSchemeLayer, YMapDefaultFeaturesLayer, YMapControls, YMapMarker } = window.ymaps3;
+      const { YMapZoomControl } = await window.ymaps3.import('@yandex/ymaps3-controls@0.0.1');
 
-    map.current.addControl(
-      new mapboxgl.NavigationControl({
-        visualizePitch: true,
-      }),
-      'top-right'
-    );
+      // Initialize Yandex Map
+      const ymap = new YMap(mapContainer.current, {
+        location: {
+          center: [76.9286, 43.2220], // Almaty, Kazakhstan
+          zoom: 12,
+        },
+      });
 
-    // Simulate nearby helpers (demo data)
-    const simulateHelpers = () => {
+      ymap.addChild(new YMapDefaultSchemeLayer());
+      ymap.addChild(new YMapDefaultFeaturesLayer());
+
+      // Add zoom control
+      const controls = new YMapControls({ position: 'right' });
+      controls.addChild(new YMapZoomControl());
+      ymap.addChild(controls);
+
+      map.current = ymap;
+
+      // Simulate nearby helpers (demo data)
       const helpers = [
         { lng: 76.9286 + 0.01, lat: 43.2220 + 0.01, name: 'Водитель 1' },
         { lng: 76.9286 - 0.015, lat: 43.2220 + 0.005, name: 'Водитель 2' },
         { lng: 76.9286 + 0.005, lat: 43.2220 - 0.012, name: 'Водитель 3' },
       ];
 
-      if (map.current) {
-        helpers.forEach((helper) => {
-          const helperMarker = new mapboxgl.Marker({ color: '#22c55e' })
-            .setLngLat([helper.lng, helper.lat])
-            .setPopup(new mapboxgl.Popup().setHTML(`<p>${helper.name}</p>`))
-            .addTo(map.current!);
-          
-          helpersMarkersRef.current.push(helperMarker);
-        });
-      }
+      helpers.forEach((helper) => {
+        const markerElement = document.createElement('div');
+        markerElement.className = 'helper-marker';
+        markerElement.style.cssText = 'width: 30px; height: 30px; background: #22c55e; border-radius: 50%; border: 2px solid white; cursor: pointer;';
+        markerElement.title = helper.name;
+
+        const helperMarker = new YMapMarker(
+          {
+            coordinates: [helper.lng, helper.lat],
+          },
+          markerElement
+        );
+
+        ymap.addChild(helperMarker);
+        helpersMarkersRef.current.push(helperMarker);
+      });
 
       setActiveHelpers(helpers.length);
     };
 
-    // Wait for map to load before adding markers
-    map.current.on('load', simulateHelpers);
+    initMap();
 
     return () => {
-      helpersMarkersRef.current.forEach(m => m.remove());
-      map.current?.remove();
+      helpersMarkersRef.current.forEach(m => {
+        try {
+          map.current?.removeChild(m);
+        } catch (e) {
+          // ignore cleanup errors
+        }
+      });
     };
   }, []);
 
-  const handleShareLocation = () => {
+  const handleShareLocation = async () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        async (position) => {
           const coords: [number, number] = [position.coords.longitude, position.coords.latitude];
           setUserLocation(coords);
           setLocationShared(true);
           
           if (map.current) {
-            map.current.flyTo({
+            map.current.setLocation({
               center: coords,
               zoom: 15,
               duration: 2000
@@ -92,13 +111,21 @@ const RoadsideHelp = () => {
 
             // Add or update user marker
             if (marker.current) {
-              marker.current.setLngLat(coords);
-            } else {
-              marker.current = new mapboxgl.Marker({ color: '#ef4444' })
-                .setLngLat(coords)
-                .setPopup(new mapboxgl.Popup().setHTML('<p>' + t('yourLocation') + '</p>'))
-                .addTo(map.current);
+              map.current.removeChild(marker.current);
             }
+            
+            const { YMapMarker } = window.ymaps3;
+            const markerElement = document.createElement('div');
+            markerElement.style.cssText = 'width: 35px; height: 35px; background: #ef4444; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);';
+            
+            marker.current = new YMapMarker(
+              {
+                coordinates: coords,
+              },
+              markerElement
+            );
+
+            map.current.addChild(marker.current);
           }
           
           toast.success(t('locationShared'));
