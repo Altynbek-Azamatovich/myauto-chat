@@ -184,12 +184,12 @@ const Home = () => {
 
         <Card className="p-4 bg-black/30 backdrop-blur-md rounded-2xl border-white/20">
           <div className="space-y-3">
-            <div className="flex flex-col items-start">
+            <div className="flex flex-col items-start mb-3">
               <div className="text-white mb-2">
                 <AlertTriangle className="h-6 w-6" />
               </div>
             </div>
-            <div className="flex items-start gap-2">
+            <div className="flex items-start gap-2 -mt-3">
               <Droplet className="h-4 w-4 text-blue-400 flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-white/70 mb-1">{t('oilChange')}</p>
