@@ -131,10 +131,15 @@ const PhoneAuth = () => {
           });
 
           if (signInError) {
+            const roleNames = {
+              user: language === 'ru' ? 'пользователя' : 'пайдаланушы',
+              partner: language === 'ru' ? 'партнера' : 'серіктес'
+            };
+            
             throw new Error(
               language === 'ru' 
-                ? 'Пользователь с таким номером уже существует. Проверьте пароль или войдите в систему.'
-                : 'Бұл нөмірдегі пайдаланушы бар. Құпия сөзді тексеріңіз немесе жүйеге кіріңіз.'
+                ? `Этот номер уже зарегистрирован. Чтобы добавить роль ${roleNames[pendingRole as 'user' | 'partner']}, используйте ваш существующий пароль или войдите в систему.`
+                : `Бұл нөмір тіркелген. ${roleNames[pendingRole as 'user' | 'partner']} рөлін қосу үшін қолданыстағы құпия сөзді пайдаланыңыз немесе жүйеге кіріңіз.`
             );
           }
 
@@ -281,19 +286,46 @@ const PhoneAuth = () => {
         if (roleError) throw roleError;
 
         if (!roleData) {
-          // User doesn't have this role - sign out and show error
-          await supabase.auth.signOut();
-          
+          // User doesn't have this role - add it automatically
+          const { error: addRoleError } = await supabase
+            .from('user_roles')
+            .insert([{
+              user_id: data.user.id,
+              role: pendingRole as any
+            }]);
+
+          if (addRoleError) {
+            await supabase.auth.signOut();
+            throw addRoleError;
+          }
+
+          // If adding partner role, create service_partners entry
+          if (pendingRole === 'partner') {
+            const { error: partnerError } = await supabase
+              .from('service_partners')
+              .insert([{
+                owner_id: data.user.id,
+                name: '',
+                is_verified: false
+              }]);
+
+            if (partnerError && !partnerError.message?.includes('duplicate')) {
+              await supabase.auth.signOut();
+              throw partnerError;
+            }
+          }
+
           const roleNames = {
-            user: language === 'ru' ? 'пользователь' : 'пайдаланушы',
-            partner: language === 'ru' ? 'партнер' : 'серіктес'
+            user: language === 'ru' ? 'пользователя' : 'пайдаланушы',
+            partner: language === 'ru' ? 'партнера' : 'серіктес'
           };
-          
-          throw new Error(
-            language === 'ru' 
-              ? `У вас нет аккаунта ${roleNames[pendingRole as 'user' | 'partner']}. Пожалуйста, пройдите регистрацию для этой роли.`
-              : `Сізде ${roleNames[pendingRole as 'user' | 'partner']} аккаунты жоқ. Бұл рөл үшін тіркеуден өтіңіз.`
-          );
+
+          toast({
+            title: language === 'ru' ? "Роль добавлена" : "Рөл қосылды",
+            description: language === 'ru'
+              ? `Роль ${roleNames[pendingRole as 'user' | 'partner']} успешно добавлена к вашему аккаунту`
+              : `${roleNames[pendingRole as 'user' | 'partner']} рөлі сәтті қосылды`,
+          });
         }
 
         toast({
