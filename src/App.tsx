@@ -42,6 +42,7 @@ import PartnerServices from "./pages/partner/Services";
 import PartnerAnalytics from "./pages/partner/Analytics";
 import PartnerShifts from "./pages/partner/Shifts";
 import PartnerSettings from "./pages/partner/Settings";
+import PendingVerification from "./pages/partner/PendingVerification";
 
 const AppContent = () => {
   const location = useLocation();
@@ -58,7 +59,8 @@ const AppContent = () => {
     '/profile-settings', 
     '/notifications', 
     '/service-cart', 
-    '/service-booking'
+    '/service-booking',
+    '/partner/pending-verification'
   ].includes(location.pathname);
   
   const isPartnerRoute = location.pathname.startsWith('/partner');
@@ -97,6 +99,7 @@ const AppContent = () => {
         <Route path="/car-wash" element={<CarWash />} />
         
         {/* Partner Routes */}
+        <Route path="/partner/pending-verification" element={<PendingVerification />} />
         <Route path="/partner/dashboard" element={<PartnerDashboard />} />
         <Route path="/partner/orders" element={<PartnerOrders />} />
         <Route path="/partner/clients" element={<PartnerClients />} />
