@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
-import welcomeImage from "@/assets/welcome-hero.jpg";
 import logoAnimated from "@/assets/logo-animated.png";
 import { Globe } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -38,14 +37,14 @@ const Welcome = () => {
         </Button>
       </div>
 
-      {/* Logo */}
-      <div className="pt-16 px-4 text-center flex flex-col items-center gap-4">
+      {/* Main Content - Logo and Animations */}
+      <div className="flex-1 flex flex-col items-center justify-center px-8 gap-8">
         <img 
           src={logoAnimated} 
           alt="myAuto Logo" 
-          className="w-24 h-24 animate-fade-in"
+          className="w-48 h-48 animate-fade-in"
         />
-        <h1 className="text-2xl font-bold text-foreground min-h-[2rem]">
+        <h1 className="text-5xl font-bold text-foreground min-h-[4rem]">
           {displayedText.split('').map((char, index) => (
             <span 
               key={index}
@@ -56,16 +55,9 @@ const Welcome = () => {
           ))}
           <span className="animate-pulse">|</span>
         </h1>
-      </div>
-
-      {/* Illustration */}
-      <div className="flex-1 flex items-center justify-center px-8 py-8">
-        <img src={welcomeImage} alt="Welcome" className="max-w-full h-auto object-contain" />
-      </div>
-
-      {/* Welcome Text */}
-      <div className="px-4 pb-8 text-center">
-        <h2 className="text-2xl font-bold text-foreground mb-2">
+        
+        {/* Welcome Text */}
+        <h2 className="text-2xl font-bold text-foreground text-center">
           {t('welcome')}
         </h2>
       </div>
