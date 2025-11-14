@@ -129,7 +129,7 @@ const Home = () => {
       </header>
 
       {/* Car Display */}
-      <div className="relative">
+      <div className="relative mt-12">
         <img src={carCoveredImage} alt="Toyota Camry 2019" className="w-full h-auto object-contain" />
         
         {/* Interactive Points */}
