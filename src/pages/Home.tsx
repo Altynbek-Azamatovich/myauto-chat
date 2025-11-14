@@ -160,13 +160,13 @@ const Home = () => {
       <div className="grid grid-cols-2 gap-4">
         <Card className="p-4 bg-black/30 backdrop-blur-md rounded-2xl border-white/20">
           <div className="space-y-3">
-            <div className="flex items-start space-x-3">
-              <div className="text-white mt-1">
+            <div className="flex flex-col items-center text-center">
+              <div className="text-white mb-2">
                 <span className="text-xl">ⓘ</span>
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="w-full">
                 <h3 className="font-semibold text-base leading-tight text-white">
-                  {primaryVehicle ? `${brandName} ${primaryVehicle.model}` : <button onClick={() => navigate('/my-vehicles')} className="text-primary hover:underline text-left">
+                  {primaryVehicle ? `${brandName} ${primaryVehicle.model}` : <button onClick={() => navigate('/my-vehicles')} className="text-primary hover:underline">
                       {t('addYourCar')}
                     </button>}
                 </h3>
@@ -184,14 +184,17 @@ const Home = () => {
 
         <Card className="p-4 bg-black/30 backdrop-blur-md rounded-2xl border-white/20">
           <div className="space-y-3">
-            <div className="flex items-start space-x-2">
-              <AlertTriangle className="h-5 w-5 text-yellow-500 flex-shrink-0 mt-1" />
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-white/70 mb-1">{t('oilChange')}</p>
+            <div className="flex flex-col items-center text-center">
+              <AlertTriangle className="h-5 w-5 text-yellow-500 mb-2" />
+              <div className="w-full">
+                <p className="text-xs text-white/70 mb-1 flex items-center justify-center gap-1">
+                  <span className="text-sm">⭕</span>
+                  {t('oilChange')}
+                </p>
                 <Popover open={isOilChangeDateOpen} onOpenChange={setIsOilChangeDateOpen}>
                   <PopoverTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
-                      <div className="text-left">
+                      <div className="text-center">
                         <p className="text-sm font-medium leading-tight flex items-center gap-1 text-white">
                           {oilChangeDate ? format(oilChangeDate, 'dd.MM.yyyy') : '—'}
                           <Edit className="h-3 w-3 text-white/70" />
@@ -211,14 +214,14 @@ const Home = () => {
                 </Popover>
               </div>
             </div>
-            <div className="flex items-start space-x-2">
-              <Clock className="h-5 w-5 text-white flex-shrink-0 mt-1" />
-              <div className="flex-1 min-w-0">
+            <div className="flex flex-col items-center text-center">
+              <Clock className="h-5 w-5 text-white mb-2" />
+              <div className="w-full">
                 <p className="text-xs text-white/70 mb-1">{t('insuranceExpires')}</p>
                 <Popover open={isInsuranceDateOpen} onOpenChange={setIsInsuranceDateOpen}>
                   <PopoverTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
-                      <div className="text-left">
+                      <div className="text-center">
                         <p className="text-sm font-medium leading-tight flex items-center gap-1 text-white">
                           {insuranceDate ? format(insuranceDate, 'dd.MM.yyyy') : '—'}
                           <Edit className="h-3 w-3 text-white/70" />
