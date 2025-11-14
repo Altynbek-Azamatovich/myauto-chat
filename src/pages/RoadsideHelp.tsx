@@ -80,21 +80,21 @@ const RoadsideHelp = () => {
         maxZoom: 19,
       }).addTo(leafletMap);
 
-      // Добавляем контрол зума справа
+      // Добавляем контрол зума справа по центру
       const zoomControl = L.control.zoom({
         position: 'topright'
       });
       
-      // Перемещаем контрол зума ниже используя CSS
       leafletMap.addControl(zoomControl);
       
-      // Применяем стили для позиционирования
+      // Применяем стили для позиционирования по центру справа
       setTimeout(() => {
         const zoomElement = document.querySelector('.leaflet-control-zoom') as HTMLElement;
         if (zoomElement) {
           zoomElement.style.top = '50%';
           zoomElement.style.transform = 'translateY(-50%)';
-          zoomElement.style.marginTop = '0';
+          zoomElement.style.marginTop = '-80px'; // Смещаем вверх чтобы не перекрывать другие кнопки
+          zoomElement.style.marginRight = '16px';
         }
       }, 100);
 
@@ -441,18 +441,18 @@ const RoadsideHelp = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col relative">
-      {/* Header - прозрачный с тенью */}
-      <div className="absolute top-0 left-0 right-0 z-[1001] bg-background/80 backdrop-blur-md shadow-md px-4 py-3 flex items-center justify-between">
+      {/* Header - полностью прозрачный с тенью для читаемости */}
+      <div className="absolute top-0 left-0 right-0 z-[1001] px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate(-1)}
-            className="shadow-sm"
+            className="shadow-lg bg-background/50 backdrop-blur-sm"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-lg font-semibold drop-shadow">Помощь на дороге</h1>
+          <h1 className="text-lg font-semibold drop-shadow-lg">Помощь на дороге</h1>
         </div>
       </div>
 
@@ -474,38 +474,36 @@ const RoadsideHelp = () => {
             </Button>
           ) : (
             <Card className="shadow-lg bg-card/95 backdrop-blur w-80">
-              <CardContent className="p-4">
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+              <CardHeader className="pb-3 pt-4 px-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-base flex items-center gap-2">
                     <AlertCircle className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="flex-1 text-sm">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="font-medium">Как это работает:</p>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6"
-                        onClick={() => setShowInfoCard(false)}
-                      >
-                        <Info className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    <ul className="text-muted-foreground space-y-1 text-xs">
-                      <li>🔴 Красный маркер - ваш запрос о помощи</li>
-                      <li>🟢 Зелёные маркеры - другие водители</li>
-                      <li>🔵 Синий маркер - ваше местоположение</li>
-                      <li>Нажмите на маркер для деталей</li>
-                    </ul>
-                  </div>
+                    Как это работает
+                  </CardTitle>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => setShowInfoCard(false)}
+                  >
+                    <Info className="h-4 w-4" />
+                  </Button>
                 </div>
+              </CardHeader>
+              <CardContent className="px-4 pb-4">
+                <ul className="text-muted-foreground space-y-2 text-sm">
+                  <li>🟢 Зелёные маркеры - другие водители</li>
+                  <li>🔴 Красный маркер - тем кому нужна помощь</li>
+                  <li>🔵 Синий маркер - мой маркер о помощи</li>
+                  <li>Нажмите на маркер для деталей</li>
+                </ul>
               </CardContent>
             </Card>
           )}
         </div>
         
-        {/* Кнопки навигации - справа по центру */}
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 z-[1000] flex flex-col gap-2">
+        {/* Кнопки навигации - справа по центру (ниже zoom контролов) */}
+        <div className="absolute right-4 top-1/2 translate-y-2 z-[1000] flex flex-col gap-2">
           {/* Кнопка отслеживания местоположения */}
           <Button
             onClick={toggleLocationTracking}
