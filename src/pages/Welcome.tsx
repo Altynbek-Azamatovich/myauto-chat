@@ -2,7 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import welcomeImage from "@/assets/welcome-hero.jpg";
+import logoAnimated from "@/assets/logo-animated.png";
 import { Globe } from "lucide-react";
+import { useState, useEffect } from "react";
 const Welcome = () => {
   const navigate = useNavigate();
   const {
@@ -10,6 +12,23 @@ const Welcome = () => {
     language,
     setLanguage
   } = useLanguage();
+  
+  const [displayedText, setDisplayedText] = useState("");
+  const fullText = "myAuto";
+  
+  useEffect(() => {
+    let currentIndex = 0;
+    const typingInterval = setInterval(() => {
+      if (currentIndex <= fullText.length) {
+        setDisplayedText(fullText.slice(0, currentIndex));
+        currentIndex++;
+      } else {
+        clearInterval(typingInterval);
+      }
+    }, 150);
+    
+    return () => clearInterval(typingInterval);
+  }, []);
   return <div className="min-h-screen bg-background flex flex-col">
       {/* Language Toggle */}
       <div className="absolute top-4 right-4 z-10">
@@ -20,10 +39,22 @@ const Welcome = () => {
       </div>
 
       {/* Logo */}
-      <div className="pt-16 px-4 text-center">
-        <h1 className="text-2xl font-bold text-foreground">
-          <span className="text-primary">my</span>
-          <span className="text-muted-foreground">Auto</span>
+      <div className="pt-16 px-4 text-center flex flex-col items-center gap-4">
+        <img 
+          src={logoAnimated} 
+          alt="myAuto Logo" 
+          className="w-24 h-24 animate-fade-in"
+        />
+        <h1 className="text-2xl font-bold text-foreground min-h-[2rem]">
+          {displayedText.split('').map((char, index) => (
+            <span 
+              key={index}
+              className={index < 2 ? "text-primary" : "text-muted-foreground"}
+            >
+              {char}
+            </span>
+          ))}
+          <span className="animate-pulse">|</span>
         </h1>
       </div>
 
