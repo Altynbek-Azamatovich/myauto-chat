@@ -129,7 +129,7 @@ const Home = () => {
       </header>
 
       {/* Car Display */}
-      <div className="relative mt-12">
+      <div className="relative mt-6">
         <img src={carCoveredImage} alt="Toyota Camry 2019" className="w-full h-auto object-contain" />
         
         {/* Interactive Points */}
@@ -156,7 +156,7 @@ const Home = () => {
       </div>
 
       {/* Car Info Cards */}
-      <div className="px-4 space-y-4 mt-8">
+      <div className="px-4 space-y-4 mt-3">
       <div className="grid grid-cols-2 gap-4">
         <Card className="p-4 bg-black/30 backdrop-blur-md rounded-2xl border-white/20">
           <div className="space-y-3">
