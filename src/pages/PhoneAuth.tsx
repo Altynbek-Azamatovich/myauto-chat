@@ -15,13 +15,14 @@ const PhoneAuth = () => {
   const [phone, setPhone] = useState("+7");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [partnerPin, setPartnerPin] = useState("");
-  const [confirmPartnerPin, setConfirmPartnerPin] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
+  
+  const pendingRole = (localStorage.getItem('pending_role') || 'user') as 'user' | 'partner';
+  const isPartnerMode = pendingRole === 'partner';
 
   const formatPhoneNumber = (value: string) => {
     // Remove all non-digit characters except +
@@ -69,16 +70,7 @@ const PhoneAuth = () => {
     return { valid: true };
   };
 
-  const validatePin = (pin: string) => {
-    if (pin.length < 4 || pin.length > 6 || !/^\d+$/.test(pin)) {
-      return { valid: false, error: t('pinTooShort') };
-    }
-    return { valid: true };
-  };
-
   const handleSubmit = async () => {
-    const pendingRole = (localStorage.getItem('pending_role') || 'user') as 'user' | 'partner';
-    
     if (!isPhoneValid(phone)) {
       toast({
         title: t('error'),
@@ -98,7 +90,8 @@ const PhoneAuth = () => {
       return;
     }
 
-    if (isRegisterMode) {
+    // For user registration, check password confirmation and agreement
+    if (isRegisterMode && !isPartnerMode) {
       if (password !== confirmPassword) {
         toast({
           title: t('error'),
@@ -106,28 +99,6 @@ const PhoneAuth = () => {
           variant: "destructive",
         });
         return;
-      }
-
-      // Валидация PIN для партнера
-      if (pendingRole === 'partner') {
-        const pinValidation = validatePin(partnerPin);
-        if (!pinValidation.valid) {
-          toast({
-            title: t('error'),
-            description: pinValidation.error,
-            variant: "destructive",
-          });
-          return;
-        }
-
-        if (partnerPin !== confirmPartnerPin) {
-          toast({
-            title: t('error'),
-            description: t('pinNotMatch'),
-            variant: "destructive",
-          });
-          return;
-        }
       }
 
       if (!agreed) {
@@ -138,179 +109,14 @@ const PhoneAuth = () => {
         });
         return;
       }
-    } else {
-      // Проверка PIN при входе партнера
-      if (pendingRole === 'partner') {
-        const pinValidation = validatePin(partnerPin);
-        if (!pinValidation.valid) {
-          toast({
-            title: t('error'),
-            description: pinValidation.error,
-            variant: "destructive",
-          });
-          return;
-        }
-      }
     }
 
     setLoading(true);
     try {
       const cleanPhone = phone.replace(/\s/g, '');
-      const pendingRole = (localStorage.getItem('pending_role') || 'user') as 'user' | 'partner';
-      const hashedPin = pendingRole === 'partner' && partnerPin ? btoa(partnerPin) : null;
       
-      if (isRegisterMode) {
-        // Try to create new user
-        const { data: authData, error: signUpError } = await supabase.auth.signUp({
-          phone: cleanPhone,
-          password: password,
-        });
-
-        // If user already exists, try to sign in and add role
-        if (signUpError?.message?.includes('already') || signUpError?.message?.includes('registered')) {
-          const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-            phone: cleanPhone,
-            password: password,
-          });
-
-          if (signInError) {
-            const roleNames = {
-              user: language === 'ru' ? 'пользователя' : 'пайдаланушы',
-              partner: language === 'ru' ? 'партнера' : 'серіктес'
-            };
-            
-            throw new Error(
-              language === 'ru' 
-                ? `Этот номер уже зарегистрирован. Чтобы добавить роль ${roleNames[pendingRole as 'user' | 'partner']}, используйте ваш существующий пароль или войдите в систему.`
-                : `Бұл нөмір тіркелген. ${roleNames[pendingRole as 'user' | 'partner']} рөлін қосу үшін қолданыстағы құпия сөзді пайдаланыңыз немесе жүйеге кіріңіз.`
-            );
-          }
-
-          if (!signInData.user) throw new Error('Sign in failed');
-
-          // Check if user already has this role
-          const { data: existingRole } = await supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', signInData.user.id)
-            .eq('role', pendingRole)
-            .maybeSingle();
-
-          if (existingRole) {
-            const roleNames = {
-              user: language === 'ru' ? 'пользователя' : 'пайдаланушының',
-              partner: language === 'ru' ? 'партнера' : 'серіктестің'
-            };
-            
-            throw new Error(
-              t('accountAlreadyHasRole').replace('{role}', roleNames[pendingRole as 'user' | 'partner'])
-            );
-          }
-
-          // Add the new role to existing user (only if it's not 'user' role, as trigger adds it automatically)
-          if (pendingRole !== 'user') {
-            const { error: roleError } = await supabase
-              .from('user_roles')
-              .insert([{
-                user_id: signInData.user.id,
-                role: pendingRole as any
-              }]);
-
-            if (roleError) throw roleError;
-          }
-
-          // If partner, create service_partners entry (unverified) with PIN
-          if (pendingRole === 'partner') {
-            const { error: partnerError } = await supabase
-              .from('service_partners')
-              .insert([{
-                owner_id: signInData.user.id,
-                name: '',
-                is_verified: false,
-                partner_pin: hashedPin
-              }]);
-
-            if (partnerError) throw partnerError;
-          }
-
-          const roleNames = {
-            user: language === 'ru' ? 'пользователя' : 'пайдаланушы',
-            partner: language === 'ru' ? 'партнера' : 'серіктес'
-          };
-
-          toast({
-            title: t('success'),
-            description: t('roleAddedSuccess').replace('{role}', roleNames[pendingRole as 'user' | 'partner']),
-          });
-          
-          localStorage.removeItem('pending_role');
-          
-          // Navigate based on role
-          if (pendingRole === 'partner') {
-            navigate('/partner/pending-verification');
-          } else {
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('onboarding_completed')
-              .eq('id', signInData.user.id)
-              .single();
-            
-            if (profile?.onboarding_completed) {
-              navigate('/home');
-            } else {
-              navigate('/profile-setup');
-            }
-          }
-          return;
-        }
-
-        // Handle other signup errors
-        if (signUpError) throw signUpError;
-        if (!authData.user) throw new Error('Registration failed');
-
-        // User was created successfully
-        // Note: 'user' role is automatically added by trigger assign_user_role
-        // Only add role if it's not 'user'
-        if (pendingRole !== 'user') {
-          const { error: roleError } = await supabase
-            .from('user_roles')
-            .insert([{
-              user_id: authData.user.id,
-              role: pendingRole as any
-            }]);
-
-          if (roleError) throw roleError;
-        }
-
-          // If partner, create service_partners entry (unverified) with PIN
-          if (pendingRole === 'partner') {
-            const { error: partnerError } = await supabase
-              .from('service_partners')
-              .insert([{
-                owner_id: authData.user.id,
-                name: '',
-                is_verified: false,
-                partner_pin: hashedPin
-              }]);
-
-            if (partnerError) throw partnerError;
-          }
-
-        toast({
-          title: t('success'),
-          description: t('registrationComplete'),
-        });
-        
-        localStorage.removeItem('pending_role');
-        
-        // Navigate based on role
-        if (pendingRole === 'partner') {
-          navigate('/partner/pending-verification');
-        } else {
-          navigate('/profile-setup');
-        }
-      } else {
-        // Login - check if user has the selected role
+      if (isPartnerMode) {
+        // Partner login only - no registration
         const { data, error } = await supabase.auth.signInWithPassword({
           phone: cleanPhone,
           password: password,
@@ -318,74 +124,17 @@ const PhoneAuth = () => {
 
         if (error) throw error;
 
-        // Для партнера проверяем PIN
-        if (pendingRole === 'partner') {
-          const { data: partnerData, error: partnerError } = await supabase
-            .from('service_partners')
-            .select('partner_pin')
-            .eq('owner_id', data.user.id)
-            .maybeSingle();
-
-          if (!partnerError && partnerData) {
-            // @ts-ignore - partner_pin добавлена в миграции
-            const storedPin = partnerData.partner_pin;
-            if (storedPin && storedPin !== hashedPin) {
-              await supabase.auth.signOut();
-              throw new Error(t('pinInvalid'));
-            }
-          }
-        }
-
-        // Check if the user has the selected role in user_roles table
-        const { data: roleData, error: roleError } = await supabase
+        // Check if user has partner role
+        const { data: roleData } = await supabase
           .from('user_roles')
           .select('role')
           .eq('user_id', data.user.id)
-          .eq('role', pendingRole)
+          .eq('role', 'partner')
           .maybeSingle();
 
-        if (roleError) throw roleError;
-
         if (!roleData) {
-          // User doesn't have this role - add it automatically
-          const { error: addRoleError } = await supabase
-            .from('user_roles')
-            .insert([{
-              user_id: data.user.id,
-              role: pendingRole as any
-            }]);
-
-          if (addRoleError) {
-            await supabase.auth.signOut();
-            throw addRoleError;
-          }
-
-          // If adding partner role, create service_partners entry with PIN
-          if (pendingRole === 'partner') {
-            const { error: partnerError } = await supabase
-              .from('service_partners')
-              .insert([{
-                owner_id: data.user.id,
-                name: '',
-                is_verified: false,
-                partner_pin: hashedPin
-              }]);
-
-            if (partnerError && !partnerError.message?.includes('duplicate')) {
-              await supabase.auth.signOut();
-              throw partnerError;
-            }
-          }
-
-          const roleNames = {
-            user: language === 'ru' ? 'пользователя' : 'пайдаланушы',
-            partner: language === 'ru' ? 'партнера' : 'серіктес'
-          };
-
-          toast({
-            title: t('roleAdded'),
-            description: t('roleAddedToAccount').replace('{role}', roleNames[pendingRole as 'user' | 'partner']),
-          });
+          await supabase.auth.signOut();
+          throw new Error(t('partnerAccessDenied'));
         }
 
         toast({
@@ -395,21 +144,58 @@ const PhoneAuth = () => {
         
         localStorage.removeItem('pending_role');
         
-        // Navigate based on role
-        if (pendingRole === 'partner') {
-          // Check if partner is verified
-          const { data: partnerData } = await supabase
-            .from('service_partners')
-            .select('is_verified')
-            .eq('owner_id', data.user.id)
-            .single();
+        // Check if partner is verified
+        const { data: partnerData } = await supabase
+          .from('service_partners')
+          .select('is_verified')
+          .eq('owner_id', data.user.id)
+          .maybeSingle();
 
-          if (partnerData && !partnerData.is_verified) {
-            navigate('/partner/pending-verification');
-          } else {
-            navigate('/partner/dashboard');
-          }
+        if (partnerData && !partnerData.is_verified) {
+          navigate('/partner/pending-verification');
         } else {
+          navigate('/partner/dashboard');
+        }
+      } else {
+        // User registration or login
+        if (isRegisterMode) {
+          // Register new user
+          const { data: authData, error: signUpError } = await supabase.auth.signUp({
+            phone: cleanPhone,
+            password: password,
+          });
+
+          if (signUpError) {
+            if (signUpError.message?.includes('already') || signUpError.message?.includes('registered')) {
+              throw new Error(t('phoneAlreadyRegistered'));
+            }
+            throw signUpError;
+          }
+
+          if (!authData.user) throw new Error('Registration failed');
+
+          toast({
+            title: t('success'),
+            description: t('registrationComplete'),
+          });
+          
+          localStorage.removeItem('pending_role');
+          navigate('/profile-setup');
+        } else {
+          // User login
+          const { data, error } = await supabase.auth.signInWithPassword({
+            phone: cleanPhone,
+            password: password,
+          });
+
+          if (error) throw error;
+
+          toast({
+            title: t('success'),
+            description: t('loginComplete'),
+          });
+          
+          localStorage.removeItem('pending_role');
           navigate('/');
         }
       }
@@ -419,18 +205,10 @@ const PhoneAuth = () => {
       let errorMessage = error.message || (language === 'ru' ? "Произошла ошибка" : "Қате орын алды");
       
       // Handle specific error cases
-      if (error.message?.includes('User already registered')) {
-        errorMessage = language === 'ru' 
-          ? "Пользователь с таким номером уже зарегистрирован. Попробуйте войти." 
-          : "Бұл нөмірмен пайдаланушы тіркелген. Кіруге тырысыңыз.";
-      } else if (error.message?.includes('Invalid login credentials')) {
-        errorMessage = language === 'ru' 
-          ? "Неверный номер телефона или пароль" 
-          : "Телефон нөмірі немесе құпия сөз қате";
-      } else if (error.message?.includes('Database error')) {
-        errorMessage = language === 'ru' 
-          ? "Ошибка базы данных. Попробуйте позже." 
-          : "Деректер базасының қатесі. Кейінірек көріңіз.";
+      if (error.message?.includes('Invalid login credentials')) {
+        errorMessage = isPartnerMode 
+          ? t('invalidPartnerCredentials')
+          : t('invalidCredentials');
       }
       
       toast({
@@ -461,12 +239,18 @@ const PhoneAuth = () => {
       <div className="flex-1 flex flex-col justify-center max-w-md mx-auto w-full">
         {/* Title */}
         <h1 className="text-3xl font-bold text-foreground mb-2">
-          {isRegisterMode ? t('register') : t('login')}
+          {isPartnerMode 
+            ? t('partnerLogin')
+            : (isRegisterMode ? t('register') : t('login'))
+          }
         </h1>
 
         {/* Subtitle */}
         <p className="text-muted-foreground mb-8">
-          {t('enterPhone')}
+          {isPartnerMode 
+            ? t('enterPartnerCredentials')
+            : t('enterPhone')
+          }
         </p>
 
         {/* Phone Input */}
@@ -503,8 +287,8 @@ const PhoneAuth = () => {
           </div>
         </div>
 
-        {/* Confirm Password Input (only in register mode) */}
-        {isRegisterMode && (
+        {/* Confirm Password Input (only in user register mode) */}
+        {isRegisterMode && !isPartnerMode && (
           <div className="mb-4">
             <div className="flex items-center gap-2 p-4 border border-input rounded-2xl bg-background">
               <Input
@@ -525,44 +309,8 @@ const PhoneAuth = () => {
           </div>
         )}
 
-        {/* Partner PIN Input */}
-        {(localStorage.getItem('pending_role') === 'partner') && (
-          <>
-            <div className="mb-4">
-              <div className="flex items-center gap-2 p-4 border border-input rounded-2xl bg-background">
-                <Input
-                  type="text"
-                  inputMode="numeric"
-                  maxLength={6}
-                  value={partnerPin}
-                  onChange={(e) => setPartnerPin(e.target.value.replace(/\D/g, ''))}
-                  placeholder={isRegisterMode ? t('createPartnerPin') : t('enterPartnerPin')}
-                  className="border-0 text-lg focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
-                />
-              </div>
-            </div>
-
-            {/* Confirm Partner PIN (only in register mode) */}
-            {isRegisterMode && (
-              <div className="mb-4">
-                <div className="flex items-center gap-2 p-4 border border-input rounded-2xl bg-background">
-                  <Input
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={6}
-                    value={confirmPartnerPin}
-                    onChange={(e) => setConfirmPartnerPin(e.target.value.replace(/\D/g, ''))}
-                    placeholder={t('confirmPartnerPin')}
-                    className="border-0 text-lg focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
-                  />
-                </div>
-              </div>
-            )}
-          </>
-        )}
-
         {/* Forgot Password Link (only in login mode) */}
-        {!isRegisterMode && (
+        {!isRegisterMode && !isPartnerMode && (
           <div className="mb-6 text-right">
             <button
               onClick={() => navigate('/forgot-password')}
@@ -573,8 +321,8 @@ const PhoneAuth = () => {
           </div>
         )}
 
-        {/* Agreement Checkbox (only in register mode) */}
-        {isRegisterMode && (
+        {/* Agreement Checkbox (only in user register mode) */}
+        {isRegisterMode && !isPartnerMode && (
           <div className="flex items-start gap-3 mb-6">
             <Checkbox
               id="agree"
@@ -594,31 +342,46 @@ const PhoneAuth = () => {
         {/* Submit Button */}
         <Button
           onClick={handleSubmit}
-          disabled={loading || (isRegisterMode && !agreed)}
+          disabled={loading || (isRegisterMode && !isPartnerMode && !agreed)}
           className="w-full h-14 text-lg rounded-2xl bg-primary hover:bg-primary/90 mb-4"
         >
-          {isRegisterMode ? t('register') : t('login')}
+          {isPartnerMode 
+            ? t('login')
+            : (isRegisterMode ? t('register') : t('login'))
+          }
         </Button>
 
-        {/* Toggle Mode Link */}
-        <div className="text-center">
-          <button
-            onClick={() => {
-              setIsRegisterMode(!isRegisterMode);
-              setPassword("");
-              setConfirmPassword("");
-              setPartnerPin("");
-              setConfirmPartnerPin("");
-              setAgreed(false);
-            }}
-            className="text-sm text-muted-foreground"
-          >
-            {isRegisterMode ? t('haveAccount') : t('noAccount')}{' '}
-            <span className="text-primary hover:underline">
-              {isRegisterMode ? t('login') : t('register')}
-            </span>
-          </button>
-        </div>
+        {/* Partner Application Link */}
+        {isPartnerMode && (
+          <div className="text-center mb-4">
+            <button
+              onClick={() => navigate('/partner-application')}
+              className="text-sm text-primary hover:underline"
+            >
+              {t('getPartnerAccess')}
+            </button>
+          </div>
+        )}
+
+        {/* Toggle Mode Link (only for user) */}
+        {!isPartnerMode && (
+          <div className="text-center">
+            <button
+              onClick={() => {
+                setIsRegisterMode(!isRegisterMode);
+                setPassword("");
+                setConfirmPassword("");
+                setAgreed(false);
+              }}
+              className="text-sm text-muted-foreground"
+            >
+              {isRegisterMode ? t('haveAccount') : t('noAccount')}{' '}
+              <span className="text-primary hover:underline">
+                {isRegisterMode ? t('login') : t('register')}
+              </span>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

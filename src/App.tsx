@@ -12,6 +12,7 @@ import Welcome from "./pages/Welcome";
 import PhoneAuth from "./pages/PhoneAuth";
 import RoleSelection from "./pages/RoleSelection";
 import ForgotPassword from "./pages/ForgotPassword";
+import PartnerApplication from "./pages/PartnerApplication";
 import ProfileSetup from "./pages/ProfileSetup";
 import ServiceHistory from "./pages/ServiceHistory";
 import MyVehicles from "./pages/MyVehicles";
@@ -51,7 +52,8 @@ const AppContent = () => {
     '/welcome', 
     '/phone-auth', 
     '/role-selection',
-    '/forgot-password', 
+    '/forgot-password',
+    '/partner-application',
     '/profile-setup', 
     '/about-app', 
     '/notification-settings', 
@@ -74,6 +76,7 @@ const AppContent = () => {
         <Route path="/phone-auth" element={<PhoneAuth />} />
         <Route path="/role-selection" element={<RoleSelection />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/partner-application" element={<PartnerApplication />} />
         <Route path="/profile-setup" element={<ProfileSetup />} />
         
         {/* User Routes */}
