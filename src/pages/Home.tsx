@@ -162,7 +162,7 @@ const Home = () => {
           <div className="space-y-3">
             <div className="flex flex-col items-start">
               <div className="text-white mb-2">
-                <span className="text-2xl">ⓘ</span>
+                <span className="text-2xl leading-none inline-block h-6">ⓘ</span>
               </div>
               <div className="w-full">
                 <h3 className="font-semibold text-base leading-tight text-white">
@@ -185,7 +185,7 @@ const Home = () => {
         <Card className="p-4 bg-black/30 backdrop-blur-md rounded-2xl border-white/20">
           <div className="space-y-3">
             <div className="flex flex-col items-start">
-              <div className="text-yellow-500 mb-2">
+              <div className="text-white mb-2">
                 <AlertTriangle className="h-6 w-6" />
               </div>
             </div>
@@ -217,7 +217,7 @@ const Home = () => {
               </div>
             </div>
             <div className="flex items-start gap-2">
-              <Clock className="h-4 w-4 text-white flex-shrink-0 mt-0.5" />
+              <Clock className="h-4 w-4 text-orange-500 flex-shrink-0 mt-0.5" />
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-white/70 mb-1">Страховка до</p>
                 <Popover open={isInsuranceDateOpen} onOpenChange={setIsInsuranceDateOpen}>
@@ -249,8 +249,8 @@ const Home = () => {
 
       {/* Technical Condition */}
       <Card className="p-4 bg-black/30 backdrop-blur-md rounded-2xl border-white/20">
-        <div className="flex items-center space-x-3">
-            <HeartPulse className="h-5 w-5 text-app-green flex-shrink-0" />
+        <div className="flex items-start space-x-3">
+            <HeartPulse className="h-5 w-5 text-app-green flex-shrink-0 mt-0.5" />
             <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium text-white">{t('technicalCondition')}</span>
