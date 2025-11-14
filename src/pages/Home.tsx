@@ -44,8 +44,8 @@ const Home = () => {
   const [oilChangeDate, setOilChangeDate] = useState<Date>();
   const [insuranceDate, setInsuranceDate] = useState<Date>();
   const [nextServiceDate, setNextServiceDate] = useState<Date>();
-  const [primaryVehicle, setPrimaryVehicle] = usePersistedState<Vehicle | null>('home-primary-vehicle', null);
-  const [brandName, setBrandName] = usePersistedState<string>('home-brand-name', '');
+  const [primaryVehicle, setPrimaryVehicle] = useState<Vehicle | null>(null);
+  const [brandName, setBrandName] = useState<string>('');
   const {
     t,
     language
@@ -76,6 +76,7 @@ const Home = () => {
     const {
       data: vehicles
     } = await supabase.from('user_vehicles').select('*').eq('user_id', user.id).eq('is_primary', true).limit(1);
+    
     if (vehicles && vehicles.length > 0) {
       const vehicle = vehicles[0];
       setPrimaryVehicle(vehicle);
@@ -98,6 +99,13 @@ const Home = () => {
       if (brand) {
         setBrandName(brand.brand_name);
       }
+    } else {
+      // Clear data if no vehicles found for current user
+      setPrimaryVehicle(null);
+      setBrandName('');
+      setOilChangeDate(undefined);
+      setInsuranceDate(undefined);
+      setNextServiceDate(undefined);
     }
   };
   const updateVehicleDate = async (field: string, date: Date | undefined) => {
