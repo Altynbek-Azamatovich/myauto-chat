@@ -18,7 +18,7 @@ export default function Analytics() {
               <DollarSign className="h-4 w-4 text-success" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">₽842,300</div>
+              <div className="text-2xl font-bold">₸842,300</div>
               <p className="text-xs text-muted-foreground">+18.2% от прошлого месяца</p>
             </CardContent>
           </Card>
@@ -51,7 +51,7 @@ export default function Analytics() {
               <Wrench className="h-4 w-4 text-warning" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">₽5,400</div>
+              <div className="text-2xl font-bold">₸5,400</div>
               <p className="text-xs text-muted-foreground">+3.1% от прошлого месяца</p>
             </CardContent>
           </Card>
@@ -76,7 +76,7 @@ export default function Analytics() {
                       <p className="font-medium">{service.name}</p>
                       <p className="text-sm text-muted-foreground">{service.count} заказов</p>
                     </div>
-                    <p className="font-semibold text-primary">₽{service.revenue.toLocaleString()}</p>
+                    <p className="font-semibold text-primary">₸{service.revenue.toLocaleString()}</p>
                   </div>
                 ))}
               </div>
