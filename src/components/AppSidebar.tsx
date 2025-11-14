@@ -42,7 +42,7 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
       .single();
 
     if (data) {
-      setUserProfile(data);
+      setUserProfile(data as any);
     }
   };
 
