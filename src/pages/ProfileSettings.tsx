@@ -56,7 +56,7 @@ export default function ProfileSettings() {
         patronymic: data.patronymic || '',
         city: data.city || '',
       });
-      setAvatarUrl(data.avatar_url || null);
+      setAvatarUrl((data as any).avatar_url || null);
     }
   };
 
@@ -111,7 +111,7 @@ export default function ProfileSettings() {
       // Update profile
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({ avatar_url: publicUrl })
+        .update({ avatar_url: publicUrl } as any)
         .eq('id', user.id);
 
       if (updateError) throw updateError;
