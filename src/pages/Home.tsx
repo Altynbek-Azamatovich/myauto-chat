@@ -160,18 +160,18 @@ const Home = () => {
       <div className="grid grid-cols-2 gap-4">
         <Card className="p-4 bg-black/30 backdrop-blur-md rounded-2xl border-white/20">
           <div className="space-y-3">
-            <div className="flex flex-col items-start">
-              <div className="text-white mb-2">
+            <div className="mb-2">
+              <div className="text-white">
                 <span className="text-2xl leading-none inline-block h-6">ⓘ</span>
               </div>
-              <div className="w-full">
-                <h3 className="font-semibold text-base leading-tight text-white">
-                  {primaryVehicle ? `${brandName} ${primaryVehicle.model}` : <button onClick={() => navigate('/my-vehicles')} className="text-primary hover:underline">
-                      {t('addYourCar')}
-                    </button>}
-                </h3>
-                {primaryVehicle?.license_plate && <p className="text-sm text-white/70 mt-1">{primaryVehicle.license_plate}</p>}
-              </div>
+            </div>
+            <div className="w-full">
+              <h3 className="font-semibold text-base leading-tight text-white">
+                {primaryVehicle ? `${brandName} ${primaryVehicle.model}` : <button onClick={() => navigate('/my-vehicles')} className="text-primary hover:underline">
+                    {t('addYourCar')}
+                  </button>}
+              </h3>
+              {primaryVehicle?.license_plate && <p className="text-sm text-white/70 mt-1">{primaryVehicle.license_plate}</p>}
             </div>
             <div>
               <p className="text-xs text-white/70">{t('mileage')}</p>
@@ -184,12 +184,12 @@ const Home = () => {
 
         <Card className="p-4 bg-black/30 backdrop-blur-md rounded-2xl border-white/20">
           <div className="space-y-3">
-            <div className="flex flex-col items-start mb-3">
-              <div className="text-white mb-2">
+            <div className="mb-2">
+              <div className="text-white">
                 <AlertTriangle className="h-6 w-6" />
               </div>
             </div>
-            <div className="flex items-start gap-2 -mt-3">
+            <div className="flex items-start gap-2">
               <Droplet className="h-4 w-4 text-blue-400 flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-white/70 mb-1">{t('oilChange')}</p>
