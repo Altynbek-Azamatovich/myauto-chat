@@ -9,7 +9,7 @@ import { Globe, ArrowLeft } from "lucide-react";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
-  const { language, setLanguage } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
   const { toast } = useToast();
   const [phone, setPhone] = useState("+7");
   const [loading, setLoading] = useState(false);
@@ -46,10 +46,8 @@ const ForgotPassword = () => {
   const handleSubmit = async () => {
     if (!isPhoneValid(phone)) {
       toast({
-        title: language === 'ru' ? "Ошибка" : "Қате",
-        description: language === 'ru' 
-          ? "Введите корректный номер телефона в формате +7 XXX XXX XXXX" 
-          : "Телефон нөмірін +7 XXX XXX XXXX форматында енгізіңіз",
+        title: t('error'),
+        description: t('invalidPhone'),
         variant: "destructive",
       });
       return;
@@ -70,10 +68,8 @@ const ForgotPassword = () => {
       }
 
       toast({
-        title: language === 'ru' ? "SMS отправлено" : "SMS жіберілді",
-        description: language === 'ru' 
-          ? "Проверьте SMS с инструкциями для восстановления пароля" 
-          : "Құпия сөзді қалпына келтіру нұсқауларымен SMS тексеріңіз",
+        title: t('smsSent'),
+        description: t('smsSentDescription'),
       });
       
       setTimeout(() => navigate('/phone-auth'), 2000);
@@ -81,8 +77,8 @@ const ForgotPassword = () => {
       console.error('Error in handleSubmit:', error);
       
       toast({
-        title: language === 'ru' ? "Ошибка" : "Қате",
-        description: error.message || (language === 'ru' ? "Не удалось отправить SMS" : "SMS жіберу мүмкін болмады"),
+        title: t('error'),
+        description: error.message || t('smsError'),
         variant: "destructive",
       });
     } finally {
@@ -113,13 +109,13 @@ const ForgotPassword = () => {
         className="absolute top-4 left-4 z-10"
       >
         <ArrowLeft className="h-4 w-4 mr-2" />
-        {language === 'ru' ? 'Назад' : 'Артқа'}
+        {t('back')}
       </Button>
 
       <div className="flex-1 flex flex-col justify-center max-w-md mx-auto w-full">
         {/* Title */}
         <h1 className="text-3xl font-bold text-foreground mb-2">
-          {language === 'ru' ? 'Восстановление пароля' : 'Құпия сөзді қалпына келтіру'}
+          {t('passwordRecovery')}
         </h1>
 
         {/* Subtitle */}
@@ -149,7 +145,7 @@ const ForgotPassword = () => {
           disabled={loading}
           className="w-full h-14 text-lg rounded-2xl bg-primary hover:bg-primary/90"
         >
-          {language === 'ru' ? 'Отправить' : 'Жіберу'}
+          {t('send')}
         </Button>
       </div>
     </div>
