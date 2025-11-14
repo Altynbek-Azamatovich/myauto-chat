@@ -42,7 +42,7 @@ const Welcome = () => {
         <img 
           src={logoAnimated} 
           alt="myAuto Logo" 
-          className="w-48 h-48 animate-fade-in"
+          className="w-48 h-48 animate-[fade-in_1s_ease-out] opacity-0 [animation-fill-mode:forwards]"
         />
         <h1 className="text-5xl font-bold text-foreground min-h-[4rem]">
           {displayedText.split('').map((char, index) => (
@@ -53,7 +53,7 @@ const Welcome = () => {
               {char}
             </span>
           ))}
-          <span className="animate-pulse">|</span>
+          <span className="text-primary animate-[pulse_0.8s_ease-in-out_infinite] font-normal">|</span>
         </h1>
         
         {/* Welcome Text */}
