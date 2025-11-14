@@ -185,8 +185,13 @@ const Home = () => {
         <Card className="p-4 bg-black/30 backdrop-blur-md rounded-2xl border-white/20">
           <div className="space-y-3">
             <div className="flex flex-col items-start">
-              <Droplet className="h-5 w-5 text-blue-400 mb-2" />
-              <div className="w-full">
+              <div className="text-yellow-500 mb-2">
+                <AlertTriangle className="h-5 w-5" />
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Droplet className="h-4 w-4 text-blue-400 flex-shrink-0" />
+              <div className="flex-1 min-w-0">
                 <p className="text-xs text-white/70 mb-1">{t('oilChange')}</p>
                 <Popover open={isOilChangeDateOpen} onOpenChange={setIsOilChangeDateOpen}>
                   <PopoverTrigger asChild>
@@ -211,9 +216,9 @@ const Home = () => {
                 </Popover>
               </div>
             </div>
-            <div className="flex flex-col items-start">
-              <Clock className="h-5 w-5 text-white mb-2" />
-              <div className="w-full">
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-white flex-shrink-0" />
+              <div className="flex-1 min-w-0">
                 <p className="text-xs text-white/70 mb-1">{t('insuranceExpires')}</p>
                 <Popover open={isInsuranceDateOpen} onOpenChange={setIsInsuranceDateOpen}>
                   <PopoverTrigger asChild>
