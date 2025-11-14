@@ -1,8 +1,11 @@
 import { DashboardLayout } from "@/components/partner/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, DollarSign, Users, Wrench } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Analytics() {
+  const { t } = useLanguage();
+  
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -85,7 +88,7 @@ export default function Analytics() {
 
           <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle>Загрузка мастеров</CardTitle>
+              <CardTitle>{t('masterWorkload')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">

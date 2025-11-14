@@ -189,7 +189,7 @@ export default function ProfileSettings() {
                 />
               </div>
               {uploadingAvatar && (
-                <p className="text-sm text-muted-foreground">Загрузка...</p>
+                <p className="text-sm text-muted-foreground">{t('loading')}</p>
               )}
             </div>
 

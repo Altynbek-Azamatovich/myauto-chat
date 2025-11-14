@@ -58,12 +58,12 @@ const ServiceCart = () => {
 
       if (error) throw error;
 
-      toast.success('Заказ успешно оформлен!');
+      toast.success(t('orderSuccess'));
       clearCart();
       navigate('/service-history');
     } catch (error: any) {
       console.error('Checkout error:', error);
-      toast.error(error.message || 'Ошибка оформления заказа');
+      toast.error(error.message || t('orderError'));
     } finally {
       setSubmitting(false);
     }

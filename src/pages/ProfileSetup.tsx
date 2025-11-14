@@ -35,8 +35,8 @@ const ProfileSetup = () => {
     
     if (!formData.city || !formData.firstName || !formData.lastName) {
       toast({
-        title: "Ошибка",
-        description: "Заполните все обязательные поля",
+        title: t('error'),
+        description: t('fillAllFields'),
         variant: "destructive",
       });
       return;
@@ -63,7 +63,7 @@ const ProfileSetup = () => {
       navigate('/');
     } catch (error: any) {
       toast({
-        title: "Ошибка",
+        title: t('error'),
         description: error.message,
         variant: "destructive",
       });

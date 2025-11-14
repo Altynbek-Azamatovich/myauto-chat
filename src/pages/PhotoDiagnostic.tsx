@@ -9,9 +9,11 @@ import { toast } from 'sonner';
 import logoImage from "@/assets/logo-main.png";
 import carDiagnosticImage from "@/assets/car-diagnostic-new.png";
 import { usePersistedState } from '@/hooks/usePersistedState';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const PhotoDiagnostic = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [image, setImage] = usePersistedState<string | null>('photo-diagnostic-image', null);
   const [analyzing, setAnalyzing] = useState(false);
   const [analysis, setAnalysis] = usePersistedState<string | null>('photo-diagnostic-analysis', null);
@@ -19,7 +21,7 @@ const PhotoDiagnostic = () => {
     const file = event.target.files?.[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('Размер файла не должен превышать 5MB');
+      toast.error(t('fileSizeError'));
       return;
     }
     const reader = new FileReader();
@@ -44,10 +46,10 @@ const PhotoDiagnostic = () => {
       });
       if (error) throw error;
       setAnalysis(data.analysis);
-      toast.success('Анализ завершен');
+      toast.success(t('analysisComplete'));
     } catch (error: any) {
       console.error('Analysis error:', error);
-      toast.error(error.message || 'Ошибка анализа изображения');
+      toast.error(error.message || t('analysisError'));
     } finally {
       setAnalyzing(false);
     }
@@ -65,15 +67,13 @@ const PhotoDiagnostic = () => {
 
       <div className="py-6 space-y-6 pb-32">
         <div className="text-center px-4 pt-4">
-          <p className="text-foreground text-base font-bold leading-tight">
-            Сделай фото автомобиля<br />
-            ИИ распознает повреждения<br />
-            и предложит решение
+          <p className="text-foreground text-base font-bold leading-tight whitespace-pre-line">
+            {t('photoDiagnosticTitle')}
           </p>
         </div>
 
         <div className="w-full relative mt-8">
-          <img src={carDiagnosticImage} alt="Автомобиль для диагностики" className="w-full h-auto object-contain" />
+          <img src={carDiagnosticImage} alt={t('carDiagnosticAlt')} className="w-full h-auto object-contain" />
           {/* Scanner overlay */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="relative w-[70%] h-[75%]">
@@ -108,7 +108,7 @@ const PhotoDiagnostic = () => {
               <input type="file" accept="image/*" capture="environment" onChange={handleImageCapture} className="hidden" />
               <Camera className="h-16 w-16 text-primary mb-2" />
               <div className="bg-primary hover:bg-primary/90 px-6 py-3 rounded-full transition-colors">
-                <p className="text-sm font-semibold text-primary-foreground">Запустить камеру</p>
+                <p className="text-sm font-semibold text-primary-foreground">{t('startCamera')}</p>
               </div>
             </label> : <div className="space-y-4">
               <div className="relative">
@@ -117,15 +117,15 @@ const PhotoDiagnostic = () => {
               setImage(null);
               setAnalysis(null);
             }}>
-                  Удалить
+                  {t('deletePhoto')}
                 </Button>
               </div>
 
               {!analysis && <Button onClick={handleAnalyze} disabled={analyzing} className="w-full" size="lg">
                   {analyzing ? <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Анализ...
-                    </> : 'Проанализировать'}
+                      {t('analyzing')}
+                    </> : t('analyze')}
                  </Button>}
             </div>}
         </div>
