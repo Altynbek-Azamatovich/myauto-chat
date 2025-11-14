@@ -66,13 +66,33 @@ const RoadsideHelp = () => {
 
     try {
       // Initialize Leaflet map
-      const leafletMap = L.map(mapContainer.current).setView([43.2220, 76.9286], 12);
+      const leafletMap = L.map(mapContainer.current, {
+        zoomControl: false, // Отключаем стандартный контрол зума
+        attributionControl: false, // Убираем надпись Leaflet
+      }).setView([43.2220, 76.9286], 12);
 
       // Add OpenStreetMap tiles
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
         maxZoom: 19,
       }).addTo(leafletMap);
+
+      // Добавляем контрол зума справа
+      const zoomControl = L.control.zoom({
+        position: 'topright'
+      });
+      
+      // Перемещаем контрол зума ниже используя CSS
+      leafletMap.addControl(zoomControl);
+      
+      // Применяем стили для позиционирования
+      setTimeout(() => {
+        const zoomElement = document.querySelector('.leaflet-control-zoom') as HTMLElement;
+        if (zoomElement) {
+          zoomElement.style.top = '50%';
+          zoomElement.style.transform = 'translateY(-50%)';
+          zoomElement.style.marginTop = '0';
+        }
+      }, 100);
 
       map.current = leafletMap;
     } catch (error) {
@@ -308,6 +328,38 @@ const RoadsideHelp = () => {
 
   const myActiveRequest = helpRequests.find(r => r.user_id === currentUserId);
 
+  const handleLocateMe = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          if (map.current) {
+            map.current.setView(
+              [position.coords.latitude, position.coords.longitude],
+              15,
+              { animate: true, duration: 1 }
+            );
+            
+            // Добавляем временный маркер на текущей позиции
+            const marker = L.marker([position.coords.latitude, position.coords.longitude])
+              .addTo(map.current)
+              .bindPopup('Вы здесь')
+              .openPopup();
+            
+            setTimeout(() => {
+              marker.remove();
+            }, 3000);
+          }
+        },
+        () => {
+          toast.error('Не удалось определить местоположение');
+        },
+        { enableHighAccuracy: true }
+      );
+    } else {
+      toast.error('Геолокация не поддерживается');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
@@ -328,8 +380,18 @@ const RoadsideHelp = () => {
       <div className="flex-1 relative">
         <div ref={mapContainer} className="absolute inset-0" />
         
+        {/* Кнопка моей геолокации */}
+        <Button
+          onClick={handleLocateMe}
+          size="icon"
+          className="absolute right-4 top-20 z-[1000] shadow-lg bg-card hover:bg-card/90"
+          variant="outline"
+        >
+          <MapPin className="h-5 w-5" />
+        </Button>
+        
         {/* Floating action button */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10">
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000]">
           {!myActiveRequest ? (
             <Dialog open={showRequestDialog} onOpenChange={setShowRequestDialog}>
               <DialogTrigger asChild>
@@ -382,7 +444,7 @@ const RoadsideHelp = () => {
         </div>
 
         {/* Info card */}
-        <div className="absolute top-4 left-4 right-4 z-10">
+        <div className="absolute top-4 left-4 right-4 z-[1000]">
           <Card className="shadow-lg bg-card/95 backdrop-blur">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
