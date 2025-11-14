@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Car, History, UserCog, LogOut, Globe, Sun, Moon, Bell, Info } from 'lucide-react';
+import { Car, History, UserCog, LogOut, Globe, Sun, Moon, Bell, Info, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
@@ -8,6 +8,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Separator } from '@/components/ui/separator';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 interface AppSidebarProps {
   trigger: React.ReactNode;
@@ -23,6 +24,7 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
     first_name: string;
     last_name: string;
     phone_number: string;
+    avatar_url: string | null;
   } | null>(null);
 
   useEffect(() => {
@@ -35,7 +37,7 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
 
     const { data } = await supabase
       .from('profiles')
-      .select('first_name, last_name, phone_number')
+      .select('first_name, last_name, phone_number, avatar_url')
       .eq('id', user.id)
       .single();
 
@@ -64,9 +66,12 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
           {/* User Profile Section */}
           <div className="mb-6">
             <div className="flex items-center space-x-3 mb-2">
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <UserCog className="h-6 w-6 text-primary" />
-              </div>
+              <Avatar className="w-12 h-12">
+                <AvatarImage src={userProfile?.avatar_url || ''} alt="Avatar" />
+                <AvatarFallback className="bg-primary/10">
+                  <User className="h-6 w-6 text-primary" />
+                </AvatarFallback>
+              </Avatar>
               <div>
                 {userProfile?.first_name || userProfile?.last_name ? (
                   <p className="font-semibold text-base">
