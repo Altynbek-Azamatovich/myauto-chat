@@ -8,12 +8,16 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
-declare global {
-  interface Window {
-    ymaps3: any;
-  }
-}
+// Fix Leaflet default marker icon
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+});
 
 interface HelpRequest {
   id: string;
@@ -39,8 +43,8 @@ const RoadsideHelp = () => {
   const [isCreatingRequest, setIsCreatingRequest] = useState(false);
   const [showRequestDialog, setShowRequestDialog] = useState(false);
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<any>(null);
-  const markersRef = useRef<Map<string, any>>(new Map());
+  const map = useRef<L.Map | null>(null);
+  const markersRef = useRef<Map<string, L.Marker>>(new Map());
 
   useEffect(() => {
     checkAuthAndInit();
@@ -58,30 +62,20 @@ const RoadsideHelp = () => {
     subscribeToHelpRequests();
   };
 
-  const initMap = async () => {
+  const initMap = () => {
     if (!mapContainer.current || map.current) return;
 
     try {
-      await window.ymaps3.ready;
-      
-      const { YMap, YMapDefaultSchemeLayer, YMapDefaultFeaturesLayer, YMapControls, YMapMarker } = window.ymaps3;
-      const { YMapZoomControl } = await window.ymaps3.import('@yandex/ymaps3-controls@0.0.1');
+      // Initialize Leaflet map
+      const leafletMap = L.map(mapContainer.current).setView([43.2220, 76.9286], 12);
 
-      const ymap = new YMap(mapContainer.current, {
-        location: {
-          center: [76.9286, 43.2220],
-          zoom: 12,
-        },
-      });
+      // Add OpenStreetMap tiles
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19,
+      }).addTo(leafletMap);
 
-      ymap.addChild(new YMapDefaultSchemeLayer());
-      ymap.addChild(new YMapDefaultFeaturesLayer());
-
-      const controls = new YMapControls({ position: 'right' });
-      controls.addChild(new YMapZoomControl());
-      ymap.addChild(controls);
-
-      map.current = ymap;
+      map.current = leafletMap;
     } catch (error) {
       console.error('Error initializing map:', error);
       toast.error('Не удалось загрузить карту');
@@ -90,7 +84,7 @@ const RoadsideHelp = () => {
 
   const fetchHelpRequests = async () => {
     const { data, error } = await supabase
-      .from('help_requests')
+      .from('help_requests' as any)
       .select('*')
       .eq('status', 'active')
       .order('created_at', { ascending: false });
@@ -102,7 +96,7 @@ const RoadsideHelp = () => {
 
     // Fetch profiles separately
     const enrichedData = await Promise.all(
-      (data || []).map(async (request) => {
+      (data || []).map(async (request: any) => {
         const { data: profile } = await supabase
           .from('profiles')
           .select('first_name, last_name, phone_number')
@@ -139,55 +133,59 @@ const RoadsideHelp = () => {
     };
   };
 
-  const updateMapMarkers = async (requests: HelpRequest[]) => {
+  const updateMapMarkers = (requests: HelpRequest[]) => {
     if (!map.current) return;
-
-    const { YMapMarker } = window.ymaps3;
 
     // Remove old markers
     markersRef.current.forEach(marker => {
-      try {
-        map.current?.removeChild(marker);
-      } catch (e) {
-        // ignore
-      }
+      marker.remove();
     });
     markersRef.current.clear();
 
     // Add new markers
     requests.forEach((request) => {
-      const markerElement = document.createElement('div');
       const isOwnRequest = request.user_id === currentUserId;
       
-      markerElement.style.cssText = `
-        position: relative;
-        width: 40px;
-        height: 40px;
-        background: ${isOwnRequest ? '#ef4444' : '#22c55e'};
-        border-radius: 50%;
-        border: 3px solid white;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: bold;
+      // Create custom icon
+      const iconHtml = `
+        <div style="
+          width: 40px;
+          height: 40px;
+          background: ${isOwnRequest ? '#ef4444' : '#22c55e'};
+          border-radius: 50%;
+          border: 3px solid white;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 20px;
+        ">🚗</div>
       `;
-      
-      markerElement.innerHTML = '🚗';
-      markerElement.title = `${request.profiles?.first_name || 'Водитель'}: ${request.message}`;
-      
-      markerElement.onclick = () => showRequestDetails(request);
 
-      const marker = new YMapMarker(
-        {
-          coordinates: [request.longitude, request.latitude],
-        },
-        markerElement
-      );
+      const customIcon = L.divIcon({
+        html: iconHtml,
+        className: '',
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+      });
 
-      map.current.addChild(marker);
+      const marker = L.marker([request.latitude, request.longitude], {
+        icon: customIcon,
+      }).addTo(map.current!);
+
+      const name = request.profiles?.first_name 
+        ? `${request.profiles.first_name} ${request.profiles.last_name || ''}`
+        : 'Водитель';
+
+      marker.bindPopup(`
+        <div style="text-align: center;">
+          <strong>${name}</strong><br/>
+          ${request.message}
+        </div>
+      `);
+
+      marker.on('click', () => showRequestDetails(request));
+
       markersRef.current.set(request.id, marker);
     });
   };
@@ -224,7 +222,7 @@ const RoadsideHelp = () => {
         }
 
         const { data, error } = await supabase
-          .from('help_requests')
+          .from('help_requests' as any)
           .insert({
             user_id: user.id,
             latitude: position.coords.latitude,
@@ -244,11 +242,11 @@ const RoadsideHelp = () => {
           setShowRequestDialog(false);
           
           if (map.current) {
-            map.current.setLocation({
-              center: [position.coords.longitude, position.coords.latitude],
-              zoom: 15,
-              duration: 1000
-            });
+            map.current.setView(
+              [position.coords.latitude, position.coords.longitude],
+              15,
+              { animate: true, duration: 1 }
+            );
           }
         }
         
@@ -274,7 +272,7 @@ const RoadsideHelp = () => {
     }
 
     const { error } = await supabase
-      .from('help_responses')
+      .from('help_responses' as any)
       .insert({
         help_request_id: requestId,
         responder_id: user.id,
@@ -297,7 +295,7 @@ const RoadsideHelp = () => {
     if (!myRequest) return;
 
     const { error } = await supabase
-      .from('help_requests')
+      .from('help_requests' as any)
       .update({ status: 'cancelled' })
       .eq('id', myRequest.id);
 
