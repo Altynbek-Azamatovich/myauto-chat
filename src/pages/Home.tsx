@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, Bell, RotateCcw, AlertTriangle, Clock, HeartPulse, CalendarIcon, Edit } from "lucide-react";
+import { Menu, Bell, RotateCcw, AlertTriangle, Clock, HeartPulse, CalendarIcon, Edit, Droplet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -160,7 +160,7 @@ const Home = () => {
       <div className="grid grid-cols-2 gap-4">
         <Card className="p-4 bg-black/30 backdrop-blur-md rounded-2xl border-white/20">
           <div className="space-y-3">
-            <div className="flex flex-col items-center text-center">
+            <div className="flex flex-col items-start">
               <div className="text-white mb-2">
                 <span className="text-xl">ⓘ</span>
               </div>
@@ -184,17 +184,14 @@ const Home = () => {
 
         <Card className="p-4 bg-black/30 backdrop-blur-md rounded-2xl border-white/20">
           <div className="space-y-3">
-            <div className="flex flex-col items-center text-center">
-              <AlertTriangle className="h-5 w-5 text-yellow-500 mb-2" />
+            <div className="flex flex-col items-start">
+              <Droplet className="h-5 w-5 text-blue-400 mb-2" />
               <div className="w-full">
-                <p className="text-xs text-white/70 mb-1 flex items-center justify-center gap-1">
-                  <span className="text-sm">⭕</span>
-                  {t('oilChange')}
-                </p>
+                <p className="text-xs text-white/70 mb-1">{t('oilChange')}</p>
                 <Popover open={isOilChangeDateOpen} onOpenChange={setIsOilChangeDateOpen}>
                   <PopoverTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
-                      <div className="text-center">
+                      <div className="text-left">
                         <p className="text-sm font-medium leading-tight flex items-center gap-1 text-white">
                           {oilChangeDate ? format(oilChangeDate, 'dd.MM.yyyy') : '—'}
                           <Edit className="h-3 w-3 text-white/70" />
@@ -214,14 +211,14 @@ const Home = () => {
                 </Popover>
               </div>
             </div>
-            <div className="flex flex-col items-center text-center">
+            <div className="flex flex-col items-start">
               <Clock className="h-5 w-5 text-white mb-2" />
               <div className="w-full">
                 <p className="text-xs text-white/70 mb-1">{t('insuranceExpires')}</p>
                 <Popover open={isInsuranceDateOpen} onOpenChange={setIsInsuranceDateOpen}>
                   <PopoverTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
-                      <div className="text-center">
+                      <div className="text-left">
                         <p className="text-sm font-medium leading-tight flex items-center gap-1 text-white">
                           {insuranceDate ? format(insuranceDate, 'dd.MM.yyyy') : '—'}
                           <Edit className="h-3 w-3 text-white/70" />
