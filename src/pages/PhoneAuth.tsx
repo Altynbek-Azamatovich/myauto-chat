@@ -146,13 +146,32 @@ const PhoneAuth = () => {
           navigate('/profile-setup');
         }
       } else {
-        // Login
+        // Login - check if role matches
         const { data, error } = await supabase.auth.signInWithPassword({
           phone: cleanPhone,
           password: password,
         });
 
         if (error) throw error;
+
+        // Check if the user's role matches the selected role
+        const userRole = data.user?.user_metadata?.role || 'user';
+        
+        if (userRole !== pendingRole) {
+          // Role mismatch - sign out and show error
+          await supabase.auth.signOut();
+          
+          const roleNames = {
+            user: language === 'ru' ? 'пользователя' : 'пайдаланушы',
+            partner: language === 'ru' ? 'партнера' : 'серіктес'
+          };
+          
+          throw new Error(
+            language === 'ru' 
+              ? `Этот номер зарегистрирован как ${roleNames[userRole as 'user' | 'partner']}. Для входа как ${roleNames[pendingRole as 'user' | 'partner']} используйте другой номер телефона.`
+              : `Бұл нөмір ${roleNames[userRole as 'user' | 'partner']} ретінде тіркелген. ${roleNames[pendingRole as 'user' | 'partner']} ретінде кіру үшін басқа телефон нөмірін пайдаланыңыз.`
+          );
+        }
 
         toast({
           title: language === 'ru' ? "Успешно" : "Сәтті",
@@ -161,8 +180,9 @@ const PhoneAuth = () => {
             : "Кіру орындалды",
         });
         
-        // Navigate based on user's role from metadata
-        const userRole = data.user?.user_metadata?.role || 'user';
+        localStorage.removeItem('pending_role');
+        
+        // Navigate based on role
         if (userRole === 'partner') {
           navigate('/partner/dashboard');
         } else {
