@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { ArrowLeft, MapPin, Users, MessageSquare, Send } from "lucide-react";
+import { ArrowLeft, MapPin, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { usePersistedState } from "@/hooks/usePersistedState";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 declare global {
   interface Window {
@@ -15,31 +15,61 @@ declare global {
   }
 }
 
+interface HelpRequest {
+  id: string;
+  user_id: string;
+  latitude: number;
+  longitude: number;
+  message: string;
+  status: string;
+  created_at: string;
+  profiles?: {
+    first_name: string | null;
+    last_name: string | null;
+    phone_number: string;
+  } | null;
+}
+
 const RoadsideHelp = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const [message, setMessage] = usePersistedState("roadside_help_message", "");
-  const [locationShared, setLocationShared] = useState(false);
-  const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
-  const [activeHelpers, setActiveHelpers] = useState(0);
+  const [message, setMessage] = useState("");
+  const [helpRequests, setHelpRequests] = useState<HelpRequest[]>([]);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [isCreatingRequest, setIsCreatingRequest] = useState(false);
+  const [showRequestDialog, setShowRequestDialog] = useState(false);
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<any>(null);
-  const marker = useRef<any>(null);
-  const helpersMarkersRef = useRef<any[]>([]);
+  const markersRef = useRef<Map<string, any>>(new Map());
 
   useEffect(() => {
+    checkAuthAndInit();
+  }, []);
+
+  const checkAuthAndInit = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      navigate('/phone-auth');
+      return;
+    }
+    setCurrentUserId(user.id);
+    await initMap();
+    await fetchHelpRequests();
+    subscribeToHelpRequests();
+  };
+
+  const initMap = async () => {
     if (!mapContainer.current || map.current) return;
 
-    const initMap = async () => {
+    try {
       await window.ymaps3.ready;
       
       const { YMap, YMapDefaultSchemeLayer, YMapDefaultFeaturesLayer, YMapControls, YMapMarker } = window.ymaps3;
       const { YMapZoomControl } = await window.ymaps3.import('@yandex/ymaps3-controls@0.0.1');
 
-      // Initialize Yandex Map
       const ymap = new YMap(mapContainer.current, {
         location: {
-          center: [76.9286, 43.2220], // Almaty, Kazakhstan
+          center: [76.9286, 43.2220],
           zoom: 12,
         },
       });
@@ -47,220 +77,333 @@ const RoadsideHelp = () => {
       ymap.addChild(new YMapDefaultSchemeLayer());
       ymap.addChild(new YMapDefaultFeaturesLayer());
 
-      // Add zoom control
       const controls = new YMapControls({ position: 'right' });
       controls.addChild(new YMapZoomControl());
       ymap.addChild(controls);
 
       map.current = ymap;
+    } catch (error) {
+      console.error('Error initializing map:', error);
+      toast.error('Не удалось загрузить карту');
+    }
+  };
 
-      // Simulate nearby helpers (demo data)
-      const helpers = [
-        { lng: 76.9286 + 0.01, lat: 43.2220 + 0.01, name: 'Водитель 1' },
-        { lng: 76.9286 - 0.015, lat: 43.2220 + 0.005, name: 'Водитель 2' },
-        { lng: 76.9286 + 0.005, lat: 43.2220 - 0.012, name: 'Водитель 3' },
-      ];
+  const fetchHelpRequests = async () => {
+    const { data, error } = await supabase
+      .from('help_requests')
+      .select('*')
+      .eq('status', 'active')
+      .order('created_at', { ascending: false });
 
-      helpers.forEach((helper) => {
-        const markerElement = document.createElement('div');
-        markerElement.className = 'helper-marker';
-        markerElement.style.cssText = 'width: 30px; height: 30px; background: #22c55e; border-radius: 50%; border: 2px solid white; cursor: pointer;';
-        markerElement.title = helper.name;
+    if (error) {
+      console.error('Error fetching help requests:', error);
+      return;
+    }
 
-        const helperMarker = new YMapMarker(
-          {
-            coordinates: [helper.lng, helper.lat],
-          },
-          markerElement
-        );
+    // Fetch profiles separately
+    const enrichedData = await Promise.all(
+      (data || []).map(async (request) => {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('first_name, last_name, phone_number')
+          .eq('id', request.user_id)
+          .single();
+        
+        return { ...request, profiles: profile };
+      })
+    );
 
-        ymap.addChild(helperMarker);
-        helpersMarkersRef.current.push(helperMarker);
-      });
+    setHelpRequests(enrichedData as any);
+    updateMapMarkers(enrichedData as any);
+  };
 
-      setActiveHelpers(helpers.length);
-    };
-
-    initMap();
+  const subscribeToHelpRequests = () => {
+    const channel = supabase
+      .channel('help-requests-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'help_requests',
+          filter: 'status=eq.active'
+        },
+        () => {
+          fetchHelpRequests();
+        }
+      )
+      .subscribe();
 
     return () => {
-      helpersMarkersRef.current.forEach(m => {
-        try {
-          map.current?.removeChild(m);
-        } catch (e) {
-          // ignore cleanup errors
-        }
-      });
+      supabase.removeChannel(channel);
     };
-  }, []);
+  };
 
-  const handleShareLocation = async () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const coords: [number, number] = [position.coords.longitude, position.coords.latitude];
-          setUserLocation(coords);
-          setLocationShared(true);
+  const updateMapMarkers = async (requests: HelpRequest[]) => {
+    if (!map.current) return;
+
+    const { YMapMarker } = window.ymaps3;
+
+    // Remove old markers
+    markersRef.current.forEach(marker => {
+      try {
+        map.current?.removeChild(marker);
+      } catch (e) {
+        // ignore
+      }
+    });
+    markersRef.current.clear();
+
+    // Add new markers
+    requests.forEach((request) => {
+      const markerElement = document.createElement('div');
+      const isOwnRequest = request.user_id === currentUserId;
+      
+      markerElement.style.cssText = `
+        position: relative;
+        width: 40px;
+        height: 40px;
+        background: ${isOwnRequest ? '#ef4444' : '#22c55e'};
+        border-radius: 50%;
+        border: 3px solid white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+      `;
+      
+      markerElement.innerHTML = '🚗';
+      markerElement.title = `${request.profiles?.first_name || 'Водитель'}: ${request.message}`;
+      
+      markerElement.onclick = () => showRequestDetails(request);
+
+      const marker = new YMapMarker(
+        {
+          coordinates: [request.longitude, request.latitude],
+        },
+        markerElement
+      );
+
+      map.current.addChild(marker);
+      markersRef.current.set(request.id, marker);
+    });
+  };
+
+  const showRequestDetails = (request: HelpRequest) => {
+    const name = request.profiles?.first_name 
+      ? `${request.profiles.first_name} ${request.profiles.last_name || ''}`
+      : 'Водитель';
+    
+    toast.info(`${name}: ${request.message}`, {
+      duration: 5000,
+      action: request.user_id !== currentUserId ? {
+        label: 'Помочь',
+        onClick: () => respondToRequest(request.id)
+      } : undefined
+    });
+  };
+
+  const handleCreateRequest = async () => {
+    if (!message.trim()) {
+      toast.error('Пожалуйста, опишите проблему');
+      return;
+    }
+
+    setIsCreatingRequest(true);
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          toast.error('Необходима авторизация');
+          setIsCreatingRequest(false);
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from('help_requests')
+          .insert({
+            user_id: user.id,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            message: message.trim(),
+            status: 'active'
+          })
+          .select()
+          .single();
+
+        if (error) {
+          console.error('Error creating help request:', error);
+          toast.error('Не удалось создать запрос');
+        } else {
+          toast.success('Запрос о помощи создан');
+          setMessage('');
+          setShowRequestDialog(false);
           
           if (map.current) {
             map.current.setLocation({
-              center: coords,
+              center: [position.coords.longitude, position.coords.latitude],
               zoom: 15,
-              duration: 2000
+              duration: 1000
             });
-
-            // Add or update user marker
-            if (marker.current) {
-              map.current.removeChild(marker.current);
-            }
-            
-            const { YMapMarker } = window.ymaps3;
-            const markerElement = document.createElement('div');
-            markerElement.style.cssText = 'width: 35px; height: 35px; background: #ef4444; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);';
-            
-            marker.current = new YMapMarker(
-              {
-                coordinates: coords,
-              },
-              markerElement
-            );
-
-            map.current.addChild(marker.current);
           }
-          
-          toast.success(t('locationShared'));
-        },
-        () => {
-          toast.error("Не удалось получить локацию");
         }
-      );
+        
+        setIsCreatingRequest(false);
+      },
+      (error) => {
+        console.error('Geolocation error:', error);
+        toast.error('Не удалось получить геолокацию');
+        setIsCreatingRequest(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000
+      }
+    );
+  };
+
+  const respondToRequest = async (requestId: string) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast.error('Необходима авторизация');
+      return;
+    }
+
+    const { error } = await supabase
+      .from('help_responses')
+      .insert({
+        help_request_id: requestId,
+        responder_id: user.id,
+      });
+
+    if (error) {
+      if (error.code === '23505') {
+        toast.info('Вы уже откликнулись на этот запрос');
+      } else {
+        console.error('Error responding to help request:', error);
+        toast.error('Не удалось отправить отклик');
+      }
+    } else {
+      toast.success('Отклик отправлен! Едьте на помощь.');
     }
   };
 
-  const handleSendHelp = async () => {
-    if (!message.trim()) {
-      toast.error("Пожалуйста, введите сообщение");
-      return;
-    }
-    if (!locationShared || !userLocation) {
-      toast.error("Пожалуйста, поделитесь локацией");
-      return;
-    }
+  const cancelMyRequest = async () => {
+    const myRequest = helpRequests.find(r => r.user_id === currentUserId);
+    if (!myRequest) return;
 
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error('Пожалуйста, войдите в систему');
-        navigate('/phone-auth');
-        return;
-      }
+    const { error } = await supabase
+      .from('help_requests')
+      .update({ status: 'cancelled' })
+      .eq('id', myRequest.id);
 
-      // Get user's vehicles
-      const { data: vehicles } = await supabase
-        .from('user_vehicles')
-        .select('id')
-        .eq('user_id', user.id)
-        .limit(1);
-
-      if (!vehicles || vehicles.length === 0) {
-        toast.error('Добавьте автомобиль в профиль');
-        navigate('/my-vehicles');
-        return;
-      }
-
-      // Create help request as service request
-      const { error } = await supabase
-        .from('service_requests')
-        .insert({
-          user_id: user.id,
-          vehicle_id: vehicles[0].id,
-          partner_id: 'roadside-help-system',
-          service_type: 'maintenance' as const,
-          description: `Помощь на дороге: ${message}\nЛокация: ${userLocation[1]}, ${userLocation[0]}`,
-          estimated_cost: 0
-        });
-
-      if (error) throw error;
-
-      toast.success(t('helpRequestSent'));
-      setMessage("");
-    } catch (error: any) {
-      console.error('Help request error:', error);
-      toast.error(error.message || t('requestError'));
+    if (error) {
+      console.error('Error cancelling request:', error);
+      toast.error('Не удалось отменить запрос');
+    } else {
+      toast.success('Запрос отменён');
     }
   };
+
+  const myActiveRequest = helpRequests.find(r => r.user_id === currentUserId);
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <header className="flex items-center gap-4 px-4 py-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/services')}>
-          <ArrowLeft className="h-8 w-8" />
-        </Button>
-        <h1 className="text-xl font-bold text-foreground">{t('roadHelp')}</h1>
-      </header>
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Header */}
+      <div className="bg-card border-b border-border px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate(-1)}
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-lg font-semibold">Помощь на дороге</h1>
+        </div>
+      </div>
 
-      <div className="p-4 space-y-4">
-        {/* Map */}
-        <Card className="overflow-hidden">
-          <div ref={mapContainer} className="h-[300px] w-full" />
-          <CardContent className="pt-4">
-            <Button 
-              onClick={handleShareLocation}
-              variant={locationShared ? "secondary" : "default"}
-              className="w-full"
-              size="lg"
-            >
-              <MapPin className="h-5 w-5 mr-2" />
-              {locationShared ? t('locationShared') + ' ✓' : t('shareMyLocation')}
-            </Button>
-          </CardContent>
-        </Card>
+      {/* Map */}
+      <div className="flex-1 relative">
+        <div ref={mapContainer} className="absolute inset-0" />
+        
+        {/* Floating action button */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10">
+          {!myActiveRequest ? (
+            <Dialog open={showRequestDialog} onOpenChange={setShowRequestDialog}>
+              <DialogTrigger asChild>
+                <Button className="shadow-lg h-14 px-8 text-base">
+                  <AlertCircle className="mr-2 h-5 w-5" />
+                  Нужна помощь
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Запрос о помощи</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <Textarea
+                    placeholder="Опишите вашу проблему (например: спустило колесо, села батарея...)"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    rows={4}
+                    className="resize-none"
+                  />
+                  <Button
+                    onClick={handleCreateRequest}
+                    disabled={isCreatingRequest || !message.trim()}
+                    className="w-full"
+                  >
+                    <MapPin className="mr-2 h-4 w-4" />
+                    {isCreatingRequest ? 'Создание...' : 'Отправить запрос'}
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          ) : (
+            <Card className="shadow-lg">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm">Ваш активный запрос</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <p className="text-sm text-muted-foreground">{myActiveRequest.message}</p>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={cancelMyRequest}
+                  className="w-full"
+                >
+                  Отменить запрос
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+        </div>
 
-        {/* Request Help Card */}
-        <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <MessageSquare className="h-5 w-5 text-primary" />
-              {t('requestHelp')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Textarea
-              placeholder={t('describeProblem')}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              rows={4}
-              className="resize-none"
-            />
-            <Button onClick={handleSendHelp} className="w-full" size="lg">
-              <Send className="h-5 w-5 mr-2" />
-              {t('sendHelpRequest')}
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Active Helpers */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Users className="h-5 w-5 text-primary" />
-              {t('activeHelpersNearby')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center py-6">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-3">
-                <span className="text-2xl font-bold text-primary">{activeHelpers}</span>
+        {/* Info card */}
+        <div className="absolute top-4 left-4 right-4 z-10">
+          <Card className="shadow-lg bg-card/95 backdrop-blur">
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <AlertCircle className="h-5 w-5 text-primary" />
+                </div>
+                <div className="flex-1 text-sm">
+                  <p className="font-medium mb-1">Как это работает:</p>
+                  <ul className="text-muted-foreground space-y-1 text-xs">
+                    <li>🔴 Красный маркер - ваш запрос о помощи</li>
+                    <li>🟢 Зелёные маркеры - другие водители, которым нужна помощь</li>
+                    <li>Нажмите на маркер, чтобы увидеть детали и откликнуться</li>
+                  </ul>
+                </div>
               </div>
-              <p className="text-muted-foreground">
-                {t('driversOnline')}
-              </p>
-              <p className="text-xs text-muted-foreground mt-2">
-                Зеленые маркеры на карте — доступные водители
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
