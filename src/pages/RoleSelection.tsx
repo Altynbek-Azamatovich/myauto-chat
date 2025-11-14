@@ -62,7 +62,7 @@ const RoleSelection = () => {
                   }}
                   className="w-full mt-4"
                 >
-                  Продолжить
+                  {t('continue')}
                 </Button>
               </div>
             </div>
@@ -97,7 +97,7 @@ const RoleSelection = () => {
                   }}
                   className="w-full mt-4"
                 >
-                  Продолжить
+                  {t('continue')}
                 </Button>
               </div>
             </div>
