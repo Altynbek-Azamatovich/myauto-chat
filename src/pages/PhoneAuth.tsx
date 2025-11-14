@@ -15,6 +15,8 @@ const PhoneAuth = () => {
   const [phone, setPhone] = useState("+7");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [partnerPin, setPartnerPin] = useState("");
+  const [confirmPartnerPin, setConfirmPartnerPin] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isRegisterMode, setIsRegisterMode] = useState(false);
@@ -67,13 +69,20 @@ const PhoneAuth = () => {
     return { valid: true };
   };
 
+  const validatePin = (pin: string) => {
+    if (pin.length < 4 || pin.length > 6 || !/^\d+$/.test(pin)) {
+      return { valid: false, error: t('pinTooShort') };
+    }
+    return { valid: true };
+  };
+
   const handleSubmit = async () => {
+    const pendingRole = (localStorage.getItem('pending_role') || 'user') as 'user' | 'partner';
+    
     if (!isPhoneValid(phone)) {
       toast({
-        title: language === 'ru' ? "Ошибка" : "Қате",
-        description: language === 'ru' 
-          ? "Введите корректный номер телефона в формате +7 XXX XXX XXXX" 
-          : "Телефон нөмірін +7 XXX XXX XXXX форматында енгізіңіз",
+        title: t('error'),
+        description: t('invalidPhone'),
         variant: "destructive",
       });
       return;
@@ -82,7 +91,7 @@ const PhoneAuth = () => {
     const passwordValidation = validatePassword(password);
     if (!passwordValidation.valid) {
       toast({
-        title: language === 'ru' ? "Ошибка" : "Қате",
+        title: t('error'),
         description: passwordValidation.error,
         variant: "destructive",
       });
@@ -92,22 +101,55 @@ const PhoneAuth = () => {
     if (isRegisterMode) {
       if (password !== confirmPassword) {
         toast({
-          title: language === 'ru' ? "Ошибка" : "Қате",
+          title: t('error'),
           description: t('passwordsNotMatch'),
           variant: "destructive",
         });
         return;
       }
 
+      // Валидация PIN для партнера
+      if (pendingRole === 'partner') {
+        const pinValidation = validatePin(partnerPin);
+        if (!pinValidation.valid) {
+          toast({
+            title: t('error'),
+            description: pinValidation.error,
+            variant: "destructive",
+          });
+          return;
+        }
+
+        if (partnerPin !== confirmPartnerPin) {
+          toast({
+            title: t('error'),
+            description: t('pinNotMatch'),
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+
       if (!agreed) {
         toast({
-          title: language === 'ru' ? "Ошибка" : "Қате",
-          description: language === 'ru' 
-            ? "Необходимо согласие с пользовательским соглашением" 
-            : "Пайдаланушы келісіміне келісу қажет",
+          title: t('error'),
+          description: t('userAgreementRequired'),
           variant: "destructive",
         });
         return;
+      }
+    } else {
+      // Проверка PIN при входе партнера
+      if (pendingRole === 'partner') {
+        const pinValidation = validatePin(partnerPin);
+        if (!pinValidation.valid) {
+          toast({
+            title: t('error'),
+            description: pinValidation.error,
+            variant: "destructive",
+          });
+          return;
+        }
       }
     }
 
@@ -115,6 +157,7 @@ const PhoneAuth = () => {
     try {
       const cleanPhone = phone.replace(/\s/g, '');
       const pendingRole = (localStorage.getItem('pending_role') || 'user') as 'user' | 'partner';
+      const hashedPin = pendingRole === 'partner' && partnerPin ? btoa(partnerPin) : null;
       
       if (isRegisterMode) {
         // Try to create new user
@@ -176,14 +219,15 @@ const PhoneAuth = () => {
             if (roleError) throw roleError;
           }
 
-          // If partner, create service_partners entry (unverified)
+          // If partner, create service_partners entry (unverified) with PIN
           if (pendingRole === 'partner') {
             const { error: partnerError } = await supabase
               .from('service_partners')
               .insert([{
                 owner_id: signInData.user.id,
                 name: '',
-                is_verified: false
+                is_verified: false,
+                partner_pin: hashedPin
               }]);
 
             if (partnerError) throw partnerError;
@@ -195,7 +239,7 @@ const PhoneAuth = () => {
           };
 
           toast({
-            title: language === 'ru' ? "Успешно" : "Сәтті",
+            title: t('success'),
             description: t('roleAddedSuccess').replace('{role}', roleNames[pendingRole as 'user' | 'partner']),
           });
           
@@ -238,24 +282,23 @@ const PhoneAuth = () => {
           if (roleError) throw roleError;
         }
 
-        // If partner, create service_partners entry (unverified)
-        if (pendingRole === 'partner') {
-          const { error: partnerError } = await supabase
-            .from('service_partners')
-            .insert([{
-              owner_id: authData.user.id,
-              name: '',
-              is_verified: false
-            }]);
+          // If partner, create service_partners entry (unverified) with PIN
+          if (pendingRole === 'partner') {
+            const { error: partnerError } = await supabase
+              .from('service_partners')
+              .insert([{
+                owner_id: authData.user.id,
+                name: '',
+                is_verified: false,
+                partner_pin: hashedPin
+              }]);
 
-          if (partnerError) throw partnerError;
-        }
+            if (partnerError) throw partnerError;
+          }
 
         toast({
-          title: language === 'ru' ? "Успешно" : "Сәтті",
-          description: language === 'ru' 
-            ? "Регистрация завершена" 
-            : "Тіркелу аяқталды",
+          title: t('success'),
+          description: t('registrationComplete'),
         });
         
         localStorage.removeItem('pending_role');
@@ -274,6 +317,24 @@ const PhoneAuth = () => {
         });
 
         if (error) throw error;
+
+        // Для партнера проверяем PIN
+        if (pendingRole === 'partner') {
+          const { data: partnerData, error: partnerError } = await supabase
+            .from('service_partners')
+            .select('partner_pin')
+            .eq('owner_id', data.user.id)
+            .maybeSingle();
+
+          if (!partnerError && partnerData) {
+            // @ts-ignore - partner_pin добавлена в миграции
+            const storedPin = partnerData.partner_pin;
+            if (storedPin && storedPin !== hashedPin) {
+              await supabase.auth.signOut();
+              throw new Error(t('pinInvalid'));
+            }
+          }
+        }
 
         // Check if the user has the selected role in user_roles table
         const { data: roleData, error: roleError } = await supabase
@@ -299,14 +360,15 @@ const PhoneAuth = () => {
             throw addRoleError;
           }
 
-          // If adding partner role, create service_partners entry
+          // If adding partner role, create service_partners entry with PIN
           if (pendingRole === 'partner') {
             const { error: partnerError } = await supabase
               .from('service_partners')
               .insert([{
                 owner_id: data.user.id,
                 name: '',
-                is_verified: false
+                is_verified: false,
+                partner_pin: hashedPin
               }]);
 
             if (partnerError && !partnerError.message?.includes('duplicate')) {
@@ -321,18 +383,14 @@ const PhoneAuth = () => {
           };
 
           toast({
-            title: language === 'ru' ? "Роль добавлена" : "Рөл қосылды",
-            description: language === 'ru'
-              ? `Роль ${roleNames[pendingRole as 'user' | 'partner']} успешно добавлена к вашему аккаунту`
-              : `${roleNames[pendingRole as 'user' | 'partner']} рөлі сәтті қосылды`,
+            title: t('roleAdded'),
+            description: t('roleAddedToAccount').replace('{role}', roleNames[pendingRole as 'user' | 'partner']),
           });
         }
 
         toast({
-          title: language === 'ru' ? "Успешно" : "Сәтті",
-          description: language === 'ru' 
-            ? "Вход выполнен" 
-            : "Кіру орындалды",
+          title: t('success'),
+          description: t('loginComplete'),
         });
         
         localStorage.removeItem('pending_role');
@@ -376,7 +434,7 @@ const PhoneAuth = () => {
       }
       
       toast({
-        title: language === 'ru' ? "Ошибка" : "Қате",
+        title: t('error'),
         description: errorMessage,
         variant: "destructive",
       });
@@ -467,6 +525,42 @@ const PhoneAuth = () => {
           </div>
         )}
 
+        {/* Partner PIN Input */}
+        {(localStorage.getItem('pending_role') === 'partner') && (
+          <>
+            <div className="mb-4">
+              <div className="flex items-center gap-2 p-4 border border-input rounded-2xl bg-background">
+                <Input
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={6}
+                  value={partnerPin}
+                  onChange={(e) => setPartnerPin(e.target.value.replace(/\D/g, ''))}
+                  placeholder={isRegisterMode ? t('createPartnerPin') : t('enterPartnerPin')}
+                  className="border-0 text-lg focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
+                />
+              </div>
+            </div>
+
+            {/* Confirm Partner PIN (only in register mode) */}
+            {isRegisterMode && (
+              <div className="mb-4">
+                <div className="flex items-center gap-2 p-4 border border-input rounded-2xl bg-background">
+                  <Input
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={6}
+                    value={confirmPartnerPin}
+                    onChange={(e) => setConfirmPartnerPin(e.target.value.replace(/\D/g, ''))}
+                    placeholder={t('confirmPartnerPin')}
+                    className="border-0 text-lg focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
+                  />
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
         {/* Forgot Password Link (only in login mode) */}
         {!isRegisterMode && (
           <div className="mb-6 text-right">
@@ -513,6 +607,8 @@ const PhoneAuth = () => {
               setIsRegisterMode(!isRegisterMode);
               setPassword("");
               setConfirmPassword("");
+              setPartnerPin("");
+              setConfirmPartnerPin("");
               setAgreed(false);
             }}
             className="text-sm text-muted-foreground"
