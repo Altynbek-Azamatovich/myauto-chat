@@ -161,12 +161,12 @@ const Home = () => {
         <Card className="p-4 bg-black/30 backdrop-blur-md rounded-2xl border-white/20">
           <div className="space-y-3">
             <div className="flex items-start space-x-3">
-              <div className="text-white">
+              <div className="text-white mt-1">
                 <span className="text-xl">ⓘ</span>
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-base leading-tight text-white">
-                  {primaryVehicle ? `${brandName} ${primaryVehicle.model} ${primaryVehicle.year}` : <button onClick={() => navigate('/my-vehicles')} className="text-primary hover:underline text-left">
+                  {primaryVehicle ? `${brandName} ${primaryVehicle.model}` : <button onClick={() => navigate('/my-vehicles')} className="text-primary hover:underline text-left">
                       {t('addYourCar')}
                     </button>}
                 </h3>
@@ -185,9 +185,9 @@ const Home = () => {
         <Card className="p-4 bg-black/30 backdrop-blur-md rounded-2xl border-white/20">
           <div className="space-y-3">
             <div className="flex items-start space-x-2">
-              <AlertTriangle className="h-5 w-5 text-yellow-500 flex-shrink-0" />
+              <AlertTriangle className="h-5 w-5 text-yellow-500 flex-shrink-0 mt-1" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-white/70">{t('oilChange')}</p>
+                <p className="text-xs text-white/70 mb-1">{t('oilChange')}</p>
                 <Popover open={isOilChangeDateOpen} onOpenChange={setIsOilChangeDateOpen}>
                   <PopoverTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
@@ -212,9 +212,9 @@ const Home = () => {
               </div>
             </div>
             <div className="flex items-start space-x-2">
-              <Clock className="h-5 w-5 text-white flex-shrink-0" />
+              <Clock className="h-5 w-5 text-white flex-shrink-0 mt-1" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-white/70">{t('insuranceExpires')}</p>
+                <p className="text-xs text-white/70 mb-1">{t('insuranceExpires')}</p>
                 <Popover open={isInsuranceDateOpen} onOpenChange={setIsInsuranceDateOpen}>
                   <PopoverTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
