@@ -234,6 +234,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-foreground">₸{stats.dailyRevenue.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground mt-1">Сегодня</p>
             </CardContent>
           </Card>
 

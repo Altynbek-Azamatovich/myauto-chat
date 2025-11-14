@@ -47,8 +47,8 @@ export default function Shifts() {
               <Clock className="h-4 w-4 text-warning" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">₽842,300</div>
-              <p className="text-xs text-muted-foreground">В среднем ₽20,055 за смену</p>
+              <div className="text-2xl font-bold">₸842,300</div>
+              <p className="text-xs text-muted-foreground">В среднем ₸20,055 за смену</p>
             </CardContent>
           </Card>
         </div>
@@ -84,7 +84,7 @@ export default function Shifts() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-xl font-bold text-primary">₽{shift.revenue.toLocaleString()}</p>
+                    <p className="text-xl font-bold text-primary">₸{shift.revenue.toLocaleString()}</p>
                   </div>
                 </div>
               ))}

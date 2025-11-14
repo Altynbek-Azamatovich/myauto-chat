@@ -14,6 +14,14 @@ const Index = () => {
         return;
       }
 
+      // Check user role from metadata
+      const userRole = session.user?.user_metadata?.role || 'user';
+      
+      if (userRole === 'partner') {
+        navigate('/partner/dashboard');
+        return;
+      }
+
       const { data: profile } = await supabase
         .from('profiles')
         .select('onboarding_completed')
@@ -22,6 +30,8 @@ const Index = () => {
 
       if (!profile?.onboarding_completed) {
         navigate('/profile-setup');
+      } else {
+        navigate('/home');
       }
     };
 

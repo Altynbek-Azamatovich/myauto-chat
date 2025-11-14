@@ -107,8 +107,8 @@ const PhotoDiagnostic = () => {
           {!image ? <label className="flex flex-col items-center justify-center min-h-[120px] cursor-pointer">
               <input type="file" accept="image/*" capture="environment" onChange={handleImageCapture} className="hidden" />
               <Camera className="h-16 w-16 text-primary mb-2" />
-              <div className="bg-white px-6 py-2 rounded-full">
-                <p className="text-sm font-semibold text-primary">Запустить камеру</p>
+              <div className="bg-primary hover:bg-primary/90 px-6 py-3 rounded-full transition-colors">
+                <p className="text-sm font-semibold text-primary-foreground">Запустить камеру</p>
               </div>
             </label> : <div className="space-y-4">
               <div className="relative">
