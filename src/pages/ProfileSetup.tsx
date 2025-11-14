@@ -113,8 +113,8 @@ const ProfileSetup = () => {
                       <CommandGroup>
                         {kazakhstanCities.map((city) => (
                         <CommandItem
-                          key={city.name}
-                          value={city.name}
+                          key={city}
+                          value={city}
                           onSelect={(currentValue) => {
                             handleChange('city', currentValue);
                             setIsCityOpen(false);
@@ -123,13 +123,10 @@ const ProfileSetup = () => {
                           <Check
                             className={cn(
                               "mr-2 h-4 w-4",
-                              formData.city === city.name ? "opacity-100" : "opacity-0"
+                              formData.city === city ? "opacity-100" : "opacity-0"
                             )}
                           />
-                          <div>
-                            <div>{city.name}</div>
-                            <div className="text-xs text-muted-foreground">{city.region}</div>
-                          </div>
+                          <div>{city}</div>
                         </CommandItem>
                       ))}
                       </CommandGroup>

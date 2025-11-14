@@ -6,7 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Globe, Eye, EyeOff } from "lucide-react";
+import { Globe, Eye, EyeOff, ArrowLeft } from "lucide-react";
 
 const PhoneAuth = () => {
   const navigate = useNavigate();
@@ -223,6 +223,18 @@ const PhoneAuth = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col p-6">
+      {/* Back Button */}
+      <div className="absolute top-4 left-4 z-10">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate(-1)}
+          className="bg-black/20 backdrop-blur-lg text-white hover:bg-black/30"
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+      </div>
+
       {/* Language Toggle */}
       <div className="absolute top-4 right-4 z-10">
         <Button

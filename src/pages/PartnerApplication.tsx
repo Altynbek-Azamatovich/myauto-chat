@@ -7,6 +7,14 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Globe, ArrowLeft } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { kazakhstanCities } from "@/data/kazakhstan-cities";
 
 const PartnerApplication = () => {
   const navigate = useNavigate();
@@ -81,14 +89,14 @@ const PartnerApplication = () => {
       const cleanPhone = phone.replace(/\s/g, '');
       
       const { error } = await supabase
-        .from('partner_applications')
+        .from('partner_applications' as any)
         .insert([{
           phone_number: cleanPhone,
           full_name: fullName.trim(),
           business_name: businessName.trim() || null,
           business_description: businessDescription.trim(),
           city: city.trim() || null,
-        }]);
+        }] as any);
 
       if (error) throw error;
 
@@ -137,12 +145,11 @@ const PartnerApplication = () => {
           onClick={() => navigate(-1)}
           className="bg-black/20 backdrop-blur-lg text-white hover:bg-black/30"
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          {t('back')}
+          <ArrowLeft className="h-4 w-4" />
         </Button>
       </div>
 
-      <div className="flex-1 flex flex-col justify-center max-w-md mx-auto w-full">
+      <div className="flex-1 flex flex-col justify-center max-w-md mx-auto w-full pt-12">
         {/* Title */}
         <h1 className="text-3xl font-bold text-foreground mb-2">
           {t('partnerApplicationTitle')}
@@ -180,7 +187,7 @@ const PartnerApplication = () => {
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder={t('fullNamePlaceholder')}
+              placeholder={t('fullNameShort')}
               className="border-0 text-lg focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
             />
           </div>
@@ -202,20 +209,23 @@ const PartnerApplication = () => {
           </div>
         </div>
 
-        {/* City Input */}
+        {/* City Select */}
         <div className="mb-4">
           <label className="text-sm text-muted-foreground mb-2 block">
             {t('city')}
           </label>
-          <div className="flex items-center gap-2 p-4 border border-input rounded-2xl bg-background">
-            <Input
-              type="text"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              placeholder={t('cityPlaceholder')}
-              className="border-0 text-lg focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
-            />
-          </div>
+          <Select value={city} onValueChange={setCity}>
+            <SelectTrigger className="h-14 text-lg rounded-2xl border-input">
+              <SelectValue placeholder={t('selectCity')} />
+            </SelectTrigger>
+            <SelectContent className="max-h-[300px] bg-background">
+              {kazakhstanCities.map((cityName) => (
+                <SelectItem key={cityName} value={cityName} className="text-lg">
+                  {cityName}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Business Description */}
