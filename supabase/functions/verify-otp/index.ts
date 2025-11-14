@@ -150,6 +150,20 @@ serve(async (req) => {
       }
 
       console.log('New user created:', newUser.user?.id);
+
+      // Assign default 'user' role to new user
+      if (newUser.user?.id) {
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert({
+            user_id: newUser.user.id,
+            role: 'user'
+          });
+
+        if (roleError) {
+          console.error('Failed to assign role:', roleError);
+        }
+      }
     }
 
     // Generate session token
