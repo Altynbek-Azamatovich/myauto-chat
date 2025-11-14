@@ -155,11 +155,11 @@ const RoadsideHelp = () => {
 
       if (error) throw error;
 
-      toast.success("Запрос на помощь отправлен!");
+      toast.success(t('helpRequestSent'));
       setMessage("");
     } catch (error: any) {
       console.error('Help request error:', error);
-      toast.error(error.message || 'Ошибка отправки запроса');
+      toast.error(error.message || t('requestError'));
     }
   };
 

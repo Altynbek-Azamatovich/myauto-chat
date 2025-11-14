@@ -168,11 +168,11 @@ const ServiceBooking = () => {
     setLoading(false);
 
     if (error) {
-      toast.error(language === 'ru' ? "Ошибка при создании заявки" : "Өтінімді жасау кезінде қате");
+      toast.error(t('requestCreateError'));
       return;
     }
 
-    toast.success(language === 'ru' ? "Заявка успешно создана!" : "Өтінім сәтті жасалды!");
+    toast.success(t('requestSuccess'));
     navigate("/services");
   };
 
