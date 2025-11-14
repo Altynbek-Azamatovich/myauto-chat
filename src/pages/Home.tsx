@@ -190,7 +190,7 @@ const Home = () => {
               </div>
             </div>
             <div className="flex items-start gap-2">
-              <Droplet className="h-4 w-4 text-blue-400 flex-shrink-0 mt-0.5" />
+              <Droplet className="h-4 w-4 text-blue-400 flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-white/70 mb-1">{t('oilChange')}</p>
                 <Popover open={isOilChangeDateOpen} onOpenChange={setIsOilChangeDateOpen}>
@@ -217,7 +217,7 @@ const Home = () => {
               </div>
             </div>
             <div className="flex items-start gap-2">
-              <Clock className="h-4 w-4 text-orange-500 flex-shrink-0 mt-0.5" />
+              <Clock className="h-4 w-4 text-orange-500 flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-white/70 mb-1">Страховка до</p>
                 <Popover open={isInsuranceDateOpen} onOpenChange={setIsInsuranceDateOpen}>
