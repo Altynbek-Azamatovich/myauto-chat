@@ -127,6 +127,68 @@ export type Database = {
         }
         Relationships: []
       }
+      help_requests: {
+        Row: {
+          created_at: string
+          id: string
+          latitude: number
+          longitude: number
+          message: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          latitude: number
+          longitude: number
+          message: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          latitude?: number
+          longitude?: number
+          message?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      help_responses: {
+        Row: {
+          created_at: string
+          help_request_id: string
+          id: string
+          responder_id: string
+        }
+        Insert: {
+          created_at?: string
+          help_request_id: string
+          id?: string
+          responder_id: string
+        }
+        Update: {
+          created_at?: string
+          help_request_id?: string
+          id?: string
+          responder_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "help_responses_help_request_id_fkey"
+            columns: ["help_request_id"]
+            isOneToOne: false
+            referencedRelation: "help_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       masters: {
         Row: {
           avatar_url: string | null
@@ -332,8 +394,48 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_applications: {
+        Row: {
+          business_description: string | null
+          business_name: string | null
+          city: string | null
+          created_at: string
+          full_name: string
+          id: string
+          notes: string | null
+          phone_number: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          business_description?: string | null
+          business_name?: string | null
+          city?: string | null
+          created_at?: string
+          full_name: string
+          id?: string
+          notes?: string | null
+          phone_number: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          business_description?: string | null
+          business_name?: string | null
+          city?: string | null
+          created_at?: string
+          full_name?: string
+          id?: string
+          notes?: string | null
+          phone_number?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
+          avatar_url: string | null
           car_brand: string | null
           car_color: string | null
           car_model: string | null
@@ -352,6 +454,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          avatar_url?: string | null
           car_brand?: string | null
           car_color?: string | null
           car_model?: string | null
@@ -370,6 +473,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          avatar_url?: string | null
           car_brand?: string | null
           car_color?: string | null
           car_model?: string | null
@@ -535,6 +639,7 @@ export type Database = {
           logo_url: string | null
           name: string
           owner_id: string
+          partner_pin: string | null
           phone_number: string | null
           rating: number | null
           updated_at: string
@@ -551,6 +656,7 @@ export type Database = {
           logo_url?: string | null
           name: string
           owner_id: string
+          partner_pin?: string | null
           phone_number?: string | null
           rating?: number | null
           updated_at?: string
@@ -567,6 +673,7 @@ export type Database = {
           logo_url?: string | null
           name?: string
           owner_id?: string
+          partner_pin?: string | null
           phone_number?: string | null
           rating?: number | null
           updated_at?: string

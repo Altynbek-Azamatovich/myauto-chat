@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { ArrowLeft, MapPin, AlertCircle, Info, Navigation, X, Loader2 } from "lucide-react";
+import { ArrowLeft, MapPin, AlertCircle, Info, Navigation, X, Loader2, Car, Phone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -31,6 +32,7 @@ interface HelpRequest {
     first_name: string | null;
     last_name: string | null;
     phone_number: string;
+    avatar_url: string | null;
   } | null;
 }
 
@@ -76,9 +78,10 @@ const RoadsideHelp = () => {
         attributionControl: false,
       }).setView([43.2220, 76.9286], 12);
 
-      // Add OpenStreetMap tiles with better style
+      // Add OpenStreetMap tiles with beautiful grayscale filter
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
+        className: 'map-tiles-grayscale'
       }).addTo(leafletMap);
 
       // Добавляем кастомный zoom control
@@ -142,12 +145,12 @@ const RoadsideHelp = () => {
       return;
     }
 
-    // Fetch profiles separately
+    // Fetch profiles separately with avatar
     const enrichedData = await Promise.all(
       (data || []).map(async (request: any) => {
         const { data: profile } = await supabase
           .from('profiles')
-          .select('first_name, last_name, phone_number')
+          .select('first_name, last_name, phone_number, avatar_url')
           .eq('id', request.user_id)
           .single();
         
@@ -224,33 +227,101 @@ const RoadsideHelp = () => {
       const name = request.profiles?.first_name 
         ? `${request.profiles.first_name} ${request.profiles.last_name || ''}`
         : 'Водитель';
+      
+      const phone = request.profiles?.phone_number || '';
+      const avatarUrl = request.profiles?.avatar_url || '';
+      const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
 
       const popupContent = `
-        <div style="padding: 8px; min-width: 200px;">
-          <div style="font-weight: 600; font-size: 16px; margin-bottom: 8px; color: hsl(var(--foreground));">
-            ${name}
+        <div style="
+          padding: 16px; 
+          min-width: 280px;
+          font-family: system-ui, -apple-system, sans-serif;
+        ">
+          <!-- Profile Section -->
+          <div style="
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid hsl(var(--border));
+          ">
+            <div style="
+              width: 56px;
+              height: 56px;
+              border-radius: 50%;
+              overflow: hidden;
+              flex-shrink: 0;
+              background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: white;
+              font-weight: 600;
+              font-size: 20px;
+            ">
+              ${avatarUrl ? `<img src="${avatarUrl}" alt="${name}" style="width: 100%; height: 100%; object-fit: cover;" />` : initials}
+            </div>
+            <div style="flex: 1;">
+              <div style="
+                font-weight: 600; 
+                font-size: 16px; 
+                margin-bottom: 4px;
+                color: hsl(var(--foreground));
+              ">${name}</div>
+              <div style="
+                color: hsl(var(--muted-foreground)); 
+                font-size: 13px;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+              ">
+                <span style="font-size: 14px;">📞</span>
+                ${phone}
+              </div>
+            </div>
           </div>
-          <div style="color: hsl(var(--muted-foreground)); font-size: 14px; line-height: 1.5; margin-bottom: 12px;">
-            ${request.message}
+          
+          <!-- Message Section -->
+          <div style="
+            background: hsl(var(--muted) / 0.5);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+          ">
+            <div style="
+              color: hsl(var(--foreground)); 
+              font-size: 14px; 
+              line-height: 1.6;
+            ">${request.message}</div>
           </div>
+          
           ${!isOwnRequest ? `
-            <button 
-              onclick="window.respondToHelpRequest('${request.id}')"
+            <button
+              onclick="respondToHelpRequest('${request.id}')"
               style="
                 width: 100%;
-                padding: 8px 16px;
-                background: hsl(var(--primary));
-                color: hsl(var(--primary-foreground));
+                padding: 12px 16px;
+                background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+                color: white;
                 border: none;
-                border-radius: 8px;
-                font-weight: 500;
+                border-radius: 10px;
+                font-weight: 600;
+                font-size: 14px;
                 cursor: pointer;
                 transition: all 0.2s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                box-shadow: 0 4px 12px hsl(var(--primary) / 0.3);
               "
-              onmouseover="this.style.opacity='0.9'"
-              onmouseout="this.style.opacity='1'"
+              onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 16px hsl(var(--primary) / 0.4)';"
+              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px hsl(var(--primary) / 0.3)';"
             >
-              🚗 Помочь водителю
+              <span style="font-size: 18px;">🚗</span>
+              Откликнуться на помощь
             </button>
           ` : ''}
         </div>
@@ -357,16 +428,22 @@ const RoadsideHelp = () => {
     const myRequest = helpRequests.find(r => r.user_id === currentUserId);
     if (!myRequest) return;
 
-    const { error } = await supabase
-      .from('help_requests' as any)
-      .update({ status: 'cancelled' })
-      .eq('id', myRequest.id);
+    try {
+      const { error } = await supabase
+        .from('help_requests' as any)
+        .update({ status: 'cancelled' })
+        .eq('id', myRequest.id)
+        .eq('user_id', currentUserId);
 
-    if (error) {
-      console.error('Error cancelling request:', error);
-      toast.error('Не удалось отменить запрос');
-    } else {
-      toast.success('Запрос отменён');
+      if (error) {
+        console.error('Error cancelling request:', error);
+        toast.error('Не удалось отменить запрос');
+      } else {
+        toast.success('Запрос отменён');
+      }
+    } catch (err) {
+      console.error('Error cancelling request:', err);
+      toast.error('Произошла ошибка при отмене запроса');
     }
   };
 
@@ -480,19 +557,25 @@ const RoadsideHelp = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col relative">
-      {/* Custom popup styles */}
+      {/* Custom popup styles and map filters */}
       <style>{`
+        /* Beautiful grayscale map filter */
+        .map-tiles-grayscale {
+          filter: grayscale(100%) contrast(1.1) brightness(1.05);
+        }
+        
         .custom-popup .leaflet-popup-content-wrapper {
-          border-radius: 12px;
-          box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+          border-radius: 16px;
+          box-shadow: 0 12px 40px rgba(0,0,0,0.2);
           padding: 0;
           overflow: hidden;
+          border: 1px solid hsl(var(--border));
         }
         .custom-popup .leaflet-popup-content {
           margin: 0;
         }
         .custom-popup .leaflet-popup-tip {
-          box-shadow: 0 3px 14px rgba(0,0,0,0.15);
+          box-shadow: 0 4px 16px rgba(0,0,0,0.2);
         }
       `}</style>
 
@@ -528,39 +611,40 @@ const RoadsideHelp = () => {
               Информация
             </Button>
           ) : (
-            <Card className="shadow-2xl bg-card/95 backdrop-blur-md w-80 rounded-xl border-2">
-              <CardHeader className="pb-3 pt-4 px-5">
+            <Card className="shadow-2xl bg-gradient-to-br from-card/98 to-card/95 backdrop-blur-md w-80 rounded-2xl border border-border/50">
+              <CardHeader className="pb-3 pt-5 px-6">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-base font-semibold">
+                  <CardTitle className="text-base font-semibold flex items-center gap-2">
+                    <Info className="h-5 w-5 text-primary" />
                     Как это работает
                   </CardTitle>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 rounded-lg hover:bg-muted"
+                    className="h-8 w-8 rounded-full hover:bg-muted/50"
                     onClick={() => setShowInfoCard(false)}
                   >
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent className="px-5 pb-5">
-                <ul className="text-muted-foreground space-y-3 text-sm">
-                  <li className="flex items-start gap-2">
-                    <span className="text-base">🟢</span>
-                    <span>Зелёные маркеры — ваше местоположение</span>
+              <CardContent className="px-6 pb-6">
+                <ul className="space-y-3.5 text-sm">
+                  <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
+                    <span className="text-lg mt-0.5">🟢</span>
+                    <span className="text-muted-foreground leading-relaxed">Зелёные маркеры — ваше местоположение</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-base">🔴</span>
-                    <span>Красные маркеры — водители, которым нужна помощь</span>
+                  <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
+                    <span className="text-lg mt-0.5">🔴</span>
+                    <span className="text-muted-foreground leading-relaxed">Красные маркеры — водители, которым нужна помощь</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-base">🔵</span>
-                    <span>Синий маркер — ваш активный запрос о помощи</span>
+                  <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
+                    <span className="text-lg mt-0.5">🔵</span>
+                    <span className="text-muted-foreground leading-relaxed">Синий маркер — ваш активный запрос о помощи</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-base">📍</span>
-                    <span>Нажмите на маркер, чтобы увидеть детали и откликнуться</span>
+                  <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
+                    <span className="text-lg mt-0.5">📍</span>
+                    <span className="text-muted-foreground leading-relaxed">Нажмите на маркер, чтобы увидеть детали и откликнуться</span>
                   </li>
                 </ul>
               </CardContent>
@@ -574,10 +658,10 @@ const RoadsideHelp = () => {
           <Button
             onClick={toggleLocationTracking}
             size="icon"
-            className={`shadow-xl h-11 w-11 rounded-xl transition-all ${
+            className={`shadow-xl h-12 w-12 rounded-2xl transition-all border ${
               isTrackingLocation 
-                ? 'bg-primary text-primary-foreground' 
-                : 'bg-card/95 hover:bg-card/90 text-foreground backdrop-blur-md'
+                ? 'bg-gradient-to-br from-primary to-primary/90 text-primary-foreground border-primary/20 shadow-[0_8px_32px_hsl(var(--primary)/0.4)]' 
+                : 'bg-gradient-to-br from-card/98 to-card/95 hover:from-card hover:to-card/98 text-foreground backdrop-blur-md border-border/50'
             }`}
             variant={isTrackingLocation ? "default" : "outline"}
           >
@@ -588,10 +672,10 @@ const RoadsideHelp = () => {
           <Button
             onClick={handleLocateMe}
             size="icon"
-            className="shadow-xl bg-card/95 hover:bg-card/90 backdrop-blur-md h-11 w-11 rounded-xl"
+            className="shadow-xl bg-gradient-to-br from-card/98 to-card/95 hover:from-card hover:to-card/98 backdrop-blur-md h-12 w-12 rounded-2xl border border-border/50"
             variant="outline"
           >
-            <MapPin className="h-5 w-5" />
+            <Car className="h-5 w-5" />
           </Button>
         </div>
         
@@ -641,15 +725,17 @@ const RoadsideHelp = () => {
               </DialogContent>
             </Dialog>
           ) : (
-            <Card className="shadow-2xl bg-card/95 backdrop-blur-md rounded-2xl border-2 max-w-sm">
-              <CardHeader className="pb-3 pt-4 px-5">
+            <Card className="shadow-2xl bg-gradient-to-br from-card/98 to-card/95 backdrop-blur-md rounded-2xl border border-border/50 max-w-sm">
+              <CardHeader className="pb-3 pt-5 px-6">
                 <CardTitle className="text-base font-semibold flex items-center gap-2">
-                  <AlertCircle className="h-5 w-5 text-primary" />
+                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <AlertCircle className="h-4 w-4 text-primary" />
+                  </div>
                   Ваш активный запрос
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3 px-5 pb-5">
-                <div className="bg-muted/50 rounded-lg p-3">
+              <CardContent className="space-y-4 px-6 pb-6">
+                <div className="bg-gradient-to-br from-muted/60 to-muted/40 rounded-xl p-4 border border-border/30">
                   <p className="text-sm text-foreground leading-relaxed">
                     {myActiveRequest.message}
                   </p>
@@ -658,7 +744,7 @@ const RoadsideHelp = () => {
                   variant="destructive"
                   size="default"
                   onClick={cancelMyRequest}
-                  className="w-full rounded-xl h-11"
+                  className="w-full rounded-xl h-11 shadow-lg hover:shadow-xl transition-all"
                 >
                   <X className="mr-2 h-4 w-4" />
                   Отменить запрос
