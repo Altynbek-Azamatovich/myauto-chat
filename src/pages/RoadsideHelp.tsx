@@ -430,8 +430,8 @@ const RoadsideHelp = () => {
 
     try {
       const { error } = await supabase
-        .from('help_requests' as any)
-        .update({ status: 'cancelled' })
+        .from('help_requests')
+        .delete()
         .eq('id', myRequest.id)
         .eq('user_id', currentUserId);
 
@@ -440,6 +440,8 @@ const RoadsideHelp = () => {
         toast.error('Не удалось отменить запрос');
       } else {
         toast.success('Запрос отменён');
+        // Удаляем запрос из локального состояния
+        setHelpRequests(prev => prev.filter(r => r.id !== myRequest.id));
       }
     } catch (err) {
       console.error('Error cancelling request:', err);
