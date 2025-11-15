@@ -177,6 +177,36 @@ const RoadsideHelp = () => {
           fetchHelpRequests();
         }
       )
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'help_responses'
+        },
+        async (payload: any) => {
+          console.log('New help response:', payload);
+          
+          // Проверяем, это отклик на наш запрос?
+          const myRequest = helpRequests.find(r => r.user_id === currentUserId);
+          if (myRequest && payload.new.help_request_id === myRequest.id) {
+            // Получаем информацию об откликнувшемся
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('first_name, last_name, phone_number')
+              .eq('id', payload.new.responder_id)
+              .single();
+            
+            const responderName = profile 
+              ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'Водитель'
+              : 'Водитель';
+            
+            toast.success(`${responderName} откликнулся на ваш запрос о помощи! 🚗`, {
+              duration: 6000,
+            });
+          }
+        }
+      )
       .subscribe();
 
     return () => {
@@ -341,6 +371,13 @@ const RoadsideHelp = () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       toast.error('Необходима авторизация');
+      return;
+    }
+
+    // Проверяем, что пользователь не откликается на свой собственный запрос
+    const request = helpRequests.find(r => r.id === requestId);
+    if (request && request.user_id === user.id) {
+      toast.error('Вы не можете откликнуться на свой собственный запрос о помощи');
       return;
     }
 
