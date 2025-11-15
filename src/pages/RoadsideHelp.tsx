@@ -725,16 +725,16 @@ const RoadsideHelp = () => {
               </DialogContent>
             </Dialog>
           ) : (
-            <Card className="shadow-2xl bg-gradient-to-br from-card/98 to-card/95 backdrop-blur-md rounded-2xl border border-border/50 max-w-sm">
-              <CardHeader className="pb-3 pt-5 px-6">
-                <CardTitle className="text-base font-semibold flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                    <AlertCircle className="h-4 w-4 text-primary" />
+            <Card className="shadow-2xl bg-gradient-to-br from-card/98 to-card/95 backdrop-blur-md rounded-2xl border border-border/50 w-full max-w-md">
+              <CardHeader className="pb-3 pt-4 px-5">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <AlertCircle className="h-3.5 w-3.5 text-primary" />
                   </div>
-                  Ваш активный запрос
+                  <span className="whitespace-nowrap">Ваш активный запрос</span>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 px-6 pb-6">
+              <CardContent className="space-y-3 px-5 pb-5">
                 <div className="bg-gradient-to-br from-muted/60 to-muted/40 rounded-xl p-4 border border-border/30">
                   <p className="text-sm text-foreground leading-relaxed">
                     {myActiveRequest.message}
