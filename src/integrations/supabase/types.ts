@@ -396,6 +396,8 @@ export type Database = {
       }
       partner_applications: {
         Row: {
+          approved_at: string | null
+          approved_by: string | null
           business_description: string | null
           business_name: string | null
           city: string | null
@@ -403,11 +405,14 @@ export type Database = {
           full_name: string
           id: string
           notes: string | null
+          partner_password: string | null
           phone_number: string
           status: string
           updated_at: string
         }
         Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
           business_description?: string | null
           business_name?: string | null
           city?: string | null
@@ -415,11 +420,14 @@ export type Database = {
           full_name: string
           id?: string
           notes?: string | null
+          partner_password?: string | null
           phone_number: string
           status?: string
           updated_at?: string
         }
         Update: {
+          approved_at?: string | null
+          approved_by?: string | null
           business_description?: string | null
           business_name?: string | null
           city?: string | null
@@ -427,6 +435,7 @@ export type Database = {
           full_name?: string
           id?: string
           notes?: string | null
+          partner_password?: string | null
           phone_number?: string
           status?: string
           updated_at?: string
@@ -987,6 +996,14 @@ export type Database = {
     }
     Functions: {
       cleanup_rate_limits: { Args: never; Returns: undefined }
+      create_partner_account: {
+        Args: {
+          admin_id: string
+          application_id: string
+          temp_password: string
+        }
+        Returns: Json
+      }
       delete_expired_otp_codes: { Args: never; Returns: undefined }
       has_role: {
         Args: {

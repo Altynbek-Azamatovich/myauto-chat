@@ -46,6 +46,9 @@ import PartnerShifts from "./pages/partner/Shifts";
 import PartnerSettings from "./pages/partner/Settings";
 import PendingVerification from "./pages/partner/PendingVerification";
 
+// Admin Pages
+import PartnerApplications from "./pages/admin/PartnerApplications";
+
 const AppContent = () => {
   const location = useLocation();
   const hideNavigation = [
@@ -111,6 +114,9 @@ const AppContent = () => {
         <Route path="/partner/analytics" element={<PartnerAnalytics />} />
         <Route path="/partner/shifts" element={<PartnerShifts />} />
         <Route path="/partner/settings" element={<PartnerSettings />} />
+        
+        {/* Admin Routes */}
+        <Route path="/admin/partner-applications" element={<PartnerApplications />} />
         
         <Route path="*" element={<NotFound />} />
       </Routes>
