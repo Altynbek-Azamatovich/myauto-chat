@@ -996,6 +996,7 @@ export type Database = {
     }
     Functions: {
       cleanup_rate_limits: { Args: never; Returns: undefined }
+      cleanup_verified_otp_codes: { Args: never; Returns: undefined }
       create_partner_account: {
         Args: {
           admin_id: string
