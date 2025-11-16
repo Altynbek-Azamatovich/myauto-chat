@@ -105,7 +105,7 @@ const ProfileSetup = () => {
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                <PopoverContent className="w-full p-0 z-[100]" align="start">
                   <Command>
                     <CommandInput placeholder={t('searchCity')} />
                     <CommandList className="max-h-[300px] overflow-y-auto">
@@ -126,7 +126,7 @@ const ProfileSetup = () => {
                               formData.city === city ? "opacity-100" : "opacity-0"
                             )}
                           />
-                          <div>{city}</div>
+                          {city}
                         </CommandItem>
                       ))}
                       </CommandGroup>
