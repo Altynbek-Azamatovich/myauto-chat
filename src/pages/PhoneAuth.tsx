@@ -60,7 +60,16 @@ const PhoneAuth = () => {
     return phoneRegex.test(phone);
   };
 
-  const validatePassword = (password: string) => {
+  const validatePassword = (password: string, forRegistration: boolean = false) => {
+    // For login, only check that password is not empty
+    if (!forRegistration) {
+      if (password.length === 0) {
+        return { valid: false, error: t('enterPassword') };
+      }
+      return { valid: true };
+    }
+
+    // For registration, apply strict validation
     if (password.length < 8) {
       return { valid: false, error: 'Пароль должен содержать минимум 8 символов' };
     }
@@ -89,7 +98,8 @@ const PhoneAuth = () => {
       return;
     }
 
-    const passwordValidation = validatePassword(password);
+    // Apply strict validation only for registration
+    const passwordValidation = validatePassword(password, isRegisterMode);
     if (!passwordValidation.valid) {
       toast({
         title: t('error'),
