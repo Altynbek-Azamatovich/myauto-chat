@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Upload, User } from 'lucide-react';
+import { ArrowLeft, Upload, User, Check, ChevronsUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,6 +10,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { usePersistedState } from '@/hooks/usePersistedState';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { kazakhstanCities } from '@/data/kazakhstan-cities';
+import { cn } from '@/lib/utils';
 
 export default function ProfileSettings() {
   const navigate = useNavigate();
@@ -17,6 +21,7 @@ export default function ProfileSettings() {
   const [loading, setLoading] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [cityOpen, setCityOpen] = useState(false);
   const [formData, setFormData] = usePersistedState('profile_settings_form', {
     phone_number: '',
     first_name: '',
@@ -225,10 +230,47 @@ export default function ProfileSettings() {
             </div>
             <div>
               <Label>{t('profileCity')}</Label>
-              <Input
-                value={formData.city}
-                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-              />
+              <Popover open={cityOpen} onOpenChange={setCityOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={cityOpen}
+                    className="w-full justify-between"
+                  >
+                    {formData.city || t('selectCity')}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0 z-[100]" align="start">
+                  <Command>
+                    <CommandInput placeholder={t('searchCity')} />
+                    <CommandList className="max-h-[300px] overflow-y-auto">
+                      <CommandEmpty>{t('noCityFound')}</CommandEmpty>
+                      <CommandGroup>
+                        {kazakhstanCities.map((city) => (
+                          <CommandItem
+                            key={city}
+                            value={city}
+                            onSelect={(currentValue) => {
+                              setFormData({ ...formData, city: currentValue });
+                              setCityOpen(false);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                formData.city === city ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            {city}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
               {t('save')}
