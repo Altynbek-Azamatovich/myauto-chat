@@ -6,15 +6,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Globe, ArrowLeft } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Globe, ArrowLeft, Check, ChevronsUpDown } from "lucide-react";
 import { kazakhstanCities } from "@/data/kazakhstan-cities";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { cn } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
 
 const PartnerApplication = () => {
   const navigate = useNavigate();
@@ -25,6 +22,7 @@ const PartnerApplication = () => {
   const [businessName, setBusinessName] = useState("");
   const [businessDescription, setBusinessDescription] = useState("");
   const [city, setCity] = useState("");
+  const [cityOpen, setCityOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const formatPhoneNumber = (value: string) => {

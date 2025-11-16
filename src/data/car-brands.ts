@@ -181,24 +181,24 @@ const brandsData: CarBrand[] = [
     models: ["S3", "S4", "S5", "S7"]
   },
   {
-    name: "Ssangyong",
+    name: "SsangYong",
     models: ["Tivoli", "Korando", "Rexton", "Musso"]
   },
   {
     name: "Alfa Romeo",
-    models: ["Giulia", "Stelvio", "Tonale"]
+    models: ["Giulia", "Stelvio", "Tonale", "Giulietta"]
   },
   {
     name: "Fiat",
-    models: ["500", "Panda", "Tipo", "500X", "Doblo"]
+    models: ["500", "Panda", "Tipo", "500X", "500L", "Doblo", "Ducato"]
   },
   {
     name: "Mini",
-    models: ["Cooper", "Countryman", "Clubman", "Electric"]
+    models: ["Cooper", "Countryman", "Clubman", "Convertible"]
   },
   {
     name: "Smart",
-    models: ["Fortwo", "Forfour", "#1"]
+    models: ["Fortwo", "Forfour", "#1", "#3"]
   },
   {
     name: "Bentley",
@@ -227,6 +227,110 @@ const brandsData: CarBrand[] = [
   {
     name: "McLaren",
     models: ["GT", "Artura", "720S", "765LT"]
+  },
+  {
+    name: "UAZ",
+    models: ["Patriot", "Hunter", "Pickup", "3303"]
+  },
+  {
+    name: "Seat",
+    models: ["Ibiza", "Leon", "Arona", "Ateca", "Tarraco"]
+  },
+  {
+    name: "Opel",
+    models: ["Corsa", "Astra", "Insignia", "Crossland", "Grandland", "Mokka"]
+  },
+  {
+    name: "Dacia",
+    models: ["Sandero", "Logan", "Duster", "Spring", "Jogger"]
+  },
+  {
+    name: "Saab",
+    models: ["9-3", "9-5"]
+  },
+  {
+    name: "Hongqi",
+    models: ["H5", "H9", "HS5", "E-HS9"]
+  },
+  {
+    name: "Lynk & Co",
+    models: ["01", "02", "03", "05", "06", "09"]
+  },
+  {
+    name: "Polestar",
+    models: ["2", "3", "4"]
+  },
+  {
+    name: "Rivian",
+    models: ["R1T", "R1S"]
+  },
+  {
+    name: "Lucid",
+    models: ["Air"]
+  },
+  {
+    name: "NIO",
+    models: ["ES6", "ES8", "ET5", "ET7"]
+  },
+  {
+    name: "Xpeng",
+    models: ["P5", "P7", "G3", "G9"]
+  },
+  {
+    name: "Li Auto",
+    models: ["L7", "L8", "L9"]
+  },
+  {
+    name: "MG",
+    models: ["ZS", "HS", "5", "6", "Marvel R"]
+  },
+  {
+    name: "GAZ",
+    models: ["Gazelle", "Sobol", "Valdai"]
+  },
+  {
+    name: "ZAZ",
+    models: ["Lanos", "Sens", "Forza", "Vida"]
+  },
+  {
+    name: "Daewoo",
+    models: ["Nexia", "Matiz", "Gentra", "Lacetti"]
+  },
+  {
+    name: "Lifan",
+    models: ["X60", "X70", "Solano", "Myway"]
+  },
+  {
+    name: "DongFeng",
+    models: ["AX7", "580", "S30"]
+  },
+  {
+    name: "Zotye",
+    models: ["T600", "Z300", "X7"]
+  },
+  {
+    name: "Brilliance",
+    models: ["V5", "H530", "H330"]
+  },
+  {
+    name: "Foton",
+    models: ["Sauvana", "Tunland", "Gratour"]
+  },
+  {
+    name: "Hummer",
+    models: ["H2", "H3", "EV"]
+  },
+  {
+    name: "Lincoln",
+    models: ["Navigator", "Aviator", "Corsair", "Nautilus"]
+  },
+  {
+    name: "RAM",
+    models: ["1500", "2500", "3500"]
+  },
+  {
+    name: "Lotus",
+    models: ["Emira", "Eletre"]
   }
 ];
 

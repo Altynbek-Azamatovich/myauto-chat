@@ -71,8 +71,8 @@ export default function MyVehicles() {
     customColor: '',
   });
   
-  // Generate years array from 2026 to 1950 in descending order
-  const years = Array.from({ length: 2026 - 1950 + 1 }, (_, i) => 2026 - i);
+  // Generate years array from current year to 1980 in descending order
+  const years = Array.from({ length: new Date().getFullYear() - 1980 + 1 }, (_, i) => new Date().getFullYear() - i);
 
   useEffect(() => {
     checkAuthAndFetchData();
