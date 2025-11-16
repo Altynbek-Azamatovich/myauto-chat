@@ -78,7 +78,10 @@ serve(async (req) => {
 
     if (otpError) {
       console.error('Database error:', otpError);
-      throw new Error('Failed to verify OTP');
+      return new Response(
+        JSON.stringify({ error: 'Unable to verify code. Please try again.' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     if (!otpData) {
@@ -146,7 +149,10 @@ serve(async (req) => {
 
       if (createError) {
         console.error('Failed to create user:', createError);
-        throw new Error('Failed to create user account');
+        return new Response(
+          JSON.stringify({ error: 'Unable to create account. Please try again.' }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
       }
 
       console.log('New user created:', newUser.user?.id);
@@ -174,7 +180,10 @@ serve(async (req) => {
 
     if (sessionError || !sessionData) {
       console.error('Failed to generate session:', sessionError);
-      throw new Error('Failed to create session');
+      return new Response(
+        JSON.stringify({ error: 'Unable to complete login. Please try again.' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     return new Response(
@@ -192,8 +201,7 @@ serve(async (req) => {
     console.error('Error in verify-otp function:', error);
     return new Response(
       JSON.stringify({ 
-        error: error.message || 'Failed to verify OTP',
-        details: error.toString()
+        error: 'Unable to verify code. Please try again later.'
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

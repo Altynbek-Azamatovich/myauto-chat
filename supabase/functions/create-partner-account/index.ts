@@ -84,7 +84,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (createUserError) {
       console.error("Error creating user:", createUserError);
-      throw new Error(`Failed to create user: ${createUserError.message}`);
+      return new Response(
+        JSON.stringify({ error: 'Unable to create partner account. Please try again.' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     if (!newUser.user) {
@@ -103,7 +106,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (roleInsertError) {
       console.error("Error assigning role:", roleInsertError);
-      throw new Error(`Failed to assign partner role: ${roleInsertError.message}`);
+      return new Response(
+        JSON.stringify({ error: 'Unable to configure partner account. Please try again.' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     console.log("Partner role assigned successfully");
@@ -124,7 +130,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (partnerError) {
       console.error("Error creating service partner:", partnerError);
-      throw new Error(`Failed to create service partner: ${partnerError.message}`);
+      return new Response(
+        JSON.stringify({ error: 'Unable to create partner profile. Please try again.' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     console.log("Service partner created successfully:", servicePartner.id);
@@ -164,7 +173,9 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error: any) {
     console.error("Error in create-partner-account function:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: 'Unable to create partner account. Please try again later.'
+      }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },

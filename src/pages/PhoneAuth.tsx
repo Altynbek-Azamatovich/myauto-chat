@@ -61,11 +61,20 @@ const PhoneAuth = () => {
   };
 
   const validatePassword = (password: string) => {
-    if (password.length < 6) {
-      return { valid: false, error: t('passwordTooShort') };
+    if (password.length < 8) {
+      return { valid: false, error: 'Пароль должен содержать минимум 8 символов' };
+    }
+    if (!/[A-Z]/.test(password)) {
+      return { valid: false, error: 'Пароль должен содержать хотя бы одну заглавную букву' };
+    }
+    if (!/[a-z]/.test(password)) {
+      return { valid: false, error: 'Пароль должен содержать хотя бы одну строчную букву' };
     }
     if (!/\d/.test(password)) {
       return { valid: false, error: t('passwordNeedsNumber') };
+    }
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+      return { valid: false, error: 'Пароль должен содержать хотя бы один специальный символ' };
     }
     return { valid: true };
   };
