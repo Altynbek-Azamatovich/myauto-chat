@@ -212,18 +212,47 @@ const PartnerApplication = () => {
           <label className="text-sm text-muted-foreground mb-2 block">
             {t('city')}
           </label>
-          <Select value={city} onValueChange={setCity}>
-            <SelectTrigger className="h-14 text-lg rounded-2xl border-input">
-              <SelectValue placeholder={t('selectCity')} />
-            </SelectTrigger>
-            <SelectContent className="max-h-[300px] bg-background">
-              {kazakhstanCities.map((cityName) => (
-                <SelectItem key={cityName} value={cityName} className="text-lg">
-                  {cityName}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Popover open={cityOpen} onOpenChange={setCityOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={cityOpen}
+                className="w-full h-14 text-lg rounded-2xl border-input justify-between"
+              >
+                {city || t('selectCity')}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0 z-[100]" align="start">
+              <Command>
+                <CommandInput placeholder={t('searchCity')} />
+                <CommandList className="max-h-[300px] overflow-y-auto">
+                  <CommandEmpty>{t('noCityFound')}</CommandEmpty>
+                  <CommandGroup>
+                    {kazakhstanCities.map((cityName) => (
+                      <CommandItem
+                        key={cityName}
+                        value={cityName}
+                        onSelect={(currentValue) => {
+                          setCity(currentValue);
+                          setCityOpen(false);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            city === cityName ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        {cityName}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
         </div>
 
         {/* Business Description */}
