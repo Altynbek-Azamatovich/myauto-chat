@@ -82,7 +82,10 @@ serve(async (req) => {
 
     if (dbError) {
       console.error('Database error:', dbError);
-      throw new Error('Failed to save OTP code');
+      return new Response(
+        JSON.stringify({ error: 'Unable to process request. Please try again later.' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // Send SMS via SMSC.kz
@@ -102,15 +105,11 @@ serve(async (req) => {
     console.log('SMSC response:', smsResult);
 
     if (smsResult.error) {
-      let errorMessage = `SMSC error: ${smsResult.error}`;
-      
-      // Provide specific guidance based on error code
-      if (smsResult.error_code === 8) {
-        errorMessage = 'Не удалось отправить SMS. Пожалуйста, проверьте баланс на SMSC.kz или обратитесь в поддержку.';
-      }
-      
       console.error('SMSC error details:', smsResult);
-      throw new Error(errorMessage);
+      return new Response(
+        JSON.stringify({ error: 'Unable to send verification code. Please try again later.' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // Update rate limit records after successful SMS send
@@ -154,8 +153,7 @@ serve(async (req) => {
     console.error('Error in send-otp function:', error);
     return new Response(
       JSON.stringify({ 
-        error: error.message || 'Failed to send OTP',
-        details: error.toString()
+        error: 'Unable to send verification code. Please try again later.'
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
