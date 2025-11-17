@@ -127,6 +127,7 @@ All colors MUST be HSL.
     background-repeat: no-repeat;
     background-attachment: fixed;
     overscroll-behavior: none;
+    overflow-x: hidden;
   }
 
   .dark body {
@@ -136,6 +137,13 @@ All colors MUST be HSL.
     background-repeat: no-repeat;
     background-attachment: fixed;
     overscroll-behavior: none;
+  }
+
+  #root {
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    background: transparent;
   }
 
   /* Remove browser scrollbar colors */
