@@ -78,12 +78,22 @@ const AppContent = () => {
   return (
     <>
       {!isMobile && (
-        <Alert className="fixed top-4 left-4 right-4 max-w-2xl mx-auto border-primary/20 bg-primary/5 z-50 shadow-lg">
-          <Smartphone className="h-4 w-4" />
-          <AlertDescription className="text-sm">
-            Это приложение оптимизировано для мобильных устройств. Для лучшего опыта рекомендуем открыть его в мобильном браузере.
-          </AlertDescription>
-        </Alert>
+        <div className="fixed top-4 left-4 right-4 z-50 pointer-events-none">
+          <div className="max-w-7xl mx-auto flex justify-between items-start px-4">
+            <Alert className="w-64 pointer-events-auto border-primary/20 bg-primary/5 shadow-lg">
+              <Smartphone className="h-4 w-4" />
+              <AlertDescription className="text-xs">
+                Это приложение оптимизировано для мобильных устройств
+              </AlertDescription>
+            </Alert>
+            <Alert className="w-64 pointer-events-auto border-primary/20 bg-primary/5 shadow-lg">
+              <Smartphone className="h-4 w-4" />
+              <AlertDescription className="text-xs">
+                Для лучшего опыта откройте в мобильном браузере
+              </AlertDescription>
+            </Alert>
+          </div>
+        </div>
       )}
       <div className="w-full max-w-md mx-auto shadow-2xl min-h-screen bg-background relative">
         <Routes>
