@@ -4,6 +4,9 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Smartphone } from "lucide-react";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
@@ -51,6 +54,7 @@ import PartnerApplications from "./pages/admin/PartnerApplications";
 
 const AppContent = () => {
   const location = useLocation();
+  const isMobile = useIsMobile();
   const hideNavigation = [
     '/welcome', 
     '/phone-auth', 
@@ -72,8 +76,17 @@ const AppContent = () => {
   const isPartnerRoute = location.pathname.startsWith('/partner');
 
   return (
-    <>
-      <Routes>
+    <div className="flex justify-center min-h-screen bg-background">
+      <div className="w-full max-w-md relative">
+        {!isMobile && (
+          <Alert className="m-4 border-primary/20 bg-primary/5">
+            <Smartphone className="h-4 w-4" />
+            <AlertDescription>
+              Это приложение оптимизировано для мобильных устройств. Для лучшего опыта рекомендуем открыть его в мобильном браузере.
+            </AlertDescription>
+          </Alert>
+        )}
+        <Routes>
         {/* Auth & Onboarding */}
         <Route path="/welcome" element={<Welcome />} />
         <Route path="/phone-auth" element={<PhoneAuth />} />
@@ -121,7 +134,8 @@ const AppContent = () => {
         <Route path="*" element={<NotFound />} />
       </Routes>
       {!hideNavigation && !isPartnerRoute && <BottomNavigation />}
-    </>
+      </div>
+    </div>
   );
 };
 
