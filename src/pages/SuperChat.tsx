@@ -180,7 +180,7 @@ const SuperChat = () => {
   return (
     <div className="h-screen bg-white dark:bg-background flex flex-col overflow-hidden">
       {/* Header - Fixed at top */}
-      <header className="fixed top-0 left-0 right-0 flex items-center justify-between px-4 py-4 z-20">
+      <header className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md flex items-center justify-between px-4 py-4 z-20 bg-background/80 backdrop-blur-lg">
         <AppSidebar 
           trigger={
             <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
@@ -314,9 +314,9 @@ const SuperChat = () => {
       )}
 
       {/* Input Area - Fixed at bottom */}
-      <div className="fixed bottom-24 left-0 right-0 px-4 py-3 z-10">
-        <div className="flex items-center justify-center space-x-2">
-          <div className="flex items-center bg-black/15 dark:bg-muted/50 backdrop-blur-[2px] rounded-full px-3 h-10 max-w-lg w-full">
+      <div className="fixed bottom-24 left-1/2 -translate-x-1/2 w-full max-w-md px-4 py-3 z-10">
+        <div className="flex items-center space-x-2">
+          <div className="flex items-center bg-black/15 dark:bg-muted/50 backdrop-blur-[2px] rounded-full px-3 h-10 flex-1">
             <Button 
               variant="ghost" 
               size="icon" 
@@ -351,7 +351,7 @@ const SuperChat = () => {
           <Button 
             onClick={handleSendMessage}
             size="icon" 
-            className="rounded-full bg-primary hover:bg-primary/90 flex-shrink-0"
+            className="rounded-full bg-primary hover:bg-primary/90 flex-shrink-0 h-10 w-10"
             disabled={isLoading || !message.trim()}
           >
             <ArrowUp className="h-4 w-4" />
