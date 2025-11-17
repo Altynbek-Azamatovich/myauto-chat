@@ -76,16 +76,17 @@ const AppContent = () => {
   const isPartnerRoute = location.pathname.startsWith('/partner');
 
   return (
-    <div className="w-full max-w-md mx-auto shadow-2xl min-h-screen bg-background">
+    <>
       {!isMobile && (
-        <Alert className="m-4 border-primary/20 bg-primary/5 sticky top-0 z-50">
+        <Alert className="fixed top-4 left-4 right-4 max-w-2xl mx-auto border-primary/20 bg-primary/5 z-50 shadow-lg">
           <Smartphone className="h-4 w-4" />
           <AlertDescription className="text-sm">
             Это приложение оптимизировано для мобильных устройств. Для лучшего опыта рекомендуем открыть его в мобильном браузере.
           </AlertDescription>
         </Alert>
       )}
-      <Routes>
+      <div className="w-full max-w-md mx-auto shadow-2xl min-h-screen bg-background relative">
+        <Routes>
         {/* Auth & Onboarding */}
         <Route path="/welcome" element={<Welcome />} />
         <Route path="/phone-auth" element={<PhoneAuth />} />
@@ -133,7 +134,8 @@ const AppContent = () => {
         <Route path="*" element={<NotFound />} />
       </Routes>
       {!hideNavigation && !isPartnerRoute && <BottomNavigation />}
-    </div>
+      </div>
+    </>
   );
 };
 
