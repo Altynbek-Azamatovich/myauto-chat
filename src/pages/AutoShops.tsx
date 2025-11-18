@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Store, MapPin, Star, Search, Phone } from "lucide-react";
+import { ArrowLeft, Store, MapPin, Star, Search, Phone, Package, Newspaper, Box, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,11 +7,40 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { usePersistedState } from "@/hooks/usePersistedState";
+import { StoriesCarousel } from "@/components/StoriesCarousel";
+import autoShopImage from "@/assets/services/auto-shops.png";
 
 const AutoShops = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = usePersistedState("autoshops_search_query", "");
+
+  const stories = [
+    {
+      id: 0,
+      title: "Новости",
+      preview: autoShopImage,
+      image: autoShopImage
+    },
+    {
+      id: 1,
+      title: "Акции",
+      preview: autoShopImage,
+      image: autoShopImage
+    },
+    {
+      id: 2,
+      title: "Советы",
+      preview: autoShopImage,
+      image: autoShopImage
+    },
+    {
+      id: 3,
+      title: "Обзоры",
+      preview: autoShopImage,
+      image: autoShopImage
+    }
+  ];
 
   const shops = [
     {
@@ -66,6 +95,8 @@ const AutoShops = () => {
       </header>
 
       <div className="p-4 space-y-4">
+        <StoriesCarousel stories={stories} />
+
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -75,6 +106,63 @@ const AutoShops = () => {
             className="pl-10"
           />
         </div>
+
+        <Card 
+          className="bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/10 hover:shadow-lg transition-all cursor-pointer col-span-2"
+          onClick={() => navigate('/parts-catalog')}
+        >
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <Package className="h-8 w-8 text-primary" />
+                  <h3 className="text-2xl font-bold">Каталог</h3>
+                </div>
+                <p className="text-muted-foreground">Новые и б/у запчасти для вашего авто</p>
+              </div>
+              <ArrowRight className="h-6 w-6 text-primary" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Card 
+            className="bg-card hover:shadow-lg transition-all cursor-pointer"
+            onClick={() => navigate('/news')}
+          >
+            <CardContent className="p-4">
+              <div className="flex items-start justify-between mb-3">
+                <Newspaper className="h-6 w-6 text-primary" />
+                <ArrowRight className="h-5 w-5 text-muted-foreground" />
+              </div>
+              <h3 className="font-bold mb-2">Новости</h3>
+              <p className="text-xs text-muted-foreground mb-3">Актуальные события автомира</p>
+              <div className="flex gap-1 justify-center opacity-50">
+                <div className="w-8 h-12 bg-primary/20 rounded border-2 border-primary/40" />
+                <div className="w-8 h-12 bg-primary/20 rounded border-2 border-primary/40" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="bg-card hover:shadow-lg transition-all cursor-pointer"
+            onClick={() => navigate('/showroom-3d')}
+          >
+            <CardContent className="p-4">
+              <div className="flex items-start justify-between mb-3">
+                <Box className="h-6 w-6 text-primary" />
+                <ArrowRight className="h-5 w-5 text-muted-foreground" />
+              </div>
+              <h3 className="font-bold mb-2">3D-шоурум</h3>
+              <p className="text-xs text-muted-foreground mb-3">Виртуальный просмотр авто</p>
+              <div className="flex justify-center opacity-50">
+                <div className="w-16 h-10 bg-primary/20 rounded-lg border-2 border-primary/40 transform rotate-12" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <h2 className="text-lg font-bold pt-2">Автомагазины рядом</h2>
 
         {shops.map((shop) => (
           <Card key={shop.id} className="bg-card hover:bg-muted/30 transition-all cursor-pointer hover:shadow-md">
