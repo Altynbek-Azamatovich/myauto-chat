@@ -57,6 +57,22 @@ const resources = {
       app: {
         subtitle: 'Система управления',
       },
+      autoShops: {
+        title: 'Автомагазины',
+        search: 'Поиск автомагазинов...',
+        catalog: 'Каталог',
+        catalogSubtitle: 'Новые и б/у запчасти',
+        news: 'Новости',
+        newsSubtitle: 'Последние обновления',
+        showroom: '3D-шоурум',
+        showroomSubtitle: 'Виртуальный просмотр',
+        stories: {
+          news: 'Новости',
+          promo: 'Акции',
+          tips: 'Советы',
+          reviews: 'Обзоры',
+        },
+      },
     },
   },
   kk: {
@@ -113,6 +129,22 @@ const resources = {
       },
       app: {
         subtitle: 'Басқару жүйесі',
+      },
+      autoShops: {
+        title: 'Автодүкендер',
+        search: 'Автодүкендерді іздеу...',
+        catalog: 'Каталог',
+        catalogSubtitle: 'Жаңа және б/ү бөлшектер',
+        news: 'Жаңалықтар',
+        newsSubtitle: 'Соңғы жаңартулар',
+        showroom: '3D-шоурум',
+        showroomSubtitle: 'Виртуалды қарау',
+        stories: {
+          news: 'Жаңалықтар',
+          promo: 'Акциялар',
+          tips: 'Кеңестер',
+          reviews: 'Шолулар',
+        },
       },
     },
   },
