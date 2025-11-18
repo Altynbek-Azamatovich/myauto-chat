@@ -219,6 +219,20 @@ const translations: Translations = {
   partsDismantling: { ru: 'Авторазборы', kk: 'Авто бөлшектері' },
   carWash: { ru: 'Автомойки', kk: 'Автожуғыш' },
   
+  // Service blocks
+  catalog: { ru: 'Каталог', kk: 'Каталог' },
+  catalogSubtitle: { ru: 'Новые и б/у запчасти', kk: 'Жаңа және б/ү бөлшектер' },
+  news: { ru: 'Новости', kk: 'Жаңалықтар' },
+  newsSubtitle: { ru: 'Последние обновления', kk: 'Соңғы жаңартулар' },
+  showroom3D: { ru: '3D-Шоурум', kk: '3D-Шоурум' },
+  showroomSubtitle: { ru: 'Виртуальный просмотр авто', kk: 'Авто виртуалды қарау' },
+  
+  // Stories
+  storiesNews: { ru: 'Новости', kk: 'Жаңалықтар' },
+  storiesPromo: { ru: 'Акции', kk: 'Акциялар' },
+  storiesTips: { ru: 'Советы', kk: 'Кеңестер' },
+  storiesReviews: { ru: 'Обзоры', kk: 'Шолулар' },
+  
   // Cart and Notifications
   cart: { ru: 'Корзина', kk: 'Себет' },
   emptyCart: { ru: 'Корзина пуста', kk: 'Себет бос' },
