@@ -38,6 +38,9 @@ import Detailing from "./pages/Detailing";
 import PaintShop from "./pages/PaintShop";
 import PartsDismantling from "./pages/PartsDismantling";
 import CarWash from "./pages/CarWash";
+import PartsCatalog from "./pages/PartsCatalog";
+import NewsPage from "./pages/NewsPage";
+import Showroom3D from "./pages/Showroom3D";
 
 // Partner Pages
 import PartnerDashboard from "./pages/partner/Dashboard";
@@ -127,6 +130,9 @@ const AppContent = () => {
         <Route path="/paint-shop" element={<PaintShop />} />
         <Route path="/parts-dismantling" element={<PartsDismantling />} />
         <Route path="/car-wash" element={<CarWash />} />
+        <Route path="/parts-catalog" element={<PartsCatalog />} />
+        <Route path="/news" element={<NewsPage />} />
+        <Route path="/showroom-3d" element={<Showroom3D />} />
         
         {/* Partner Routes */}
         <Route path="/partner/pending-verification" element={<PendingVerification />} />
