@@ -31,25 +31,29 @@ const Services = () => {
       id: 0,
       title: t('storiesNews'),
       preview: autoShopsImg,
-      image: autoShopsImg
+      image: autoShopsImg,
+      icon: '📰'
     },
     {
       id: 1,
       title: t('storiesPromo'),
       preview: carCoveredImg,
-      image: carCoveredImg
+      image: carCoveredImg,
+      icon: '🏷️'
     },
     {
       id: 2,
       title: t('storiesTips'),
       preview: autoServicesImg,
-      image: autoServicesImg
+      image: autoServicesImg,
+      icon: '💡'
     },
     {
       id: 3,
       title: t('storiesReviews'),
       preview: detailingImg,
-      image: detailingImg
+      image: detailingImg,
+      icon: '⭐'
     }
   ];
 
@@ -141,7 +145,7 @@ const Services = () => {
           className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer bg-gray-100 dark:bg-gray-800"
           onClick={() => navigate('/roadside-help')}
         >
-          <img src={roadsideHelpImg} alt={t('roadHelp')} className="absolute inset-0 w-full h-full object-cover" />
+          <img src={roadsideHelpImg} alt={t('roadHelp')} className="absolute inset-0 w-full h-full object-cover object-top" />
           <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
             <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('roadHelp')}</h3>
           </div>
@@ -157,7 +161,7 @@ const Services = () => {
           className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer bg-gray-100 dark:bg-gray-800"
           onClick={() => navigate('/auto-forum')}
         >
-          <img src={autoForumImg} alt={t('autoForum')} className="absolute inset-0 w-full h-full object-cover" />
+          <img src={autoForumImg} alt={t('autoForum')} className="absolute inset-0 w-full h-full object-cover object-top" />
           <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
             <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('autoForum')}</h3>
           </div>
@@ -171,14 +175,24 @@ const Services = () => {
         >
           <div className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
-              <div>
+              <div className="flex-1">
                 <div className="flex items-center gap-3 mb-1">
                   <Package className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
                   <h3 className="text-xl sm:text-2xl font-bold text-foreground">{t('catalog')}</h3>
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground">{t('catalogSubtitle')}</p>
               </div>
-              <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground flex-shrink-0" />
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="flex flex-col gap-1 text-primary/40">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary/20 flex items-center justify-center">
+                    <Package className="h-4 w-4 sm:h-5 sm:w-5" />
+                  </div>
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary/30 flex items-center justify-center">
+                    <Package className="h-4 w-4 sm:h-5 sm:w-5" />
+                  </div>
+                </div>
+                <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground flex-shrink-0" />
+              </div>
             </div>
           </div>
         </Card>
@@ -186,52 +200,48 @@ const Services = () => {
         {/* Новости и 3D-Шоурум */}
         <div className="grid grid-cols-2 gap-4">
           <Card 
-            className="bg-gradient-to-br from-blue-500/10 via-cyan-500/10 to-blue-600/10 hover:shadow-lg transition-all cursor-pointer border-0"
+            className="aspect-square bg-gradient-to-br from-blue-500/10 via-cyan-500/10 to-blue-600/10 hover:shadow-lg transition-all cursor-pointer border-0"
             onClick={() => navigate('/news')}
           >
-            <div className="p-4 sm:p-6">
-              <div className="flex flex-col h-full">
-                <div className="flex items-start justify-between mb-3 sm:mb-4">
-                  <Newspaper className="h-5 w-5 sm:h-7 sm:w-7 text-primary" />
-                  <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
+            <div className="p-4 sm:p-6 h-full flex flex-col">
+              <div className="flex items-start justify-between mb-3 sm:mb-4">
+                <Newspaper className="h-5 w-5 sm:h-7 sm:w-7 text-primary" />
+                <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
+              </div>
+              <div className="flex-1 flex items-center justify-center mb-2 sm:mb-3">
+                <div className="flex gap-1.5 sm:gap-2">
+                  <Smartphone className="h-8 w-8 sm:h-12 sm:w-12 text-primary/40 transform -rotate-12" />
+                  <Smartphone className="h-8 w-8 sm:h-12 sm:w-12 text-primary/60 transform rotate-12" />
                 </div>
-                <div className="flex-1 flex items-center justify-center mb-2 sm:mb-3">
-                  <div className="flex gap-1.5 sm:gap-2">
-                    <Smartphone className="h-8 w-8 sm:h-12 sm:w-12 text-primary/40 transform -rotate-12" />
-                    <Smartphone className="h-8 w-8 sm:h-12 sm:w-12 text-primary/60 transform rotate-12" />
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-base sm:text-lg font-bold mb-0.5 sm:mb-1 text-foreground">{t('news')}</h3>
-                  <p className="text-[10px] sm:text-xs text-muted-foreground">{t('newsSubtitle')}</p>
-                </div>
+              </div>
+              <div>
+                <h3 className="text-base sm:text-lg font-bold mb-0.5 sm:mb-1 text-foreground">{t('news')}</h3>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">{t('newsSubtitle')}</p>
               </div>
             </div>
           </Card>
 
           <Card 
-            className="bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-purple-600/10 hover:shadow-lg transition-all cursor-pointer border-0"
+            className="aspect-square bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-purple-600/10 hover:shadow-lg transition-all cursor-pointer border-0"
             onClick={() => navigate('/showroom-3d')}
           >
-            <div className="p-4 sm:p-6">
-              <div className="flex flex-col h-full">
-                <div className="flex items-start justify-between mb-3 sm:mb-4">
-                  <Box className="h-5 w-5 sm:h-7 sm:w-7 text-primary" />
-                  <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
-                </div>
-                <div className="flex-1 flex items-center justify-center mb-2 sm:mb-3">
-                  <div className="relative">
-                    <div className="w-12 h-6 sm:w-16 sm:h-8 bg-primary/30 rounded-lg shadow-lg" 
-                         style={{ transform: 'perspective(100px) rotateY(-15deg)' }}>
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent rounded-lg" />
-                      <div className="absolute bottom-1 left-2 right-2 h-2 bg-black/20 rounded" />
-                    </div>
+            <div className="p-4 sm:p-6 h-full flex flex-col">
+              <div className="flex items-start justify-between mb-3 sm:mb-4">
+                <Box className="h-5 w-5 sm:h-7 sm:w-7 text-primary" />
+                <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
+              </div>
+              <div className="flex-1 flex items-center justify-center mb-2 sm:mb-3">
+                <div className="relative">
+                  <div className="w-12 h-6 sm:w-16 sm:h-8 bg-primary/30 rounded-lg shadow-lg" 
+                       style={{ transform: 'perspective(100px) rotateY(-15deg)' }}>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent rounded-lg" />
+                    <div className="absolute bottom-1 left-2 right-2 h-2 bg-black/20 rounded" />
                   </div>
                 </div>
-                <div>
-                  <h3 className="text-base sm:text-lg font-bold mb-0.5 sm:mb-1 text-foreground">{t('showroom3D')}</h3>
-                  <p className="text-[10px] sm:text-xs text-muted-foreground">{t('showroomSubtitle')}</p>
-                </div>
+              </div>
+              <div>
+                <h3 className="text-base sm:text-lg font-bold mb-0.5 sm:mb-1 text-foreground">{t('showroom3D')}</h3>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">{t('showroomSubtitle')}</p>
               </div>
             </div>
           </Card>
@@ -244,7 +254,7 @@ const Services = () => {
           className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer bg-gray-100 dark:bg-gray-800"
           onClick={() => navigate('/service-booking')}
         >
-          <img src={autoServicesImg} alt={t('servicesTitle')} className="absolute inset-0 w-full h-full object-cover" />
+          <img src={autoServicesImg} alt={t('servicesTitle')} className="absolute inset-0 w-full h-full object-cover object-top" />
           <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
             <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('servicesTitle')}</h3>
           </div>
@@ -255,7 +265,7 @@ const Services = () => {
           className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer bg-gray-100 dark:bg-gray-800"
           onClick={() => navigate('/auto-shops')}
         >
-          <img src={autoShopsImg} alt={t('autoShops')} className="absolute inset-0 w-full h-full object-cover" />
+          <img src={autoShopsImg} alt={t('autoShops')} className="absolute inset-0 w-full h-full object-cover object-top" />
           <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
             <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('autoShops')}</h3>
           </div>
@@ -266,7 +276,7 @@ const Services = () => {
           className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer bg-gray-100 dark:bg-gray-800"
           onClick={() => navigate('/detailing')}
         >
-          <img src={detailingImg} alt={t('detailing')} className="absolute inset-0 w-full h-full object-cover" />
+          <img src={detailingImg} alt={t('detailing')} className="absolute inset-0 w-full h-full object-cover object-top" />
           <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
             <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('detailing')}</h3>
           </div>
@@ -277,7 +287,7 @@ const Services = () => {
           className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer bg-gray-100 dark:bg-gray-800"
           onClick={() => navigate('/paint-shop')}
         >
-          <img src={paintShopImg} alt={t('paintShop')} className="absolute inset-0 w-full h-full object-cover" />
+          <img src={paintShopImg} alt={t('paintShop')} className="absolute inset-0 w-full h-full object-cover object-top" />
           <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
             <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('paintShop')}</h3>
           </div>
@@ -288,7 +298,7 @@ const Services = () => {
           className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer bg-gray-100 dark:bg-gray-800"
           onClick={() => navigate('/parts-dismantling')}
         >
-          <img src={partsDismantlingImg} alt={t('partsDismantling')} className="absolute inset-0 w-full h-full object-cover" />
+          <img src={partsDismantlingImg} alt={t('partsDismantling')} className="absolute inset-0 w-full h-full object-cover object-top" />
           <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
             <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('partsDismantling')}</h3>
           </div>
@@ -299,7 +309,7 @@ const Services = () => {
           className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer bg-gray-100 dark:bg-gray-800"
           onClick={() => navigate('/car-wash')}
         >
-          <img src={carWashImg} alt={t('carWash')} className="absolute inset-0 w-full h-full object-cover" />
+          <img src={carWashImg} alt={t('carWash')} className="absolute inset-0 w-full h-full object-cover object-top" />
           <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
             <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('carWash')}</h3>
           </div>
