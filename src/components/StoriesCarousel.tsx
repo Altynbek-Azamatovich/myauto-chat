@@ -88,9 +88,9 @@ export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
             }}
             className="flex-shrink-0 flex flex-col items-center gap-1"
           >
-            <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-primary via-accent to-secondary p-[2px]">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-primary/30 via-accent/30 to-secondary/30 p-[2px]">
               <div className="w-full h-full rounded-full bg-background p-[2px] flex items-center justify-center">
-                <div className="w-full h-full rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center text-2xl">
+                <div className="w-full h-full rounded-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center text-2xl">
                   {story.icon || '📱'}
                 </div>
               </div>

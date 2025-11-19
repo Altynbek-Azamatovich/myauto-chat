@@ -170,7 +170,7 @@ const Services = () => {
 
         {/* Каталог - Full Width */}
         <Card 
-          className="bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/10 hover:shadow-lg transition-all cursor-pointer border-0"
+          className="bg-muted/50 hover:bg-muted transition-all cursor-pointer border-0"
           onClick={() => navigate('/parts-catalog')}
         >
           <div className="p-4 sm:p-6">
@@ -200,7 +200,7 @@ const Services = () => {
         {/* Новости и 3D-Шоурум */}
         <div className="grid grid-cols-2 gap-4">
           <Card 
-            className="aspect-square bg-gradient-to-br from-blue-500/10 via-cyan-500/10 to-blue-600/10 hover:shadow-lg transition-all cursor-pointer border-0"
+            className="aspect-square bg-muted/50 hover:bg-muted transition-all cursor-pointer border-0"
             onClick={() => navigate('/news')}
           >
             <div className="p-4 sm:p-6 h-full flex flex-col">
@@ -222,7 +222,7 @@ const Services = () => {
           </Card>
 
           <Card 
-            className="aspect-square bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-purple-600/10 hover:shadow-lg transition-all cursor-pointer border-0"
+            className="aspect-square bg-muted/50 hover:bg-muted transition-all cursor-pointer border-0"
             onClick={() => navigate('/showroom-3d')}
           >
             <div className="p-4 sm:p-6 h-full flex flex-col">
