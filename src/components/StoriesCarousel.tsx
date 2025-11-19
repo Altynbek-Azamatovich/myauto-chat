@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { X } from "lucide-react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Story {
@@ -7,6 +7,7 @@ interface Story {
   image: string;
   title: string;
   preview: string;
+  icon?: string;
 }
 
 interface StoriesCarouselProps {
@@ -16,12 +17,11 @@ interface StoriesCarouselProps {
 export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
   const [selectedStory, setSelectedStory] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const startXRef = useRef<number>(0);
 
   useEffect(() => {
-    if (selectedStory === null || isPaused) return;
+    if (selectedStory === null) return;
 
     intervalRef.current = setInterval(() => {
       setProgress((prev) => {
@@ -36,7 +36,7 @@ export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [selectedStory, isPaused]);
+  }, [selectedStory]);
 
   const handleNext = () => {
     if (selectedStory !== null && selectedStory < stories.length - 1) {
@@ -57,7 +57,6 @@ export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
   const handleClose = () => {
     setSelectedStory(null);
     setProgress(0);
-    setIsPaused(false);
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -90,12 +89,10 @@ export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
             className="flex-shrink-0 flex flex-col items-center gap-1"
           >
             <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-primary via-accent to-secondary p-[2px]">
-              <div className="w-full h-full rounded-full bg-background p-[2px]">
-                <img
-                  src={story.preview}
-                  alt={story.title}
-                  className="w-full h-full rounded-full object-cover"
-                />
+              <div className="w-full h-full rounded-full bg-background p-[2px] flex items-center justify-center">
+                <div className="w-full h-full rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center text-2xl">
+                  {story.icon || '📱'}
+                </div>
               </div>
             </div>
             <span className="text-xs text-muted-foreground truncate max-w-[64px]">
@@ -144,22 +141,49 @@ export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
             ))}
           </div>
 
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsPaused(!isPaused);
-            }}
-            className="absolute inset-0"
-          />
+          {/* Navigation Arrows */}
+          {selectedStory > 0 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePrev();
+              }}
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-white hover:bg-white/20 rounded-full p-2 transition-colors"
+            >
+              <ChevronLeft className="w-8 h-8" />
+            </button>
+          )}
 
-          <img
-            src={stories[selectedStory].image}
-            alt={stories[selectedStory].title}
-            className="max-w-full max-h-full object-contain"
-          />
+          {selectedStory < stories.length - 1 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleNext();
+              }}
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white hover:bg-white/20 rounded-full p-2 transition-colors"
+            >
+              <ChevronRight className="w-8 h-8" />
+            </button>
+          )}
 
-          <div className="absolute bottom-8 left-4 right-4 text-white">
-            <h3 className="text-lg font-bold">{stories[selectedStory].title}</h3>
+          {/* Story Content */}
+          <div className="relative w-full h-full max-w-md mx-auto">
+            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-primary/20 via-accent/20 to-secondary/20 p-8">
+              <div className="text-center space-y-4">
+                <div className="text-6xl mb-4">
+                  {stories[selectedStory].icon || '📱'}
+                </div>
+                <h3 className="text-white text-2xl font-bold">
+                  {stories[selectedStory].title}
+                </h3>
+                <p className="text-white/80 text-lg">
+                  Скоро здесь появятся интересные истории и обновления!
+                </p>
+                <div className="mt-8 text-white/60 text-sm">
+                  Следите за новостями 👀
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
