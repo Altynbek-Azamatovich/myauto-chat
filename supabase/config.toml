@@ -11,3 +11,9 @@ verify_jwt = false
 
 [functions.analyze-photo]
 verify_jwt = true
+
+[functions.create-test-partner]
+verify_jwt = false
+
+[functions.create-partner-account]
+verify_jwt = true
