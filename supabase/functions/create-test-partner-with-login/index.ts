@@ -70,7 +70,7 @@ const handler = async (req: Request): Promise<Response> => {
         console.log("Password updated successfully");
       }
     } else {
-      // Create new auth user with email
+      // Create new auth user
       const { data: newUser, error: createUserError } = await supabaseAdmin.auth.admin.createUser({
         email: partnerEmail,
         password: password,
@@ -205,7 +205,7 @@ const handler = async (req: Request): Promise<Response> => {
       }
     );
   } catch (error: any) {
-    console.error("Error in create-test-partner function:", error);
+    console.error("Error in create-test-partner-with-login function:", error);
     return new Response(
       JSON.stringify({ 
         error: "Unable to create test partner account",

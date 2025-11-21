@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.create-partner-account]
 verify_jwt = true
+
+[functions.create-test-partner-with-login]
+verify_jwt = false
