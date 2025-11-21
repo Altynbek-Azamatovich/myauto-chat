@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_settings: {
+        Row: {
+          created_at: string | null
+          id: string
+          key: string
+          updated_at: string | null
+          value: Json | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          key: string
+          updated_at?: string | null
+          value?: Json | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          key?: string
+          updated_at?: string | null
+          value?: Json | null
+        }
+        Relationships: []
+      }
       car_brands: {
         Row: {
           brand_name: string
@@ -405,6 +429,7 @@ export type Database = {
           full_name: string
           id: string
           notes: string | null
+          partner_login: string | null
           partner_password: string | null
           phone_number: string
           status: string
@@ -420,6 +445,7 @@ export type Database = {
           full_name: string
           id?: string
           notes?: string | null
+          partner_login?: string | null
           partner_password?: string | null
           phone_number: string
           status?: string
@@ -435,6 +461,7 @@ export type Database = {
           full_name?: string
           id?: string
           notes?: string | null
+          partner_login?: string | null
           partner_password?: string | null
           phone_number?: string
           status?: string
@@ -648,6 +675,7 @@ export type Database = {
           logo_url: string | null
           name: string
           owner_id: string
+          partner_login: string | null
           partner_pin: string | null
           phone_number: string | null
           rating: number | null
@@ -665,6 +693,7 @@ export type Database = {
           logo_url?: string | null
           name: string
           owner_id: string
+          partner_login?: string | null
           partner_pin?: string | null
           phone_number?: string | null
           rating?: number | null
@@ -682,6 +711,7 @@ export type Database = {
           logo_url?: string | null
           name?: string
           owner_id?: string
+          partner_login?: string | null
           partner_pin?: string | null
           phone_number?: string | null
           rating?: number | null

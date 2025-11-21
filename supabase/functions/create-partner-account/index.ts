@@ -9,6 +9,7 @@ const corsHeaders = {
 
 interface CreatePartnerRequest {
   applicationId: string;
+  partnerLogin: string;
   password: string;
 }
 
@@ -54,7 +55,16 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("User is not an admin");
     }
 
-    const { applicationId, password }: CreatePartnerRequest = await req.json();
+    const { applicationId, partnerLogin, password }: CreatePartnerRequest = await req.json();
+
+    // Validate login format (2 letters + 4 digits)
+    const loginRegex = /^[A-Z]{2}\d{4}$/;
+    if (!loginRegex.test(partnerLogin)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid login format. Must be 2 letters + 4 digits (e.g. AA1234)' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     // Get application details
     const { data: application, error: appError } = await supabaseAdmin
@@ -68,17 +78,19 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Application not found or already processed");
     }
 
-    console.log("Creating partner account for:", application.phone_number);
+    console.log("Creating partner account with login:", partnerLogin);
 
-    // Create auth user with phone number
+    // Create auth user with email (using login as email identifier)
+    const partnerEmail = `${partnerLogin.toLowerCase()}@partner.myauto.kz`;
     const { data: newUser, error: createUserError } = await supabaseAdmin.auth.admin.createUser({
-      phone: application.phone_number,
+      email: partnerEmail,
       password: password,
-      phone_confirm: true,
+      email_confirm: true,
       user_metadata: {
         full_name: application.full_name,
         business_name: application.business_name,
         city: application.city,
+        partner_login: partnerLogin,
       },
     });
 
@@ -120,6 +132,7 @@ const handler = async (req: Request): Promise<Response> => {
       .insert({
         name: application.business_name || application.full_name,
         owner_id: newUser.user.id,
+        partner_login: partnerLogin,
         phone_number: application.phone_number,
         city: application.city,
         description: application.business_description,
@@ -145,8 +158,9 @@ const handler = async (req: Request): Promise<Response> => {
         status: "approved",
         approved_by: adminUser.id,
         approved_at: new Date().toISOString(),
+        partner_login: partnerLogin,
         partner_password: password, // Store for admin reference
-        notes: (application.notes || "") + `\nОдобрено админом. Аккаунт создан.`,
+        notes: (application.notes || "") + `\nОдобрено админом. Логин: ${partnerLogin}`,
       })
       .eq("id", applicationId);
 
@@ -163,7 +177,8 @@ const handler = async (req: Request): Promise<Response> => {
         message: "Partner account created successfully",
         partnerId: servicePartner.id,
         userId: newUser.user.id,
-        phone: application.phone_number,
+        login: partnerLogin,
+        email: partnerEmail,
       }),
       {
         status: 200,
