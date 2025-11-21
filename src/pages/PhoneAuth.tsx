@@ -13,6 +13,7 @@ const PhoneAuth = () => {
   const { t, language, setLanguage } = useLanguage();
   const { toast } = useToast();
   const [phone, setPhone] = useState("+7");
+  const [partnerLogin, setPartnerLogin] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -60,6 +61,12 @@ const PhoneAuth = () => {
     return phoneRegex.test(phone);
   };
 
+  const isPartnerLoginValid = (login: string) => {
+    // Check if login matches 2 letters + 4 digits format
+    const loginRegex = /^[A-Za-z]{2}\d{4}$/;
+    return loginRegex.test(login);
+  };
+
   const validatePassword = (password: string, forRegistration: boolean = false) => {
     // For login, only check that password is not empty
     if (!forRegistration) {
@@ -89,13 +96,27 @@ const PhoneAuth = () => {
   };
 
   const handleSubmit = async () => {
-    if (!isPhoneValid(phone)) {
-      toast({
-        title: t('error'),
-        description: t('invalidPhone'),
-        variant: "destructive",
-      });
-      return;
+    // Validate input based on mode
+    if (isPartnerMode) {
+      if (!isPartnerLoginValid(partnerLogin)) {
+        toast({
+          title: t('error'),
+          description: language === 'ru' 
+            ? 'Неверный формат логина. Используйте 2 буквы и 4 цифры (например: AA1111)'
+            : 'Логин форматы қате. 2 әріп және 4 сан пайдаланыңыз (мысалы: AA1111)',
+          variant: "destructive",
+        });
+        return;
+      }
+    } else {
+      if (!isPhoneValid(phone)) {
+        toast({
+          title: t('error'),
+          description: t('invalidPhone'),
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     // Apply strict validation only for registration
@@ -136,8 +157,9 @@ const PhoneAuth = () => {
       
       if (isPartnerMode) {
         // Partner login only - no registration
+        const partnerEmail = `${partnerLogin.toLowerCase()}@partner.myauto.kz`;
         const { data, error } = await supabase.auth.signInWithPassword({
-          phone: cleanPhone,
+          email: partnerEmail,
           password: password,
         });
 
@@ -284,18 +306,31 @@ const PhoneAuth = () => {
           }
         </p>
 
-        {/* Phone Input */}
+        {/* Login/Phone Input */}
         <div className="mb-4">
-          <div className="flex items-center gap-2 p-4 border border-input rounded-2xl bg-background">
-            <span className="text-2xl">🇰🇿</span>
-            <Input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(formatPhoneNumber(e.target.value))}
-              placeholder="+7 XXX XXX XXXX"
-              className="border-0 text-lg focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
-            />
-          </div>
+          {isPartnerMode ? (
+            <div className="flex items-center gap-2 p-4 border border-input rounded-2xl bg-background">
+              <Input
+                type="text"
+                value={partnerLogin}
+                onChange={(e) => setPartnerLogin(e.target.value.toUpperCase())}
+                placeholder="AA1111"
+                maxLength={6}
+                className="border-0 text-lg focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
+              />
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 p-4 border border-input rounded-2xl bg-background">
+              <span className="text-2xl">🇰🇿</span>
+              <Input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(formatPhoneNumber(e.target.value))}
+                placeholder="+7 XXX XXX XXXX"
+                className="border-0 text-lg focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
+              />
+            </div>
+          )}
         </div>
 
         {/* Password Input */}
