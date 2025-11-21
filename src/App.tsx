@@ -105,7 +105,8 @@ const AppContent = () => {
         <Route path="/phone-auth" element={<PhoneAuth />} />
         <Route path="/role-selection" element={<RoleSelection />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/partner-application" element={<PartnerApplication />} />
+          <Route path="/partner-application" element={<PartnerApplication />} />
+          <Route path="/admin/partner-applications" element={<PartnerApplications />} />
         <Route path="/profile-setup" element={<ProfileSetup />} />
         
         {/* User Routes */}
