@@ -81,8 +81,13 @@ const handler = async (req: Request): Promise<Response> => {
 
       if (createUserError) {
         console.error("Error creating user:", createUserError);
+        console.error("Full error details:", JSON.stringify(createUserError, null, 2));
         return new Response(
-          JSON.stringify({ error: "Unable to create partner account", details: createUserError.message }),
+          JSON.stringify({ 
+            error: "Unable to create partner account", 
+            details: createUserError.message,
+            fullError: createUserError
+          }),
           { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
