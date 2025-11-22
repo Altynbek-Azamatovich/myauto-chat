@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/partner/DashboardLayout";
+import { PageHeader } from "@/components/partner/PageHeader";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -95,17 +96,18 @@ export default function Orders() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">{t("orders.title")}</h1>
-            <p className="text-muted-foreground mt-1">{t("orders.subtitle")}</p>
-          </div>
-          <Button className="gap-2" onClick={() => setDialogOpen(true)}>
-            <Plus className="h-4 w-4" />
-            {t("orders.new")}
-          </Button>
-        </div>
+      <div className="space-y-4 md:space-y-6">
+        <PageHeader
+          title={t("orders.title")}
+          subtitle={t("orders.subtitle")}
+          action={
+            <Button className="gap-2" onClick={() => setDialogOpen(true)} size="sm">
+              <Plus className="h-4 w-4" />
+              <span className="hidden sm:inline">{t("orders.new")}</span>
+              <span className="sm:hidden">Новый</span>
+            </Button>
+          }
+        />
 
         <Card className="bg-card border-border">
           <CardHeader>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/partner/DashboardLayout";
+import { PageHeader } from "@/components/partner/PageHeader";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -88,17 +89,18 @@ export default function Clients() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">{t("clients.title")}</h1>
-            <p className="text-muted-foreground mt-1">{t("clients.subtitle")}</p>
-          </div>
-          <Button className="gap-2" onClick={() => setDialogOpen(true)}>
-            <Plus className="h-4 w-4" />
-            {t("clients.add")}
-          </Button>
-        </div>
+      <div className="space-y-4 md:space-y-6">
+        <PageHeader
+          title={t("clients.title")}
+          subtitle={t("clients.subtitle")}
+          action={
+            <Button className="gap-2" onClick={() => setDialogOpen(true)} size="sm">
+              <Plus className="h-4 w-4" />
+              <span className="hidden sm:inline">{t("clients.create")}</span>
+              <span className="sm:hidden">Добавить</span>
+            </Button>
+          }
+        />
 
         <Card className="bg-card border-border">
           <CardHeader>
