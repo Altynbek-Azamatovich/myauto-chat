@@ -34,11 +34,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     const { partnerLogin, password, businessName, fullName, city, phoneNumber }: CreateTestPartnerRequest = await req.json();
 
-    // Validate login format (2 letters + 4 digits)
-    const loginRegex = /^[A-Z]{2}\d{4}$/;
-    if (!loginRegex.test(partnerLogin)) {
+    // Validate login (3-20 characters, alphanumeric)
+    if (!partnerLogin || partnerLogin.trim().length < 3 || partnerLogin.trim().length > 20) {
       return new Response(
-        JSON.stringify({ error: "Invalid login format. Must be 2 uppercase letters + 4 digits (e.g. AA1234)" }),
+        JSON.stringify({ error: "Invalid login format. Must be 3-20 characters" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
