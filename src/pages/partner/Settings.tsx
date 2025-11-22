@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/partner/DashboardLayout";
+import { PageHeader } from "@/components/partner/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -84,11 +85,11 @@ export default function Settings() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">{t("settings.title")}</h1>
-          <p className="text-muted-foreground mt-1">{t("settings.subtitle")}</p>
-        </div>
+      <div className="space-y-4 md:space-y-6">
+        <PageHeader
+          title={t("settings.title")}
+          subtitle={t("settings.subtitle")}
+        />
 
         <div className="grid gap-6">
           <Card className="bg-card border-border">

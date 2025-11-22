@@ -1,61 +1,62 @@
 import { DashboardLayout } from "@/components/partner/DashboardLayout";
+import { PageHeader } from "@/components/partner/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, DollarSign, Users, Wrench } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 export default function Analytics() {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Аналитика</h1>
-          <p className="text-muted-foreground mt-1">Статистика и отчёты за период</p>
-        </div>
+      <div className="space-y-4 md:space-y-6">
+        <PageHeader
+          title={t("analytics.title")}
+          subtitle={t("analytics.subtitle")}
+        />
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card className="bg-card border-border">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Выручка за месяц</CardTitle>
+              <CardTitle className="text-xs md:text-sm font-medium">{t("analytics.revenue")}</CardTitle>
               <DollarSign className="h-4 w-4 text-success" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">₸842,300</div>
-              <p className="text-xs text-muted-foreground">+18.2% от прошлого месяца</p>
+              <div className="text-xl md:text-2xl font-bold">₸842,300</div>
+              <p className="text-xs text-muted-foreground">+18.2% {t("analytics.fromPrevMonth")}</p>
             </CardContent>
           </Card>
 
           <Card className="bg-card border-border">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Завершено заказов</CardTitle>
+              <CardTitle className="text-xs md:text-sm font-medium">{t("analytics.completed")}</CardTitle>
               <TrendingUp className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">156</div>
-              <p className="text-xs text-muted-foreground">+12 за последнюю неделю</p>
+              <div className="text-xl md:text-2xl font-bold">156</div>
+              <p className="text-xs text-muted-foreground">+12 {t("analytics.lastWeek")}</p>
             </CardContent>
           </Card>
 
           <Card className="bg-card border-border">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Новые клиенты</CardTitle>
+              <CardTitle className="text-xs md:text-sm font-medium">{t("analytics.newClients")}</CardTitle>
               <Users className="h-4 w-4 text-info" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">42</div>
-              <p className="text-xs text-muted-foreground">+8.5% от прошлого месяца</p>
+              <div className="text-xl md:text-2xl font-bold">42</div>
+              <p className="text-xs text-muted-foreground">+8.5% {t("analytics.fromPrevMonth")}</p>
             </CardContent>
           </Card>
 
           <Card className="bg-card border-border">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Средний чек</CardTitle>
+              <CardTitle className="text-xs md:text-sm font-medium">{t("analytics.avgCheck")}</CardTitle>
               <Wrench className="h-4 w-4 text-warning" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">₸5,400</div>
-              <p className="text-xs text-muted-foreground">+3.1% от прошлого месяца</p>
+              <div className="text-xl md:text-2xl font-bold">₸5,400</div>
+              <p className="text-xs text-muted-foreground">+3.1% {t("analytics.fromPrevMonth")}</p>
             </CardContent>
           </Card>
         </div>
@@ -63,7 +64,7 @@ export default function Analytics() {
         <div className="grid gap-4 md:grid-cols-2">
           <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle>Топ-5 услуг</CardTitle>
+              <CardTitle className="text-base md:text-lg">{t("analytics.topServices")}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
@@ -76,10 +77,10 @@ export default function Analytics() {
                 ].map((service, i) => (
                   <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-secondary/50">
                     <div>
-                      <p className="font-medium">{service.name}</p>
-                      <p className="text-sm text-muted-foreground">{service.count} заказов</p>
+                      <p className="text-sm md:text-base font-medium">{service.name}</p>
+                      <p className="text-xs md:text-sm text-muted-foreground">{service.count} {t("analytics.orders")}</p>
                     </div>
-                    <p className="font-semibold text-primary">₸{service.revenue.toLocaleString()}</p>
+                    <p className="text-sm md:text-base font-semibold text-primary">₸{service.revenue.toLocaleString()}</p>
                   </div>
                 ))}
               </div>
@@ -88,7 +89,7 @@ export default function Analytics() {
 
           <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle>{t('masterWorkload')}</CardTitle>
+              <CardTitle className="text-base md:text-lg">{t("analytics.masterWorkload")}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -99,8 +100,8 @@ export default function Analytics() {
                 ].map((master, i) => (
                   <div key={i} className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <p className="font-medium">{master.name}</p>
-                      <p className="text-sm text-muted-foreground">{master.orders} заказов</p>
+                      <p className="text-sm md:text-base font-medium">{master.name}</p>
+                      <p className="text-xs md:text-sm text-muted-foreground">{master.orders} {t("analytics.orders")}</p>
                     </div>
                     <div className="h-2 bg-secondary rounded-full overflow-hidden">
                       <div
@@ -109,7 +110,7 @@ export default function Analytics() {
                       />
                     </div>
                     <p className="text-xs text-muted-foreground text-right">
-                      Эффективность: {master.efficiency}%
+                      {t("analytics.efficiency")}: {master.efficiency}%
                     </p>
                   </div>
                 ))}
