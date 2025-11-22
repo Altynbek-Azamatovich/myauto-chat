@@ -62,8 +62,8 @@ const PhoneAuth = () => {
   };
 
   const isPartnerLoginValid = (login: string) => {
-    // Check if login is not empty and has reasonable length
-    return login.trim().length >= 3 && login.trim().length <= 20;
+    // Check if login is not empty
+    return login.trim().length >= 2;
   };
 
   const validatePassword = (password: string, forRegistration: boolean = false) => {
@@ -156,7 +156,11 @@ const PhoneAuth = () => {
       
       if (isPartnerMode) {
         // Partner login only - no registration
-        const partnerEmail = `${partnerLogin.toLowerCase()}@partner.myauto.kz`;
+        // If login already contains @partner.myauto.kz, use it directly, otherwise append it
+        const partnerEmail = partnerLogin.toLowerCase().includes('@partner.myauto.kz') 
+          ? partnerLogin.toLowerCase() 
+          : `${partnerLogin.toLowerCase()}@partner.myauto.kz`;
+        
         const { data, error } = await supabase.auth.signInWithPassword({
           email: partnerEmail,
           password: password,
