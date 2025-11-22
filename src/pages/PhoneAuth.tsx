@@ -299,7 +299,7 @@ const PhoneAuth = () => {
         </h1>
 
         {/* Subtitle */}
-        <p className="text-muted-foreground mb-8">
+        <p className="text-muted-foreground mb-8 text-center">
           {isPartnerMode 
             ? (language === 'ru' ? 'Введите логин и пароль' : 'Логин мен құпия сөзді енгізіңіз')
             : t('enterPhone')
@@ -309,16 +309,24 @@ const PhoneAuth = () => {
         {/* Login/Phone Input */}
         <div className="mb-4">
           {isPartnerMode ? (
-            <div className="flex items-center gap-2 p-4 border border-input rounded-2xl bg-background">
-              <Input
-                type="text"
-                value={partnerLogin}
-                onChange={(e) => setPartnerLogin(e.target.value.toUpperCase())}
-                placeholder="AA1111"
-                maxLength={6}
-                className="border-0 text-lg focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
-              />
-            </div>
+            <>
+              <label className="block text-sm font-medium mb-2 text-foreground">
+                {language === 'ru' ? 'Логин' : 'Логин'}
+              </label>
+              <div className="flex items-center gap-2 p-4 border border-input rounded-2xl bg-background">
+                <Input
+                  type="text"
+                  value={partnerLogin}
+                  onChange={(e) => setPartnerLogin(e.target.value.toUpperCase())}
+                  placeholder="AA1111"
+                  maxLength={6}
+                  className="border-0 text-lg text-center font-mono tracking-widest focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground text-center mt-2">
+                {language === 'ru' ? 'Формат: 2 буквы + 4 цифры' : 'Формат: 2 әріп + 4 сан'}
+              </p>
+            </>
           ) : (
             <div className="flex items-center gap-2 p-4 border border-input rounded-2xl bg-background">
               <span className="text-2xl">🇰🇿</span>
