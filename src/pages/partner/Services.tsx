@@ -25,10 +25,22 @@ export default function Services() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
 
+      // Get partner_id from service_partners table
+      const { data: partnerData } = await supabase
+        .from("service_partners")
+        .select("id")
+        .eq("owner_id", session.user.id)
+        .single();
+
+      if (!partnerData) {
+        toast.error("Partner profile not found");
+        return;
+      }
+
       const { data, error } = await supabase
         .from("services")
         .select("*")
-        .eq("partner_id", session.user.id)
+        .eq("partner_id", partnerData.id)
         .order("category, name");
 
       if (error) throw error;
