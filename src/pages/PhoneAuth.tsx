@@ -62,9 +62,8 @@ const PhoneAuth = () => {
   };
 
   const isPartnerLoginValid = (login: string) => {
-    // Check if login matches 2 letters + 4 digits format
-    const loginRegex = /^[A-Za-z]{2}\d{4}$/;
-    return loginRegex.test(login);
+    // Check if login is not empty and has reasonable length
+    return login.trim().length >= 3 && login.trim().length <= 20;
   };
 
   const validatePassword = (password: string, forRegistration: boolean = false) => {
@@ -102,8 +101,8 @@ const PhoneAuth = () => {
         toast({
           title: t('error'),
           description: language === 'ru' 
-            ? 'Неверный формат логина. Используйте 2 буквы и 4 цифры (например: AA1111)'
-            : 'Логин форматы қате. 2 әріп және 4 сан пайдаланыңыз (мысалы: AA1111)',
+            ? 'Введите корректный логин (минимум 3 символа)'
+            : 'Дұрыс логин енгізіңіз (кемінде 3 таңба)',
           variant: "destructive",
         });
         return;
@@ -317,15 +316,12 @@ const PhoneAuth = () => {
                 <Input
                   type="text"
                   value={partnerLogin}
-                  onChange={(e) => setPartnerLogin(e.target.value.toUpperCase())}
-                  placeholder="AA1111"
-                  maxLength={6}
-                  className="border-0 text-lg text-center font-mono tracking-widest focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
+                  onChange={(e) => setPartnerLogin(e.target.value)}
+                  placeholder={language === 'ru' ? 'Логин' : 'Логин'}
+                  maxLength={20}
+                  className="border-0 text-lg focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
                 />
               </div>
-              <p className="text-xs text-muted-foreground text-center mt-2">
-                {language === 'ru' ? 'Формат: 2 буквы + 4 цифры' : 'Формат: 2 әріп + 4 сан'}
-              </p>
             </>
           ) : (
             <div className="flex items-center gap-2 p-4 border border-input rounded-2xl bg-background">
