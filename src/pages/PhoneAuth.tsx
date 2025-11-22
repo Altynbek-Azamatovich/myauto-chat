@@ -318,7 +318,6 @@ const PhoneAuth = () => {
                   value={partnerLogin}
                   onChange={(e) => setPartnerLogin(e.target.value)}
                   placeholder={language === 'ru' ? 'Логин' : 'Логин'}
-                  maxLength={20}
                   className="border-0 text-lg focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
                 />
               </div>

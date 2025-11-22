@@ -34,10 +34,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     const { partnerLogin, password, businessName, fullName, city, phoneNumber }: CreateTestPartnerRequest = await req.json();
 
-    // Validate login (3-20 characters, alphanumeric)
-    if (!partnerLogin || partnerLogin.trim().length < 3 || partnerLogin.trim().length > 20) {
+    // Simple validation
+    if (!partnerLogin || partnerLogin.trim().length < 2) {
       return new Response(
-        JSON.stringify({ error: "Invalid login format. Must be 3-20 characters" }),
+        JSON.stringify({ error: "Login must be at least 2 characters" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
