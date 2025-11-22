@@ -69,7 +69,7 @@ const handler = async (req: Request): Promise<Response> => {
         console.log("Password updated successfully");
       }
     } else {
-      // Create new auth user with email
+      // Create new auth user with email - NO phone_number to avoid conflicts
       const { data: newUser, error: createUserError } = await supabaseAdmin.auth.admin.createUser({
         email: partnerEmail,
         password: password,
