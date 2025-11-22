@@ -78,14 +78,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
         <div className="flex-1 flex flex-col">
-          <header className="h-16 border-b border-border flex items-center justify-between px-6 bg-card">
+          <header className="h-14 md:h-16 border-b border-border flex items-center justify-between px-3 md:px-6 bg-card">
             <SidebarTrigger />
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 md:gap-2">
               <ThemeSwitcher />
               <LanguageSwitcher />
             </div>
           </header>
-          <main className="flex-1 p-6 overflow-auto">{children}</main>
+          <main className="flex-1 p-3 md:p-6 overflow-auto">{children}</main>
         </div>
       </div>
     </SidebarProvider>
