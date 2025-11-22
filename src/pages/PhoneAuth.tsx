@@ -301,7 +301,7 @@ const PhoneAuth = () => {
         {/* Subtitle */}
         <p className="text-muted-foreground mb-8">
           {isPartnerMode 
-            ? t('enterPartnerCredentials')
+            ? (language === 'ru' ? 'Введите логин и пароль' : 'Логин мен құпия сөзді енгізіңіз')
             : t('enterPhone')
           }
         </p>
