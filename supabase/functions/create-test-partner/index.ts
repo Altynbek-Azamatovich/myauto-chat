@@ -69,15 +69,12 @@ const handler = async (req: Request): Promise<Response> => {
         console.log("Password updated successfully");
       }
     } else {
-      // Create new auth user with email - NO phone_number to avoid conflicts
+      // Create new auth user with email - minimal metadata to avoid conflicts
       const { data: newUser, error: createUserError } = await supabaseAdmin.auth.admin.createUser({
         email: partnerEmail,
         password: password,
         email_confirm: true,
         user_metadata: {
-          full_name: fullName || "Test Partner",
-          business_name: businessName || "Test Service",
-          city: city || "Almaty",
           partner_login: partnerLogin,
         },
       });
