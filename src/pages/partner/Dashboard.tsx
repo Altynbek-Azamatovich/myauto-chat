@@ -358,9 +358,9 @@ export default function PartnerDashboard() {
         </div>
       </div>
 
-      {/* Desktop/Tablet View - New Tech Design */}
-      <div className="hidden md:block h-[calc(100vh-120px)] overflow-hidden">
-        <div className="relative h-full flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20">
+      {/* Desktop/Tablet View - Tech Design */}
+      <div className="hidden md:block">
+        <div className="relative h-[calc(100vh-180px)] flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 overflow-hidden">
           {/* Background Grid Effect */}
           <div className="absolute inset-0 bg-grid-black/[0.02] dark:bg-grid-white/[0.02] bg-[size:50px_50px]" />
           
@@ -369,96 +369,92 @@ export default function PartnerDashboard() {
             <img 
               src={dashboardCar} 
               alt="Dashboard Vehicle" 
-              className="w-[600px] xl:w-[700px] h-auto object-contain drop-shadow-2xl"
+              className="w-[500px] xl:w-[600px] h-auto object-contain drop-shadow-2xl"
             />
           </div>
 
           {/* Top Left - Shift Control */}
-          <Card className="absolute top-8 left-8 p-6 w-72 backdrop-blur-xl bg-card/95 border-2 shadow-2xl">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className={`w-3 h-3 rounded-full ${currentShift ? 'bg-green-500 animate-pulse' : 'bg-muted'}`} />
-                <div>
-                  <h3 className="font-bold text-lg">{t('dashboard.shiftTime')}</h3>
-                  <p className="text-3xl font-mono font-bold text-primary">{stats.shiftTime}</p>
-                </div>
+          <Card className="absolute top-4 left-4 p-4 w-64 backdrop-blur-xl bg-card/95 border shadow-xl">
+            <div className="flex items-center gap-2 mb-3">
+              <div className={`w-2.5 h-2.5 rounded-full ${currentShift ? 'bg-green-500 animate-pulse' : 'bg-muted'}`} />
+              <div>
+                <h3 className="font-bold text-sm">{t('dashboard.shiftTime')}</h3>
+                <p className="text-2xl font-mono font-bold text-primary">{stats.shiftTime}</p>
               </div>
             </div>
             <Button
               onClick={handleShiftToggle}
               className="w-full"
-              size="lg"
+              size="default"
               variant={currentShift ? "destructive" : "default"}
             >
-              <Activity className="mr-2 h-5 w-5" />
+              <Activity className="mr-2 h-4 w-4" />
               {currentShift ? t('dashboard.closeShift') : t('dashboard.openShift')}
             </Button>
           </Card>
 
           {/* Top Right - Stats */}
-          <div className="absolute top-8 right-8 space-y-4 w-72">
-            <Card className="p-4 backdrop-blur-xl bg-card/95 border-2 shadow-xl hover:shadow-2xl transition-shadow">
+          <div className="absolute top-4 right-4 space-y-3 w-64">
+            <Card className="p-3 backdrop-blur-xl bg-card/95 border shadow-lg hover:shadow-xl transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">{t('dashboard.activeOrders')}</p>
-                  <p className="text-3xl font-bold text-primary">{stats.activeOrders}</p>
+                  <p className="text-xs text-muted-foreground mb-1">{t('dashboard.activeOrders')}</p>
+                  <p className="text-2xl font-bold text-primary">{stats.activeOrders}</p>
                 </div>
-                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Activity className="h-7 w-7 text-primary" />
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Activity className="h-6 w-6 text-primary" />
                 </div>
               </div>
             </Card>
 
-            <Card className="p-4 backdrop-blur-xl bg-card/95 border-2 shadow-xl hover:shadow-2xl transition-shadow">
+            <Card className="p-3 backdrop-blur-xl bg-card/95 border shadow-lg hover:shadow-xl transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">{t('dashboard.totalClients')}</p>
-                  <p className="text-3xl font-bold text-blue-500">{stats.totalClients}</p>
+                  <p className="text-xs text-muted-foreground mb-1">{t('dashboard.totalClients')}</p>
+                  <p className="text-2xl font-bold text-blue-500">{stats.totalClients}</p>
                 </div>
-                <div className="w-14 h-14 rounded-full bg-blue-500/10 flex items-center justify-center">
-                  <Users className="h-7 w-7 text-blue-500" />
+                <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center">
+                  <Users className="h-6 w-6 text-blue-500" />
                 </div>
               </div>
             </Card>
 
-            <Card className="p-4 backdrop-blur-xl bg-card/95 border-2 shadow-xl hover:shadow-2xl transition-shadow">
+            <Card className="p-3 backdrop-blur-xl bg-card/95 border shadow-lg hover:shadow-xl transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">{t('dashboard.dailyRevenue')}</p>
-                  <p className="text-2xl font-bold text-green-500">{stats.dailyRevenue.toLocaleString()} ₸</p>
+                  <p className="text-xs text-muted-foreground mb-1">{t('dashboard.dailyRevenue')}</p>
+                  <p className="text-xl font-bold text-green-500">{stats.dailyRevenue.toLocaleString()} ₸</p>
                 </div>
-                <div className="w-14 h-14 rounded-full bg-green-500/10 flex items-center justify-center">
-                  <DollarSign className="h-7 w-7 text-green-500" />
+                <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center">
+                  <DollarSign className="h-6 w-6 text-green-500" />
                 </div>
               </div>
             </Card>
           </div>
 
           {/* Bottom Left - Recent Issues */}
-          <Card className="absolute bottom-8 left-8 p-6 w-80 backdrop-blur-xl bg-card/95 border-2 shadow-2xl max-h-[300px] overflow-hidden">
-            <div className="flex items-center gap-2 mb-4">
-              <AlertCircle className="h-5 w-5 text-primary" />
-              <h3 className="font-bold text-lg">{t('dashboard.recentIssues')}</h3>
+          <Card className="absolute bottom-4 left-4 p-4 w-72 backdrop-blur-xl bg-card/95 border shadow-xl max-h-[240px] overflow-hidden">
+            <div className="flex items-center gap-2 mb-3">
+              <AlertCircle className="h-4 w-4 text-primary" />
+              <h3 className="font-bold text-sm">{t('dashboard.recentIssues')}</h3>
             </div>
-            <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2">
+            <div className="space-y-2 max-h-[160px] overflow-y-auto pr-2">
               {[
                 { issue: "Замена масла", status: "fixed", date: "2024-01-15" },
                 { issue: "Проверка тормозов", status: "fixed", date: "2024-01-10" },
                 { issue: "Диагностика двигателя", status: "pending", date: "2024-01-05" },
-                { issue: "Замена фильтров", status: "fixed", date: "2023-12-28" },
-                { issue: "Регулировка развал-схождения", status: "fixed", date: "2023-12-20" },
               ].map((item, idx) => (
-                <div key={idx} className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors">
+                <div key={idx} className="flex items-start gap-2 p-2 rounded-lg hover:bg-muted/50 transition-colors">
                   {item.status === "fixed" ? (
-                    <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+                    <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
                   ) : (
-                    <Wrench className="h-5 w-5 text-yellow-500 flex-shrink-0 mt-0.5" />
+                    <Wrench className="h-4 w-4 text-yellow-500 flex-shrink-0 mt-0.5" />
                   )}
                   <div className="min-w-0 flex-1">
-                    <p className="font-medium text-sm truncate">{item.issue}</p>
-                    <p className="text-xs text-muted-foreground">{new Date(item.date).toLocaleDateString('ru-RU')}</p>
+                    <p className="font-medium text-xs truncate">{item.issue}</p>
+                    <p className="text-[10px] text-muted-foreground">{new Date(item.date).toLocaleDateString('ru-RU')}</p>
                   </div>
-                  <Badge variant={item.status === "fixed" ? "default" : "secondary"} className="text-xs">
+                  <Badge variant={item.status === "fixed" ? "default" : "secondary"} className="text-[10px] h-5">
                     {item.status === "fixed" ? t('dashboard.issueFixed') : t('dashboard.issuePending')}
                   </Badge>
                 </div>
@@ -467,34 +463,34 @@ export default function PartnerDashboard() {
           </Card>
 
           {/* Bottom Right - Actions */}
-          <div className="absolute bottom-8 right-8 flex gap-4">
+          <div className="absolute bottom-4 right-4 flex gap-3">
             <Button
               onClick={() => navigate("/partner/orders")}
               size="lg"
-              className="h-32 w-32 flex-col gap-3 rounded-2xl shadow-xl hover:shadow-2xl transition-all backdrop-blur-xl bg-primary"
+              className="h-28 w-28 flex-col gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all backdrop-blur-xl bg-primary"
             >
-              <History className="h-10 w-10" />
-              <span className="font-semibold text-sm text-center leading-tight">{t('dashboard.viewHistory')}</span>
+              <History className="h-8 w-8" />
+              <span className="font-semibold text-xs text-center leading-tight">{t('dashboard.viewHistory')}</span>
             </Button>
 
             <Button
               onClick={() => navigate("/showroom-3d")}
               size="lg"
               variant="secondary"
-              className="h-32 w-32 flex-col gap-3 rounded-2xl shadow-xl hover:shadow-2xl transition-all backdrop-blur-xl"
+              className="h-28 w-28 flex-col gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all backdrop-blur-xl"
             >
-              <Maximize className="h-10 w-10" />
-              <span className="font-semibold text-sm text-center leading-tight">{t('dashboard.view360')}</span>
+              <Maximize className="h-8 w-8" />
+              <span className="font-semibold text-xs text-center leading-tight">{t('dashboard.view360')}</span>
             </Button>
 
             <Button
               onClick={() => navigate("/showroom-3d")}
               size="lg"
               variant="outline"
-              className="h-32 w-32 flex-col gap-3 rounded-2xl shadow-xl hover:shadow-2xl transition-all backdrop-blur-xl"
+              className="h-28 w-28 flex-col gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all backdrop-blur-xl"
             >
-              <Box className="h-10 w-10" />
-              <span className="font-semibold text-sm text-center leading-tight">{t('dashboard.view3D')}</span>
+              <Box className="h-8 w-8" />
+              <span className="font-semibold text-xs text-center leading-tight">{t('dashboard.view3D')}</span>
             </Button>
           </div>
         </div>
