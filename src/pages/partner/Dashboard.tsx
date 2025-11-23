@@ -252,7 +252,7 @@ export default function PartnerDashboard() {
   return (
     <DashboardLayout>
       {/* Mobile View - Original Design */}
-      <div className="lg:hidden space-y-6 pb-8">
+      <div className="md:hidden space-y-6 pb-8">
         {/* Hero Section */}
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary/90 to-primary/80 p-6 text-primary-foreground shadow-2xl">
           <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:20px_20px]" />
@@ -359,7 +359,7 @@ export default function PartnerDashboard() {
       </div>
 
       {/* Desktop/Tablet View - New Tech Design */}
-      <div className="hidden lg:block h-[calc(100vh-120px)] overflow-hidden">
+      <div className="hidden md:block h-[calc(100vh-120px)] overflow-hidden">
         <div className="relative h-full flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20">
           {/* Background Grid Effect */}
           <div className="absolute inset-0 bg-grid-black/[0.02] dark:bg-grid-white/[0.02] bg-[size:50px_50px]" />
