@@ -7,20 +7,18 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "@/components/partner/DashboardLayout";
+import dashboardCar from "@/assets/dashboard-car.png";
 import {
   Clock,
   DollarSign,
   Users,
-  Car,
-  Calendar,
-  TrendingUp,
-  Plus,
-  FileText,
-  Wrench,
-  Package,
-  BarChart3,
-  ArrowRight,
   Activity,
+  History,
+  Maximize,
+  Box,
+  AlertCircle,
+  CheckCircle2,
+  Wrench,
 } from "lucide-react";
 
 interface DashboardStats {
@@ -253,236 +251,251 @@ export default function PartnerDashboard() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8 pb-8">
+      {/* Mobile View - Original Design */}
+      <div className="lg:hidden space-y-6 pb-8">
         {/* Hero Section */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary/90 to-primary/80 p-8 text-primary-foreground shadow-2xl">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary/90 to-primary/80 p-6 text-primary-foreground shadow-2xl">
           <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:20px_20px]" />
           <div className="relative z-10">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-4">
               <div>
-                <h1 className="text-2xl md:text-4xl font-bold mb-2">{t('dashboard.title')}</h1>
-                <p className="text-primary-foreground/80 text-sm md:text-lg">
+                <h1 className="text-2xl font-bold mb-1">{t('dashboard.title')}</h1>
+                <p className="text-primary-foreground/80 text-sm">
                   {t('dashboard.subtitle')}
                 </p>
               </div>
               <Button
                 onClick={handleShiftToggle}
-                size="lg"
+                size="sm"
                 variant={currentShift ? "secondary" : "outline"}
                 className={currentShift ? "bg-background text-foreground hover:bg-background/90" : "bg-white/10 text-white border-white/20 hover:bg-white/20"}
               >
-                <Activity className="mr-2 h-4 w-4 md:h-5 md:w-5" />
-                <span className="hidden md:inline">{currentShift ? t('dashboard.closeShift') : t('dashboard.openShift')}</span>
-                <span className="md:hidden">{currentShift ? t('common.close') : t('common.open')}</span>
+                <Activity className="mr-2 h-4 w-4" />
+                {currentShift ? t('common.close') : t('common.open')}
               </Button>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-              <Card className="bg-white/10 border-white/20 backdrop-blur-sm p-3 md:p-4">
+            <div className="grid grid-cols-2 gap-3">
+              <Card className="bg-white/10 border-white/20 backdrop-blur-sm p-3">
                 <div className="flex items-start justify-between">
                   <div className="min-w-0 flex-1">
-                    <p className="text-primary-foreground/70 text-xs md:text-sm mb-1 truncate">{t('dashboard.activeOrders')}</p>
-                    <p className="text-2xl md:text-3xl font-bold">{stats.activeOrders}</p>
+                    <p className="text-primary-foreground/70 text-xs mb-1 truncate">{t('dashboard.activeOrders')}</p>
+                    <p className="text-2xl font-bold">{stats.activeOrders}</p>
                   </div>
-                  <FileText className="h-6 w-6 md:h-8 md:w-8 text-primary-foreground/50 flex-shrink-0" />
+                  <Activity className="h-6 w-6 text-primary-foreground/50 flex-shrink-0" />
                 </div>
               </Card>
 
-              <Card className="bg-white/10 border-white/20 backdrop-blur-sm p-3 md:p-4">
+              <Card className="bg-white/10 border-white/20 backdrop-blur-sm p-3">
                 <div className="flex items-start justify-between">
                   <div className="min-w-0 flex-1">
-                    <p className="text-primary-foreground/70 text-xs md:text-sm mb-1 truncate">{t('dashboard.totalClients')}</p>
-                    <p className="text-2xl md:text-3xl font-bold">{stats.totalClients}</p>
+                    <p className="text-primary-foreground/70 text-xs mb-1 truncate">{t('dashboard.totalClients')}</p>
+                    <p className="text-2xl font-bold">{stats.totalClients}</p>
                   </div>
-                  <Users className="h-6 w-6 md:h-8 md:w-8 text-primary-foreground/50 flex-shrink-0" />
+                  <Users className="h-6 w-6 text-primary-foreground/50 flex-shrink-0" />
                 </div>
               </Card>
 
-              <Card className="bg-white/10 border-white/20 backdrop-blur-sm p-3 md:p-4">
+              <Card className="bg-white/10 border-white/20 backdrop-blur-sm p-3">
                 <div className="flex items-start justify-between">
                   <div className="min-w-0 flex-1">
-                    <p className="text-primary-foreground/70 text-xs md:text-sm mb-1 truncate">{t('dashboard.dailyRevenue')}</p>
-                    <p className="text-xl md:text-3xl font-bold">{stats.dailyRevenue.toLocaleString()} ₸</p>
+                    <p className="text-primary-foreground/70 text-xs mb-1 truncate">{t('dashboard.dailyRevenue')}</p>
+                    <p className="text-xl font-bold">{stats.dailyRevenue.toLocaleString()} ₸</p>
                   </div>
-                  <DollarSign className="h-6 w-6 md:h-8 md:w-8 text-primary-foreground/50 flex-shrink-0" />
+                  <DollarSign className="h-6 w-6 text-primary-foreground/50 flex-shrink-0" />
                 </div>
               </Card>
 
-              <Card className="bg-white/10 border-white/20 backdrop-blur-sm p-3 md:p-4">
+              <Card className="bg-white/10 border-white/20 backdrop-blur-sm p-3">
                 <div className="flex items-start justify-between">
                   <div className="min-w-0 flex-1">
-                    <p className="text-primary-foreground/70 text-xs md:text-sm mb-1 truncate">{t('dashboard.shiftTime')}</p>
-                    <p className="text-xl md:text-3xl font-bold font-mono">{stats.shiftTime}</p>
+                    <p className="text-primary-foreground/70 text-xs mb-1 truncate">{t('dashboard.shiftTime')}</p>
+                    <p className="text-xl font-bold font-mono">{stats.shiftTime}</p>
                   </div>
-                  <Clock className="h-6 w-6 md:h-8 md:w-8 text-primary-foreground/50 flex-shrink-0" />
+                  <Clock className="h-6 w-6 text-primary-foreground/50 flex-shrink-0" />
                 </div>
               </Card>
             </div>
           </div>
         </div>
 
-        {/* Quick Actions */}
+        {/* Recent Orders Mobile */}
         <div>
-          <h2 className="text-xl md:text-2xl font-bold mb-4 flex items-center gap-2">
-            <Activity className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-            {t('dashboard.quickActions')}
+          <h2 className="text-xl font-bold mb-3 flex items-center gap-2">
+            <Activity className="h-5 w-5 text-primary" />
+            {t('dashboard.recentOrders')}
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-            <Card 
-              className="p-4 md:p-6 hover:shadow-lg transition-all cursor-pointer border-2 hover:border-primary group"
-              onClick={() => navigate("/partner/orders")}
-            >
-              <div className="text-center space-y-2 md:space-y-3">
-                <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto group-hover:bg-primary/20 transition-colors">
-                  <Plus className="h-6 w-6 md:h-7 md:w-7 text-primary" />
-                </div>
-                <h3 className="font-semibold text-sm md:text-lg">{t('dashboard.newOrder')}</h3>
-                <p className="text-xs md:text-sm text-muted-foreground hidden md:block">{t('dashboard.createOrder')}</p>
-              </div>
-            </Card>
-
-            <Card 
-              className="p-4 md:p-6 hover:shadow-lg transition-all cursor-pointer border-2 hover:border-primary group"
-              onClick={() => navigate("/partner/clients")}
-            >
-              <div className="text-center space-y-2 md:space-y-3">
-                <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto group-hover:bg-blue-500/20 transition-colors">
-                  <Users className="h-6 w-6 md:h-7 md:w-7 text-blue-500" />
-                </div>
-                <h3 className="font-semibold text-sm md:text-lg">{t('menu.clients')}</h3>
-                <p className="text-xs md:text-sm text-muted-foreground hidden md:block">{t('clients.subtitle')}</p>
-              </div>
-            </Card>
-
-            <Card 
-              className="p-4 md:p-6 hover:shadow-lg transition-all cursor-pointer border-2 hover:border-primary group"
-              onClick={() => navigate("/partner/services")}
-            >
-              <div className="text-center space-y-2 md:space-y-3">
-                <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-green-500/10 flex items-center justify-center mx-auto group-hover:bg-green-500/20 transition-colors">
-                  <Wrench className="h-6 w-6 md:h-7 md:w-7 text-green-500" />
-                </div>
-                <h3 className="font-semibold text-sm md:text-lg">{t('menu.services')}</h3>
-                <p className="text-xs md:text-sm text-muted-foreground hidden md:block">{t('services.subtitle')}</p>
-              </div>
-            </Card>
-
-            <Card 
-              className="p-4 md:p-6 hover:shadow-lg transition-all cursor-pointer border-2 hover:border-primary group"
-              onClick={() => navigate("/partner/analytics")}
-            >
-              <div className="text-center space-y-2 md:space-y-3">
-                <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-purple-500/10 flex items-center justify-center mx-auto group-hover:bg-purple-500/20 transition-colors">
-                  <BarChart3 className="h-6 w-6 md:h-7 md:w-7 text-purple-500" />
-                </div>
-                <h3 className="font-semibold text-sm md:text-lg">{t('menu.analytics')}</h3>
-                <p className="text-xs md:text-sm text-muted-foreground hidden md:block">Отчёты и статистика</p>
-              </div>
-            </Card>
-          </div>
-        </div>
-
-        {/* Status Cards */}
-        <div className="grid md:grid-cols-3 gap-4">
-          <Card className="p-4 md:p-6 border-l-4 border-l-yellow-500">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="font-semibold text-base md:text-lg">{t('dashboard.pending')}</h3>
-              <Badge variant="secondary" className="text-base md:text-lg px-2 md:px-3 py-0.5 md:py-1">
-                {stats.pendingOrders}
-              </Badge>
-            </div>
-            <p className="text-xs md:text-sm text-muted-foreground">{t('dashboard.newOrders')}</p>
-          </Card>
-
-          <Card className="p-4 md:p-6 border-l-4 border-l-blue-500">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="font-semibold text-base md:text-lg">{t('dashboard.inProgress')}</h3>
-              <Badge variant="secondary" className="text-base md:text-lg px-2 md:px-3 py-0.5 md:py-1">
-                {stats.inProgressOrders}
-              </Badge>
-            </div>
-            <p className="text-xs md:text-sm text-muted-foreground">{t('dashboard.activeWorks')}</p>
-          </Card>
-
-          <Card className="p-4 md:p-6 border-l-4 border-l-green-500">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="font-semibold text-base md:text-lg">{t('dashboard.completed')}</h3>
-              <Badge variant="secondary" className="text-base md:text-lg px-2 md:px-3 py-0.5 md:py-1">
-                {stats.completedToday}
-              </Badge>
-            </div>
-            <p className="text-xs md:text-sm text-muted-foreground">{t('dashboard.completedToday')}</p>
-          </Card>
-        </div>
-
-        {/* Recent Orders */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl md:text-2xl font-bold flex items-center gap-2">
-              <FileText className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-              {t('dashboard.recentOrders')}
-            </h2>
-            <Button variant="ghost" onClick={() => navigate("/partner/orders")} className="text-xs md:text-sm">
-              <span className="hidden md:inline">{t('dashboard.viewAll')}</span>
-              <span className="md:hidden">Все</span>
-              <ArrowRight className="ml-1 md:ml-2 h-3 w-3 md:h-4 md:w-4" />
-            </Button>
-          </div>
-
           <div className="space-y-3">
             {recentOrders.length === 0 ? (
-              <Card className="p-12">
-                <div className="text-center space-y-4">
-                  <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto">
-                    <FileText className="h-8 w-8 text-muted-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-base md:text-lg mb-2">{t('dashboard.noOrders')}</h3>
-                    <p className="text-sm text-muted-foreground mb-4">{t('dashboard.noOrdersDesc')}</p>
-                    <Button onClick={() => navigate("/partner/orders")} size="sm">
-                      <Plus className="mr-2 h-4 w-4" />
-                      {t('dashboard.createOrder')}
-                    </Button>
-                  </div>
-                </div>
+              <Card className="p-6 text-center">
+                <p className="text-muted-foreground mb-4">{t('dashboard.noOrders')}</p>
+                <Button onClick={() => navigate("/partner/orders")}>
+                  {t('dashboard.createOrder')}
+                </Button>
               </Card>
             ) : (
               recentOrders.map((order) => (
-                <Card 
-                  key={order.id} 
-                  className="p-4 hover:shadow-md transition-all cursor-pointer"
-                  onClick={() => navigate("/partner/orders")}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Car className="h-6 w-6 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold">{order.client_name}</h3>
-                        <p className="text-sm text-muted-foreground">{order.car_model}</p>
-                      </div>
+                <Card key={order.id} className="p-4 hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate("/partner/orders")}>
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-semibold truncate">{order.client_name}</h3>
+                      <p className="text-sm text-muted-foreground truncate">{order.car_model}</p>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <div className="text-right">
-                        <p className="font-semibold">{order.total_price.toLocaleString()} ₸</p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(order.opened_at).toLocaleString("ru-RU", {
-                            day: "2-digit",
-                            month: "2-digit",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </p>
-                      </div>
-                      <Badge className={getStatusColor(order.status)}>
-                        {getStatusText(order.status)}
-                      </Badge>
-                    </div>
+                    <Badge className={getStatusColor(order.status)}>
+                      {getStatusText(order.status)}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      {new Date(order.opened_at).toLocaleDateString('ru-RU')}
+                    </span>
+                    <span className="font-semibold">{order.total_price.toLocaleString()} ₸</span>
                   </div>
                 </Card>
               ))
             )}
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop/Tablet View - New Tech Design */}
+      <div className="hidden lg:block h-[calc(100vh-120px)] overflow-hidden">
+        <div className="relative h-full flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20">
+          {/* Background Grid Effect */}
+          <div className="absolute inset-0 bg-grid-black/[0.02] dark:bg-grid-white/[0.02] bg-[size:50px_50px]" />
+          
+          {/* Central Car Image */}
+          <div className="relative z-10 flex items-center justify-center">
+            <img 
+              src={dashboardCar} 
+              alt="Dashboard Vehicle" 
+              className="w-[600px] xl:w-[700px] h-auto object-contain drop-shadow-2xl"
+            />
+          </div>
+
+          {/* Top Left - Shift Control */}
+          <Card className="absolute top-8 left-8 p-6 w-72 backdrop-blur-xl bg-card/95 border-2 shadow-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className={`w-3 h-3 rounded-full ${currentShift ? 'bg-green-500 animate-pulse' : 'bg-muted'}`} />
+                <div>
+                  <h3 className="font-bold text-lg">{t('dashboard.shiftTime')}</h3>
+                  <p className="text-3xl font-mono font-bold text-primary">{stats.shiftTime}</p>
+                </div>
+              </div>
+            </div>
+            <Button
+              onClick={handleShiftToggle}
+              className="w-full"
+              size="lg"
+              variant={currentShift ? "destructive" : "default"}
+            >
+              <Activity className="mr-2 h-5 w-5" />
+              {currentShift ? t('dashboard.closeShift') : t('dashboard.openShift')}
+            </Button>
+          </Card>
+
+          {/* Top Right - Stats */}
+          <div className="absolute top-8 right-8 space-y-4 w-72">
+            <Card className="p-4 backdrop-blur-xl bg-card/95 border-2 shadow-xl hover:shadow-2xl transition-shadow">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">{t('dashboard.activeOrders')}</p>
+                  <p className="text-3xl font-bold text-primary">{stats.activeOrders}</p>
+                </div>
+                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Activity className="h-7 w-7 text-primary" />
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-4 backdrop-blur-xl bg-card/95 border-2 shadow-xl hover:shadow-2xl transition-shadow">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">{t('dashboard.totalClients')}</p>
+                  <p className="text-3xl font-bold text-blue-500">{stats.totalClients}</p>
+                </div>
+                <div className="w-14 h-14 rounded-full bg-blue-500/10 flex items-center justify-center">
+                  <Users className="h-7 w-7 text-blue-500" />
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-4 backdrop-blur-xl bg-card/95 border-2 shadow-xl hover:shadow-2xl transition-shadow">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">{t('dashboard.dailyRevenue')}</p>
+                  <p className="text-2xl font-bold text-green-500">{stats.dailyRevenue.toLocaleString()} ₸</p>
+                </div>
+                <div className="w-14 h-14 rounded-full bg-green-500/10 flex items-center justify-center">
+                  <DollarSign className="h-7 w-7 text-green-500" />
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* Bottom Left - Recent Issues */}
+          <Card className="absolute bottom-8 left-8 p-6 w-80 backdrop-blur-xl bg-card/95 border-2 shadow-2xl max-h-[300px] overflow-hidden">
+            <div className="flex items-center gap-2 mb-4">
+              <AlertCircle className="h-5 w-5 text-primary" />
+              <h3 className="font-bold text-lg">{t('dashboard.recentIssues')}</h3>
+            </div>
+            <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2">
+              {[
+                { issue: "Замена масла", status: "fixed", date: "2024-01-15" },
+                { issue: "Проверка тормозов", status: "fixed", date: "2024-01-10" },
+                { issue: "Диагностика двигателя", status: "pending", date: "2024-01-05" },
+                { issue: "Замена фильтров", status: "fixed", date: "2023-12-28" },
+                { issue: "Регулировка развал-схождения", status: "fixed", date: "2023-12-20" },
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors">
+                  {item.status === "fixed" ? (
+                    <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+                  ) : (
+                    <Wrench className="h-5 w-5 text-yellow-500 flex-shrink-0 mt-0.5" />
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium text-sm truncate">{item.issue}</p>
+                    <p className="text-xs text-muted-foreground">{new Date(item.date).toLocaleDateString('ru-RU')}</p>
+                  </div>
+                  <Badge variant={item.status === "fixed" ? "default" : "secondary"} className="text-xs">
+                    {item.status === "fixed" ? t('dashboard.issueFixed') : t('dashboard.issuePending')}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Bottom Right - Actions */}
+          <div className="absolute bottom-8 right-8 flex gap-4">
+            <Button
+              onClick={() => navigate("/partner/orders")}
+              size="lg"
+              className="h-32 w-32 flex-col gap-3 rounded-2xl shadow-xl hover:shadow-2xl transition-all backdrop-blur-xl bg-primary"
+            >
+              <History className="h-10 w-10" />
+              <span className="font-semibold text-sm text-center leading-tight">{t('dashboard.viewHistory')}</span>
+            </Button>
+
+            <Button
+              onClick={() => navigate("/showroom-3d")}
+              size="lg"
+              variant="secondary"
+              className="h-32 w-32 flex-col gap-3 rounded-2xl shadow-xl hover:shadow-2xl transition-all backdrop-blur-xl"
+            >
+              <Maximize className="h-10 w-10" />
+              <span className="font-semibold text-sm text-center leading-tight">{t('dashboard.view360')}</span>
+            </Button>
+
+            <Button
+              onClick={() => navigate("/showroom-3d")}
+              size="lg"
+              variant="outline"
+              className="h-32 w-32 flex-col gap-3 rounded-2xl shadow-xl hover:shadow-2xl transition-all backdrop-blur-xl"
+            >
+              <Box className="h-10 w-10" />
+              <span className="font-semibold text-sm text-center leading-tight">{t('dashboard.view3D')}</span>
+            </Button>
           </div>
         </div>
       </div>
