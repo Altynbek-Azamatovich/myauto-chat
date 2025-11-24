@@ -60,13 +60,7 @@ export default function PartnerDashboard() {
 
   useEffect(() => {
     loadDashboardData();
-
-    return () => {
-      if (shiftInterval) {
-        clearInterval(shiftInterval);
-      }
-    };
-  }, []);
+  }, []); // Загружается только один раз при монтировании
 
   const loadDashboardData = async () => {
     try {
@@ -209,7 +203,7 @@ export default function PartnerDashboard() {
         setShiftInterval(interval);
         toast({ title: t('dashboard.shiftOpened') });
       }
-      loadDashboardData();
+      // Не перезагружаем все данные, только обновляем смену
     } catch (error) {
       console.error("Error toggling shift:", error);
       toast({ title: "Ошибка", variant: "destructive" });
@@ -364,12 +358,12 @@ export default function PartnerDashboard() {
           {/* Background Grid Effect */}
           <div className="absolute inset-0 bg-grid-black/[0.02] dark:bg-grid-white/[0.02] bg-[size:50px_50px]" />
           
-          {/* Central Car Image */}
+          {/* Central Car Image - Reduced Size */}
           <div className="relative z-10 flex items-center justify-center">
             <img 
               src={dashboardCar} 
               alt="Dashboard Vehicle" 
-              className="w-[500px] xl:w-[600px] h-auto object-contain drop-shadow-2xl"
+              className="w-[350px] xl:w-[450px] h-auto object-contain drop-shadow-2xl"
             />
           </div>
 
