@@ -9,6 +9,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface AppSidebarProps {
   trigger: React.ReactNode;
@@ -62,151 +63,155 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
         <SheetTrigger asChild>
           {trigger}
         </SheetTrigger>
-        <SheetContent side="left" className="w-80 pt-6">
-          {/* User Profile Section */}
-          <div className="mb-6">
-            <div className="flex items-center space-x-3 mb-2">
-              <Avatar className="w-12 h-12">
-                <AvatarImage src={userProfile?.avatar_url || ''} alt="Avatar" />
-                <AvatarFallback className="bg-primary/10">
-                  <User className="h-6 w-6 text-primary" />
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                {userProfile?.first_name || userProfile?.last_name ? (
-                  <p className="font-semibold text-base">
-                    {userProfile.first_name} {userProfile.last_name}
-                  </p>
-                ) : (
-                  <p className="font-semibold text-base">{t('profileTitle')}</p>
-                )}
-                <p className="text-sm text-muted-foreground">{userProfile?.phone_number}</p>
+        <SheetContent side="left" className="w-80 p-0">
+          <ScrollArea className="h-full">
+            <div className="pt-6 px-6 pb-6">
+              {/* User Profile Section */}
+              <div className="mb-6">
+                <div className="flex items-center space-x-3 mb-2">
+                  <Avatar className="w-12 h-12">
+                    <AvatarImage src={userProfile?.avatar_url || ''} alt="Avatar" />
+                    <AvatarFallback className="bg-primary/10">
+                      <User className="h-6 w-6 text-primary" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    {userProfile?.first_name || userProfile?.last_name ? (
+                      <p className="font-semibold text-base">
+                        {userProfile.first_name} {userProfile.last_name}
+                      </p>
+                    ) : (
+                      <p className="font-semibold text-base">{t('profileTitle')}</p>
+                    )}
+                    <p className="text-sm text-muted-foreground">{userProfile?.phone_number}</p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
 
-          <Separator className="mb-4" />
+              <Separator className="mb-4" />
 
-          {/* Main Actions */}
-          <div className="mb-6">
-            <h3 className="text-xs font-semibold text-muted-foreground uppercase mb-3 px-2">{t('main')}</h3>
-            <div className="space-y-1">
-              <Button
-                variant="ghost"
-                className="w-full justify-start"
-                onClick={() => handleNavigation('/my-vehicles')}
-              >
-                <Car className="mr-3 h-5 w-5" />
-                {t('myVehicles')}
-              </Button>
-              <Button
-                variant="ghost"
-                className="w-full justify-start"
-                onClick={() => handleNavigation('/service-history')}
-              >
-                <History className="mr-3 h-5 w-5" />
-                {t('serviceHistoryTitle')}
-              </Button>
-              <Button
-                variant="ghost"
-                className="w-full justify-start"
-                onClick={() => handleNavigation('/profile-settings')}
-              >
-                <UserCog className="mr-3 h-5 w-5" />
-                {t('profileSettingsTitle')}
-              </Button>
-            </div>
-          </div>
-
-          <Separator className="mb-4" />
-
-          {/* Settings */}
-          <div className="mb-6">
-            <h3 className="text-xs font-semibold text-muted-foreground uppercase mb-3 px-2">{t('settings')}</h3>
-            <div className="space-y-3">
-              {/* Theme Toggle */}
-              <div className="px-2">
-                <p className="text-sm font-medium mb-2">{t('appTheme')}</p>
-                <div className="flex gap-2">
+              {/* Main Actions */}
+              <div className="mb-6">
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase mb-3 px-2">{t('main')}</h3>
+                <div className="space-y-1">
                   <Button
-                    variant={theme === 'light' ? 'default' : 'outline'}
-                    size="sm"
-                    className="flex-1 rounded-full"
-                    onClick={() => setTheme('light')}
+                    variant="ghost"
+                    className="w-full justify-start"
+                    onClick={() => handleNavigation('/my-vehicles')}
                   >
-                    <Sun className="mr-2 h-4 w-4" />
-                    {language === 'kk' ? 'Ашық' : 'Светлая'}
+                    <Car className="mr-3 h-5 w-5" />
+                    {t('myVehicles')}
                   </Button>
                   <Button
-                    variant={theme === 'dark' ? 'default' : 'outline'}
-                    size="sm"
-                    className="flex-1 rounded-full"
-                    onClick={() => setTheme('dark')}
+                    variant="ghost"
+                    className="w-full justify-start"
+                    onClick={() => handleNavigation('/service-history')}
                   >
-                    <Moon className="mr-2 h-4 w-4" />
-                    {language === 'kk' ? 'Қараңғы' : 'Темная'}
+                    <History className="mr-3 h-5 w-5" />
+                    {t('serviceHistoryTitle')}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start"
+                    onClick={() => handleNavigation('/profile-settings')}
+                  >
+                    <UserCog className="mr-3 h-5 w-5" />
+                    {t('profileSettingsTitle')}
                   </Button>
                 </div>
               </div>
 
-              {/* Language Toggle */}
-              <div className="px-2">
-                <p className="text-sm font-medium mb-2">{t('language')}</p>
-                <div className="flex gap-2">
+              <Separator className="mb-4" />
+
+              {/* Settings */}
+              <div className="mb-6">
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase mb-3 px-2">{t('settings')}</h3>
+                <div className="space-y-3">
+                  {/* Theme Toggle */}
+                  <div className="px-2">
+                    <p className="text-sm font-medium mb-2">{t('appTheme')}</p>
+                    <div className="flex gap-2">
+                      <Button
+                        variant={theme === 'light' ? 'default' : 'outline'}
+                        size="sm"
+                        className="flex-1 rounded-full"
+                        onClick={() => setTheme('light')}
+                      >
+                        <Sun className="mr-2 h-4 w-4" />
+                        {language === 'kk' ? 'Ашық' : 'Светлая'}
+                      </Button>
+                      <Button
+                        variant={theme === 'dark' ? 'default' : 'outline'}
+                        size="sm"
+                        className="flex-1 rounded-full"
+                        onClick={() => setTheme('dark')}
+                      >
+                        <Moon className="mr-2 h-4 w-4" />
+                        {language === 'kk' ? 'Қараңғы' : 'Темная'}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Language Toggle */}
+                  <div className="px-2">
+                    <p className="text-sm font-medium mb-2">{t('language')}</p>
+                    <div className="flex gap-2">
+                      <Button
+                        variant={language === 'kk' ? 'default' : 'outline'}
+                        size="sm"
+                        className="flex-1 rounded-full"
+                        onClick={() => setLanguage('kk')}
+                      >
+                        <Globe className="mr-2 h-4 w-4" />
+                        Қазақша
+                      </Button>
+                      <Button
+                        variant={language === 'ru' ? 'default' : 'outline'}
+                        size="sm"
+                        className="flex-1 rounded-full"
+                        onClick={() => setLanguage('ru')}
+                      >
+                        <Globe className="mr-2 h-4 w-4" />
+                        Русский
+                      </Button>
+                    </div>
+                  </div>
+
                   <Button
-                    variant={language === 'kk' ? 'default' : 'outline'}
-                    size="sm"
-                    className="flex-1 rounded-full"
-                    onClick={() => setLanguage('kk')}
+                    variant="ghost"
+                    className="w-full justify-start"
+                    onClick={() => handleNavigation('/notification-settings')}
                   >
-                    <Globe className="mr-2 h-4 w-4" />
-                    Қазақша
+                    <Bell className="mr-3 h-5 w-5" />
+                    {t('notificationSettings')}
                   </Button>
                   <Button
-                    variant={language === 'ru' ? 'default' : 'outline'}
-                    size="sm"
-                    className="flex-1 rounded-full"
-                    onClick={() => setLanguage('ru')}
+                    variant="ghost"
+                    className="w-full justify-start"
+                    onClick={() => handleNavigation('/about-app')}
                   >
-                    <Globe className="mr-2 h-4 w-4" />
-                    Русский
+                    <Info className="mr-3 h-5 w-5" />
+                    {t('aboutApp')}
                   </Button>
                 </div>
               </div>
 
+              <Separator className="mb-4" />
+
+              {/* Logout */}
               <Button
                 variant="ghost"
-                className="w-full justify-start"
-                onClick={() => handleNavigation('/notification-settings')}
+                className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
+                onClick={() => {
+                  setIsOpen(false);
+                  setIsLogoutDialogOpen(true);
+                }}
               >
-                <Bell className="mr-3 h-5 w-5" />
-                {t('notificationSettings')}
-              </Button>
-              <Button
-                variant="ghost"
-                className="w-full justify-start"
-                onClick={() => handleNavigation('/about-app')}
-              >
-                <Info className="mr-3 h-5 w-5" />
-                {t('aboutApp')}
+                <LogOut className="mr-3 h-5 w-5" />
+                {t('logoutTitle')}
               </Button>
             </div>
-          </div>
-
-          <Separator className="mb-4" />
-
-          {/* Logout */}
-          <Button
-            variant="ghost"
-            className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
-            onClick={() => {
-              setIsOpen(false);
-              setIsLogoutDialogOpen(true);
-            }}
-          >
-            <LogOut className="mr-3 h-5 w-5" />
-            {t('logoutTitle')}
-          </Button>
+          </ScrollArea>
         </SheetContent>
       </Sheet>
 
