@@ -76,7 +76,6 @@ const Home = () => {
     const {
       data: vehicles
     } = await supabase.from('user_vehicles').select('*').eq('user_id', user.id).eq('is_primary', true).limit(1);
-    
     if (vehicles && vehicles.length > 0) {
       const vehicle = vehicles[0];
       setPrimaryVehicle(vehicle);
@@ -126,13 +125,13 @@ const Home = () => {
       {/* Header */}
       <header className="flex items-center justify-between px-4 py-4">
         <AppSidebar trigger={<Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
-              <Menu className="h-8 w-8" />
+              <Menu className="w-[25px] h-[25px]" />
             </Button>} />
 
         <img src={logoImage} alt="myAuto" className="h-12 w-auto" />
 
         <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground" onClick={() => navigate('/notifications')}>
-          <Bell className="h-8 w-8" />
+          <Bell className="w-[20px] h-[20px]" />
         </Button>
       </header>
 
@@ -159,7 +158,7 @@ const Home = () => {
 
         {/* 360 Button */}
         <button onClick={() => toast.info('3D модели авто в разработке')} className="absolute -bottom-2 right-4 p-0 bg-transparent hover:opacity-80 transition-opacity border-0 outline-none">
-          <img src={icon360} alt="360" className="w-16 h-16" />
+          <img src={icon360} alt="360" className="w-16 h-16 opacity-40" />
         </button>
       </div>
 
@@ -262,7 +261,7 @@ const Home = () => {
             <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium text-white">{t('technicalCondition')}</span>
-                <span className="text-xl font-bold text-app-green">
+                <span className="text-xl font-bold text-green-600">
                   {primaryVehicle?.technical_condition || 0}%
                 </span>
               </div>
