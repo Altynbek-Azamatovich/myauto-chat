@@ -14,6 +14,7 @@ import {
   SidebarHeader,
   SidebarFooter,
 } from "@/components/ui/sidebar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
@@ -46,8 +47,8 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar className="border-r border-border">
-      <SidebarHeader className="border-b border-border p-4">
+    <Sidebar className="border-r border-border flex flex-col h-screen">
+      <SidebarHeader className="border-b border-border p-4 flex-shrink-0">
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center">
             <span className="text-white font-bold text-lg">A</span>
@@ -59,31 +60,33 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>{t("menu.dashboard")}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      className="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors hover:bg-sidebar-accent"
-                      activeClassName="bg-sidebar-accent text-primary font-medium"
-                    >
-                      <item.icon className="h-5 w-5" />
-                      <span>{t(item.title)}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
+      <ScrollArea className="flex-1">
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>{t("menu.dashboard")}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {menuItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to={item.url}
+                        className="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors hover:bg-sidebar-accent"
+                        activeClassName="bg-sidebar-accent text-primary font-medium"
+                      >
+                        <item.icon className="h-5 w-5" />
+                        <span>{t(item.title)}</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </ScrollArea>
 
-      <SidebarFooter className="border-t border-border p-4">
+      <SidebarFooter className="border-t border-border p-4 flex-shrink-0">
         <Button
           variant="ghost"
           className="w-full justify-start gap-3"
