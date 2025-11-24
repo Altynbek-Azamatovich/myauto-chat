@@ -80,7 +80,7 @@ const AppContent = () => {
 
   return (
     <>
-      {!isMobile && (
+      {!isMobile && !isPartnerRoute && (
         <div className="fixed top-4 left-4 right-4 z-50 pointer-events-none">
           <div className="max-w-7xl mx-auto flex justify-between items-start px-4">
             <Alert className="w-64 pointer-events-auto border-primary/20 bg-primary/5 shadow-lg">
@@ -98,7 +98,7 @@ const AppContent = () => {
           </div>
         </div>
       )}
-      <div className="w-full max-w-md mx-auto shadow-2xl min-h-screen bg-background relative">
+      <div className={isPartnerRoute ? "w-full min-h-screen bg-background relative" : "w-full max-w-md mx-auto shadow-2xl min-h-screen bg-background relative"}>
         <Routes>
         {/* Auth & Onboarding */}
         <Route path="/welcome" element={<Welcome />} />
