@@ -52,7 +52,7 @@ const BottomNavigation = () => {
               marginClass = firstActive ? 'ml-auto' : '';
             }
             return <Button key={item.path} variant="ghost" size="lg" className={`rounded-full aspect-square p-2 relative transition-all duration-300 ${active ? "bg-white/40 text-white hover:bg-white/50 ring-2 ring-white/60" : "text-white/70 hover:bg-white/10 hover:text-white"} ${marginClass}`} onClick={() => navigate(item.path)}>
-                  <item.icon size={24} strokeWidth={1.5} className="mx-0 px-0 pr-0 w-[30px] h-[30px]" />
+                  <item.icon size={24} strokeWidth={1.5} className="mx-0 px-0 pr-0 w-[35px] h-[35px]" />
                   <NotificationBadge count={item.count} size="sm" className="absolute -top-1 -right-1" />
                 </Button>;
           })}
