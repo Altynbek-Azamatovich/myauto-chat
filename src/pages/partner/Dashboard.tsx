@@ -8,7 +8,14 @@ import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "@/components/partner/DashboardLayout";
 import dashboardCar from "@/assets/dashboard-car.png";
-import { Clock, DollarSign, Users, Activity, History, Maximize, Box, CheckCircle2, Wrench } from "lucide-react";
+import { Clock, DollarSign, Users, Activity, History, Maximize, Box, CheckCircle2, Wrench, ArrowRight } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 interface DashboardStats {
   activeOrders: number;
   totalClients: number;
@@ -47,6 +54,7 @@ export default function PartnerDashboard() {
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
   const [currentShift, setCurrentShift] = useState<any>(null);
   const [shiftInterval, setShiftInterval] = useState<NodeJS.Timeout | null>(null);
+  const [quickActionDialog, setQuickActionDialog] = useState<'clients' | 'services' | 'analytics' | null>(null);
   useEffect(() => {
     loadDashboardData();
   }, []); // Загружается только один раз при монтировании
@@ -382,7 +390,7 @@ export default function PartnerDashboard() {
           </div>
 
           {/* Bottom Left - Service History */}
-          <Card className="absolute bottom-4 left-4 p-4 w-72 backdrop-blur-xl bg-card/95 border shadow-xl max-h-[280px] overflow-hidden rounded-xl">
+          <Card className="absolute bottom-[120px] left-4 p-4 w-72 backdrop-blur-xl bg-card/95 border shadow-xl max-h-[280px] overflow-hidden rounded-xl">
             <div className="flex items-center gap-2 mb-3">
               <History className="h-4 w-4 text-primary" />
               <h3 className="font-bold text-sm">История обслуживания</h3>
@@ -391,15 +399,15 @@ export default function PartnerDashboard() {
               {[{
               issue: "Замена масла",
               status: "fixed",
-              date: "2025-01-15"
+              date: "2024-11-15"
             }, {
               issue: "Проверка тормозов",
               status: "fixed",
-              date: "2025-01-10"
+              date: "2024-11-10"
             }, {
               issue: "Диагностика двигателя",
               status: "pending",
-              date: "2025-01-05"
+              date: "2024-11-05"
             }].map((item, idx) => <div key={idx} className="flex items-start gap-2 p-2 rounded-lg hover:bg-muted/50 transition-colors">
                   {item.status === "fixed" ? <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" /> : <Wrench className="h-4 w-4 text-yellow-500 flex-shrink-0 mt-0.5" />}
                   <div className="min-w-0 flex-1">
@@ -424,7 +432,7 @@ export default function PartnerDashboard() {
           {/* Bottom Center - Quick Actions for Partner */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 backdrop-blur-md bg-background/30 p-2 rounded-xl border border-border/30">
             <button 
-              onClick={() => navigate("/partner/clients")}
+              onClick={() => setQuickActionDialog('clients')}
               className="text-center cursor-pointer hover:bg-muted/30 p-2 rounded-lg transition-colors"
             >
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-1 mx-auto">
@@ -433,7 +441,7 @@ export default function PartnerDashboard() {
               <span className="text-[10px] font-medium">Клиенты</span>
             </button>
             <button 
-              onClick={() => navigate("/partner/services")}
+              onClick={() => setQuickActionDialog('services')}
               className="text-center cursor-pointer hover:bg-muted/30 p-2 rounded-lg transition-colors"
             >
               <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center mb-1 mx-auto">
@@ -442,7 +450,7 @@ export default function PartnerDashboard() {
               <span className="text-[10px] font-medium">Услуги</span>
             </button>
             <button 
-              onClick={() => navigate("/partner/analytics")}
+              onClick={() => setQuickActionDialog('analytics')}
               className="text-center cursor-pointer hover:bg-muted/30 p-2 rounded-lg transition-colors"
             >
               <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center mb-1 mx-auto">
@@ -453,7 +461,7 @@ export default function PartnerDashboard() {
           </div>
 
           {/* Bottom Right - Actions */}
-          <div className="absolute bottom-4 right-4 flex gap-3 w-72">
+          <div className="absolute bottom-[120px] right-4 flex gap-3 w-72">
             <Button onClick={() => navigate("/showroom-3d")} size="lg" variant="secondary" className="flex-1 h-28 flex-col gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all backdrop-blur-xl">
               <Maximize className="h-8 w-8" />
               <span className="font-semibold text-xs text-center leading-tight">{t('dashboard.view360')}</span>
@@ -466,5 +474,108 @@ export default function PartnerDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Quick Action Dialogs */}
+      <Dialog open={quickActionDialog === 'clients'} onOpenChange={() => setQuickActionDialog(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5 text-primary" />
+              Клиенты
+            </DialogTitle>
+            <DialogDescription>
+              Всего клиентов: {stats.totalClients}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <Card className="p-4">
+                <p className="text-sm text-muted-foreground mb-1">Новых за месяц</p>
+                <p className="text-2xl font-bold">{Math.floor(stats.totalClients * 0.15)}</p>
+              </Card>
+              <Card className="p-4">
+                <p className="text-sm text-muted-foreground mb-1">Постоянных</p>
+                <p className="text-2xl font-bold">{Math.floor(stats.totalClients * 0.65)}</p>
+              </Card>
+            </div>
+            <Button onClick={() => { setQuickActionDialog(null); navigate("/partner/clients"); }} className="w-full">
+              Открыть полный список
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={quickActionDialog === 'services'} onOpenChange={() => setQuickActionDialog(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Wrench className="h-5 w-5 text-blue-500" />
+              Услуги
+            </DialogTitle>
+            <DialogDescription>
+              Активные услуги и статистика
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <Card className="p-4">
+                <p className="text-sm text-muted-foreground mb-1">Всего услуг</p>
+                <p className="text-2xl font-bold">24</p>
+              </Card>
+              <Card className="p-4">
+                <p className="text-sm text-muted-foreground mb-1">Популярных</p>
+                <p className="text-2xl font-bold">8</p>
+              </Card>
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium">Топ услуги:</p>
+              <div className="space-y-1 text-sm text-muted-foreground">
+                <p>• Замена масла - {stats.completedToday} раз</p>
+                <p>• Диагностика - {Math.floor(stats.completedToday * 0.7)} раз</p>
+                <p>• Шиномонтаж - {Math.floor(stats.completedToday * 0.5)} раз</p>
+              </div>
+            </div>
+            <Button onClick={() => { setQuickActionDialog(null); navigate("/partner/services"); }} className="w-full">
+              Управление услугами
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={quickActionDialog === 'analytics'} onOpenChange={() => setQuickActionDialog(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Activity className="h-5 w-5 text-green-500" />
+              Аналитика
+            </DialogTitle>
+            <DialogDescription>
+              Краткая сводка за сегодня
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <Card className="p-4">
+                <p className="text-sm text-muted-foreground mb-1">Выполнено</p>
+                <p className="text-2xl font-bold text-green-500">{stats.completedToday}</p>
+              </Card>
+              <Card className="p-4">
+                <p className="text-sm text-muted-foreground mb-1">В работе</p>
+                <p className="text-2xl font-bold text-blue-500">{stats.inProgressOrders}</p>
+              </Card>
+            </div>
+            <Card className="p-4">
+              <p className="text-sm text-muted-foreground mb-1">Выручка за сегодня</p>
+              <p className="text-3xl font-bold text-primary">{stats.dailyRevenue.toLocaleString()} ₸</p>
+            </Card>
+            <Button onClick={() => { setQuickActionDialog(null); navigate("/partner/analytics"); }} className="w-full">
+              Подробная аналитика
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>;
 }
