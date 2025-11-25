@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "@/components/partner/DashboardLayout";
 import dashboardCar from "@/assets/dashboard-car.png";
-import { Clock, DollarSign, Users, Activity, History, Maximize, Box, AlertCircle, CheckCircle2, Wrench, Palette, Droplet, Sparkles, Brush } from "lucide-react";
+import { Clock, DollarSign, Users, Activity, History, Maximize, Box, CheckCircle2, Wrench } from "lucide-react";
 interface DashboardStats {
   activeOrders: number;
   totalClients: number;
@@ -381,25 +381,25 @@ export default function PartnerDashboard() {
             </Card>
           </div>
 
-          {/* Bottom Left - Recent Issues */}
-          <Card className="absolute bottom-4 left-4 p-4 w-72 backdrop-blur-xl bg-card/95 border shadow-xl max-h-[240px] overflow-hidden">
+          {/* Bottom Left - Service History */}
+          <Card className="absolute bottom-4 left-4 p-4 w-72 backdrop-blur-xl bg-card/95 border shadow-xl max-h-[280px] overflow-hidden rounded-xl">
             <div className="flex items-center gap-2 mb-3">
-              <AlertCircle className="h-4 w-4 text-primary" />
-              <h3 className="font-bold text-sm">{t('dashboard.recentIssues')}</h3>
+              <History className="h-4 w-4 text-primary" />
+              <h3 className="font-bold text-sm">История обслуживания</h3>
             </div>
-            <div className="space-y-2 max-h-[160px] overflow-y-auto pr-2">
+            <div className="space-y-2 max-h-[160px] overflow-y-auto pr-2 mb-3">
               {[{
               issue: "Замена масла",
               status: "fixed",
-              date: "2024-01-15"
+              date: "2025-01-15"
             }, {
               issue: "Проверка тормозов",
               status: "fixed",
-              date: "2024-01-10"
+              date: "2025-01-10"
             }, {
               issue: "Диагностика двигателя",
               status: "pending",
-              date: "2024-01-05"
+              date: "2025-01-05"
             }].map((item, idx) => <div key={idx} className="flex items-start gap-2 p-2 rounded-lg hover:bg-muted/50 transition-colors">
                   {item.status === "fixed" ? <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" /> : <Wrench className="h-4 w-4 text-yellow-500 flex-shrink-0 mt-0.5" />}
                   <div className="min-w-0 flex-1">
@@ -411,51 +411,55 @@ export default function PartnerDashboard() {
                   </Badge>
                 </div>)}
             </div>
+            <Button 
+              onClick={() => navigate("/partner/orders")} 
+              variant="outline" 
+              size="sm" 
+              className="w-full"
+            >
+              Открыть полную историю
+            </Button>
           </Card>
 
-          {/* Bottom Center - Visual Auto Settings */}
-          <Card className="absolute bottom-4 left-1/2 -translate-x-1/2 p-3 backdrop-blur-xl bg-card/95 border shadow-xl rounded-xl">
-            <div className="flex items-center gap-3">
-              <div className="text-center cursor-pointer hover:bg-muted/50 p-2 rounded-lg transition-colors">
-                <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center mb-1 mx-auto">
-                  <Palette className="h-5 w-5 text-purple-500" />
-                </div>
-                <span className="text-[10px] font-medium">Покраска</span>
+          {/* Bottom Center - Quick Actions for Partner */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 backdrop-blur-md bg-background/30 p-2 rounded-xl border border-border/30">
+            <button 
+              onClick={() => navigate("/partner/clients")}
+              className="text-center cursor-pointer hover:bg-muted/30 p-2 rounded-lg transition-colors"
+            >
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-1 mx-auto">
+                <Users className="h-5 w-5 text-primary" />
               </div>
-              <div className="text-center cursor-pointer hover:bg-muted/50 p-2 rounded-lg transition-colors">
-                <div className="w-10 h-10 rounded-full bg-cyan-500/10 flex items-center justify-center mb-1 mx-auto">
-                  <Droplet className="h-5 w-5 text-cyan-500" />
-                </div>
-                <span className="text-[10px] font-medium">Тонировка</span>
+              <span className="text-[10px] font-medium">Клиенты</span>
+            </button>
+            <button 
+              onClick={() => navigate("/partner/services")}
+              className="text-center cursor-pointer hover:bg-muted/30 p-2 rounded-lg transition-colors"
+            >
+              <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center mb-1 mx-auto">
+                <Wrench className="h-5 w-5 text-blue-500" />
               </div>
-              <div className="text-center cursor-pointer hover:bg-muted/50 p-2 rounded-lg transition-colors">
-                <div className="w-10 h-10 rounded-full bg-pink-500/10 flex items-center justify-center mb-1 mx-auto">
-                  <Sparkles className="h-5 w-5 text-pink-500" />
-                </div>
-                <span className="text-[10px] font-medium">Детейлинг</span>
+              <span className="text-[10px] font-medium">Услуги</span>
+            </button>
+            <button 
+              onClick={() => navigate("/partner/analytics")}
+              className="text-center cursor-pointer hover:bg-muted/30 p-2 rounded-lg transition-colors"
+            >
+              <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center mb-1 mx-auto">
+                <Activity className="h-5 w-5 text-green-500" />
               </div>
-              <div className="text-center cursor-pointer hover:bg-muted/50 p-2 rounded-lg transition-colors">
-                <div className="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center mb-1 mx-auto">
-                  <Brush className="h-5 w-5 text-orange-500" />
-                </div>
-                <span className="text-[10px] font-medium">Полировка</span>
-              </div>
-            </div>
-          </Card>
+              <span className="text-[10px] font-medium">Аналитика</span>
+            </button>
+          </div>
 
           {/* Bottom Right - Actions */}
-          <div className="absolute bottom-4 right-4 flex gap-3">
-            <Button onClick={() => navigate("/partner/orders")} size="lg" className="h-28 w-28 flex-col gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all backdrop-blur-xl bg-primary mx-0 px-[80px]">
-              <History className="h-8 w-8" />
-              <span className="font-semibold text-xs text-center leading-tight">{t('dashboard.viewHistory')}</span>
-            </Button>
-
-            <Button onClick={() => navigate("/showroom-3d")} size="lg" variant="secondary" className="h-28 w-28 flex-col gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all backdrop-blur-xl">
+          <div className="absolute bottom-4 right-4 flex gap-3 w-72">
+            <Button onClick={() => navigate("/showroom-3d")} size="lg" variant="secondary" className="flex-1 h-28 flex-col gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all backdrop-blur-xl">
               <Maximize className="h-8 w-8" />
               <span className="font-semibold text-xs text-center leading-tight">{t('dashboard.view360')}</span>
             </Button>
 
-            <Button onClick={() => navigate("/showroom-3d")} size="lg" variant="outline" className="h-28 w-28 flex-col gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all backdrop-blur-xl">
+            <Button onClick={() => navigate("/showroom-3d")} size="lg" variant="outline" className="flex-1 h-28 flex-col gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all backdrop-blur-xl">
               <Box className="h-8 w-8" />
               <span className="font-semibold text-xs text-center leading-tight">{t('dashboard.view3D')}</span>
             </Button>
