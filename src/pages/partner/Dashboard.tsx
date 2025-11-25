@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "@/components/partner/DashboardLayout";
 import dashboardCar from "@/assets/dashboard-car.png";
-import { Clock, DollarSign, Users, Activity, History, Maximize, Box, AlertCircle, CheckCircle2, Wrench } from "lucide-react";
+import { Clock, DollarSign, Users, Activity, History, Maximize, Box, AlertCircle, CheckCircle2, Wrench, Palette, Droplet, Sparkles, Brush } from "lucide-react";
 interface DashboardStats {
   activeOrders: number;
   totalClients: number;
@@ -328,7 +328,7 @@ export default function PartnerDashboard() {
           </div>
 
           {/* Top Left - Shift Control */}
-          <Card className="absolute top-4 left-4 p-4 w-64 backdrop-blur-xl bg-card/95 border shadow-xl">
+          <Card className="absolute top-4 left-4 p-4 w-72 backdrop-blur-xl bg-card/95 border shadow-xl rounded-xl">
             <div className="flex items-center gap-2 mb-3">
               <div className={`w-2.5 h-2.5 rounded-full ${currentShift ? 'bg-green-500 animate-pulse' : 'bg-muted'}`} />
               <div>
@@ -344,7 +344,7 @@ export default function PartnerDashboard() {
 
           {/* Top Right - Stats */}
           <div className="absolute top-4 right-4 space-y-3 w-64">
-            <Card className="p-3 backdrop-blur-xl bg-card/95 border shadow-lg hover:shadow-xl transition-shadow">
+            <Card className="p-3 backdrop-blur-xl bg-card/95 border shadow-lg hover:shadow-xl transition-shadow rounded-xl">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">{t('dashboard.activeOrders')}</p>
@@ -356,7 +356,7 @@ export default function PartnerDashboard() {
               </div>
             </Card>
 
-            <Card className="p-3 backdrop-blur-xl bg-card/95 border shadow-lg hover:shadow-xl transition-shadow">
+            <Card className="p-3 backdrop-blur-xl bg-card/95 border shadow-lg hover:shadow-xl transition-shadow rounded-xl">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">{t('dashboard.totalClients')}</p>
@@ -368,7 +368,7 @@ export default function PartnerDashboard() {
               </div>
             </Card>
 
-            <Card className="p-3 backdrop-blur-xl bg-card/95 border shadow-lg hover:shadow-xl transition-shadow">
+            <Card className="p-3 backdrop-blur-xl bg-card/95 border shadow-lg hover:shadow-xl transition-shadow rounded-xl">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">{t('dashboard.dailyRevenue')}</p>
@@ -410,6 +410,36 @@ export default function PartnerDashboard() {
                     {item.status === "fixed" ? t('dashboard.issueFixed') : t('dashboard.issuePending')}
                   </Badge>
                 </div>)}
+            </div>
+          </Card>
+
+          {/* Bottom Center - Visual Auto Settings */}
+          <Card className="absolute bottom-4 left-1/2 -translate-x-1/2 p-3 backdrop-blur-xl bg-card/95 border shadow-xl rounded-xl">
+            <div className="flex items-center gap-3">
+              <div className="text-center cursor-pointer hover:bg-muted/50 p-2 rounded-lg transition-colors">
+                <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center mb-1 mx-auto">
+                  <Palette className="h-5 w-5 text-purple-500" />
+                </div>
+                <span className="text-[10px] font-medium">Покраска</span>
+              </div>
+              <div className="text-center cursor-pointer hover:bg-muted/50 p-2 rounded-lg transition-colors">
+                <div className="w-10 h-10 rounded-full bg-cyan-500/10 flex items-center justify-center mb-1 mx-auto">
+                  <Droplet className="h-5 w-5 text-cyan-500" />
+                </div>
+                <span className="text-[10px] font-medium">Тонировка</span>
+              </div>
+              <div className="text-center cursor-pointer hover:bg-muted/50 p-2 rounded-lg transition-colors">
+                <div className="w-10 h-10 rounded-full bg-pink-500/10 flex items-center justify-center mb-1 mx-auto">
+                  <Sparkles className="h-5 w-5 text-pink-500" />
+                </div>
+                <span className="text-[10px] font-medium">Детейлинг</span>
+              </div>
+              <div className="text-center cursor-pointer hover:bg-muted/50 p-2 rounded-lg transition-colors">
+                <div className="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center mb-1 mx-auto">
+                  <Brush className="h-5 w-5 text-orange-500" />
+                </div>
+                <span className="text-[10px] font-medium">Полировка</span>
+              </div>
             </div>
           </Card>
 
