@@ -9,13 +9,7 @@ import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "@/components/partner/DashboardLayout";
 import dashboardCar from "@/assets/dashboard-car.png";
 import { Clock, DollarSign, Users, Activity, History, Maximize, Box, CheckCircle2, Wrench, ArrowRight } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 interface DashboardStats {
   activeOrders: number;
   totalClients: number;
@@ -331,8 +325,8 @@ export default function PartnerDashboard() {
           <div className="absolute inset-0 bg-grid-black/[0.02] dark:bg-grid-white/[0.02] bg-[size:50px_50px] rounded-lg" />
           
           {/* Central Car Image - Reduced Size */}
-          <div className="relative z-10 flex items-center justify-center">
-            <img src={dashboardCar} alt="Dashboard Vehicle" className="w-[350px] xl:w-[450px] h-auto object-contain drop-shadow-2xl" />
+          <div className="relative z-10 flex-col flex items-center justify-center py-[50px]">
+            <img src={dashboardCar} alt="Dashboard Vehicle" className="w-[350px] xl:w-[450px] h-auto drop-shadow-2xl object-contain" />
           </div>
 
           {/* Top Left - Shift Control */}
@@ -419,40 +413,26 @@ export default function PartnerDashboard() {
                   </Badge>
                 </div>)}
             </div>
-            <Button 
-              onClick={() => navigate("/partner/orders")} 
-              variant="outline" 
-              size="sm" 
-              className="w-full"
-            >
+            <Button onClick={() => navigate("/partner/orders")} variant="outline" size="sm" className="w-full">
               Открыть полную историю
             </Button>
           </Card>
 
           {/* Bottom Center - Quick Actions for Partner */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 backdrop-blur-md bg-background/30 p-2 rounded-xl border border-border/30">
-            <button 
-              onClick={() => setQuickActionDialog('clients')}
-              className="text-center cursor-pointer hover:bg-muted/30 p-2 rounded-lg transition-colors"
-            >
+            <button onClick={() => setQuickActionDialog('clients')} className="text-center cursor-pointer hover:bg-muted/30 p-2 rounded-lg transition-colors">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-1 mx-auto">
                 <Users className="h-5 w-5 text-primary" />
               </div>
               <span className="text-[10px] font-medium">Клиенты</span>
             </button>
-            <button 
-              onClick={() => setQuickActionDialog('services')}
-              className="text-center cursor-pointer hover:bg-muted/30 p-2 rounded-lg transition-colors"
-            >
+            <button onClick={() => setQuickActionDialog('services')} className="text-center cursor-pointer hover:bg-muted/30 p-2 rounded-lg transition-colors">
               <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center mb-1 mx-auto">
                 <Wrench className="h-5 w-5 text-blue-500" />
               </div>
               <span className="text-[10px] font-medium">Услуги</span>
             </button>
-            <button 
-              onClick={() => setQuickActionDialog('analytics')}
-              className="text-center cursor-pointer hover:bg-muted/30 p-2 rounded-lg transition-colors"
-            >
+            <button onClick={() => setQuickActionDialog('analytics')} className="text-center cursor-pointer hover:bg-muted/30 p-2 rounded-lg transition-colors">
               <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center mb-1 mx-auto">
                 <Activity className="h-5 w-5 text-green-500" />
               </div>
@@ -498,7 +478,10 @@ export default function PartnerDashboard() {
                 <p className="text-2xl font-bold">{Math.floor(stats.totalClients * 0.65)}</p>
               </Card>
             </div>
-            <Button onClick={() => { setQuickActionDialog(null); navigate("/partner/clients"); }} className="w-full">
+            <Button onClick={() => {
+            setQuickActionDialog(null);
+            navigate("/partner/clients");
+          }} className="w-full">
               Открыть полный список
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -536,7 +519,10 @@ export default function PartnerDashboard() {
                 <p>• Шиномонтаж - {Math.floor(stats.completedToday * 0.5)} раз</p>
               </div>
             </div>
-            <Button onClick={() => { setQuickActionDialog(null); navigate("/partner/services"); }} className="w-full">
+            <Button onClick={() => {
+            setQuickActionDialog(null);
+            navigate("/partner/services");
+          }} className="w-full">
               Управление услугами
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -570,7 +556,10 @@ export default function PartnerDashboard() {
               <p className="text-sm text-muted-foreground mb-1">Выручка за сегодня</p>
               <p className="text-3xl font-bold text-primary">{stats.dailyRevenue.toLocaleString()} ₸</p>
             </Card>
-            <Button onClick={() => { setQuickActionDialog(null); navigate("/partner/analytics"); }} className="w-full">
+            <Button onClick={() => {
+            setQuickActionDialog(null);
+            navigate("/partner/analytics");
+          }} className="w-full">
               Подробная аналитика
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
