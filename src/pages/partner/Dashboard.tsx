@@ -462,12 +462,12 @@ export default function PartnerDashboard() {
 
           {/* Bottom Right - Actions */}
           <div className="absolute bottom-4 right-4 flex gap-3 w-72">
-            <Button onClick={() => navigate("/showroom-3d")} size="lg" variant="secondary" className="flex-1 h-28 flex-col gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all backdrop-blur-xl">
+            <Button onClick={() => navigate("/car-360-view")} size="lg" variant="secondary" className="flex-1 h-28 flex-col gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all backdrop-blur-xl">
               <Maximize className="h-8 w-8" />
               <span className="font-semibold text-xs text-center leading-tight">{t('dashboard.view360')}</span>
             </Button>
 
-            <Button onClick={() => navigate("/showroom-3d")} size="lg" variant="outline" className="flex-1 h-28 flex-col gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all backdrop-blur-xl">
+            <Button onClick={() => navigate("/car-3d-model")} size="lg" variant="outline" className="flex-1 h-28 flex-col gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all backdrop-blur-xl">
               <Box className="h-8 w-8" />
               <span className="font-semibold text-xs text-center leading-tight">{t('dashboard.view3D')}</span>
             </Button>
