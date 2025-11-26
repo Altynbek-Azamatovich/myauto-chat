@@ -326,7 +326,7 @@ export default function PartnerDashboard() {
 
       {/* Desktop/Tablet View - Tech Design */}
       <div className="hidden md:block">
-        <div className="relative min-h-[calc(100vh-180px)] bg-gradient-to-br from-background via-background to-muted/20 flex-row flex items-start justify-center pb-8">
+        <div className="relative min-h-[calc(100vh-120px)] bg-gradient-to-br from-background via-background to-muted/20 flex-row flex items-start justify-center pb-8">
           {/* Background Grid Effect */}
           <div className="absolute inset-0 bg-grid-black/[0.02] dark:bg-grid-white/[0.02] bg-[size:50px_50px] rounded-lg" />
           
@@ -430,7 +430,7 @@ export default function PartnerDashboard() {
           </Card>
 
           {/* Bottom Center - Quick Actions for Partner */}
-          <div className="absolute bottom-[140px] left-1/2 -translate-x-1/2 flex items-center gap-3 backdrop-blur-md bg-background/30 p-2 rounded-xl border border-border/30">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 backdrop-blur-md bg-background/30 p-2 rounded-xl border border-border/30">
             <button 
               onClick={() => setQuickActionDialog('clients')}
               className="text-center cursor-pointer hover:bg-muted/30 p-2 rounded-lg transition-colors"
