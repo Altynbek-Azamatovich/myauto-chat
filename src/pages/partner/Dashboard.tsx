@@ -390,7 +390,7 @@ export default function PartnerDashboard() {
           </div>
 
           {/* Bottom Left - Service History */}
-          <Card className="absolute bottom-[120px] left-4 p-4 w-72 backdrop-blur-xl bg-card/95 border shadow-xl max-h-[280px] overflow-hidden rounded-xl">
+          <Card className="absolute bottom-4 left-4 p-4 w-72 backdrop-blur-xl bg-card/95 border shadow-xl max-h-[280px] overflow-hidden rounded-xl">
             <div className="flex items-center gap-2 mb-3">
               <History className="h-4 w-4 text-primary" />
               <h3 className="font-bold text-sm">История обслуживания</h3>
@@ -461,7 +461,7 @@ export default function PartnerDashboard() {
           </div>
 
           {/* Bottom Right - Actions */}
-          <div className="absolute bottom-[120px] right-4 flex gap-3 w-72">
+          <div className="absolute bottom-4 right-4 flex gap-3 w-72">
             <Button onClick={() => navigate("/showroom-3d")} size="lg" variant="secondary" className="flex-1 h-28 flex-col gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all backdrop-blur-xl">
               <Maximize className="h-8 w-8" />
               <span className="font-semibold text-xs text-center leading-tight">{t('dashboard.view360')}</span>
