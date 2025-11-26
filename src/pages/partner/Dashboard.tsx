@@ -326,7 +326,7 @@ export default function PartnerDashboard() {
 
       {/* Desktop/Tablet View - Tech Design */}
       <div className="hidden md:block">
-        <div className="relative h-[calc(100vh-180px)] bg-gradient-to-br from-background via-background to-muted/20 overflow-hidden flex-row flex items-start justify-center">
+        <div className="relative min-h-[calc(100vh-180px)] bg-gradient-to-br from-background via-background to-muted/20 flex-row flex items-start justify-center pb-8">
           {/* Background Grid Effect */}
           <div className="absolute inset-0 bg-grid-black/[0.02] dark:bg-grid-white/[0.02] bg-[size:50px_50px] rounded-lg" />
           
