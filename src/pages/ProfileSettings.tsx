@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Upload, User, Check, ChevronsUpDown } from 'lucide-react';
+import { ArrowLeft, Upload, User, Check, ChevronsUpDown, Trash2, Shield, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,11 +14,23 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { kazakhstanCities } from '@/data/kazakhstan-cities';
 import { cn } from '@/lib/utils';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function ProfileSettings() {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [cityOpen, setCityOpen] = useState(false);
@@ -151,6 +163,36 @@ export default function ProfileSettings() {
     setLoading(false);
   };
 
+  const handleDeleteAccount = async () => {
+    setDeletingAccount(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error('Необходимо войти в аккаунт');
+        return;
+      }
+
+      const { error } = await supabase.functions.invoke('delete-account', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+
+      if (error) throw error;
+
+      // Clear local storage
+      localStorage.clear();
+      
+      toast.success('Аккаунт успешно удалён');
+      navigate('/welcome', { replace: true });
+    } catch (error: any) {
+      console.error('Delete account error:', error);
+      toast.error(error.message || 'Не удалось удалить аккаунт');
+    } finally {
+      setDeletingAccount(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background pb-20">
       <header className="flex items-center justify-between p-4 border-b">
@@ -276,6 +318,65 @@ export default function ProfileSettings() {
               {t('save')}
             </Button>
           </form>
+        </Card>
+
+        {/* Privacy Policy Link */}
+        <Card className="p-4 mt-4">
+          <Button 
+            variant="ghost" 
+            className="w-full justify-start" 
+            onClick={() => navigate('/privacy-policy')}
+          >
+            <Shield className="h-5 w-5 mr-3" />
+            {t('privacyPolicy')}
+          </Button>
+        </Card>
+
+        {/* Delete Account Section */}
+        <Card className="p-4 mt-4 border-destructive/50">
+          <h3 className="font-semibold text-destructive mb-2">{t('dangerZone')}</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            {t('deleteAccountWarning')}
+          </p>
+          
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button 
+                variant="destructive" 
+                className="w-full"
+                disabled={deletingAccount}
+              >
+                {deletingAccount ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    {t('deleting')}
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    {t('deleteAccount')}
+                  </>
+                )}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t('deleteAccountConfirmTitle')}</AlertDialogTitle>
+                <AlertDialogDescription>
+                  {t('deleteAccountConfirmDescription')}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDeleteAccount}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  {t('deleteForever')}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </Card>
       </div>
     </div>
