@@ -334,7 +334,7 @@ export default function ProfileSettings() {
 
         {/* Delete Account Section */}
         <Card className="p-4 mt-4 border-destructive/50">
-          <h3 className="font-semibold text-destructive mb-2">{t('dangerZone')}</h3>
+          <h3 className="font-semibold text-destructive mb-2">{t('deleteAccount')}</h3>
           <p className="text-sm text-muted-foreground mb-4">
             {t('deleteAccountWarning')}
           </p>
