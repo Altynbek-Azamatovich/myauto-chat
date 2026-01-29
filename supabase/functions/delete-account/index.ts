@@ -35,6 +35,8 @@ serve(async (req) => {
     console.log('Deleting account for user:', userId);
 
     // Delete user's data from related tables (in order of dependencies)
+    // IMPORTANT: We preserve vehicle data (user_vehicles, service_history) for future owners!
+    // The vehicle history stays with the VIN, not the user.
     
     // Delete chat messages
     await supabase
@@ -60,26 +62,10 @@ serve(async (req) => {
       .delete()
       .eq('user_id', userId);
 
-    // Delete service history (through vehicles)
-    const { data: vehicles } = await supabase
-      .from('user_vehicles')
-      .select('id')
-      .eq('user_id', userId);
-
-    if (vehicles && vehicles.length > 0) {
-      const vehicleIds = vehicles.map(v => v.id);
-      await supabase
-        .from('service_history')
-        .delete()
-        .in('vehicle_id', vehicleIds);
-    }
-
-    // Delete user vehicles
-    await supabase
-      .from('user_vehicles')
-      .delete()
-      .eq('user_id', userId);
-
+    // NOTE: We do NOT delete user_vehicles and service_history!
+    // Vehicle data is orphaned (user_id set to NULL via FK cascade) 
+    // so future owners can claim the vehicle by VIN and continue the history.
+    
     // Delete reviews
     await supabase
       .from('reviews')

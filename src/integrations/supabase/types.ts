@@ -961,7 +961,7 @@ export type Database = {
           oil_change_date: string | null
           technical_condition: number | null
           updated_at: string
-          user_id: string
+          user_id: string | null
           vin: string | null
           year: number
         }
@@ -980,7 +980,7 @@ export type Database = {
           oil_change_date?: string | null
           technical_condition?: number | null
           updated_at?: string
-          user_id: string
+          user_id?: string | null
           vin?: string | null
           year: number
         }
@@ -999,7 +999,7 @@ export type Database = {
           oil_change_date?: string | null
           technical_condition?: number | null
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
           vin?: string | null
           year?: number
         }
