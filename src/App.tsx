@@ -21,6 +21,7 @@ import ServiceHistory from "./pages/ServiceHistory";
 import MyVehicles from "./pages/MyVehicles";
 import ServiceBooking from "./pages/ServiceBooking";
 import ProfileSettings from "./pages/ProfileSettings";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
 import PhotoDiagnostic from "./pages/PhotoDiagnostic";
@@ -77,7 +78,8 @@ const AppContent = () => {
     '/service-booking',
     '/car-360-view',
     '/car-3d-model',
-    '/partner/pending-verification'
+    '/partner/pending-verification',
+    '/privacy-policy'
   ].includes(location.pathname);
   
   const isPartnerRoute = location.pathname.startsWith('/partner');
@@ -126,6 +128,7 @@ const AppContent = () => {
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/notification-settings" element={<NotificationSettings />} />
         <Route path="/about-app" element={<AboutApp />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         
         {/* Service Pages */}
         <Route path="/roadside-help" element={<RoadsideHelp />} />
