@@ -28,20 +28,39 @@ interface ArchivedSession {
 }
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
+const CHAT_STORAGE_KEY = 'myauto_chat_session';
+
+// Load chat from sessionStorage (persists during browser session, clears on close)
+const loadStoredChat = (defaultMessage: Message): Message[] => {
+  try {
+    const stored = sessionStorage.getItem(CHAT_STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.error('Error loading chat from storage:', e);
+  }
+  return [defaultMessage];
+};
 
 const SuperChat = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
   const [activeTab, setActiveTab] = useState<"chat" | "archive">("chat");
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      text: t('chatAiHelper'),
-      isBot: true,
-      timestamp: format(new Date(), 'HH:mm')
-    }
-  ]);
+  
+  // Initialize messages from sessionStorage to persist between section navigation
+  const defaultMessage: Message = {
+    id: 1,
+    text: t('chatAiHelper'),
+    isBot: true,
+    timestamp: format(new Date(), 'HH:mm')
+  };
+  
+  const [messages, setMessages] = useState<Message[]>(() => loadStoredChat(defaultMessage));
   const [isLoading, setIsLoading] = useState(false);
   const [ttsEnabled, setTtsEnabled] = useState(true);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -61,6 +80,11 @@ const SuperChat = () => {
     }
   });
 
+  // Save messages to sessionStorage whenever they change (persists between section navigation)
+  useEffect(() => {
+    sessionStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+  }, [messages]);
+
   // Get user ID on mount
   useEffect(() => {
     const getUser = async () => {
@@ -74,11 +98,11 @@ const SuperChat = () => {
   }, []);
 
   // Auto-save session ONLY when app is closed (beforeunload), not on navigation
-  // Minimum 5 messages required to save
+  // Minimum 4 messages required to save (2 user + 2 bot messages)
   useEffect(() => {
     const handleBeforeUnload = () => {
-      // Only save if there are at least 5 messages (meaningful conversation)
-      if (messages.length >= 5 && userId) {
+      // Only save if there are at least 4 messages (meaningful conversation)
+      if (messages.length >= 4 && userId) {
         const sessionData = {
           userId,
           messages,
@@ -110,8 +134,8 @@ const SuperChat = () => {
   };
 
   const saveCurrentSession = async () => {
-    // Require at least 5 messages for a meaningful conversation
-    if (!userId || messages.length < 5) return;
+    // Require at least 4 messages for a meaningful conversation
+    if (!userId || messages.length < 4) return;
 
     try {
       // Create conversation

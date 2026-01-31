@@ -14,8 +14,8 @@ serve(async (req) => {
   try {
     const { userId, messages, title } = await req.json();
     
-    // Require at least 5 messages for a meaningful conversation
-    if (!userId || !messages || messages.length < 5) {
+    // Require at least 4 messages for a meaningful conversation
+    if (!userId || !messages || messages.length < 4) {
       return new Response(JSON.stringify({ success: false, error: "Not enough messages to save" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
