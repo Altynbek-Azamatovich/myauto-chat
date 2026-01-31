@@ -14,6 +14,7 @@ import { ru, kk } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import carCoveredImage from "@/assets/car-covered-new.png";
+import { getCarImage, getBodyTypeFromModel } from "@/utils/carImageResolver";
 import icon360 from "@/assets/360-icon.png";
 import Logo from "@/components/Logo";
 import BottomNavigation from '@/components/BottomNavigation';
@@ -32,6 +33,7 @@ interface Vehicle {
   technical_condition?: number;
   average_consumption?: number;
   next_service_date?: string;
+  color?: string;
 }
 interface CarBrand {
   id: string;
@@ -137,7 +139,11 @@ const Home = () => {
 
       {/* Car Display */}
       <div className="relative mt-6">
-        <img src={carCoveredImage} alt="Toyota Camry 2019" className="w-full h-auto object-contain" />
+        <img 
+          src={primaryVehicle?.color ? getCarImage(primaryVehicle.color, getBodyTypeFromModel(brandName, primaryVehicle.model)) : carCoveredImage} 
+          alt={primaryVehicle ? `${brandName} ${primaryVehicle.model}` : "Автомобиль"} 
+          className="w-full h-auto object-contain" 
+        />
         
         {/* Interactive Points */}
         <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[25%] left-[30%] w-6 h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform mx-[50px]">
