@@ -124,32 +124,22 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    background-image: url('/src/assets/light-background.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    background: 
+      radial-gradient(ellipse 100% 80% at 0% 0%, hsl(220 9% 75% / 0.25) 0%, transparent 50%),
+      radial-gradient(ellipse 90% 70% at 100% 100%, hsl(220 9% 75% / 0.20) 0%, transparent 45%),
+      radial-gradient(ellipse 60% 50% at 20% 70%, hsl(220 9% 75% / 0.15) 0%, transparent 40%),
+      hsl(var(--background));
     background-attachment: fixed;
     overscroll-behavior: none;
     overflow-x: hidden;
   }
 
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    background: 
-      radial-gradient(ellipse 80% 60% at 10% 20%, hsl(var(--foreground) / 0.12) 0%, transparent 60%),
-      radial-gradient(ellipse 70% 50% at 90% 80%, hsl(var(--foreground) / 0.10) 0%, transparent 50%),
-      radial-gradient(ellipse 50% 40% at 30% 60%, hsl(var(--foreground) / 0.08) 0%, transparent 40%);
-  }
-
   .dark body {
-    background-image: url('/src/assets/dark-background.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    background: 
+      radial-gradient(ellipse 100% 80% at 0% 0%, hsl(220 30% 20% / 0.4) 0%, transparent 50%),
+      radial-gradient(ellipse 90% 70% at 100% 100%, hsl(220 30% 20% / 0.3) 0%, transparent 45%),
+      radial-gradient(ellipse 60% 50% at 20% 70%, hsl(220 30% 20% / 0.25) 0%, transparent 40%),
+      hsl(var(--background));
     background-attachment: fixed;
     overscroll-behavior: none;
   }
