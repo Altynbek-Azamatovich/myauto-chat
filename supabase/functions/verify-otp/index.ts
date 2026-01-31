@@ -141,12 +141,23 @@ serve(async (req) => {
       .eq('identifier', phone)
       .eq('request_type', 'verify_otp');
 
-    // Check if user exists
-    const { data: existingUser } = await supabase.auth.admin.listUsers();
-    const userExists = existingUser?.users?.some(u => u.phone === phone);
+    // Check if user exists by trying to find them by phone
+    let userId: string | null = null;
+    let isNewUser = false;
 
-    if (!userExists) {
-      // Create new user with phone
+    // First, try to find existing user by phone
+    const { data: existingUsers } = await supabase.auth.admin.listUsers({
+      page: 1,
+      perPage: 1000
+    });
+    
+    const existingUser = existingUsers?.users?.find(u => u.phone === phone);
+    
+    if (existingUser) {
+      userId = existingUser.id;
+      console.log('Found existing user:', userId);
+    } else {
+      // Try to create new user
       const { data: newUser, error: createError } = await supabase.auth.admin.createUser({
         phone: phone,
         phone_confirm: true,
@@ -156,26 +167,61 @@ serve(async (req) => {
       });
 
       if (createError) {
-        console.error('Failed to create user:', createError);
-        return new Response(
-          JSON.stringify({ error: 'Unable to create account. Please try again.' }),
-          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
+        // If user already exists (race condition or pagination missed it), try to find them again
+        if (createError.message?.includes('already registered') || createError.code === 'phone_exists') {
+          console.log('User exists but was not found in initial search, searching again...');
+          
+          // Search through all pages if needed
+          let page = 1;
+          let found = false;
+          while (!found && page <= 10) {
+            const { data: pageUsers } = await supabase.auth.admin.listUsers({
+              page: page,
+              perPage: 1000
+            });
+            
+            const foundUser = pageUsers?.users?.find(u => u.phone === phone);
+            if (foundUser) {
+              userId = foundUser.id;
+              found = true;
+              console.log('Found user on page', page, ':', userId);
+            }
+            
+            if (!pageUsers?.users?.length || pageUsers.users.length < 1000) break;
+            page++;
+          }
+          
+          if (!found) {
+            console.error('Could not find user after creation failed:', createError);
+            return new Response(
+              JSON.stringify({ error: 'Unable to verify account. Please try again.' }),
+              { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+            );
+          }
+        } else {
+          console.error('Failed to create user:', createError);
+          return new Response(
+            JSON.stringify({ error: 'Unable to create account. Please try again.' }),
+            { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+      } else {
+        userId = newUser.user?.id || null;
+        isNewUser = true;
+        console.log('New user created:', userId);
 
-      console.log('New user created:', newUser.user?.id);
+        // Assign default 'user' role to new user
+        if (userId) {
+          const { error: roleError } = await supabase
+            .from('user_roles')
+            .insert({
+              user_id: userId,
+              role: 'user'
+            });
 
-      // Assign default 'user' role to new user
-      if (newUser.user?.id) {
-        const { error: roleError } = await supabase
-          .from('user_roles')
-          .insert({
-            user_id: newUser.user.id,
-            role: 'user'
-          });
-
-        if (roleError) {
-          console.error('Failed to assign role:', roleError);
+          if (roleError) {
+            console.error('Failed to assign role:', roleError);
+          }
         }
       }
     }
@@ -198,7 +244,7 @@ serve(async (req) => {
       JSON.stringify({ 
         success: true,
         session: sessionData,
-        isNewUser: !userExists
+        isNewUser: isNewUser
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
