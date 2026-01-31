@@ -57,7 +57,7 @@ const PhotoDiagnostic = () => {
   return <div className="min-h-screen">
       <header className="flex items-center justify-between px-4 py-4">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="rounded-full hover:bg-muted/30">
-          <ArrowLeft className="h-8 w-8" />
+          <ArrowLeft className="h-[25px] w-[25px] text-foreground" strokeWidth={2.5} />
         </Button>
 
         <Logo size="md" />

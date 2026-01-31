@@ -184,7 +184,7 @@ const SuperChat = () => {
         <AppSidebar 
           trigger={
             <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
-              <Menu className="h-6 w-6" />
+              <Menu className="h-[25px] w-[25px] text-foreground" strokeWidth={2.5} />
             </Button>
           }
         />
@@ -218,7 +218,7 @@ const SuperChat = () => {
           className="rounded-full hover:bg-muted/30 hover:text-foreground"
           onClick={() => navigate('/notifications')}
         >
-          <Bell className="h-6 w-6" />
+          <Bell className="h-[20px] w-[20px] text-foreground" strokeWidth={2.5} />
         </Button>
       </header>
 
