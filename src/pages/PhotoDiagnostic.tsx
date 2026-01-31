@@ -355,6 +355,52 @@ const PhotoDiagnostic = () => {
   // Main scanner view
   return (
     <div className="min-h-screen relative overflow-hidden">
+      {/* Full page darkened overlay with cutout for scanner */}
+      <div 
+        className="fixed inset-0 z-10 pointer-events-none"
+        style={{
+          background: `
+            linear-gradient(to bottom, 
+              rgba(0,0,0,0.35) 0%, 
+              rgba(0,0,0,0.35) 28%,
+              transparent 28%,
+              transparent 72%,
+              rgba(0,0,0,0.35) 72%,
+              rgba(0,0,0,0.35) 100%
+            )
+          `,
+          maskImage: `
+            linear-gradient(to bottom, black 0%, black 28%, transparent 28%, transparent 72%, black 72%, black 100%),
+            linear-gradient(to right, black 0%, black 15%, transparent 15%, transparent 85%, black 85%, black 100%)
+          `,
+          maskComposite: 'intersect',
+          WebkitMaskComposite: 'source-in'
+        }}
+      />
+      {/* Overlay using SVG for proper rounded cutout */}
+      <svg className="fixed inset-0 w-full h-full z-10 pointer-events-none" preserveAspectRatio="none">
+        <defs>
+          <mask id="scanner-mask">
+            <rect width="100%" height="100%" fill="white" />
+            <rect 
+              x="15%" 
+              y="28%" 
+              width="70%" 
+              height="44%" 
+              rx="24" 
+              ry="24" 
+              fill="black" 
+            />
+          </mask>
+        </defs>
+        <rect 
+          width="100%" 
+          height="100%" 
+          fill="rgba(0,0,0,0.35)" 
+          mask="url(#scanner-mask)" 
+        />
+      </svg>
+
       <header className="flex items-center justify-between px-4 py-4 relative z-20">
         <Button 
           variant="ghost" 
@@ -375,20 +421,8 @@ const PhotoDiagnostic = () => {
           </p>
         </div>
 
-        {/* Car image with scanner and darkened overlay */}
+        {/* Car image with scanner */}
         <div className="w-full relative mt-8">
-          {/* Darkened overlay around scanner area */}
-          <div className="absolute inset-0 z-10">
-            {/* Top dark area */}
-            <div className="absolute top-0 left-0 right-0 h-[12%] bg-black/50" />
-            {/* Bottom dark area */}
-            <div className="absolute bottom-0 left-0 right-0 h-[12%] bg-black/50" />
-            {/* Left dark area */}
-            <div className="absolute top-[12%] bottom-[12%] left-0 w-[15%] bg-black/50" />
-            {/* Right dark area */}
-            <div className="absolute top-[12%] bottom-[12%] right-0 w-[15%] bg-black/50" />
-          </div>
-
           <img 
             src={carDiagnosticImage} 
             alt={t('carDiagnosticAlt')} 
