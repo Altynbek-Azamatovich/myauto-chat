@@ -57,9 +57,9 @@ const Welcome = () => {
           <AnimatedCar />
         </div>
 
-        {/* Logo - appears with light beam effect */}
+        {/* Logo */}
         <div className={`flex flex-col items-center gap-4 transition-all duration-700 ease-out ${showLogo ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-          <h1 className="text-5xl font-bold font-logo tracking-tight">
+          <h1 className="text-6xl font-bold font-logo tracking-tight">
             <span className="text-primary">my</span>
             <span className="text-foreground">auto</span>
           </h1>
