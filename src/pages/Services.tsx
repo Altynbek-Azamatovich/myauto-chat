@@ -108,7 +108,13 @@ const Services = () => {
   }, []);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
+      {/* Subtle shadow background */}
+      <div className="fixed inset-0 pointer-events-none -z-10">
+        <div className="absolute top-0 left-0 w-[60%] h-[40%] bg-gradient-radial from-muted/60 via-transparent to-transparent" />
+        <div className="absolute bottom-[20%] right-0 w-[50%] h-[35%] bg-gradient-radial from-muted/50 via-transparent to-transparent" />
+        <div className="absolute top-[40%] left-[10%] w-[40%] h-[30%] bg-gradient-radial from-muted/40 via-transparent to-transparent" />
+      </div>
       {/* Header */}
       <header className="flex items-center justify-between px-4 py-4">
         <AppSidebar 
