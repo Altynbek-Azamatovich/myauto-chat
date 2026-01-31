@@ -418,8 +418,8 @@ const PhotoDiagnostic = () => {
           </div>
         </div>
 
-        {/* Camera button - above overlay */}
-        <div className="px-4 space-y-4 pt-4 relative z-20">
+        {/* Camera button */}
+        <div className="px-4 space-y-4 pt-4">
           <label className="flex flex-col items-center justify-center min-h-[120px] cursor-pointer">
             <input 
               type="file" 
