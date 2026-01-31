@@ -10,10 +10,34 @@ export const useVoiceChat = ({ onTranscript }: UseVoiceChatOptions) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  const stopAndProcess = useCallback(async () => {
+    if (!mediaRecorderRef.current || !isRecording) return;
+    
+    setIsProcessing(true);
+    mediaRecorderRef.current.stop();
+    setIsRecording(false);
+  }, [isRecording]);
+
+  const cancelRecording = useCallback(() => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      chunksRef.current = [];
+      
+      // Stop all tracks
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current = null;
+      }
+    }
+  }, [isRecording]);
 
   const startRecording = useCallback(async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
       
       const mediaRecorder = new MediaRecorder(stream, {
         mimeType: 'audio/webm;codecs=opus'
@@ -29,7 +53,11 @@ export const useVoiceChat = ({ onTranscript }: UseVoiceChatOptions) => {
       };
 
       mediaRecorder.onstop = async () => {
-        setIsProcessing(true);
+        // If chunks is empty, recording was cancelled
+        if (chunksRef.current.length === 0) {
+          setIsProcessing(false);
+          return;
+        }
         
         try {
           const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
@@ -64,10 +92,12 @@ export const useVoiceChat = ({ onTranscript }: UseVoiceChatOptions) => {
           toast.error('Ошибка распознавания речи');
         } finally {
           setIsProcessing(false);
+          // Stop all tracks
+          if (streamRef.current) {
+            streamRef.current.getTracks().forEach(track => track.stop());
+            streamRef.current = null;
+          }
         }
-        
-        // Stop all tracks
-        stream.getTracks().forEach(track => track.stop());
       };
 
       mediaRecorder.start();
@@ -78,26 +108,20 @@ export const useVoiceChat = ({ onTranscript }: UseVoiceChatOptions) => {
     }
   }, [onTranscript]);
 
-  const stopRecording = useCallback(() => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-    }
-  }, [isRecording]);
-
   const toggleRecording = useCallback(() => {
     if (isRecording) {
-      stopRecording();
+      stopAndProcess();
     } else {
       startRecording();
     }
-  }, [isRecording, startRecording, stopRecording]);
+  }, [isRecording, startRecording, stopAndProcess]);
 
   return {
     isRecording,
     isProcessing,
     startRecording,
-    stopRecording,
+    stopRecording: stopAndProcess,
+    cancelRecording,
     toggleRecording,
   };
 };

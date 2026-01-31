@@ -12,6 +12,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { useVoiceChat, playTTS } from "@/hooks/useVoiceChat";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { VoiceRecordingIndicator } from "@/components/VoiceRecordingIndicator";
 
 interface Message {
   id: number;
@@ -71,7 +72,7 @@ const SuperChat = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  const { isRecording, isProcessing, toggleRecording } = useVoiceChat({
+  const { isRecording, isProcessing, startRecording, stopRecording, cancelRecording } = useVoiceChat({
     onTranscript: (text) => {
       setMessage(text);
       setTimeout(() => {
@@ -613,6 +614,14 @@ const SuperChat = () => {
         </div>
       )}
 
+      {/* Voice Recording Overlay */}
+      <VoiceRecordingIndicator
+        isRecording={isRecording}
+        isProcessing={isProcessing}
+        onStop={stopRecording}
+        onCancel={cancelRecording}
+      />
+
       {/* Input Area */}
       {activeTab === "chat" && (
         <div className="fixed bottom-24 left-1/2 -translate-x-1/2 w-full max-w-md px-4 py-3 z-10">
@@ -622,23 +631,17 @@ const SuperChat = () => {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder={isRecording ? "Говорите..." : t('message')}
+                placeholder={t('message')}
                 className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-2 h-8"
-                disabled={isRecording || isProcessing}
               />
 
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className={`h-8 w-8 flex-shrink-0 transition-colors ${isRecording ? 'text-red-500' : ''}`}
-                onClick={toggleRecording}
-                disabled={isProcessing}
+                className="h-8 w-8 flex-shrink-0"
+                onClick={startRecording}
               >
-                {isProcessing ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                ) : (
-                  <Mic className={`h-5 w-5 ${isRecording ? 'animate-pulse' : ''}`} />
-                )}
+                <Mic className="h-5 w-5" />
               </Button>
             </div>
 
@@ -646,7 +649,7 @@ const SuperChat = () => {
               onClick={() => handleSendMessage()}
               size="icon" 
               className="rounded-full bg-primary hover:bg-primary/90 flex-shrink-0 h-10 w-10"
-              disabled={isLoading || !message.trim() || isRecording}
+              disabled={isLoading || !message.trim()}
             >
               <ArrowUp className="h-4 w-4" />
             </Button>
