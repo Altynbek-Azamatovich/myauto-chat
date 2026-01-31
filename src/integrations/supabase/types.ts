@@ -151,6 +151,30 @@ export type Database = {
         }
         Relationships: []
       }
+      diagnostic_reports: {
+        Row: {
+          analysis: string
+          created_at: string
+          id: string
+          image_url: string
+          user_id: string
+        }
+        Insert: {
+          analysis: string
+          created_at?: string
+          id?: string
+          image_url: string
+          user_id: string
+        }
+        Update: {
+          analysis?: string
+          created_at?: string
+          id?: string
+          image_url?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       help_requests: {
         Row: {
           created_at: string
