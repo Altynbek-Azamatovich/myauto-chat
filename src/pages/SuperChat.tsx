@@ -1,14 +1,17 @@
-import { useState, useRef, useEffect } from "react";
-import { Menu, Bell, Plus, Mic, ArrowUp, Users, MessageCircle, Sparkles, Volume2, VolumeX, Loader2 } from "lucide-react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { Menu, Bell, Mic, ArrowUp, Archive, Loader2, Volume2, VolumeX, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { format } from "date-fns";
+import { ru } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useVoiceChat, playTTS } from "@/hooks/useVoiceChat";
+import { supabase } from "@/integrations/supabase/client";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Message {
   id: number;
@@ -17,42 +20,174 @@ interface Message {
   timestamp: string;
 }
 
+interface ArchivedSession {
+  id: string;
+  title: string;
+  created_at: string;
+  messages: Message[];
+}
+
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 
 const SuperChat = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
-  const [activeTab, setActiveTab] = useState<"chat" | "community">("chat");
-  const [messages, setMessages] = useState<Message[]>(() => {
-    const saved = localStorage.getItem('superChatMessages');
-    if (saved) {
-      return JSON.parse(saved);
+  const [activeTab, setActiveTab] = useState<"chat" | "archive">("chat");
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: 1,
+      text: t('chatAiHelper'),
+      isBot: true,
+      timestamp: format(new Date(), 'HH:mm')
     }
-    return [
-      {
-        id: 1,
-        text: t('chatAiHelper'),
-        isBot: true,
-        timestamp: format(new Date(), 'HH:mm')
-      }
-    ];
-  });
+  ]);
   const [isLoading, setIsLoading] = useState(false);
   const [ttsEnabled, setTtsEnabled] = useState(true);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [archivedSessions, setArchivedSessions] = useState<ArchivedSession[]>([]);
+  const [selectedSession, setSelectedSession] = useState<ArchivedSession | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [sessionStartTime] = useState(new Date());
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   const { isRecording, isProcessing, toggleRecording } = useVoiceChat({
     onTranscript: (text) => {
       setMessage(text);
-      // Auto-send after voice input
       setTimeout(() => {
         handleSendMessage(text);
       }, 100);
     }
   });
+
+  // Get user ID on mount
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id);
+        fetchArchivedSessions(user.id);
+      }
+    };
+    getUser();
+  }, []);
+
+  // Auto-save session when component unmounts or page closes
+  useEffect(() => {
+    const saveSession = async () => {
+      if (messages.length > 1 && userId) {
+        await saveCurrentSession();
+      }
+    };
+
+    // Save on page unload
+    const handleBeforeUnload = () => {
+      if (messages.length > 1 && userId) {
+        // Use sendBeacon for reliable save on close
+        const sessionData = {
+          userId,
+          messages,
+          title: generateSessionTitle(messages),
+          startTime: sessionStartTime.toISOString()
+        };
+        navigator.sendBeacon(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/save-chat-session`,
+          JSON.stringify(sessionData)
+        );
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      saveSession();
+    };
+  }, [messages, userId]);
+
+  const generateSessionTitle = (msgs: Message[]): string => {
+    // Find first user message for title
+    const firstUserMsg = msgs.find(m => !m.isBot);
+    if (firstUserMsg) {
+      return firstUserMsg.text.substring(0, 50) + (firstUserMsg.text.length > 50 ? '...' : '');
+    }
+    return 'Разговор ' + format(new Date(), 'd MMM HH:mm', { locale: ru });
+  };
+
+  const saveCurrentSession = async () => {
+    if (!userId || messages.length <= 1) return;
+
+    try {
+      // Create conversation
+      const { data: conversation, error: convError } = await supabase
+        .from('chat_conversations')
+        .insert({
+          user_id: userId,
+          title: generateSessionTitle(messages)
+        })
+        .select()
+        .single();
+
+      if (convError) throw convError;
+
+      // Save all messages
+      const messagesToSave = messages.map(msg => ({
+        conversation_id: conversation.id,
+        user_id: userId,
+        role: msg.isBot ? 'assistant' : 'user',
+        content: msg.text
+      }));
+
+      const { error: msgError } = await supabase
+        .from('chat_messages')
+        .insert(messagesToSave);
+
+      if (msgError) throw msgError;
+
+      console.log('Session saved to archive');
+    } catch (error) {
+      console.error('Error saving session:', error);
+    }
+  };
+
+  const fetchArchivedSessions = async (uid: string) => {
+    try {
+      const { data: conversations, error } = await supabase
+        .from('chat_conversations')
+        .select(`
+          id,
+          title,
+          created_at,
+          chat_messages (
+            id,
+            role,
+            content,
+            created_at
+          )
+        `)
+        .eq('user_id', uid)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const sessions: ArchivedSession[] = (conversations || []).map(conv => ({
+        id: conv.id,
+        title: conv.title,
+        created_at: conv.created_at,
+        messages: (conv.chat_messages || []).map((msg: any, idx: number) => ({
+          id: idx,
+          text: msg.content,
+          isBot: msg.role === 'assistant',
+          timestamp: format(new Date(msg.created_at), 'HH:mm')
+        }))
+      }));
+
+      setArchivedSessions(sessions);
+    } catch (error) {
+      console.error('Error fetching sessions:', error);
+    }
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -60,10 +195,6 @@ const SuperChat = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
-
-  useEffect(() => {
-    localStorage.setItem('superChatMessages', JSON.stringify(messages));
   }, [messages]);
 
   const handleSendMessage = async (inputText?: string) => {
@@ -95,7 +226,8 @@ const SuperChat = () => {
           messages: [
             ...messages.map(m => ({ role: m.isBot ? "assistant" : "user", content: m.text })),
             { role: "user", content: userMessage.text }
-          ]
+          ],
+          userId
         }),
       });
 
@@ -174,7 +306,7 @@ const SuperChat = () => {
         }
       }
 
-      // Play TTS if enabled and we have a response
+      // Play TTS if enabled
       if (ttsEnabled && assistantText) {
         setIsSpeaking(true);
         await playTTS(assistantText);
@@ -198,9 +330,108 @@ const SuperChat = () => {
     }
   };
 
+  const resumeSession = (session: ArchivedSession) => {
+    setMessages(session.messages);
+    setSelectedSession(null);
+    setActiveTab("chat");
+    toast({
+      title: "Разговор возобновлён",
+      description: session.title
+    });
+  };
+
+  const deleteSession = async (sessionId: string) => {
+    try {
+      // Delete messages first
+      await supabase
+        .from('chat_messages')
+        .delete()
+        .eq('conversation_id', sessionId);
+
+      // Delete conversation
+      await supabase
+        .from('chat_conversations')
+        .delete()
+        .eq('id', sessionId);
+
+      setArchivedSessions(prev => prev.filter(s => s.id !== sessionId));
+      setSelectedSession(null);
+      toast({ title: "Сессия удалена" });
+    } catch (error) {
+      console.error('Error deleting session:', error);
+      toast({ title: "Ошибка удаления", variant: "destructive" });
+    }
+  };
+
+  // Selected session view
+  if (selectedSession) {
+    return (
+      <div className="h-screen bg-white dark:bg-background flex flex-col overflow-hidden">
+        <header className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md flex items-center justify-between px-4 py-4 z-20 bg-background/80 backdrop-blur-lg">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setSelectedSession(null)}
+            className="rounded-full hover:bg-muted/30"
+          >
+            <Archive className="h-[20px] w-[20px] text-foreground" strokeWidth={2.5} />
+          </Button>
+
+          <div className="flex-1 text-center">
+            <p className="text-sm font-medium truncate px-4">{selectedSession.title}</p>
+            <p className="text-xs text-muted-foreground">
+              {format(new Date(selectedSession.created_at), 'd MMMM yyyy, HH:mm', { locale: ru })}
+            </p>
+          </div>
+
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => deleteSession(selectedSession.id)}
+            className="rounded-full hover:bg-destructive/10 text-destructive"
+          >
+            <Trash2 className="h-[20px] w-[20px]" strokeWidth={2.5} />
+          </Button>
+        </header>
+
+        <div className="flex-1 overflow-y-auto px-4 pt-20 pb-24">
+          <div className="space-y-4">
+            {selectedSession.messages.map((msg) => (
+              <div 
+                key={msg.id} 
+                className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'}`}
+              >
+                <Card className={`max-w-[75%] p-4 rounded-2xl border-0 shadow-sm ${
+                  msg.isBot 
+                    ? 'bg-muted/80 text-foreground' 
+                    : 'bg-primary text-primary-foreground'
+                }`}>
+                  <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.text}</p>
+                  <p className="text-xs mt-2 opacity-60">
+                    {msg.isBot ? 'myAuto AI' : t('you')} • {msg.timestamp}
+                  </p>
+                </Card>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 w-full max-w-md px-4 py-3">
+          <Button 
+            onClick={() => resumeSession(selectedSession)}
+            className="w-full"
+            size="lg"
+          >
+            Продолжить разговор
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="h-screen bg-white dark:bg-background flex flex-col overflow-hidden">
-      {/* Header - Fixed at top */}
+      {/* Header */}
       <header className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md flex items-center justify-between px-4 py-4 z-20 bg-background/80 backdrop-blur-lg">
         <AppSidebar 
           trigger={
@@ -222,14 +453,17 @@ const SuperChat = () => {
             {t('superChat')}
           </button>
           <button
-            onClick={() => setActiveTab("community")}
+            onClick={() => {
+              setActiveTab("archive");
+              if (userId) fetchArchivedSessions(userId);
+            }}
             className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
-              activeTab === "community"
+              activeTab === "archive"
                 ? "bg-white/70 text-primary"
                 : "text-muted-foreground"
             }`}
           >
-            {t('community')}
+            Архив
           </button>
         </div>
 
@@ -257,151 +491,123 @@ const SuperChat = () => {
         </div>
       </header>
 
-      {/* Content */}
-      {activeTab === "community" ? (
+      {/* Archive Tab */}
+      {activeTab === "archive" ? (
         <div className="flex-1 overflow-y-auto px-4 pt-20 pb-32">
-          <div className="flex items-center justify-center min-h-[calc(100vh-200px)] p-6">
-            <Card className="max-w-md w-full p-8 text-center space-y-6 bg-gradient-to-br from-muted/30 to-muted/10 border-2 border-dashed">
-              <div className="flex justify-center">
-                <div className="relative">
-                  <Users className="h-16 w-16 text-primary" />
-                  <Sparkles className="h-6 w-6 text-primary absolute -top-1 -right-1 animate-pulse" />
-                </div>
-              </div>
-              
-              <div className="space-y-3">
-                <h3 className="text-2xl font-bold">
-                  {t('communitySoon')}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  {t('workingOnCommunity')}
-                </p>
-              </div>
-
-              <div className="space-y-3 text-left">
-                <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
-                  <MessageCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="font-medium">{t('groupChats')}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {t('chatWithOthers')}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
-                  <Users className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="font-medium">{t('thematicGroups')}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {t('joinGroups')}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
-                  <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="font-medium">{t('shareExperience')}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {t('shareTips')}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <p className="text-sm text-muted-foreground italic">
-                {t('stayTuned')} 🚀
+          {archivedSessions.length === 0 ? (
+            <div className="flex flex-col items-center justify-center min-h-[50vh] text-center">
+              <Archive className="h-16 w-16 text-muted-foreground/50 mb-4" />
+              <h3 className="text-lg font-medium mb-2">Архив пуст</h3>
+              <p className="text-sm text-muted-foreground">
+                Ваши разговоры с ИИ будут сохраняться здесь автоматически
               </p>
-            </Card>
-          </div>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {archivedSessions.map((session) => (
+                <Card 
+                  key={session.id}
+                  className="p-4 cursor-pointer hover:bg-muted/50 transition-colors"
+                  onClick={() => setSelectedSession(session)}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{session.title}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {format(new Date(session.created_at), 'd MMMM yyyy, HH:mm', { locale: ru })}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {session.messages.length} сообщений
+                      </p>
+                    </div>
+                    <Archive className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       ) : (
+        /* Chat Tab */
         <div className="flex-1 overflow-y-auto px-4 pt-20 pb-36">
           <div className="space-y-4">
             {messages.map((msg) => (
-            <div 
-              key={msg.id} 
-              className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'} animate-fade-in`}
-            >
-              <Card className={`max-w-[75%] p-4 rounded-2xl border-0 shadow-sm ${
-                msg.isBot 
-                  ? 'bg-muted/80 text-foreground' 
-                  : 'bg-primary text-primary-foreground'
-              }`}>
-                <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.text}</p>
-                <p className="text-xs mt-2 opacity-60">
-                  {msg.isBot ? 'myAuto AI' : t('you')} • {msg.timestamp}
-                </p>
-              </Card>
-            </div>
-          ))}
-          {isLoading && messages[messages.length - 1]?.isBot !== true && (
-            <div className="flex justify-start animate-fade-in">
-              <Card className="max-w-[75%] p-4 rounded-2xl border-0 shadow-sm bg-muted/80 text-foreground">
-                <p className="text-sm">{t('thinking')}</p>
-              </Card>
-            </div>
-          )}
-          {isSpeaking && (
-            <div className="flex justify-center">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Volume2 className="h-4 w-4 animate-pulse" />
-                <span>Озвучивание...</span>
+              <div 
+                key={msg.id} 
+                className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'} animate-fade-in`}
+              >
+                <Card className={`max-w-[75%] p-4 rounded-2xl border-0 shadow-sm ${
+                  msg.isBot 
+                    ? 'bg-muted/80 text-foreground' 
+                    : 'bg-primary text-primary-foreground'
+                }`}>
+                  <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.text}</p>
+                  <p className="text-xs mt-2 opacity-60">
+                    {msg.isBot ? 'myAuto AI' : t('you')} • {msg.timestamp}
+                  </p>
+                </Card>
               </div>
-            </div>
-          )}
+            ))}
+            {isLoading && messages[messages.length - 1]?.isBot !== true && (
+              <div className="flex justify-start animate-fade-in">
+                <Card className="max-w-[75%] p-4 rounded-2xl border-0 shadow-sm bg-muted/80 text-foreground">
+                  <p className="text-sm">{t('thinking')}</p>
+                </Card>
+              </div>
+            )}
+            {isSpeaking && (
+              <div className="flex justify-center">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Volume2 className="h-4 w-4 animate-pulse" />
+                  <span>Озвучивание...</span>
+                </div>
+              </div>
+            )}
             <div ref={messagesEndRef} />
           </div>
         </div>
       )}
 
-      {/* Input Area - Fixed at bottom */}
-      <div className="fixed bottom-24 left-1/2 -translate-x-1/2 w-full max-w-md px-4 py-3 z-10">
-        <div className="flex items-center space-x-2">
-          <div className="flex items-center bg-black/15 dark:bg-muted/50 backdrop-blur-[2px] rounded-full px-3 h-10 flex-1">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-8 w-8 flex-shrink-0"
-            >
-              <Plus className="h-5 w-5" />
-            </Button>
-            
-            <Input
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder={isRecording ? "Говорите..." : t('message')}
-              className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-2 h-8"
-              disabled={isRecording || isProcessing}
-            />
+      {/* Input Area */}
+      {activeTab === "chat" && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 w-full max-w-md px-4 py-3 z-10">
+          <div className="flex items-center space-x-2">
+            <div className="flex items-center bg-black/15 dark:bg-muted/50 backdrop-blur-[2px] rounded-full px-3 h-10 flex-1">
+              <Input
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder={isRecording ? "Говорите..." : t('message')}
+                className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-2 h-8"
+                disabled={isRecording || isProcessing}
+              />
+
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className={`h-8 w-8 flex-shrink-0 transition-colors ${isRecording ? 'text-red-500' : ''}`}
+                onClick={toggleRecording}
+                disabled={isProcessing}
+              >
+                {isProcessing ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  <Mic className={`h-5 w-5 ${isRecording ? 'animate-pulse' : ''}`} />
+                )}
+              </Button>
+            </div>
 
             <Button 
-              variant="ghost" 
+              onClick={() => handleSendMessage()}
               size="icon" 
-              className={`h-8 w-8 flex-shrink-0 transition-colors ${isRecording ? 'text-red-500' : ''}`}
-              onClick={toggleRecording}
-              disabled={isProcessing}
+              className="rounded-full bg-primary hover:bg-primary/90 flex-shrink-0 h-10 w-10"
+              disabled={isLoading || !message.trim() || isRecording}
             >
-              {isProcessing ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
-              ) : (
-                <Mic className={`h-5 w-5 ${isRecording ? 'animate-pulse' : ''}`} />
-              )}
+              <ArrowUp className="h-4 w-4" />
             </Button>
           </div>
-
-          <Button 
-            onClick={() => handleSendMessage()}
-            size="icon" 
-            className="rounded-full bg-primary hover:bg-primary/90 flex-shrink-0 h-10 w-10"
-            disabled={isLoading || !message.trim() || isRecording}
-          >
-            <ArrowUp className="h-4 w-4" />
-          </Button>
         </div>
-      </div>
+      )}
     </div>
   );
 };
