@@ -8,21 +8,28 @@ import { AnimatedCar } from "@/components/AnimatedCar";
 const Welcome = () => {
   const navigate = useNavigate();
   const { t, language, setLanguage } = useLanguage();
+  const [showLogo, setShowLogo] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const [showButton, setShowButton] = useState(false);
 
   useEffect(() => {
-    // Show content after car animation starts
+    // Show logo after light beam appears
+    const logoTimer = setTimeout(() => {
+      setShowLogo(true);
+    }, 1400);
+
+    // Show welcome text after logo
     const contentTimer = setTimeout(() => {
       setShowContent(true);
-    }, 800);
+    }, 1800);
 
     // Show button after content appears
     const buttonTimer = setTimeout(() => {
       setShowButton(true);
-    }, 1600);
+    }, 2200);
 
     return () => {
+      clearTimeout(logoTimer);
       clearTimeout(contentTimer);
       clearTimeout(buttonTimer);
     };
@@ -44,22 +51,23 @@ const Welcome = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-8 gap-12">
+      <div className="flex-1 flex flex-col items-center justify-center px-8 gap-8">
         {/* Car Animation */}
-        <div className="relative">
+        <div className="w-full max-w-md">
           <AnimatedCar />
         </div>
 
-        {/* Logo and Welcome Text */}
-        <div className={`flex flex-col items-center gap-4 transition-all duration-700 ease-out ${showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          {/* Logo */}
+        {/* Logo - appears with light beam effect */}
+        <div className={`flex flex-col items-center gap-4 transition-all duration-700 ease-out ${showLogo ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <h1 className="text-5xl font-bold font-logo tracking-tight">
             <span className="text-primary">my</span>
             <span className="text-foreground">auto</span>
           </h1>
-          
-          {/* Tagline */}
-          <p className="text-muted-foreground text-center text-base max-w-[280px]">
+        </div>
+
+        {/* Welcome Text */}
+        <div className={`transition-all duration-500 ease-out ${showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+          <p className="text-muted-foreground text-center text-lg">
             {t('welcome')}
           </p>
         </div>
