@@ -26,19 +26,16 @@ export const AnimatedCar = ({ onAnimationComplete }: AnimatedCarProps) => {
   }, [onAnimationComplete]);
 
   return (
-    <div className="relative w-full overflow-hidden">
-      {/* Car image - slides in from right */}
+    <div className="w-screen overflow-hidden">
+      {/* Car image - slides in from right, full width */}
       <img
         src={carImage}
         alt="Car"
-        className={`w-full h-auto object-contain transition-all duration-[1.2s] ease-out ${
+        className={`w-full h-auto transition-all duration-[1.2s] ease-out ${
           isVisible 
             ? "translate-x-0 opacity-100" 
             : "translate-x-full opacity-0"
         }`}
-        style={{
-          filter: "drop-shadow(0 10px 30px rgba(0, 0, 0, 0.2))"
-        }}
       />
     </div>
   );

@@ -52,8 +52,8 @@ const Welcome = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-8 gap-8">
-        {/* Car Animation */}
-        <div className="w-full max-w-md">
+        {/* Car Animation - full width */}
+        <div className="w-screen -mx-8">
           <AnimatedCar />
         </div>
 
