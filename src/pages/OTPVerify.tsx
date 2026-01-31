@@ -225,7 +225,7 @@ const OTPVerify = () => {
           variant="ghost"
           size="icon"
           onClick={() => navigate('/phone-auth')}
-          className="text-primary"
+          className="text-foreground"
         >
           <ArrowLeft className="h-6 w-6" />
         </Button>
@@ -233,14 +233,19 @@ const OTPVerify = () => {
 
       <div className="flex-1 flex flex-col max-w-md mx-auto w-full">
         {/* Title */}
-        <h1 className="text-3xl font-bold text-primary mb-3">
+        <h1 className="text-3xl font-bold text-foreground mb-3">
           {t('enterSmsCode')}
         </h1>
 
-        {/* Subtitle with phone number */}
-        <p className="text-foreground mb-8">
-          {t('smsCodeSentTo')} {formatPhoneDisplay(phone)}
-        </p>
+        {/* Subtitle with phone number - kept on single line */}
+        <div className="mb-8">
+          <p className="text-foreground">
+            {t('smsCodeSentTo')}
+          </p>
+          <p className="text-foreground font-medium whitespace-nowrap">
+            {formatPhoneDisplay(phone)}
+          </p>
+        </div>
 
         {/* OTP Input - 4 boxes */}
         <div className="flex justify-center gap-4 mb-8">
