@@ -111,10 +111,9 @@ const Services = () => {
     <div className="min-h-screen relative">
       {/* Subtle shadow background */}
       <div className="fixed inset-0 pointer-events-none -z-10">
-        <div className="absolute top-[-10%] left-[-20%] w-[80%] h-[50%] bg-gradient-radial from-foreground/[0.07] via-foreground/[0.02] to-transparent" />
-        <div className="absolute bottom-[10%] right-[-10%] w-[70%] h-[45%] bg-gradient-radial from-foreground/[0.06] via-foreground/[0.015] to-transparent" />
-        <div className="absolute top-[35%] left-[5%] w-[50%] h-[40%] bg-gradient-radial from-foreground/[0.05] via-transparent to-transparent" />
-        <div className="absolute bottom-[30%] left-[40%] w-[60%] h-[35%] bg-gradient-radial from-foreground/[0.04] via-transparent to-transparent" />
+        <div className="absolute top-[-10%] left-[-20%] w-[90%] h-[60%] bg-gradient-radial from-foreground/20 via-foreground/5 to-transparent" />
+        <div className="absolute bottom-0 right-[-15%] w-[80%] h-[55%] bg-gradient-radial from-foreground/15 via-foreground/3 to-transparent" />
+        <div className="absolute top-[30%] left-0 w-[60%] h-[50%] bg-gradient-radial from-foreground/10 via-transparent to-transparent" />
       </div>
       {/* Header */}
       <header className="flex items-center justify-between px-4 py-4">
