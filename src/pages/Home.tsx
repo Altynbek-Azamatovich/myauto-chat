@@ -124,9 +124,10 @@ const Home = () => {
   return <div className="min-h-screen relative">
       {/* Subtle shadow background */}
       <div className="fixed inset-0 pointer-events-none -z-10">
-        <div className="absolute top-0 left-0 w-[60%] h-[40%] bg-gradient-radial from-muted/60 via-transparent to-transparent" />
-        <div className="absolute bottom-[20%] right-0 w-[50%] h-[35%] bg-gradient-radial from-muted/50 via-transparent to-transparent" />
-        <div className="absolute top-[40%] left-[10%] w-[40%] h-[30%] bg-gradient-radial from-muted/40 via-transparent to-transparent" />
+        <div className="absolute top-[-10%] left-[-20%] w-[80%] h-[50%] bg-gradient-radial from-foreground/[0.07] via-foreground/[0.02] to-transparent" />
+        <div className="absolute bottom-[10%] right-[-10%] w-[70%] h-[45%] bg-gradient-radial from-foreground/[0.06] via-foreground/[0.015] to-transparent" />
+        <div className="absolute top-[35%] left-[5%] w-[50%] h-[40%] bg-gradient-radial from-foreground/[0.05] via-transparent to-transparent" />
+        <div className="absolute bottom-[30%] left-[40%] w-[60%] h-[35%] bg-gradient-radial from-foreground/[0.04] via-transparent to-transparent" />
       </div>
       {/* Header */}
       <header className="flex items-center justify-between px-4 py-4">
