@@ -3,71 +3,75 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Globe } from "lucide-react";
 import { useState, useEffect } from "react";
+import { AnimatedCar } from "@/components/AnimatedCar";
 
 const Welcome = () => {
   const navigate = useNavigate();
   const { t, language, setLanguage } = useLanguage();
-  
-  const [displayedText, setDisplayedText] = useState("");
-  const fullText = "myauto";
-  
+  const [showContent, setShowContent] = useState(false);
+  const [showButton, setShowButton] = useState(false);
+
   useEffect(() => {
-    let currentIndex = 0;
-    const typingInterval = setInterval(() => {
-      if (currentIndex <= fullText.length) {
-        setDisplayedText(fullText.slice(0, currentIndex));
-        currentIndex++;
-      } else {
-        clearInterval(typingInterval);
-      }
-    }, 150);
-    
-    return () => clearInterval(typingInterval);
+    // Show content after car animation starts
+    const contentTimer = setTimeout(() => {
+      setShowContent(true);
+    }, 800);
+
+    // Show button after content appears
+    const buttonTimer = setTimeout(() => {
+      setShowButton(true);
+    }, 1600);
+
+    return () => {
+      clearTimeout(contentTimer);
+      clearTimeout(buttonTimer);
+    };
   }, []);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col overflow-hidden">
       {/* Language Toggle */}
-      <div className="absolute top-4 right-4 z-10">
+      <div className={`absolute top-4 right-4 z-10 transition-all duration-500 ${showContent ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
         <Button 
           variant="ghost" 
           size="sm" 
           onClick={() => setLanguage(language === 'ru' ? 'kk' : 'ru')} 
-          className="bg-black/20 backdrop-blur-lg text-white hover:bg-black/30"
+          className="bg-muted/50 backdrop-blur-lg text-foreground hover:bg-muted/70"
         >
-          <Globe className="h-4 w-4 mr-2" />
+          <Globe className="h-4 w-4 mr-2" strokeWidth={2.5} />
           {language === 'ru' ? 'РУ' : 'ҚЗ'}
         </Button>
       </div>
 
-      {/* Main Content - Logo and Animations */}
-      <div className="flex-1 flex flex-col items-center justify-center px-8 gap-8">
-        {/* Animated Logo Text */}
-        <h1 className="text-6xl font-bold font-logo text-foreground min-h-[4rem] animate-scale-in">
-          {displayedText.toLowerCase().split('').map((char, index) => (
-            <span 
-              key={index}
-              className={index < 2 ? "text-primary" : "text-muted-foreground"}
-            >
-              {char}
-            </span>
-          ))}
-          <span className="text-primary animate-[pulse_0.8s_ease-in-out_infinite] font-normal">|</span>
-        </h1>
-        
-        {/* Welcome Text */}
-        <h2 className="text-2xl font-bold text-foreground text-center">
-          {t('welcome')}
-        </h2>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col items-center justify-center px-8 gap-12">
+        {/* Car Animation */}
+        <div className="relative">
+          <AnimatedCar />
+        </div>
+
+        {/* Logo and Welcome Text */}
+        <div className={`flex flex-col items-center gap-4 transition-all duration-700 ease-out ${showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          {/* Logo */}
+          <h1 className="text-5xl font-bold font-logo tracking-tight">
+            <span className="text-primary">my</span>
+            <span className="text-foreground">auto</span>
+          </h1>
+          
+          {/* Tagline */}
+          <p className="text-muted-foreground text-center text-base max-w-[280px]">
+            {t('welcome')}
+          </p>
+        </div>
       </div>
 
-      {/* Start Button - now goes directly to phone auth */}
-      <div className="px-4 pb-8">
+      {/* Continue Button */}
+      <div className={`px-6 pb-12 transition-all duration-500 ease-out ${showButton ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <Button 
           onClick={() => navigate('/phone-auth')} 
-          className="w-full h-14 text-lg rounded-2xl bg-primary hover:bg-primary/90"
+          className="w-full h-14 text-lg font-semibold rounded-2xl bg-foreground text-background hover:bg-foreground/90 transition-all duration-300"
         >
-          {t('getStarted')}
+          {t('continue') || 'Продолжить'}
         </Button>
       </div>
     </div>
