@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
-import logoAnimated from "@/assets/logo-animated.png";
 import { Globe } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -10,7 +9,7 @@ const Welcome = () => {
   const { t, language, setLanguage } = useLanguage();
   
   const [displayedText, setDisplayedText] = useState("");
-  const fullText = "myAuto";
+  const fullText = "myauto";
   
   useEffect(() => {
     let currentIndex = 0;
@@ -43,13 +42,9 @@ const Welcome = () => {
 
       {/* Main Content - Logo and Animations */}
       <div className="flex-1 flex flex-col items-center justify-center px-8 gap-8">
-        <img 
-          src={logoAnimated} 
-          alt="myAuto Logo" 
-          className="w-48 h-48 animate-scale-in"
-        />
-        <h1 className="text-5xl font-bold text-foreground min-h-[4rem]">
-          {displayedText.split('').map((char, index) => (
+        {/* Animated Logo Text */}
+        <h1 className="text-6xl font-bold font-logo text-foreground min-h-[4rem] animate-scale-in">
+          {displayedText.toLowerCase().split('').map((char, index) => (
             <span 
               key={index}
               className={index < 2 ? "text-primary" : "text-muted-foreground"}

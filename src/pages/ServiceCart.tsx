@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCart } from "@/contexts/CartContext";
-import logoImage from "@/assets/logo-main.png";
+import Logo from "@/components/Logo";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -82,7 +82,7 @@ const ServiceCart = () => {
           <ArrowLeft className="h-8 w-8" />
         </Button>
 
-        <img src={logoImage} alt="myAuto" className="h-12 w-auto" />
+        <Logo size="md" />
 
         <div className="w-10" />
       </header>

@@ -6,7 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import logoImage from "@/assets/logo-main.png";
+import Logo from "@/components/Logo";
 import carDiagnosticImage from "@/assets/car-diagnostic-new.png";
 import { usePersistedState } from '@/hooks/usePersistedState';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -60,7 +60,7 @@ const PhotoDiagnostic = () => {
           <ArrowLeft className="h-8 w-8" />
         </Button>
 
-        <img src={logoImage} alt="myAuto" className="h-12 w-auto" />
+        <Logo size="md" />
 
         <div className="w-10" />
       </header>

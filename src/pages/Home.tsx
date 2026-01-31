@@ -14,8 +14,8 @@ import { ru, kk } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import carCoveredImage from "@/assets/car-covered-new.png";
-import logoImage from "@/assets/logo-main.png";
 import icon360 from "@/assets/360-icon.png";
+import Logo from "@/components/Logo";
 import BottomNavigation from '@/components/BottomNavigation';
 import { AppSidebar } from '@/components/AppSidebar';
 import { usePersistedState } from '@/hooks/usePersistedState';
@@ -128,7 +128,7 @@ const Home = () => {
               <Menu className="w-[25px] h-[25px]" />
             </Button>} />
 
-        <img src={logoImage} alt="myAuto" className="h-12 w-auto" />
+        <Logo size="md" />
 
         <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground" onClick={() => navigate('/notifications')}>
           <Bell className="w-[20px] h-[20px]" />
