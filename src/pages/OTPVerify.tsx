@@ -1,20 +1,31 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { ChevronLeft, Eye, EyeOff, HelpCircle } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 const OTPVerify = () => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
   const { toast } = useToast();
-  const [otp, setOtp] = useState("");
+  const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
   const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(60);
-  const [showOtp, setShowOtp] = useState(false);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  
+  const phone = localStorage.getItem('auth_phone') || '';
+
+  useEffect(() => {
+    if (!phone) {
+      navigate('/phone-auth');
+      return;
+    }
+    
+    // Focus first input on mount
+    inputRefs.current[0]?.focus();
+  }, [phone, navigate]);
 
   useEffect(() => {
     if (resendTimer > 0) {
@@ -23,13 +34,47 @@ const OTPVerify = () => {
     }
   }, [resendTimer]);
 
-  const handleVerify = async () => {
-    if (otp.length !== 6) {
+  const formatPhoneDisplay = (phone: string) => {
+    // Format: +7 777 237 3000
+    const digits = phone.replace(/[^\d]/g, '');
+    if (digits.length < 11) return phone;
+    
+    return `+${digits.slice(0, 1)} ${digits.slice(1, 4)} ${digits.slice(4, 7)} ${digits.slice(7)}`;
+  };
+
+  const handleOtpChange = (index: number, value: string) => {
+    if (!/^\d*$/.test(value)) return;
+    
+    const newOtp = [...otp];
+    newOtp[index] = value.slice(-1);
+    setOtp(newOtp);
+    
+    // Auto-focus next input
+    if (value && index < 3) {
+      inputRefs.current[index + 1]?.focus();
+    }
+    
+    // Auto-submit when all digits entered
+    if (newOtp.every(d => d !== '') && index === 3) {
+      handleVerify(newOtp.join(''));
+    }
+  };
+
+  const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handleVerify = async (code?: string) => {
+    const otpCode = code || otp.join('');
+    
+    if (otpCode.length !== 4) {
       toast({
-        title: language === 'ru' ? "Ошибка" : "Қате",
+        title: t('error'),
         description: language === 'ru' 
-          ? "Введите код из 6 цифр" 
-          : "6 таңбалы кодты енгізіңіз",
+          ? "Введите код из 4 цифр" 
+          : "4 таңбалы кодты енгізіңіз",
         variant: "destructive",
       });
       return;
@@ -37,13 +82,10 @@ const OTPVerify = () => {
 
     setLoading(true);
     try {
-      const phone = localStorage.getItem('auth_phone');
-      if (!phone) throw new Error('Phone not found');
-
-      console.log('Verifying OTP:', { phone, code: otp });
+      console.log('Verifying OTP:', { phone, code: otpCode });
 
       const { data, error } = await supabase.functions.invoke('verify-otp', {
-        body: { phone, code: otp }
+        body: { phone, code: otpCode }
       });
 
       if (error) {
@@ -77,6 +119,9 @@ const OTPVerify = () => {
           : "Сіз жүйеге сәтті кірдіңіз",
       });
 
+      // Clear stored phone
+      localStorage.removeItem('auth_phone');
+
       // Navigate based on whether user is new
       if (data.isNewUser) {
         navigate('/profile-setup');
@@ -85,8 +130,11 @@ const OTPVerify = () => {
       }
     } catch (error: any) {
       console.error('Error in handleVerify:', error);
+      setOtp(["", "", "", ""]);
+      inputRefs.current[0]?.focus();
+      
       toast({
-        title: language === 'ru' ? "Ошибка" : "Қате",
+        title: t('error'),
         description: error.message || (language === 'ru' 
           ? "Неверный код" 
           : "Қате код"),
@@ -98,9 +146,8 @@ const OTPVerify = () => {
   };
 
   const handleResend = async () => {
-    const phone = localStorage.getItem('auth_phone');
-    if (!phone) return;
-
+    if (resendTimer > 0) return;
+    
     try {
       console.log('Resending OTP to:', phone);
       
@@ -118,6 +165,9 @@ const OTPVerify = () => {
       }
 
       setResendTimer(60);
+      setOtp(["", "", "", ""]);
+      inputRefs.current[0]?.focus();
+      
       toast({
         title: language === 'ru' ? "Код отправлен" : "Код жіберілді",
         description: language === 'ru' 
@@ -127,7 +177,7 @@ const OTPVerify = () => {
     } catch (error: any) {
       console.error('Error in handleResend:', error);
       toast({
-        title: language === 'ru' ? "Ошибка" : "Қате",
+        title: t('error'),
         description: error.message || (language === 'ru' 
           ? "Не удалось отправить код" 
           : "Кодты жіберу мүмкін болмады"),
@@ -143,67 +193,52 @@ const OTPVerify = () => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate(-1)}
-          className="bg-black/20 backdrop-blur-lg text-white hover:bg-black/30"
+          onClick={() => navigate('/phone-auth')}
+          className="text-primary"
         >
-          <ChevronLeft className="h-5 w-5" />
+          <ArrowLeft className="h-6 w-6" />
         </Button>
-        <h1 className="text-xl font-bold ml-4">{t('enterOTP')}</h1>
       </div>
 
       <div className="flex-1 flex flex-col max-w-md mx-auto w-full">
-        {/* Subtitle */}
-        <p className="text-muted-foreground mb-6">
-          {t('enterCode')}
+        {/* Title */}
+        <h1 className="text-3xl font-bold text-primary mb-3">
+          {t('enterSmsCode')}
+        </h1>
+
+        {/* Subtitle with phone number */}
+        <p className="text-foreground mb-8">
+          {t('smsCodeSentTo')} {formatPhoneDisplay(phone)}
         </p>
 
-        {/* OTP Input */}
-        <div className="mb-6 relative">
-          <Input
-            type={showOtp ? "text" : "password"}
-            value={otp}
-            onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-            placeholder={language === 'ru' ? "Введите ваш пароль" : "Құпия сөзіңізді енгізіңіз"}
-            className="h-14 text-lg rounded-2xl pr-12"
-            maxLength={6}
-          />
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setShowOtp(!showOtp)}
-            className="absolute right-2 top-1/2 -translate-y-1/2"
-          >
-            {showOtp ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-          </Button>
+        {/* OTP Input - 4 boxes */}
+        <div className="flex justify-center gap-4 mb-8">
+          {otp.map((digit, index) => (
+            <input
+              key={index}
+              ref={el => inputRefs.current[index] = el}
+              type="text"
+              inputMode="numeric"
+              maxLength={1}
+              value={digit}
+              onChange={(e) => handleOtpChange(index, e.target.value)}
+              onKeyDown={(e) => handleKeyDown(index, e)}
+              disabled={loading}
+              className="w-16 h-16 text-center text-2xl font-bold border-2 border-input rounded-xl bg-muted/50 focus:border-primary focus:outline-none transition-colors disabled:opacity-50"
+            />
+          ))}
         </div>
 
         {/* Resend Code */}
-        <div className="flex items-center gap-2 mb-6">
-          <HelpCircle className="h-5 w-5 text-primary" />
+        <div className="text-center">
           <button
             onClick={handleResend}
             disabled={resendTimer > 0}
-            className="text-primary hover:underline disabled:text-muted-foreground disabled:no-underline"
+            className="text-muted-foreground disabled:opacity-50"
           >
-            {t('resendCode')}
+            {t('resendCode')}{resendTimer > 0 && ` (${resendTimer})`}
           </button>
         </div>
-
-        {/* Timer */}
-        {resendTimer > 0 && (
-          <p className="text-foreground mb-8">
-            {t('availableIn')} <span className="font-bold">{resendTimer}</span>
-          </p>
-        )}
-
-        {/* Verify Button */}
-        <Button
-          onClick={handleVerify}
-          disabled={loading || otp.length !== 6}
-          className="w-full h-14 text-lg rounded-2xl bg-primary hover:bg-primary/90 mt-auto"
-        >
-          {t('next')}
-        </Button>
       </div>
     </div>
   );
