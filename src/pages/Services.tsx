@@ -3,7 +3,7 @@ import { Menu, ShoppingCart, Package, Newspaper, Box, ArrowRight, Smartphone } f
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import logoImage from "@/assets/logo-main.png";
+import Logo from "@/components/Logo";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCart } from "@/contexts/CartContext";
@@ -119,7 +119,7 @@ const Services = () => {
           }
         />
 
-        <img src={logoImage} alt="myAuto" className="h-12 w-auto" />
+        <Logo size="md" />
 
         <Button 
           variant="ghost" 

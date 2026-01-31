@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useNotifications } from "@/contexts/NotificationContext";
-import logoImage from "@/assets/logo-main.png";
+import Logo from "@/components/Logo";
 import NotificationBadge from "@/components/NotificationBadge";
 
 const Notifications = () => {
@@ -25,7 +25,7 @@ const Notifications = () => {
           <ArrowLeft className="h-8 w-8" />
         </Button>
 
-        <img src={logoImage} alt="myAuto" className="h-12 w-auto" />
+        <Logo size="md" />
 
         <div className="w-10" /> {/* Spacer for centering */}
       </header>
