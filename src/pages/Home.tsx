@@ -125,13 +125,13 @@ const Home = () => {
       {/* Header */}
       <header className="flex items-center justify-between px-4 py-4">
         <AppSidebar trigger={<Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
-              <Menu className="w-[25px] h-[25px]" />
+              <Menu className="w-[25px] h-[25px] text-foreground" strokeWidth={2.5} />
             </Button>} />
 
         <Logo size="md" />
 
         <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground" onClick={() => navigate('/notifications')}>
-          <Bell className="w-[20px] h-[20px]" />
+          <Bell className="w-[20px] h-[20px] text-foreground" strokeWidth={2.5} />
         </Button>
       </header>
 
