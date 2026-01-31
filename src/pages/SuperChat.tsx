@@ -73,18 +73,12 @@ const SuperChat = () => {
     getUser();
   }, []);
 
-  // Auto-save session when component unmounts or page closes
+  // Auto-save session ONLY when app is closed (beforeunload), not on navigation
+  // Minimum 5 messages required to save
   useEffect(() => {
-    const saveSession = async () => {
-      if (messages.length > 1 && userId) {
-        await saveCurrentSession();
-      }
-    };
-
-    // Save on page unload
     const handleBeforeUnload = () => {
-      if (messages.length > 1 && userId) {
-        // Use sendBeacon for reliable save on close
+      // Only save if there are at least 5 messages (meaningful conversation)
+      if (messages.length >= 5 && userId) {
         const sessionData = {
           userId,
           messages,
@@ -102,9 +96,9 @@ const SuperChat = () => {
     
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
-      saveSession();
+      // DO NOT save on unmount - this prevents saving on section navigation
     };
-  }, [messages, userId]);
+  }, [messages, userId, sessionStartTime]);
 
   const generateSessionTitle = (msgs: Message[]): string => {
     // Find first user message for title
@@ -116,7 +110,8 @@ const SuperChat = () => {
   };
 
   const saveCurrentSession = async () => {
-    if (!userId || messages.length <= 1) return;
+    // Require at least 5 messages for a meaningful conversation
+    if (!userId || messages.length < 5) return;
 
     try {
       // Create conversation
@@ -145,9 +140,35 @@ const SuperChat = () => {
 
       if (msgError) throw msgError;
 
+      // Clean up old sessions - keep only last 10
+      await cleanupOldSessions(userId);
+
       console.log('Session saved to archive');
     } catch (error) {
       console.error('Error saving session:', error);
+    }
+  };
+
+  const cleanupOldSessions = async (uid: string) => {
+    try {
+      // Get all sessions ordered by date
+      const { data: sessions } = await supabase
+        .from('chat_conversations')
+        .select('id')
+        .eq('user_id', uid)
+        .order('created_at', { ascending: false });
+
+      if (sessions && sessions.length > 10) {
+        // Delete sessions beyond the 10 most recent
+        const sessionsToDelete = sessions.slice(10);
+        
+        for (const session of sessionsToDelete) {
+          await supabase.from('chat_messages').delete().eq('conversation_id', session.id);
+          await supabase.from('chat_conversations').delete().eq('id', session.id);
+        }
+      }
+    } catch (error) {
+      console.error('Error cleaning up old sessions:', error);
     }
   };
 
