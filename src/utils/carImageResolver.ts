@@ -54,8 +54,12 @@ import синийМинивен from '@/assets/cars/minivan/синий-мини�
 import фиолетовыйМинивен from '@/assets/cars/minivan/фиолетовый-минивен.png';
 import черныйМинивен from '@/assets/cars/minivan/черный-минивен.png';
 
-// Типы кузовов
-export type BodyType = 'sedan' | 'crossover' | 'suv' | 'minivan';
+// Импорт типа и функции определения кузова
+import { type BodyType, getBodyTypeFromModel } from '@/data/car-body-types';
+export { type BodyType, getBodyTypeFromModel };
+
+// Дефолтный цвет если не найден
+const DEFAULT_COLOR = 'черный';
 
 // Маппинг цветов из базы данных к имени файла изображения
 const colorMapping: Record<string, string> = {
@@ -92,9 +96,6 @@ const colorMapping: Record<string, string> = {
   'Розовый': 'розовый',
   'Черный': 'черный',
   'Фиолетовый': 'фиолетовый',
-  
-  // Дефолт для "Другой цвет"
-  'Другой цвет (указать вручную)': 'серый',
 };
 
 // Изображения седанов по цветам (все 12 цветов)
@@ -169,8 +170,8 @@ const bodyTypeImages: Record<BodyType, Record<string, string>> = {
   minivan: minivanImages,
 };
 
-// Дефолтное изображение (серый седан)
-const defaultCarImage = серыйСедан;
+// Дефолтное изображение (чёрный седан)
+const defaultCarImage = черныйСедан;
 
 /**
  * Получить изображение машины по цвету и типу кузова
@@ -179,28 +180,14 @@ const defaultCarImage = серыйСедан;
  * @returns URL изображения
  */
 export function getCarImage(color?: string | null, bodyType: BodyType = 'sedan'): string {
-  if (!color) {
-    return defaultCarImage;
-  }
-  
-  // Получаем нормализованное имя цвета
-  const normalizedColor = colorMapping[color] || 'серый';
+  // Получаем нормализованное имя цвета (дефолт: чёрный)
+  const normalizedColor = color ? (colorMapping[color] || DEFAULT_COLOR) : DEFAULT_COLOR;
   
   // Получаем изображения для типа кузова
   const images = bodyTypeImages[bodyType] || sedanImages;
   
-  // Возвращаем изображение или дефолт
+  // Возвращаем изображение или дефолт (чёрный седан)
   return images[normalizedColor] || defaultCarImage;
-}
-
-/**
- * Определить тип кузова по модели автомобиля
- * Пока все считаются легковыми (седан)
- */
-export function getBodyTypeFromModel(brandName?: string, model?: string): BodyType {
-  // TODO: В будущем можно добавить логику определения типа кузова
-  // по марке и модели (например Toyota RAV4 → crossover)
-  return 'sedan';
 }
 
 export { defaultCarImage };
