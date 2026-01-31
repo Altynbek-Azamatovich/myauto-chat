@@ -237,15 +237,13 @@ const OTPVerify = () => {
           {t('enterSmsCode')}
         </h1>
 
-        {/* Subtitle with phone number - kept on single line */}
-        <div className="mb-8">
-          <p className="text-foreground">
-            {t('smsCodeSentTo')}
-          </p>
-          <p className="text-foreground font-medium whitespace-nowrap">
+        {/* Subtitle with phone number - phone on separate line */}
+        <p className="text-foreground mb-8">
+          {t('smsCodeSentTo')}{' '}
+          <span className="font-medium whitespace-nowrap inline-block">
             {formatPhoneDisplay(phone)}
-          </p>
-        </div>
+          </span>
+        </p>
 
         {/* OTP Input - 4 boxes */}
         <div className="flex justify-center gap-4 mb-8">
