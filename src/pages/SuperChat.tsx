@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Menu, Bell, Plus, Mic, ArrowUp, Users, MessageCircle, Sparkles } from "lucide-react";
+import { Menu, Bell, Plus, Mic, ArrowUp, Users, MessageCircle, Sparkles, Volume2, VolumeX, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -8,6 +8,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { AppSidebar } from "@/components/AppSidebar";
+import { useVoiceChat, playTTS } from "@/hooks/useVoiceChat";
 
 interface Message {
   id: number;
@@ -38,8 +39,20 @@ const SuperChat = () => {
     ];
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [ttsEnabled, setTtsEnabled] = useState(true);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  const { isRecording, isProcessing, toggleRecording } = useVoiceChat({
+    onTranscript: (text) => {
+      setMessage(text);
+      // Auto-send after voice input
+      setTimeout(() => {
+        handleSendMessage(text);
+      }, 100);
+    }
+  });
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -53,12 +66,13 @@ const SuperChat = () => {
     localStorage.setItem('superChatMessages', JSON.stringify(messages));
   }, [messages]);
 
-  const handleSendMessage = async () => {
-    if (!message.trim() || isLoading) return;
+  const handleSendMessage = async (inputText?: string) => {
+    const textToSend = inputText || message;
+    if (!textToSend.trim() || isLoading) return;
 
     const userMessage: Message = {
       id: Date.now(),
-      text: message,
+      text: textToSend,
       isBot: false,
       timestamp: format(new Date(), 'HH:mm')
     };
@@ -159,6 +173,13 @@ const SuperChat = () => {
           }
         }
       }
+
+      // Play TTS if enabled and we have a response
+      if (ttsEnabled && assistantText) {
+        setIsSpeaking(true);
+        await playTTS(assistantText);
+        setIsSpeaking(false);
+      }
     } catch (error) {
       console.error("Error:", error);
       toast({
@@ -212,14 +233,28 @@ const SuperChat = () => {
           </button>
         </div>
 
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="rounded-full hover:bg-muted/30 hover:text-foreground"
-          onClick={() => navigate('/notifications')}
-        >
-          <Bell className="h-[20px] w-[20px] text-foreground" strokeWidth={2.5} />
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full hover:bg-muted/30 hover:text-foreground"
+            onClick={() => setTtsEnabled(!ttsEnabled)}
+          >
+            {ttsEnabled ? (
+              <Volume2 className="h-[20px] w-[20px] text-primary" strokeWidth={2.5} />
+            ) : (
+              <VolumeX className="h-[20px] w-[20px] text-muted-foreground" strokeWidth={2.5} />
+            )}
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full hover:bg-muted/30 hover:text-foreground"
+            onClick={() => navigate('/notifications')}
+          >
+            <Bell className="h-[20px] w-[20px] text-foreground" strokeWidth={2.5} />
+          </Button>
+        </div>
       </header>
 
       {/* Content */}
@@ -308,6 +343,14 @@ const SuperChat = () => {
               </Card>
             </div>
           )}
+          {isSpeaking && (
+            <div className="flex justify-center">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Volume2 className="h-4 w-4 animate-pulse" />
+                <span>Озвучивание...</span>
+              </div>
+            </div>
+          )}
             <div ref={messagesEndRef} />
           </div>
         </div>
@@ -329,30 +372,31 @@ const SuperChat = () => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder={t('message')}
+              placeholder={isRecording ? "Говорите..." : t('message')}
               className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-2 h-8"
+              disabled={isRecording || isProcessing}
             />
 
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-8 w-8 flex-shrink-0"
-              onClick={() => {
-                toast({
-                  title: t('voiceChatSoon'),
-                  description: t('workingOnFeature')
-                });
-              }}
+              className={`h-8 w-8 flex-shrink-0 transition-colors ${isRecording ? 'text-red-500' : ''}`}
+              onClick={toggleRecording}
+              disabled={isProcessing}
             >
-              <Mic className="h-5 w-5" />
+              {isProcessing ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <Mic className={`h-5 w-5 ${isRecording ? 'animate-pulse' : ''}`} />
+              )}
             </Button>
           </div>
 
           <Button 
-            onClick={handleSendMessage}
+            onClick={() => handleSendMessage()}
             size="icon" 
             className="rounded-full bg-primary hover:bg-primary/90 flex-shrink-0 h-10 w-10"
-            disabled={isLoading || !message.trim()}
+            disabled={isLoading || !message.trim() || isRecording}
           >
             <ArrowUp className="h-4 w-4" />
           </Button>

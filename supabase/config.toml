@@ -23,3 +23,9 @@ verify_jwt = false
 
 [functions.delete-account]
 verify_jwt = true
+
+[functions.elevenlabs-tts]
+verify_jwt = false
+
+[functions.elevenlabs-stt]
+verify_jwt = false
