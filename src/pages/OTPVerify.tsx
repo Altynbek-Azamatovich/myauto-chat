@@ -133,13 +133,21 @@ const OTPVerify = () => {
       setOtp(["", "", "", ""]);
       inputRefs.current[0]?.focus();
       
+      // Check if we should suggest resending the code
+      const shouldResend = error?.context?.shouldResendCode;
+      
       toast({
         title: t('error'),
         description: error.message || (language === 'ru' 
-          ? "Неверный код" 
-          : "Қате код"),
+          ? (shouldResend ? "Внутренняя ошибка. Запросите SMS код повторно." : "Неверный код")
+          : (shouldResend ? "Ішкі қате. SMS кодын қайта сұраңыз." : "Қате код")),
         variant: "destructive",
       });
+      
+      // If server suggests resending, reset the timer to allow immediate resend
+      if (shouldResend) {
+        setResendTimer(0);
+      }
     } finally {
       setLoading(false);
     }
