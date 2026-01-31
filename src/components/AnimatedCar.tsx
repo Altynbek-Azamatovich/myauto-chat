@@ -17,7 +17,7 @@ export const AnimatedCar = ({ onAnimationComplete }: AnimatedCarProps) => {
     // Notify when animation completes
     const completeTimer = setTimeout(() => {
       onAnimationComplete?.();
-    }, 1500);
+    }, 2500);
 
     return () => {
       clearTimeout(carTimer);
@@ -31,7 +31,7 @@ export const AnimatedCar = ({ onAnimationComplete }: AnimatedCarProps) => {
       <img
         src={carImage}
         alt="Car"
-        className={`w-full h-auto transition-all duration-[1.2s] ease-out ${
+        className={`w-full h-auto transition-all duration-[2s] ease-out ${
           isVisible 
             ? "translate-x-0 opacity-100" 
             : "translate-x-full opacity-0"
