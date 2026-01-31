@@ -11,8 +11,15 @@ const Welcome = () => {
   const [showLogo, setShowLogo] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const [showButton, setShowButton] = useState(false);
+  const [animationKey, setAnimationKey] = useState(0);
 
   useEffect(() => {
+    // Reset animation key when component mounts to force re-animation
+    setAnimationKey(prev => prev + 1);
+    setShowLogo(false);
+    setShowContent(false);
+    setShowButton(false);
+
     // Show logo after light beam appears
     const logoTimer = setTimeout(() => {
       setShowLogo(true);
@@ -54,7 +61,7 @@ const Welcome = () => {
       <div className="flex-1 flex flex-col items-center justify-center px-8 gap-8">
         {/* Car Animation - full width */}
         <div className="w-screen -mx-8">
-          <AnimatedCar />
+          <AnimatedCar key={animationKey} />
         </div>
 
         {/* Logo */}
