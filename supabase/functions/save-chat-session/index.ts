@@ -14,8 +14,9 @@ serve(async (req) => {
   try {
     const { userId, messages, title } = await req.json();
     
-    if (!userId || !messages || messages.length <= 1) {
-      return new Response(JSON.stringify({ success: false, error: "Invalid data" }), {
+    // Require at least 5 messages for a meaningful conversation
+    if (!userId || !messages || messages.length < 5) {
+      return new Response(JSON.stringify({ success: false, error: "Not enough messages to save" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -50,6 +51,21 @@ serve(async (req) => {
       .insert(messagesToSave);
 
     if (msgError) throw msgError;
+
+    // Clean up old sessions - keep only last 10
+    const { data: sessions } = await supabase
+      .from('chat_conversations')
+      .select('id')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (sessions && sessions.length > 10) {
+      const sessionsToDelete = sessions.slice(10);
+      for (const session of sessionsToDelete) {
+        await supabase.from('chat_messages').delete().eq('conversation_id', session.id);
+        await supabase.from('chat_conversations').delete().eq('id', session.id);
+      }
+    }
 
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
