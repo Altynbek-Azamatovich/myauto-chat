@@ -140,7 +140,7 @@ const Home = () => {
       {/* Car Display */}
       <div className="relative mt-6">
         <img 
-          src={primaryVehicle?.color ? getCarImage(primaryVehicle.color, getBodyTypeFromModel(brandName, primaryVehicle.model)) : carCoveredImage} 
+          src={primaryVehicle?.color ? getCarImage(primaryVehicle.color, getBodyTypeFromModel(primaryVehicle.model)) : carCoveredImage} 
           alt={primaryVehicle ? `${brandName} ${primaryVehicle.model}` : "Автомобиль"} 
           className="w-full h-auto object-contain" 
         />
