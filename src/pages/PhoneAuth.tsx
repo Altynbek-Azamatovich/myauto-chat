@@ -157,18 +157,21 @@ const PhoneAuth = () => {
 
       <div className="flex-1 flex flex-col max-w-md mx-auto w-full">
         {/* Title */}
-        <h1 className="text-3xl font-bold text-primary mb-3">
+        <h1 className="text-3xl font-bold text-foreground mb-3">
           {t('welcomeTitle')}
         </h1>
 
-        {/* Subtitle */}
-        <p className="text-foreground mb-8">
-          {t('enterPhoneForAuth')}
+        {/* Subtitle - two lines */}
+        <p className="text-foreground mb-2">
+          {t('enterPhoneTitle')}
+        </p>
+        <p className="text-muted-foreground mb-8">
+          {t('forLoginOrRegister')}
         </p>
 
         {/* Phone Input */}
         <div className="mb-8">
-          <div className="flex items-center gap-3 p-4 border border-input rounded-2xl bg-background">
+          <div className="flex items-center gap-3 p-4 border border-input rounded-2xl bg-card">
             <span className="text-2xl">🇰🇿</span>
             <Input
               type="tel"
@@ -192,21 +195,24 @@ const PhoneAuth = () => {
         <Button
           onClick={handleSubmit}
           disabled={loading || !isPhoneValid(phone)}
-          className="w-full h-14 text-lg rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+          className="w-full h-14 text-lg rounded-2xl font-medium"
         >
           {t('next')}
         </Button>
 
-        {/* Terms Agreement */}
-        <p className="text-sm text-muted-foreground text-center mt-6">
-          {t('byClickingNext')}{' '}
-          <button 
-            onClick={() => navigate('/privacy-policy')}
-            className="text-primary underline"
-          >
-            {t('publicOffer')}
-          </button>
-        </p>
+        {/* Terms Agreement - two lines */}
+        <div className="text-sm text-muted-foreground text-center mt-6">
+          <p>{t('byClickingNextLine1')}</p>
+          <p>
+            {t('byClickingNextLine2')}{' '}
+            <button 
+              onClick={() => navigate('/privacy-policy')}
+              className="text-foreground underline"
+            >
+              {t('publicOffer')}
+            </button>
+          </p>
+        </div>
 
         {/* Version */}
         <p className="text-xs text-muted-foreground text-center mt-auto pt-8">
