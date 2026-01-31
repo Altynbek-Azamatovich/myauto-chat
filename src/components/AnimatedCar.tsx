@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import carImage from "@/assets/car-covered-new.png";
 
 interface AnimatedCarProps {
@@ -7,11 +7,19 @@ interface AnimatedCarProps {
 
 export const AnimatedCar = ({ onAnimationComplete }: AnimatedCarProps) => {
   const [isVisible, setIsVisible] = useState(false);
+  const hasAnimated = useRef(false);
 
   useEffect(() => {
+    // Reset animation state when component mounts
+    setIsVisible(false);
+    hasAnimated.current = false;
+
     // Start car animation after a brief delay
     const carTimer = setTimeout(() => {
-      setIsVisible(true);
+      if (!hasAnimated.current) {
+        setIsVisible(true);
+        hasAnimated.current = true;
+      }
     }, 100);
 
     // Notify when animation completes

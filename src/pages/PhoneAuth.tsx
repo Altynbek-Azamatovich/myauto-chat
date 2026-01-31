@@ -161,13 +161,15 @@ const PhoneAuth = () => {
           {t('welcomeTitle')}
         </h1>
 
-        {/* Subtitle - two lines */}
-        <p className="text-foreground mb-2">
-          {t('enterPhoneTitle')}
-        </p>
-        <p className="text-muted-foreground mb-8">
-          {t('forLoginOrRegister')}
-        </p>
+        {/* Subtitle - two lines with same spacing as terms */}
+        <div className="mb-8">
+          <p className="text-foreground">
+            {t('enterPhoneTitle')}
+          </p>
+          <p className="text-muted-foreground">
+            {t('forLoginOrRegister')}
+          </p>
+        </div>
 
         {/* Phone Input */}
         <div className="mb-8">
