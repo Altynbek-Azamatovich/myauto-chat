@@ -125,21 +125,8 @@ serve(async (req) => {
       );
     }
 
-    // Mark OTP as verified
-    const { error: updateError } = await supabase
-      .from('otp_codes')
-      .update({ verified: true })
-      .eq('id', otpData.id);
-
-    if (updateError) {
-      console.error('Failed to update OTP:', updateError);
-    }
-
-    // Clear rate limit after successful verification
-    await supabase.from('rate_limits')
-      .delete()
-      .eq('identifier', phone)
-      .eq('request_type', 'verify_otp');
+    // NOTE: We will mark OTP as verified ONLY after successful login completion
+    // This prevents the issue where code gets marked as used but login fails
 
     // Check if user exists by trying to find them by phone
     let userId: string | null = null;
@@ -194,14 +181,20 @@ serve(async (req) => {
           if (!found) {
             console.error('Could not find user after creation failed:', createError);
             return new Response(
-              JSON.stringify({ error: 'Unable to verify account. Please try again.' }),
+              JSON.stringify({ 
+                error: 'Внутренняя ошибка. Запросите SMS код повторно.',
+                shouldResendCode: true 
+              }),
               { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
             );
           }
         } else {
           console.error('Failed to create user:', createError);
           return new Response(
-            JSON.stringify({ error: 'Unable to create account. Please try again.' }),
+            JSON.stringify({ 
+              error: 'Внутренняя ошибка. Запросите SMS код повторно.',
+              shouldResendCode: true 
+            }),
             { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
@@ -235,10 +228,29 @@ serve(async (req) => {
     if (sessionError || !sessionData) {
       console.error('Failed to generate session:', sessionError);
       return new Response(
-        JSON.stringify({ error: 'Unable to complete login. Please try again.' }),
+        JSON.stringify({ 
+          error: 'Внутренняя ошибка. Запросите SMS код повторно.',
+          shouldResendCode: true 
+        }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
+    // SUCCESS! Now mark OTP as verified and clear rate limits
+    const { error: updateError } = await supabase
+      .from('otp_codes')
+      .update({ verified: true })
+      .eq('id', otpData.id);
+
+    if (updateError) {
+      console.error('Failed to update OTP:', updateError);
+    }
+
+    // Clear rate limit after successful verification
+    await supabase.from('rate_limits')
+      .delete()
+      .eq('identifier', phone)
+      .eq('request_type', 'verify_otp');
 
     return new Response(
       JSON.stringify({ 
