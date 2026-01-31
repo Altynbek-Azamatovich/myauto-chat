@@ -88,24 +88,37 @@ serve(async (req) => {
       );
     }
 
-    // Send SMS via SMSC.kz
-    const smscLogin = Deno.env.get('SMSC_LOGIN');
-    const smscPassword = Deno.env.get('SMSC_PASSWORD'); // API key
+    // Send SMS via Mobizon API
+    const mobizonApiKey = Deno.env.get('MOBIZON_API_KEY');
 
-    if (!smscLogin || !smscPassword) {
-      throw new Error('SMSC credentials not configured');
+    if (!mobizonApiKey) {
+      throw new Error('Mobizon API key not configured');
     }
 
     const message = `Ваш код подтверждения myAuto: ${code}`;
-    const smscUrl = `https://smsc.kz/sys/send.php?login=${encodeURIComponent(smscLogin)}&psw=${encodeURIComponent(smscPassword)}&phones=${encodeURIComponent(phone)}&mes=${encodeURIComponent(message)}&charset=utf-8&fmt=3`;
+    
+    // Format phone number - remove + if present for Mobizon
+    const formattedPhone = phone.startsWith('+') ? phone.substring(1) : phone;
+    
+    // Mobizon API endpoint
+    const mobizonUrl = new URL('https://api.mobizon.kz/service/message/sendsmsmessage');
+    mobizonUrl.searchParams.append('apiKey', mobizonApiKey);
+    mobizonUrl.searchParams.append('recipient', formattedPhone);
+    mobizonUrl.searchParams.append('text', message);
+    mobizonUrl.searchParams.append('output', 'json');
 
-    console.log('Sending SMS to SMSC.kz...');
-    const smsResponse = await fetch(smscUrl);
+    console.log('Sending SMS via Mobizon to:', formattedPhone);
+    
+    const smsResponse = await fetch(mobizonUrl.toString(), {
+      method: 'POST',
+    });
+    
     const smsResult = await smsResponse.json();
-    console.log('SMSC response:', smsResult);
+    console.log('Mobizon response:', JSON.stringify(smsResult));
 
-    if (smsResult.error) {
-      console.error('SMSC error details:', smsResult);
+    // Mobizon returns code: 0 for success
+    if (smsResult.code !== 0) {
+      console.error('Mobizon error:', smsResult);
       return new Response(
         JSON.stringify({ error: 'Unable to send verification code. Please try again later.' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -142,7 +155,7 @@ serve(async (req) => {
       JSON.stringify({ 
         success: true, 
         message: 'OTP sent successfully',
-        smsId: smsResult.id 
+        messageId: smsResult.data?.messageId
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
