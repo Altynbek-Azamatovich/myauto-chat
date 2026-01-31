@@ -354,54 +354,8 @@ const PhotoDiagnostic = () => {
 
   // Main scanner view
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Full page darkened overlay with cutout for scanner */}
-      <div 
-        className="fixed inset-0 z-10 pointer-events-none"
-        style={{
-          background: `
-            linear-gradient(to bottom, 
-              rgba(0,0,0,0.35) 0%, 
-              rgba(0,0,0,0.35) 28%,
-              transparent 28%,
-              transparent 72%,
-              rgba(0,0,0,0.35) 72%,
-              rgba(0,0,0,0.35) 100%
-            )
-          `,
-          maskImage: `
-            linear-gradient(to bottom, black 0%, black 28%, transparent 28%, transparent 72%, black 72%, black 100%),
-            linear-gradient(to right, black 0%, black 15%, transparent 15%, transparent 85%, black 85%, black 100%)
-          `,
-          maskComposite: 'intersect',
-          WebkitMaskComposite: 'source-in'
-        }}
-      />
-      {/* Overlay using SVG for proper rounded cutout */}
-      <svg className="fixed inset-0 w-full h-full z-10 pointer-events-none" preserveAspectRatio="none">
-        <defs>
-          <mask id="scanner-mask">
-            <rect width="100%" height="100%" fill="white" />
-            <rect 
-              x="15%" 
-              y="28%" 
-              width="70%" 
-              height="44%" 
-              rx="24" 
-              ry="24" 
-              fill="black" 
-            />
-          </mask>
-        </defs>
-        <rect 
-          width="100%" 
-          height="100%" 
-          fill="rgba(0,0,0,0.35)" 
-          mask="url(#scanner-mask)" 
-        />
-      </svg>
-
-      <header className="flex items-center justify-between px-4 py-4 relative z-20">
+    <div className="min-h-screen">
+      <header className="flex items-center justify-between px-4 py-4">
         <Button 
           variant="ghost" 
           size="icon" 
@@ -415,7 +369,7 @@ const PhotoDiagnostic = () => {
       </header>
 
       <div className="py-6 space-y-6 pb-32">
-        <div className="text-center px-4 pt-4 relative z-20">
+        <div className="text-center px-4 pt-4">
           <p className="text-foreground text-base font-bold leading-tight whitespace-pre-line">
             {t('photoDiagnosticTitle')}
           </p>
