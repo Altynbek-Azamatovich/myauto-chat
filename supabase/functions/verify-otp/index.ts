@@ -19,6 +19,14 @@ serve(async (req) => {
       throw new Error('Phone and code are required');
     }
 
+    // Validate code is 4 digits
+    if (!/^\d{4}$/.test(code)) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Code must be 4 digits' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -108,7 +116,7 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({ 
           success: false, 
-          error: 'Invalid or expired OTP code' 
+          error: 'Неверный код' 
         }),
         { 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },

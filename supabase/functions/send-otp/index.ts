@@ -65,8 +65,8 @@ serve(async (req) => {
       );
     }
 
-    // Generate 6-digit OTP code
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    // Generate 4-digit OTP code
+    const code = Math.floor(1000 + Math.random() * 9000).toString();
     console.log('Generated OTP code:', code);
 
     // Save OTP to database (expires in 5 minutes)
