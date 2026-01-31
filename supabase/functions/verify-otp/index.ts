@@ -27,10 +27,25 @@ serve(async (req) => {
       );
     }
 
-    // Initialize Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    // Initialize clients
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    const anonKey = Deno.env.get('SUPABASE_ANON_KEY');
+
+    if (!supabaseUrl || !serviceRoleKey || !anonKey) {
+      console.error('Missing required backend secrets', {
+        hasUrl: !!supabaseUrl,
+        hasServiceRoleKey: !!serviceRoleKey,
+        hasAnonKey: !!anonKey,
+      });
+      return new Response(
+        JSON.stringify({ error: 'Server configuration error' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const supabase = createClient(supabaseUrl, serviceRoleKey);
+    const supabaseAnon = createClient(supabaseUrl, anonKey);
 
     // Rate limiting check - phone number (5 attempts max, then 15 min block)
     const phoneRateLimit = await supabase
@@ -128,130 +143,110 @@ serve(async (req) => {
     // NOTE: We will mark OTP as verified ONLY after successful login completion
     // This prevents the issue where code gets marked as used but login fails
 
-    // Check if user exists by looking in profiles table first (more reliable than listUsers)
+    // We cannot create a session from phone via admin.generateLink (it requires email).
+    // So we attach a stable "service email" to the user derived from phone, then
+    // generate a magiclink token and exchange it via verifyOtp to obtain session tokens.
+
+    const phoneDigits = String(phone).replace(/[^\d]/g, '');
+    const serviceEmail = `phone_${phoneDigits}@myauto.local`;
+
+    // Check if user exists (via profiles — reliable)
     let userId: string | null = null;
     let isNewUser = false;
 
-    // First, check if user exists in profiles table
-    const { data: existingProfile } = await supabase
+    const phoneWithPlus = phone.startsWith('+') ? phone : `+${phone}`;
+    const phoneWithoutPlus = phone.startsWith('+') ? phone.substring(1) : phone;
+    const phoneVariants = Array.from(new Set([phone, phoneWithPlus, phoneWithoutPlus]));
+
+    const { data: existingProfile, error: profileErr } = await supabase
       .from('profiles')
       .select('id')
-      .eq('phone_number', phone)
+      .in('phone_number', phoneVariants)
       .maybeSingle();
 
-    if (existingProfile) {
+    if (profileErr) {
+      console.error('Failed to lookup profile:', profileErr);
+      return new Response(
+        JSON.stringify({ error: 'Внутренняя ошибка. Запросите SMS код повторно.', shouldResendCode: true }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (existingProfile?.id) {
       userId = existingProfile.id;
       console.log('Found existing user via profile:', userId);
+
+      // Ensure the user has an email so we can generate magiclink
+      const { error: updateUserErr } = await supabase.auth.admin.updateUserById(userId, {
+        email: serviceEmail,
+        email_confirm: true,
+      });
+
+      if (updateUserErr) {
+        console.error('Failed to attach service email to user:', updateUserErr);
+        return new Response(
+          JSON.stringify({ error: 'Внутренняя ошибка. Запросите SMS код повторно.', shouldResendCode: true }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
     } else {
-      // Also try alternative phone formats
-      const phoneWithoutPlus = phone.startsWith('+') ? phone.substring(1) : phone;
-      const phoneWithPlus = phone.startsWith('+') ? phone : '+' + phone;
-      
-      const { data: altProfile } = await supabase
-        .from('profiles')
-        .select('id')
-        .or(`phone_number.eq.${phoneWithoutPlus},phone_number.eq.${phoneWithPlus}`)
-        .maybeSingle();
+      console.log('No existing profile found, creating new auth user...');
 
-      if (altProfile) {
-        userId = altProfile.id;
-        console.log('Found existing user via alt phone format:', userId);
-      }
-    }
-
-    // If not found in profiles, try auth.users via admin API
-    if (!userId) {
-      const { data: existingUsers } = await supabase.auth.admin.listUsers({
-        page: 1,
-        perPage: 1000
-      });
-      
-      // Try multiple phone formats
-      const phoneVariants = [
-        phone,
-        phone.startsWith('+') ? phone.substring(1) : '+' + phone
-      ];
-      
-      const existingUser = existingUsers?.users?.find(u => 
-        u.phone && phoneVariants.includes(u.phone)
-      );
-      
-      if (existingUser) {
-        userId = existingUser.id;
-        console.log('Found existing user via auth.users:', userId);
-      }
-    }
-
-    // If still not found, create new user
-    if (!userId) {
-      console.log('No existing user found, creating new user...');
-      
-      const { data: newUser, error: createError } = await supabase.auth.admin.createUser({
-        phone: phone,
-        phone_confirm: true,
+      const { data: newUser, error: createErr } = await supabase.auth.admin.createUser({
+        email: serviceEmail,
+        email_confirm: true,
         user_metadata: {
-          preferred_language: 'ru'
-        }
+          preferred_language: 'ru',
+          phone: phone,
+        },
       });
 
-      if (createError) {
-        // If phone_exists error, the user exists but we couldn't find them
-        // This shouldn't happen now with the improved search, but handle it gracefully
-        if (createError.message?.includes('already registered') || createError.code === 'phone_exists') {
-          console.error('User exists but could not be found. This should not happen.');
-          console.error('Attempted phone formats:', phone);
-          
-          return new Response(
-            JSON.stringify({ 
-              error: 'Внутренняя ошибка. Запросите SMS код повторно.',
-              shouldResendCode: true 
-            }),
-            { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
-        } else {
-          console.error('Failed to create user:', createError);
-          return new Response(
-            JSON.stringify({ 
-              error: 'Внутренняя ошибка. Запросите SMS код повторно.',
-              shouldResendCode: true 
-            }),
-            { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
-        }
-      } else {
-        userId = newUser.user?.id || null;
-        isNewUser = true;
-        console.log('New user created:', userId);
+      if (createErr || !newUser?.user?.id) {
+        console.error('Failed to create user:', createErr);
+        return new Response(
+          JSON.stringify({ error: 'Внутренняя ошибка. Запросите SMS код повторно.', shouldResendCode: true }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
 
-        // Assign default 'user' role to new user
-        if (userId) {
-          const { error: roleError } = await supabase
-            .from('user_roles')
-            .insert({
-              user_id: userId,
-              role: 'user'
-            });
+      userId = newUser.user.id;
+      isNewUser = true;
 
-          if (roleError) {
-            console.error('Failed to assign role:', roleError);
-          }
-        }
+      // Assign default 'user' role to new user
+      const { error: roleErr } = await supabase
+        .from('user_roles')
+        .insert({ user_id: userId, role: 'user' });
+
+      if (roleErr) {
+        console.error('Failed to assign role:', roleErr);
       }
     }
 
-    // Generate session token
-    const { data: sessionData, error: sessionError } = await supabase.auth.admin.generateLink({
+    // Generate magiclink token for the service email
+    const { data: linkData, error: linkErr } = await supabase.auth.admin.generateLink({
       type: 'magiclink',
-      phone: phone,
+      email: serviceEmail,
     });
 
-    if (sessionError || !sessionData) {
-      console.error('Failed to generate session:', sessionError);
+    const tokenHash = linkData?.properties?.hashed_token;
+    if (linkErr || !tokenHash) {
+      console.error('Failed to generate link:', linkErr, linkData);
       return new Response(
-        JSON.stringify({ 
-          error: 'Внутренняя ошибка. Запросите SMS код повторно.',
-          shouldResendCode: true 
-        }),
+        JSON.stringify({ error: 'Внутренняя ошибка. Запросите SMS код повторно.', shouldResendCode: true }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Exchange token for a real session
+    const { data: verified, error: verifyErr } = await supabaseAnon.auth.verifyOtp({
+      type: 'magiclink',
+      token_hash: tokenHash,
+    });
+
+    if (verifyErr || !verified?.session) {
+      console.error('Failed to verify magiclink token:', verifyErr);
+      return new Response(
+        JSON.stringify({ error: 'Внутренняя ошибка. Запросите SMS код повторно.', shouldResendCode: true }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -273,14 +268,14 @@ serve(async (req) => {
       .eq('request_type', 'verify_otp');
 
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         success: true,
-        session: sessionData,
-        isNewUser: isNewUser
+        session: verified.session,
+        isNewUser,
       }),
-      { 
+      {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200 
+        status: 200,
       }
     );
   } catch (error: any) {

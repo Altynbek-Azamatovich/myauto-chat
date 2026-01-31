@@ -90,7 +90,21 @@ const OTPVerify = () => {
 
       if (error) {
         console.error('Error verifying OTP:', error);
-        throw error;
+
+        // Try to read error body from the function response
+        let serverBody: any = null;
+        try {
+          const ctx = (error as any)?.context;
+          if (ctx && typeof ctx.json === 'function') {
+            serverBody = await ctx.json();
+          }
+        } catch {
+          // ignore
+        }
+
+        const err: any = new Error(serverBody?.error || error.message || 'Unknown error');
+        err.shouldResendCode = !!serverBody?.shouldResendCode;
+        throw err;
       }
 
       if (!data?.success) {
@@ -101,9 +115,18 @@ const OTPVerify = () => {
 
       // Use the session data to log in
       if (data.session) {
+        const accessToken = data.session.access_token ?? data.session.properties?.access_token;
+        const refreshToken = data.session.refresh_token ?? data.session.properties?.refresh_token;
+
+        if (!accessToken || !refreshToken) {
+          throw new Error(language === 'ru'
+            ? 'Внутренняя ошибка. Запросите SMS код повторно.'
+            : 'Ішкі қате. SMS кодын қайта сұраңыз.');
+        }
+
         const { error: signInError } = await supabase.auth.setSession({
-          access_token: data.session.properties.access_token,
-          refresh_token: data.session.properties.refresh_token
+          access_token: accessToken,
+          refresh_token: refreshToken
         });
 
         if (signInError) {
@@ -134,7 +157,7 @@ const OTPVerify = () => {
       inputRefs.current[0]?.focus();
       
       // Check if we should suggest resending the code
-      const shouldResend = error?.context?.shouldResendCode;
+      const shouldResend = !!error?.shouldResendCode;
       
       toast({
         title: t('error'),
