@@ -12,7 +12,7 @@ import синийСедан from '@/assets/cars/sedan/синий-седан.png'
 import фиолетовыйСедан from '@/assets/cars/sedan/фиолетовый-седан.png';
 import черныйСедан from '@/assets/cars/sedan/черный-седан.png';
 
-// Импорт изображений кроссоверов (8 цветов, остальные будут добавлены)
+// Импорт изображений кроссоверов (12 цветов - полный набор)
 import белыйКроссовер from '@/assets/cars/crossover/белый-кроссовер.png';
 import желтыйКроссовер from '@/assets/cars/crossover/желтый-кроссовер.png';
 import зеленыйКроссовер from '@/assets/cars/crossover/зеленый-кроссовер.png';
@@ -21,6 +21,18 @@ import коричневыйКроссовер from '@/assets/cars/crossover/ко
 import красныйКроссовер from '@/assets/cars/crossover/красный-кроссовер.png';
 import оранжевыйКроссовер from '@/assets/cars/crossover/оранжевый-кроссовер.png';
 import розовыйКроссовер from '@/assets/cars/crossover/розовый-кроссовер.png';
+import серыйКроссовер from '@/assets/cars/crossover/серый-кроссовер.png';
+import синийКроссовер from '@/assets/cars/crossover/синий-кроссовер.png';
+import фиолетовыйКроссовер from '@/assets/cars/crossover/фиолетовый-кроссовер.png';
+import черныйКроссовер from '@/assets/cars/crossover/черный-кроссовер.png';
+
+// Импорт изображений внедорожников (6 цветов, остальные fallback)
+import белыйВнедорожник from '@/assets/cars/suv/белый-внедорожник.png';
+import желтыйВнедорожник from '@/assets/cars/suv/желтый-внедорожник.png';
+import зеленыйВнедорожник from '@/assets/cars/suv/зеленый-внедорожник.png';
+import золотистыйВнедорожник from '@/assets/cars/suv/золотистый-внедорожник.png';
+import коричневыйВнедорожник from '@/assets/cars/suv/коричневый-внедорожник.png';
+import красныйВнедорожник from '@/assets/cars/suv/красный-внедорожник.png';
 
 // Типы кузовов
 export type BodyType = 'sedan' | 'crossover' | 'suv' | 'minivan';
@@ -81,7 +93,7 @@ const sedanImages: Record<string, string> = {
   'черный': черныйСедан,
 };
 
-// Изображения кроссоверов по цветам (8 цветов, остальные fallback на седаны)
+// Изображения кроссоверов по цветам (все 12 цветов)
 const crossoverImages: Record<string, string> = {
   'белый': белыйКроссовер,
   'желтый': желтыйКроссовер,
@@ -91,19 +103,35 @@ const crossoverImages: Record<string, string> = {
   'красный': красныйКроссовер,
   'оранжевый': оранжевыйКроссовер,
   'розовый': розовыйКроссовер,
-  // TODO: Добавить когда будут загружены
-  'серый': серыйСедан,      // fallback на седан
-  'синий': синийСедан,      // fallback на седан
-  'фиолетовый': фиолетовыйСедан, // fallback на седан
-  'черный': черныйСедан,    // fallback на седан
+  'серый': серыйКроссовер,
+  'синий': синийКроссовер,
+  'фиолетовый': фиолетовыйКроссовер,
+  'черный': черныйКроссовер,
+};
+
+// Изображения внедорожников по цветам (6 цветов, остальные fallback на кроссовер)
+const suvImages: Record<string, string> = {
+  'белый': белыйВнедорожник,
+  'желтый': желтыйВнедорожник,
+  'зеленый': зеленыйВнедорожник,
+  'золотистый': золотистыйВнедорожник,
+  'коричневый': коричневыйВнедорожник,
+  'красный': красныйВнедорожник,
+  // Fallback на кроссовер для недостающих цветов
+  'оранжевый': оранжевыйКроссовер,
+  'розовый': розовыйКроссовер,
+  'серый': серыйКроссовер,
+  'синий': синийКроссовер,
+  'фиолетовый': фиолетовыйКроссовер,
+  'черный': черныйКроссовер,
 };
 
 // Изображения по типам кузова
 const bodyTypeImages: Record<BodyType, Record<string, string>> = {
   sedan: sedanImages,
   crossover: crossoverImages,
-  suv: sedanImages,       // TODO: заменить на внедорожники
-  minivan: sedanImages,   // TODO: заменить на минивены
+  suv: suvImages,
+  minivan: sedanImages, // TODO: заменить на минивены
 };
 
 // Дефолтное изображение (серый седан)
