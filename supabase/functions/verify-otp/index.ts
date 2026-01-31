@@ -128,23 +128,64 @@ serve(async (req) => {
     // NOTE: We will mark OTP as verified ONLY after successful login completion
     // This prevents the issue where code gets marked as used but login fails
 
-    // Check if user exists by trying to find them by phone
+    // Check if user exists by looking in profiles table first (more reliable than listUsers)
     let userId: string | null = null;
     let isNewUser = false;
 
-    // First, try to find existing user by phone
-    const { data: existingUsers } = await supabase.auth.admin.listUsers({
-      page: 1,
-      perPage: 1000
-    });
-    
-    const existingUser = existingUsers?.users?.find(u => u.phone === phone);
-    
-    if (existingUser) {
-      userId = existingUser.id;
-      console.log('Found existing user:', userId);
+    // First, check if user exists in profiles table
+    const { data: existingProfile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('phone_number', phone)
+      .maybeSingle();
+
+    if (existingProfile) {
+      userId = existingProfile.id;
+      console.log('Found existing user via profile:', userId);
     } else {
-      // Try to create new user
+      // Also try alternative phone formats
+      const phoneWithoutPlus = phone.startsWith('+') ? phone.substring(1) : phone;
+      const phoneWithPlus = phone.startsWith('+') ? phone : '+' + phone;
+      
+      const { data: altProfile } = await supabase
+        .from('profiles')
+        .select('id')
+        .or(`phone_number.eq.${phoneWithoutPlus},phone_number.eq.${phoneWithPlus}`)
+        .maybeSingle();
+
+      if (altProfile) {
+        userId = altProfile.id;
+        console.log('Found existing user via alt phone format:', userId);
+      }
+    }
+
+    // If not found in profiles, try auth.users via admin API
+    if (!userId) {
+      const { data: existingUsers } = await supabase.auth.admin.listUsers({
+        page: 1,
+        perPage: 1000
+      });
+      
+      // Try multiple phone formats
+      const phoneVariants = [
+        phone,
+        phone.startsWith('+') ? phone.substring(1) : '+' + phone
+      ];
+      
+      const existingUser = existingUsers?.users?.find(u => 
+        u.phone && phoneVariants.includes(u.phone)
+      );
+      
+      if (existingUser) {
+        userId = existingUser.id;
+        console.log('Found existing user via auth.users:', userId);
+      }
+    }
+
+    // If still not found, create new user
+    if (!userId) {
+      console.log('No existing user found, creating new user...');
+      
       const { data: newUser, error: createError } = await supabase.auth.admin.createUser({
         phone: phone,
         phone_confirm: true,
@@ -154,40 +195,19 @@ serve(async (req) => {
       });
 
       if (createError) {
-        // If user already exists (race condition or pagination missed it), try to find them again
+        // If phone_exists error, the user exists but we couldn't find them
+        // This shouldn't happen now with the improved search, but handle it gracefully
         if (createError.message?.includes('already registered') || createError.code === 'phone_exists') {
-          console.log('User exists but was not found in initial search, searching again...');
+          console.error('User exists but could not be found. This should not happen.');
+          console.error('Attempted phone formats:', phone);
           
-          // Search through all pages if needed
-          let page = 1;
-          let found = false;
-          while (!found && page <= 10) {
-            const { data: pageUsers } = await supabase.auth.admin.listUsers({
-              page: page,
-              perPage: 1000
-            });
-            
-            const foundUser = pageUsers?.users?.find(u => u.phone === phone);
-            if (foundUser) {
-              userId = foundUser.id;
-              found = true;
-              console.log('Found user on page', page, ':', userId);
-            }
-            
-            if (!pageUsers?.users?.length || pageUsers.users.length < 1000) break;
-            page++;
-          }
-          
-          if (!found) {
-            console.error('Could not find user after creation failed:', createError);
-            return new Response(
-              JSON.stringify({ 
-                error: 'Внутренняя ошибка. Запросите SMS код повторно.',
-                shouldResendCode: true 
-              }),
-              { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-            );
-          }
+          return new Response(
+            JSON.stringify({ 
+              error: 'Внутренняя ошибка. Запросите SMS код повторно.',
+              shouldResendCode: true 
+            }),
+            { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
         } else {
           console.error('Failed to create user:', createError);
           return new Response(
