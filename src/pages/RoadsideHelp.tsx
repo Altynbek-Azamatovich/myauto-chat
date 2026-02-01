@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Navigation, AlertCircle, Loader2, X } from "lucide-react";
+import { Navigation, AlertCircle, Loader2, X, ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -473,16 +473,28 @@ const RoadsideHelp = () => {
         
         {/* Loading overlay */}
         {isMapLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-50">
+          <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-[1000]">
             <div className="flex flex-col items-center gap-3">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
               <span className="text-sm text-muted-foreground">Загрузка карты...</span>
             </div>
           </div>
         )}
+
+        {/* Back button - top left */}
+        <div className="absolute top-4 left-4 z-[1000]">
+          <Button
+            onClick={() => navigate('/services')}
+            size="icon"
+            className="shadow-xl h-12 w-12 rounded-xl bg-card hover:bg-card/90 text-foreground border border-border/50"
+            variant="outline"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </Button>
+        </div>
         
-        {/* Locate me button - below zoom controls, right side */}
-        <div className="absolute right-4 top-1/2 mt-12 z-40">
+        {/* Locate me button - right side, below center */}
+        <div className="absolute right-4 top-1/2 mt-16 z-[1000]">
           <Button
             onClick={handleLocateMe}
             size="icon"
@@ -493,12 +505,12 @@ const RoadsideHelp = () => {
           </Button>
         </div>
         
-        {/* Need help button - full width above bottom nav */}
+        {/* Need help button - same width as nav menu */}
         {!myActiveRequest && !selectedRequest && (
-          <div className={`absolute ${bottomNavOffset} left-4 right-4 z-40`}>
+          <div className={`absolute ${bottomNavOffset} left-1/2 -translate-x-1/2 z-[1000]`}>
             <Button 
               onClick={() => setShowRequestDialog(true)}
-              className="w-full shadow-2xl h-14 text-base rounded-2xl bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+              className="shadow-2xl h-14 text-base rounded-2xl bg-destructive hover:bg-destructive/90 text-destructive-foreground px-8 min-w-[220px]"
               size="lg"
             >
               <AlertCircle className="mr-2 h-5 w-5" />
@@ -509,7 +521,7 @@ const RoadsideHelp = () => {
         
         {/* My active request card - above bottom nav */}
         {myActiveRequest && !selectedRequest && (
-          <div className={`absolute ${bottomNavOffset} left-4 right-4 z-40`}>
+          <div className={`absolute ${bottomNavOffset} left-4 right-4 z-[1000]`}>
             <div className="bg-card rounded-2xl shadow-2xl p-4 border border-border/50">
               <div className="flex items-start gap-3">
                 <div className="h-10 w-10 rounded-full bg-destructive/10 flex items-center justify-center flex-shrink-0">
@@ -537,7 +549,7 @@ const RoadsideHelp = () => {
 
       {/* Selected request bottom sheet - above bottom nav */}
       {selectedRequest && (
-        <div className="fixed inset-x-0 bottom-24 z-50 animate-in slide-in-from-bottom duration-300 px-4">
+        <div className="fixed inset-x-0 bottom-24 z-[1001] animate-in slide-in-from-bottom duration-300 px-4">
           <HelpRequestCard
             request={{
               ...selectedRequest,
