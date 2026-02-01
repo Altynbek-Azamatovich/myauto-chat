@@ -9,6 +9,7 @@ import { HelpRequestCard } from "@/components/roadside/HelpRequestCard";
 import { CreateRequestDialog } from "@/components/roadside/CreateRequestDialog";
 import { HelpChat } from "@/components/roadside/HelpChat";
 import { createSOSMarkerLayout, createSOSPlacemark } from "@/components/roadside/SOSMarker";
+
 interface HelpRequest {
   id: string;
   user_id: string;
@@ -98,7 +99,6 @@ const RoadsideHelp = () => {
   const map = useRef<any>(null);
   const markersRef = useRef<Map<string, any>>(new Map());
   const userLocationMarker = useRef<any>(null);
-  const routeRef = useRef<any>(null);
   const sosLayoutRef = useRef<any>(null);
 
   // Check auth and initialize
@@ -197,7 +197,6 @@ const RoadsideHelp = () => {
         controls: [],
       }, {
         suppressMapOpenBlock: true,
-        // Minimal map with no POI
         yandexMapDisablePoiInteractivity: true,
       });
 
@@ -267,7 +266,7 @@ const RoadsideHelp = () => {
 
   const fetchHelpRequests = async () => {
     const { data, error } = await supabase
-      .from('help_requests' as any)
+      .from('help_requests')
       .select('*')
       .eq('status', 'active')
       .order('created_at', { ascending: false });
@@ -373,7 +372,7 @@ const RoadsideHelp = () => {
         async (position) => {
           try {
             const { error } = await supabase
-              .from('help_requests' as any)
+              .from('help_requests')
               .insert({
                 user_id: user.id,
                 latitude: position.coords.latitude,
@@ -429,7 +428,7 @@ const RoadsideHelp = () => {
 
     // Update request with responder
     const { error } = await supabase
-      .from('help_requests' as any)
+      .from('help_requests')
       .update({ responder_id: user.id })
       .eq('id', requestId);
 
@@ -439,9 +438,9 @@ const RoadsideHelp = () => {
       return;
     }
 
-    // Also create help_response entry
+    // Also create help_response entry (triggers notification)
     await supabase
-      .from('help_responses' as any)
+      .from('help_responses')
       .insert({
         help_request_id: requestId,
         responder_id: user.id,
@@ -449,11 +448,6 @@ const RoadsideHelp = () => {
 
     toast.success('Вы откликнулись! Открываем чат. 🚗');
     setSelectedRequest(null);
-
-    // Build route to the person in need
-    if (map.current && window.ymaps && userPosition) {
-      buildRoute(userPosition, [request.latitude, request.longitude]);
-    }
 
     // Open chat with the requester
     const requesterProfile = request.profiles;
@@ -464,38 +458,12 @@ const RoadsideHelp = () => {
         first_name: requesterProfile?.first_name || null,
         last_name: requesterProfile?.last_name || null,
         avatar_url: requesterProfile?.avatar_url || null,
-        phone_number: undefined, // We'll fetch phone separately if needed
+        phone_number: requesterProfile?.phone_number,
         car_brand: requesterProfile?.car_brand || null,
         car_model: requesterProfile?.car_model || null,
       },
       requestMessage: request.message,
       isRequester: false,
-    });
-  };
-
-  const buildRoute = (from: [number, number], to: [number, number]) => {
-    if (!map.current || !window.ymaps) return;
-
-    const ymaps = window.ymaps;
-
-    // Remove existing route
-    if (routeRef.current) {
-      map.current.geoObjects.remove(routeRef.current);
-    }
-
-    // Create new route
-    ymaps.route([from, to], { mapStateAutoApply: true }).then((route: any) => {
-      route.getPaths().options.set({
-        strokeColor: '#22c55e',
-        strokeWidth: 5,
-        strokeStyle: 'solid',
-      });
-      
-      map.current.geoObjects.add(route);
-      routeRef.current = route;
-    }).catch((error: any) => {
-      console.error('Route building error:', error);
-      toast.error('Не удалось построить маршрут');
     });
   };
 
@@ -515,12 +483,6 @@ const RoadsideHelp = () => {
     } else {
       toast.success('Запрос отменён');
       setSelectedRequest(null);
-      
-      // Remove route if exists
-      if (routeRef.current && map.current) {
-        map.current.geoObjects.remove(routeRef.current);
-        routeRef.current = null;
-      }
     }
   };
 
@@ -562,17 +524,19 @@ const RoadsideHelp = () => {
           </Button>
         </div>
         
-        {/* Locate me button - right side, below center */}
-        <div className="absolute right-4 top-1/2 mt-16 z-[1000]">
-          <Button
-            onClick={handleLocateMe}
-            size="icon"
-            className="shadow-xl h-12 w-12 rounded-xl bg-card hover:bg-card/90 text-foreground border border-border/50"
-            variant="outline"
-          >
-            <Navigation className="h-5 w-5" />
-          </Button>
-        </div>
+        {/* Locate me button - only show when SOS dialog is NOT open */}
+        {!showRequestDialog && (
+          <div className="absolute right-4 top-1/2 mt-16 z-[1000]">
+            <Button
+              onClick={handleLocateMe}
+              size="icon"
+              className="shadow-xl h-12 w-12 rounded-xl bg-card hover:bg-card/90 text-foreground border border-border/50"
+              variant="outline"
+            >
+              <Navigation className="h-5 w-5" />
+            </Button>
+          </div>
+        )}
         
         {/* Need help button - same width as nav menu */}
         {!myActiveRequest && !selectedRequest && (
@@ -674,13 +638,8 @@ const RoadsideHelp = () => {
               ) : undefined,
             }}
             onHelp={handleHelpResponse}
-            onClose={() => {
-              if (selectedRequest.user_id === currentUserId) {
-                cancelMyRequest();
-              } else {
-                setSelectedRequest(null);
-              }
-            }}
+            onClose={() => setSelectedRequest(null)}
+            onCancel={selectedRequest.user_id === currentUserId ? cancelMyRequest : undefined}
             isCurrentUser={selectedRequest.user_id === currentUserId}
           />
         </div>

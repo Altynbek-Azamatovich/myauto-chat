@@ -1,13 +1,7 @@
 import { useState } from 'react';
-import { MapPin, Loader2, AlertCircle } from 'lucide-react';
+import { MapPin, Loader2, AlertCircle, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 
 interface CreateRequestDialogProps {
   open: boolean;
@@ -32,22 +26,47 @@ export const CreateRequestDialog = ({ open, onOpenChange, onSubmit }: CreateRequ
     }
   };
 
+  if (!open) return null;
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md rounded-2xl mx-4">
-        <DialogHeader>
-          <DialogTitle className="text-xl flex items-center gap-2">
+    <div className="fixed inset-0 z-[1002] flex items-end justify-center">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={() => onOpenChange(false)}
+      />
+      
+      {/* Dialog content - bottom sheet style with safe margins */}
+      <div className="relative bg-card rounded-t-3xl w-full max-w-md mx-4 mb-0 animate-in slide-in-from-bottom duration-300 shadow-2xl">
+        {/* Handle + close button */}
+        <div className="flex items-center justify-between px-4 pt-4 pb-2">
+          <div className="w-8" />
+          <div className="w-12 h-1.5 bg-muted-foreground/20 rounded-full" />
+          <button
+            onClick={() => onOpenChange(false)}
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
+            aria-label="Закрыть"
+          >
+            <X className="h-5 w-5 text-muted-foreground" />
+          </button>
+        </div>
+        
+        {/* Header */}
+        <div className="px-5 pb-3">
+          <h2 className="text-xl font-semibold flex items-center gap-2">
             <AlertCircle className="h-5 w-5 text-destructive" />
             Запрос о помощи
-          </DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4 pt-2">
+          </h2>
+        </div>
+        
+        {/* Content */}
+        <div className="px-5 pb-8 space-y-4">
           <Textarea
             placeholder="Опишите вашу проблему (например: спустило колесо, села батарея, закончился бензин...)"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             rows={4}
-            className="resize-none rounded-xl"
+            className="resize-none rounded-xl text-base"
           />
           <Button
             onClick={handleSubmit}
@@ -67,8 +86,8 @@ export const CreateRequestDialog = ({ open, onOpenChange, onSubmit }: CreateRequ
             )}
           </Button>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 };
 
