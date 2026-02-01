@@ -23,6 +23,11 @@ interface HelpRequestCardProps {
       engine_volume: string | null;
       fuel_type: string | null;
     } | null;
+    user_vehicles?: {
+      brand_name: string;
+      model: string;
+      year: number;
+    } | null;
   };
   onHelp: (requestId: string) => Promise<void>;
   onClose: () => void;
@@ -38,19 +43,20 @@ export const HelpRequestCard = ({ request, onHelp, onClose, onCancel, isCurrentU
   const startXRef = useRef(0);
 
   const profile = request.profiles;
+  const vehicle = request.user_vehicles;
   const firstName = profile?.first_name || 'Водитель';
   const lastInitial = profile?.last_name ? profile.last_name[0] + '.' : '';
   const displayName = `${firstName} ${lastInitial}`;
   const initials = firstName[0] + (profile?.last_name?.[0] || '');
   const hasResponder = !!request.responder_id;
 
-  // Build car info string
-  const carInfoParts = [
-    profile?.car_brand,
-    profile?.car_model,
-    profile?.car_year,
-  ].filter(Boolean);
-  const carInfo = carInfoParts.length > 0 ? carInfoParts.join(' ') : null;
+  // Build car info string - prefer user_vehicles, then profile
+  let carInfo: string | null = null;
+  if (vehicle) {
+    carInfo = [vehicle.brand_name, vehicle.model, vehicle.year].filter(Boolean).join(' ');
+  } else if (profile?.car_brand || profile?.car_model || profile?.car_year) {
+    carInfo = [profile.car_brand, profile.car_model, profile.car_year].filter(Boolean).join(' ');
+  }
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (isCurrentUser || hasResponder || isSubmitting) return;
@@ -98,10 +104,8 @@ export const HelpRequestCard = ({ request, onHelp, onClose, onCancel, isCurrentU
 
   return (
     <div className="bg-card rounded-2xl shadow-2xl border border-border/50 overflow-hidden max-w-full">
-      {/* Header with close button */}
-      <div className="flex items-center justify-between px-4 pt-4 pb-2">
-        <div className="w-8" /> {/* Spacer */}
-        <div className="w-10 h-1 bg-muted-foreground/20 rounded-full" />
+      {/* Header — only close button, no drag bar */}
+      <div className="flex items-center justify-end px-4 pt-3 pb-1">
         <button
           onClick={handleCloseInfo}
           className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
@@ -122,12 +126,10 @@ export const HelpRequestCard = ({ request, onHelp, onClose, onCancel, isCurrentU
           </Avatar>
           <div className="flex-1 min-w-0">
             <span className="font-semibold text-foreground">{displayName}</span>
-            {carInfo && (
-              <div className="flex items-center gap-1.5 text-sm text-muted-foreground mt-0.5">
-                <Car className="h-3.5 w-3.5 flex-shrink-0" />
-                <span className="truncate">{carInfo}</span>
-              </div>
-            )}
+            <div className="flex items-center gap-1.5 text-sm text-muted-foreground mt-0.5">
+              <Car className="h-3.5 w-3.5 flex-shrink-0" />
+              <span className="truncate">{carInfo || 'Информации об авто нет'}</span>
+            </div>
           </div>
         </div>
 
@@ -167,7 +169,7 @@ export const HelpRequestCard = ({ request, onHelp, onClose, onCancel, isCurrentU
           </p>
         </div>
 
-        {/* Swipe to help slider - rounded track and green circular thumb */}
+        {/* Swipe to help slider - GREEN circular thumb, no trailing arrow */}
         {!isCurrentUser && !hasResponder && (
           <div
             ref={sliderRef}
@@ -176,24 +178,24 @@ export const HelpRequestCard = ({ request, onHelp, onClose, onCancel, isCurrentU
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            {/* Track fill */}
+            {/* Track fill - green tint */}
             <div
-              className="absolute inset-y-0 left-0 bg-primary/20 rounded-full transition-all duration-75"
+              className="absolute inset-y-0 left-0 bg-green-500/20 rounded-full transition-all duration-75"
               style={{ width: `${slideProgress * 100}%` }}
             />
             
-            {/* Slider thumb - green circle */}
+            {/* Slider thumb - GREEN circle */}
             <div
-              className="absolute top-1 bottom-1 left-1 w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg transition-transform"
+              className="absolute top-1 bottom-1 left-1 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center shadow-lg transition-transform"
               style={{ transform: `translateX(${slideProgress * (sliderRef.current ? sliderRef.current.offsetWidth - 56 : 0)}px)` }}
             >
-              <ChevronRight className="h-6 w-6 text-primary-foreground" />
+              <ChevronRight className="h-6 w-6 text-white" />
             </div>
             
-            {/* Text */}
+            {/* Text — larger, NO trailing arrow */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <span className={`font-semibold text-sm ${slideProgress > 0.3 ? 'text-primary' : 'text-muted-foreground'}`}>
-                {isSubmitting ? 'Отправка...' : 'Еду на помощь →'}
+              <span className={`font-semibold text-base ${slideProgress > 0.3 ? 'text-green-600' : 'text-muted-foreground'}`}>
+                {isSubmitting ? 'Отправка...' : 'Еду на помощь'}
               </span>
             </div>
           </div>

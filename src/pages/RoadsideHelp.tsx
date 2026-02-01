@@ -19,6 +19,7 @@ interface HelpRequest {
   status: string;
   address?: string;
   responder_id?: string | null;
+  share_phone?: boolean;
   created_at: string;
   profiles?: {
     first_name: string | null;
@@ -31,6 +32,11 @@ interface HelpRequest {
     car_year: number | null;
     engine_volume: string | null;
     fuel_type: string | null;
+  } | null;
+  user_vehicles?: {
+    brand_name: string;
+    model: string;
+    year: number;
   } | null;
 }
 
@@ -276,14 +282,32 @@ const RoadsideHelp = () => {
       return;
     }
 
-    // Fetch profiles with extended fields
+    // Fetch profiles with extended fields + user_vehicles
     const enrichedData = await Promise.all(
       (data || []).map(async (request: any) => {
+        // Profile
         const { data: profile } = await supabase
           .from('profiles')
           .select('first_name, last_name, phone_number, avatar_url, is_verified, car_brand, car_model, car_year, engine_volume, fuel_type')
           .eq('id', request.user_id)
           .single();
+        
+        // User's primary vehicle (if exists)
+        const { data: vehicleData } = await supabase
+          .from('user_vehicles')
+          .select('model, year, car_brands (brand_name)')
+          .eq('user_id', request.user_id)
+          .eq('is_primary', true)
+          .maybeSingle();
+        
+        let userVehicle = null;
+        if (vehicleData) {
+          userVehicle = {
+            brand_name: (vehicleData as any).car_brands?.brand_name || '',
+            model: vehicleData.model,
+            year: vehicleData.year
+          };
+        }
         
         // Get address from coordinates
         let address = request.address;
@@ -299,7 +323,7 @@ const RoadsideHelp = () => {
           }
         }
         
-        return { ...request, profiles: profile, address };
+        return { ...request, profiles: profile, user_vehicles: userVehicle, address };
       })
     );
 
@@ -360,7 +384,7 @@ const RoadsideHelp = () => {
     });
   }, []);
 
-  const handleCreateRequest = async (message: string) => {
+  const handleCreateRequest = async (message: string, sharePhone: boolean = false) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       toast.error('Необходима авторизация');
@@ -378,7 +402,8 @@ const RoadsideHelp = () => {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
                 message,
-                status: 'active'
+                status: 'active',
+                share_phone: sharePhone
               });
 
             if (error) {
@@ -449,7 +474,7 @@ const RoadsideHelp = () => {
     toast.success('Вы откликнулись! Открываем чат. 🚗');
     setSelectedRequest(null);
 
-    // Open chat with the requester
+    // Open chat with the requester - only share phone if request.share_phone === true
     const requesterProfile = request.profiles;
     setActiveChat({
       requestId: requestId,
@@ -458,7 +483,7 @@ const RoadsideHelp = () => {
         first_name: requesterProfile?.first_name || null,
         last_name: requesterProfile?.last_name || null,
         avatar_url: requesterProfile?.avatar_url || null,
-        phone_number: requesterProfile?.phone_number,
+        phone_number: request.share_phone ? requesterProfile?.phone_number : undefined,
         car_brand: requesterProfile?.car_brand || null,
         car_model: requesterProfile?.car_model || null,
       },

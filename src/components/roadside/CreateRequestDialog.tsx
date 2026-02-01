@@ -2,15 +2,18 @@ import { useState } from 'react';
 import { MapPin, Loader2, AlertCircle, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 
 interface CreateRequestDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (message: string) => Promise<void>;
+  onSubmit: (message: string, sharePhone: boolean) => Promise<void>;
 }
 
 export const CreateRequestDialog = ({ open, onOpenChange, onSubmit }: CreateRequestDialogProps) => {
   const [message, setMessage] = useState('');
+  const [sharePhone, setSharePhone] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
@@ -18,7 +21,7 @@ export const CreateRequestDialog = ({ open, onOpenChange, onSubmit }: CreateRequ
     
     setIsSubmitting(true);
     try {
-      await onSubmit(message.trim());
+      await onSubmit(message.trim(), sharePhone);
       setMessage('');
       onOpenChange(false);
     } finally {
@@ -68,6 +71,19 @@ export const CreateRequestDialog = ({ open, onOpenChange, onSubmit }: CreateRequ
             rows={4}
             className="resize-none rounded-xl text-base"
           />
+
+          {/* Share phone checkbox */}
+          <div className="flex items-center gap-3 py-2">
+            <Checkbox 
+              id="sharePhone" 
+              checked={sharePhone} 
+              onCheckedChange={(checked) => setSharePhone(!!checked)} 
+            />
+            <Label htmlFor="sharePhone" className="text-sm text-muted-foreground cursor-pointer">
+              Делиться номером телефона для звонка
+            </Label>
+          </div>
+
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting || !message.trim()}
