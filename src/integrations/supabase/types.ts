@@ -38,6 +38,87 @@ export type Database = {
         }
         Relationships: []
       }
+      audit_logs: {
+        Row: {
+          category: Database["public"]["Enums"]["audit_category"]
+          client_ip: unknown
+          created_at: string
+          description: string
+          error_message: string | null
+          event_type: string
+          http_method: string | null
+          http_path: string | null
+          http_status_code: number | null
+          id: string
+          level: Database["public"]["Enums"]["audit_level"]
+          metadata: Json | null
+          new_values: Json | null
+          old_values: Json | null
+          operation_end_time: string | null
+          operation_start_time: string
+          request_id: string | null
+          source_service: string
+          success: boolean
+          target_record_id: string | null
+          target_table: string | null
+          user_account_name: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["audit_category"]
+          client_ip?: unknown
+          created_at?: string
+          description: string
+          error_message?: string | null
+          event_type: string
+          http_method?: string | null
+          http_path?: string | null
+          http_status_code?: number | null
+          id?: string
+          level?: Database["public"]["Enums"]["audit_level"]
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          operation_end_time?: string | null
+          operation_start_time?: string
+          request_id?: string | null
+          source_service: string
+          success?: boolean
+          target_record_id?: string | null
+          target_table?: string | null
+          user_account_name?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["audit_category"]
+          client_ip?: unknown
+          created_at?: string
+          description?: string
+          error_message?: string | null
+          event_type?: string
+          http_method?: string | null
+          http_path?: string | null
+          http_status_code?: number | null
+          id?: string
+          level?: Database["public"]["Enums"]["audit_level"]
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          operation_end_time?: string | null
+          operation_start_time?: string
+          request_id?: string | null
+          source_service?: string
+          success?: boolean
+          target_record_id?: string | null
+          target_table?: string | null
+          user_account_name?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       car_brands: {
         Row: {
           brand_name: string
@@ -1013,6 +1094,45 @@ export type Database = {
         }
         Relationships: []
       }
+      siem_config: {
+        Row: {
+          api_key: string | null
+          created_at: string | null
+          endpoint_url: string
+          id: string
+          is_active: boolean | null
+          last_sync_at: string | null
+          name: string
+          port: number | null
+          protocol: string
+          updated_at: string | null
+        }
+        Insert: {
+          api_key?: string | null
+          created_at?: string | null
+          endpoint_url: string
+          id?: string
+          is_active?: boolean | null
+          last_sync_at?: string | null
+          name: string
+          port?: number | null
+          protocol?: string
+          updated_at?: string | null
+        }
+        Update: {
+          api_key?: string | null
+          created_at?: string | null
+          endpoint_url?: string
+          id?: string
+          is_active?: boolean | null
+          last_sync_at?: string | null
+          name?: string
+          port?: number | null
+          protocol?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -1111,7 +1231,60 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      audit_logs_formatted: {
+        Row: {
+          category: string | null
+          client_ip: string | null
+          date: string | null
+          description: string | null
+          end_time: string | null
+          error_message: string | null
+          event_type: string | null
+          id: string | null
+          level: string | null
+          request_id: string | null
+          source: string | null
+          start_time: string | null
+          success: boolean | null
+          time: string | null
+          user_account: string | null
+        }
+        Insert: {
+          category?: never
+          client_ip?: never
+          date?: never
+          description?: string | null
+          end_time?: never
+          error_message?: string | null
+          event_type?: string | null
+          id?: string | null
+          level?: never
+          request_id?: string | null
+          source?: string | null
+          start_time?: never
+          success?: boolean | null
+          time?: never
+          user_account?: never
+        }
+        Update: {
+          category?: never
+          client_ip?: never
+          date?: never
+          description?: string | null
+          end_time?: never
+          error_message?: string | null
+          event_type?: string | null
+          id?: string | null
+          level?: never
+          request_id?: string | null
+          source?: string | null
+          start_time?: never
+          success?: boolean | null
+          time?: never
+          user_account?: never
+        }
+        Relationships: []
+      }
     }
     Functions: {
       cleanup_rate_limits: { Args: never; Returns: undefined }
@@ -1125,6 +1298,7 @@ export type Database = {
         Returns: Json
       }
       delete_expired_otp_codes: { Args: never; Returns: undefined }
+      format_syslog_message: { Args: { p_log_id: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1132,9 +1306,53 @@ export type Database = {
         }
         Returns: boolean
       }
+      write_audit_log: {
+        Args: {
+          p_category: Database["public"]["Enums"]["audit_category"]
+          p_client_ip?: unknown
+          p_description: string
+          p_error_message?: string
+          p_event_type: string
+          p_http_method?: string
+          p_http_path?: string
+          p_http_status_code?: number
+          p_level?: Database["public"]["Enums"]["audit_level"]
+          p_metadata?: Json
+          p_new_values?: Json
+          p_old_values?: Json
+          p_operation_end_time?: string
+          p_operation_start_time?: string
+          p_request_id?: string
+          p_source_service: string
+          p_success?: boolean
+          p_target_record_id?: string
+          p_target_table?: string
+          p_user_account_name?: string
+          p_user_agent?: string
+          p_user_id?: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "user" | "partner" | "master" | "admin"
+      audit_category:
+        | "AUTH"
+        | "USER_ACTION"
+        | "DATA_ACCESS"
+        | "DATA_MODIFY"
+        | "SYSTEM"
+        | "EXTERNAL_API"
+        | "CONFIG_CHANGE"
+        | "SECURITY"
+      audit_level:
+        | "DEBUG"
+        | "INFO"
+        | "NOTIFICATION"
+        | "WARNING"
+        | "ERROR"
+        | "CRITICAL"
+        | "ALERT"
       service_request_status:
         | "pending"
         | "confirmed"
@@ -1277,6 +1495,25 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["user", "partner", "master", "admin"],
+      audit_category: [
+        "AUTH",
+        "USER_ACTION",
+        "DATA_ACCESS",
+        "DATA_MODIFY",
+        "SYSTEM",
+        "EXTERNAL_API",
+        "CONFIG_CHANGE",
+        "SECURITY",
+      ],
+      audit_level: [
+        "DEBUG",
+        "INFO",
+        "NOTIFICATION",
+        "WARNING",
+        "ERROR",
+        "CRITICAL",
+        "ALERT",
+      ],
       service_request_status: [
         "pending",
         "confirmed",
