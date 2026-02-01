@@ -217,6 +217,7 @@ export type Database = {
           message: string
           responder_eta_minutes: number | null
           responder_id: string | null
+          share_phone: boolean
           status: string
           updated_at: string
           user_id: string
@@ -230,6 +231,7 @@ export type Database = {
           message: string
           responder_eta_minutes?: number | null
           responder_id?: string | null
+          share_phone?: boolean
           status?: string
           updated_at?: string
           user_id: string
@@ -243,6 +245,7 @@ export type Database = {
           message?: string
           responder_eta_minutes?: number | null
           responder_id?: string | null
+          share_phone?: boolean
           status?: string
           updated_at?: string
           user_id?: string
