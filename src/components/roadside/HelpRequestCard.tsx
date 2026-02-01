@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { CheckCircle, AlertTriangle, Car, ChevronRight, X } from 'lucide-react';
+import { AlertTriangle, ChevronRight, X, MapPin, Clock } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 
@@ -41,16 +41,15 @@ export const HelpRequestCard = ({ request, onHelp, onClose, isCurrentUser }: Hel
   const lastInitial = profile?.last_name ? profile.last_name[0] + '.' : '';
   const displayName = `${firstName} ${lastInitial}`;
   const initials = firstName[0] + (profile?.last_name?.[0] || '');
-  const isVerified = profile?.is_verified || false;
   const hasResponder = !!request.responder_id;
 
-  const carInfo = [
+  // Build car info string
+  const carInfoParts = [
     profile?.car_brand,
     profile?.car_model,
     profile?.car_year,
-    profile?.engine_volume,
-    profile?.fuel_type
-  ].filter(Boolean).join(' · ');
+  ].filter(Boolean);
+  const carInfo = carInfoParts.length > 0 ? carInfoParts.join(' ') : null;
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (isCurrentUser || hasResponder || isSubmitting) return;
@@ -62,7 +61,7 @@ export const HelpRequestCard = ({ request, onHelp, onClose, isCurrentUser }: Hel
     if (!isSliding || !sliderRef.current) return;
     const currentX = e.touches[0].clientX;
     const diff = currentX - startXRef.current;
-    const maxSlide = sliderRef.current.offsetWidth - 64;
+    const maxSlide = sliderRef.current.offsetWidth - 56;
     const progress = Math.min(Math.max(diff / maxSlide, 0), 1);
     setSlideProgress(progress);
   };
@@ -85,23 +84,22 @@ export const HelpRequestCard = ({ request, onHelp, onClose, isCurrentUser }: Hel
   };
 
   return (
-    <div className="bg-card rounded-t-3xl shadow-2xl border-t border-border/50 overflow-hidden">
-      {/* Close button */}
-      <div className="flex justify-center pt-3 pb-2">
+    <div className="bg-card rounded-2xl shadow-2xl border border-border/50 overflow-hidden">
+      {/* Header with close button */}
+      <div className="flex items-center justify-between px-4 pt-4 pb-2">
+        <div className="w-8" /> {/* Spacer */}
+        <div className="w-10 h-1 bg-muted-foreground/20 rounded-full" />
         <button
           onClick={onClose}
-          className="w-12 h-1.5 bg-muted-foreground/20 rounded-full hover:bg-muted-foreground/40 transition-colors"
-        />
+          className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
+        >
+          <X className="h-5 w-5 text-muted-foreground" />
+        </button>
       </div>
 
-      <div className="px-5 pb-6 space-y-4">
-        {/* User info */}
+      <div className="px-4 pb-5 space-y-3">
+        {/* User info with car */}
         <div className="flex items-center gap-3">
-          {hasResponder && (
-            <div className="absolute -ml-1 -mt-6">
-              <CheckCircle className="h-5 w-5 text-primary fill-primary" />
-            </div>
-          )}
           <Avatar className="h-12 w-12 border-2 border-primary/20">
             <AvatarImage src={profile?.avatar_url || ''} alt={displayName} />
             <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-semibold">
@@ -109,32 +107,38 @@ export const HelpRequestCard = ({ request, onHelp, onClose, isCurrentUser }: Hel
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              {isVerified && (
-                <CheckCircle className="h-4 w-4 text-primary fill-primary flex-shrink-0" />
-              )}
-              <span className="font-semibold text-foreground">{displayName}</span>
-            </div>
-            <div className="text-xs text-muted-foreground">
-              {isVerified ? 'Профиль подтверждён' : 'Профиль не подтверждён'}
-            </div>
+            <span className="font-semibold text-foreground">{displayName}</span>
             {carInfo && (
               <div className="text-sm text-muted-foreground mt-0.5 truncate">
-                {carInfo}
+                🚗 {carInfo}
               </div>
             )}
           </div>
         </div>
 
-        {/* Address and distance */}
+        {/* Address and distance/time with labels */}
         {(request.address || request.distance || request.eta) && (
-          <div className="bg-muted/50 rounded-xl px-4 py-3">
+          <div className="bg-muted/50 rounded-xl px-4 py-3 space-y-2">
             {request.address && (
-              <div className="font-medium text-foreground">{request.address}</div>
+              <div className="flex items-start gap-2">
+                <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                <span className="font-medium text-foreground text-sm">{request.address}</span>
+              </div>
             )}
             {(request.distance || request.eta) && (
-              <div className="text-sm text-muted-foreground mt-1">
-                {[request.eta, request.distance].filter(Boolean).join(' | ')}
+              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                {request.eta && (
+                  <div className="flex items-center gap-1.5">
+                    <Clock className="h-3.5 w-3.5" />
+                    <span>Время: <span className="text-foreground font-medium">{request.eta}</span></span>
+                  </div>
+                )}
+                {request.distance && (
+                  <div className="flex items-center gap-1.5">
+                    <MapPin className="h-3.5 w-3.5" />
+                    <span>Расстояние: <span className="text-foreground font-medium">{request.distance}</span></span>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -148,49 +152,48 @@ export const HelpRequestCard = ({ request, onHelp, onClose, isCurrentUser }: Hel
           </p>
         </div>
 
-        {/* Action button */}
+        {/* Swipe to help slider */}
         {!isCurrentUser && !hasResponder && (
           <div
             ref={sliderRef}
-            className="relative h-14 bg-muted rounded-2xl overflow-hidden touch-none"
+            className="relative h-14 bg-muted rounded-full overflow-hidden touch-none"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
             {/* Track fill */}
             <div
-              className="absolute inset-y-0 left-0 bg-primary transition-all duration-75"
+              className="absolute inset-y-0 left-0 bg-primary/20 rounded-full transition-all duration-75"
               style={{ width: `${slideProgress * 100}%` }}
             />
             
-            {/* Slider thumb */}
+            {/* Slider thumb - green circle */}
             <div
-              className="absolute top-1/2 -translate-y-1/2 h-12 w-12 bg-primary rounded-xl flex items-center justify-center shadow-lg transition-transform"
-              style={{ left: `${slideProgress * (100 - 15)}%`, transform: 'translateY(-50%)' }}
+              className="absolute top-1 bottom-1 left-1 w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg transition-transform"
+              style={{ transform: `translateX(${slideProgress * (sliderRef.current ? sliderRef.current.offsetWidth - 56 : 0)}px)` }}
             >
               <ChevronRight className="h-6 w-6 text-primary-foreground" />
             </div>
             
             {/* Text */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <span className={`font-semibold ${slideProgress > 0.3 ? 'text-primary-foreground' : 'text-foreground'}`}>
-                {isSubmitting ? 'Отправка...' : 'Еду на помощь'}
+              <span className={`font-semibold text-sm ${slideProgress > 0.3 ? 'text-primary' : 'text-muted-foreground'}`}>
+                {isSubmitting ? 'Отправка...' : 'Еду на помощь →'}
               </span>
             </div>
           </div>
         )}
 
         {hasResponder && !isCurrentUser && (
-          <div className="flex items-center justify-center gap-2 py-3 bg-primary/10 rounded-2xl">
-            <CheckCircle className="h-5 w-5 text-primary" />
-            <span className="font-medium text-primary">Помощь уже в пути</span>
+          <div className="flex items-center justify-center gap-2 py-3 bg-primary/10 rounded-full">
+            <span className="font-medium text-primary text-sm">✓ Помощь уже в пути</span>
           </div>
         )}
 
         {isCurrentUser && (
           <Button
             variant="destructive"
-            className="w-full h-12 rounded-xl"
+            className="w-full h-12 rounded-full"
             onClick={onClose}
           >
             <X className="h-4 w-4 mr-2" />
