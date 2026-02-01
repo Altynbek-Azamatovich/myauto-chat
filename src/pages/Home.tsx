@@ -171,7 +171,7 @@ const Home = () => {
       {/* Car Info Cards */}
       <div className="px-4 space-y-4 mt-3">
       <div className="grid grid-cols-2 gap-4">
-        <Card className="p-4 bg-black/30 backdrop-blur-md rounded-2xl border-white/20">
+        <Card className="p-4 glass-card rounded-3xl">
           <div className="space-y-3">
             <div className="mb-2">
               <div className="text-white">
@@ -195,7 +195,7 @@ const Home = () => {
           </div>
         </Card>
 
-        <Card className="p-4 bg-black/30 backdrop-blur-md rounded-2xl border-white/20">
+        <Card className="p-4 glass-card rounded-3xl">
           <div className="space-y-3">
             <div className="mb-2">
               <div className="text-white">
@@ -261,7 +261,7 @@ const Home = () => {
         </div>
 
       {/* Technical Condition */}
-      <Card className="p-4 bg-black/30 backdrop-blur-md rounded-2xl border-white/20">
+      <Card className="p-4 glass-card rounded-3xl">
         <div className="flex items-start space-x-3">
             <HeartPulse className="h-5 w-5 text-app-green flex-shrink-0 mt-0.5" />
             <div className="flex-1">
@@ -286,7 +286,7 @@ const Home = () => {
 
       {/* Additional Info */}
       <div className="grid grid-cols-2 gap-4 pb-24">
-        <Card className="p-4 bg-black/30 backdrop-blur-md rounded-2xl border-white/20">
+        <Card className="p-4 glass-card rounded-3xl">
           <div className="flex items-start space-x-2">
               <div className="text-xl mt-0.5">⚡</div>
               <div className="flex-1 min-w-0">
@@ -296,7 +296,7 @@ const Home = () => {
             </div>
           </Card>
 
-        <Card className="p-4 bg-black/30 backdrop-blur-md rounded-2xl border-white/20">
+        <Card className="p-4 glass-card rounded-3xl">
           <div className="flex items-start space-x-2">
               <div className="text-xl mt-0.5">📋</div>
               <div className="flex-1 min-w-0">
