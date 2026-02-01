@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface ChatMessage {
   id: string;
@@ -61,7 +62,12 @@ export const HelpChat = ({
           filter: `help_request_id=eq.${helpRequestId}`,
         },
         (payload) => {
-          setMessages(prev => [...prev, payload.new as ChatMessage]);
+          const newMsg = payload.new as ChatMessage;
+          setMessages(prev => {
+            // Prevent duplicates
+            if (prev.some(m => m.id === newMsg.id)) return prev;
+            return [...prev, newMsg];
+          });
         }
       )
       .subscribe();
@@ -78,31 +84,42 @@ export const HelpChat = ({
 
   const fetchMessages = async () => {
     const { data, error } = await supabase
-      .from('help_chat_messages' as any)
+      .from('help_chat_messages')
       .select('*')
       .eq('help_request_id', helpRequestId)
       .order('created_at', { ascending: true });
 
-    if (!error && data) {
-      setMessages(data as unknown as ChatMessage[]);
+    if (error) {
+      console.error('Error fetching messages:', error);
+      return;
+    }
+    
+    if (data) {
+      setMessages(data as ChatMessage[]);
     }
   };
 
   const sendMessage = async () => {
     if (!newMessage.trim() || isSending) return;
 
+    const messageText = newMessage.trim();
+    setNewMessage('');
     setIsSending(true);
+    
     const { error } = await supabase
-      .from('help_chat_messages' as any)
+      .from('help_chat_messages')
       .insert({
         help_request_id: helpRequestId,
         sender_id: currentUserId,
-        message: newMessage.trim(),
+        message: messageText,
       });
 
-    if (!error) {
-      setNewMessage('');
+    if (error) {
+      console.error('Error sending message:', error);
+      toast.error('Не удалось отправить сообщение');
+      setNewMessage(messageText); // Restore message on error
     }
+    
     setIsSending(false);
   };
 
@@ -122,7 +139,7 @@ export const HelpChat = ({
   return (
     <div className="fixed inset-0 bg-background z-[1002] flex flex-col">
       {/* Header */}
-      <div className="flex items-center gap-3 p-4 border-b border-border bg-card">
+      <div className="flex items-center gap-3 p-4 border-b border-border bg-card safe-area-top">
         <Button variant="ghost" size="icon" onClick={onBack} className="flex-shrink-0">
           <ArrowLeft className="h-5 w-5" />
         </Button>
@@ -135,9 +152,9 @@ export const HelpChat = ({
         </Avatar>
         
         <div className="flex-1 min-w-0">
-          <div className="font-semibold text-foreground">{otherUserName}</div>
+          <div className="font-semibold text-foreground text-base">{otherUserName}</div>
           {carInfo && (
-            <div className="text-xs text-muted-foreground truncate">🚗 {carInfo}</div>
+            <div className="text-sm text-muted-foreground truncate">🚗 {carInfo}</div>
           )}
         </div>
         
@@ -165,7 +182,7 @@ export const HelpChat = ({
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.length === 0 && (
           <div className="text-center text-muted-foreground py-8">
-            <p className="text-sm">Начните переписку, чтобы обсудить детали</p>
+            <p className="text-base">Начните переписку, чтобы обсудить детали</p>
           </div>
         )}
         
@@ -177,13 +194,13 @@ export const HelpChat = ({
               className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`max-w-[80%] px-4 py-2 rounded-2xl ${
+                className={`max-w-[80%] px-4 py-2.5 rounded-2xl ${
                   isOwn
                     ? 'bg-primary text-primary-foreground rounded-br-md'
                     : 'bg-muted text-foreground rounded-bl-md'
                 }`}
               >
-                <p className="text-sm whitespace-pre-wrap">{msg.message}</p>
+                <p className="text-base whitespace-pre-wrap">{msg.message}</p>
                 <div className={`text-xs mt-1 ${isOwn ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
                   {new Date(msg.created_at).toLocaleTimeString('ru-RU', { 
                     hour: '2-digit', 
@@ -198,22 +215,22 @@ export const HelpChat = ({
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t border-border bg-card">
+      <div className="p-4 border-t border-border bg-card safe-area-bottom">
         <div className="flex gap-2">
           <Input
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Введите сообщение..."
-            className="flex-1 rounded-full"
+            className="flex-1 rounded-full text-base h-12"
           />
           <Button
             onClick={sendMessage}
             disabled={!newMessage.trim() || isSending}
             size="icon"
-            className="rounded-full flex-shrink-0"
+            className="rounded-full flex-shrink-0 h-12 w-12"
           >
-            <Send className="h-4 w-4" />
+            <Send className="h-5 w-5" />
           </Button>
         </div>
       </div>

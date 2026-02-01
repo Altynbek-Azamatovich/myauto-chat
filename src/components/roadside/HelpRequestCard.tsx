@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { AlertTriangle, ChevronRight, X, MapPin, Clock } from 'lucide-react';
+import { AlertTriangle, ChevronRight, X, MapPin, Clock, Car } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 
@@ -26,10 +26,11 @@ interface HelpRequestCardProps {
   };
   onHelp: (requestId: string) => Promise<void>;
   onClose: () => void;
+  onCancel?: () => void;
   isCurrentUser: boolean;
 }
 
-export const HelpRequestCard = ({ request, onHelp, onClose, isCurrentUser }: HelpRequestCardProps) => {
+export const HelpRequestCard = ({ request, onHelp, onClose, onCancel, isCurrentUser }: HelpRequestCardProps) => {
   const [isSliding, setIsSliding] = useState(false);
   const [slideProgress, setSlideProgress] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -83,15 +84,28 @@ export const HelpRequestCard = ({ request, onHelp, onClose, isCurrentUser }: Hel
     }
   };
 
+  // Handle close - just close info window without cancelling
+  const handleCloseInfo = () => {
+    onClose();
+  };
+
+  // Handle cancel request
+  const handleCancelRequest = () => {
+    if (onCancel) {
+      onCancel();
+    }
+  };
+
   return (
-    <div className="bg-card rounded-2xl shadow-2xl border border-border/50 overflow-hidden">
+    <div className="bg-card rounded-2xl shadow-2xl border border-border/50 overflow-hidden max-w-full">
       {/* Header with close button */}
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <div className="w-8" /> {/* Spacer */}
         <div className="w-10 h-1 bg-muted-foreground/20 rounded-full" />
         <button
-          onClick={onClose}
+          onClick={handleCloseInfo}
           className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
+          aria-label="Закрыть"
         >
           <X className="h-5 w-5 text-muted-foreground" />
         </button>
@@ -109,8 +123,9 @@ export const HelpRequestCard = ({ request, onHelp, onClose, isCurrentUser }: Hel
           <div className="flex-1 min-w-0">
             <span className="font-semibold text-foreground">{displayName}</span>
             {carInfo && (
-              <div className="text-sm text-muted-foreground mt-0.5 truncate">
-                🚗 {carInfo}
+              <div className="flex items-center gap-1.5 text-sm text-muted-foreground mt-0.5">
+                <Car className="h-3.5 w-3.5 flex-shrink-0" />
+                <span className="truncate">{carInfo}</span>
               </div>
             )}
           </div>
@@ -152,7 +167,7 @@ export const HelpRequestCard = ({ request, onHelp, onClose, isCurrentUser }: Hel
           </p>
         </div>
 
-        {/* Swipe to help slider */}
+        {/* Swipe to help slider - rounded track and green circular thumb */}
         {!isCurrentUser && !hasResponder && (
           <div
             ref={sliderRef}
@@ -194,7 +209,7 @@ export const HelpRequestCard = ({ request, onHelp, onClose, isCurrentUser }: Hel
           <Button
             variant="destructive"
             className="w-full h-12 rounded-full"
-            onClick={onClose}
+            onClick={handleCancelRequest}
           >
             <X className="h-4 w-4 mr-2" />
             Отменить запрос
