@@ -1,165 +1,165 @@
 // Импорт всех изображений седанов (12 цветов)
-import белыйСедан from '@/assets/cars/sedan/белый-седан.png';
-import желтыйСедан from '@/assets/cars/sedan/желтый-седан.png';
-import зеленыйСедан from '@/assets/cars/sedan/зеленый-седан.png';
-import золотистыйСедан from '@/assets/cars/sedan/золотистый-седан.png';
-import коричневыйСедан from '@/assets/cars/sedan/коричневый-седан.png';
-import красныйСедан from '@/assets/cars/sedan/красный-седан.png';
-import оранжевыйСедан from '@/assets/cars/sedan/оранжевый-седан.png';
-import розовыйСедан from '@/assets/cars/sedan/розовый-седан.png';
-import серыйСедан from '@/assets/cars/sedan/серый-седан.png';
-import синийСедан from '@/assets/cars/sedan/синий-седан.png';
-import фиолетовыйСедан from '@/assets/cars/sedan/фиолетовый-седан.png';
-import черныйСедан from '@/assets/cars/sedan/черный-седан.png';
+import whiteSedanImg from '@/assets/cars/sedan/white-sedan.png';
+import yellowSedanImg from '@/assets/cars/sedan/yellow-sedan.png';
+import greenSedanImg from '@/assets/cars/sedan/green-sedan.png';
+import goldSedanImg from '@/assets/cars/sedan/gold-sedan.png';
+import brownSedanImg from '@/assets/cars/sedan/brown-sedan.png';
+import redSedanImg from '@/assets/cars/sedan/red-sedan.png';
+import orangeSedanImg from '@/assets/cars/sedan/orange-sedan.png';
+import pinkSedanImg from '@/assets/cars/sedan/pink-sedan.png';
+import graySedanImg from '@/assets/cars/sedan/gray-sedan.png';
+import blueSedanImg from '@/assets/cars/sedan/blue-sedan.png';
+import purpleSedanImg from '@/assets/cars/sedan/purple-sedan.png';
+import blackSedanImg from '@/assets/cars/sedan/black-sedan.png';
 
 // Импорт изображений кроссоверов (12 цветов)
-import белыйКроссовер from '@/assets/cars/crossover/белый-кроссовер.png';
-import желтыйКроссовер from '@/assets/cars/crossover/желтый-кроссовер.png';
-import зеленыйКроссовер from '@/assets/cars/crossover/зеленый-кроссовер.png';
-import золотистыйКроссовер from '@/assets/cars/crossover/золотистый-кроссовер.png';
-import коричневыйКроссовер from '@/assets/cars/crossover/коричневый-кроссовер.png';
-import красныйКроссовер from '@/assets/cars/crossover/красный-кроссовер.png';
-import оранжевыйКроссовер from '@/assets/cars/crossover/оранжевый-кроссовер.png';
-import розовыйКроссовер from '@/assets/cars/crossover/розовый-кроссовер.png';
-import серыйКроссовер from '@/assets/cars/crossover/серый-кроссовер.png';
-import синийКроссовер from '@/assets/cars/crossover/синий-кроссовер.png';
-import фиолетовыйКроссовер from '@/assets/cars/crossover/фиолетовый-кроссовер.png';
-import черныйКроссовер from '@/assets/cars/crossover/черный-кроссовер.png';
+import whiteCrossoverImg from '@/assets/cars/crossover/white-crossover.png';
+import yellowCrossoverImg from '@/assets/cars/crossover/yellow-crossover.png';
+import greenCrossoverImg from '@/assets/cars/crossover/green-crossover.png';
+import goldCrossoverImg from '@/assets/cars/crossover/gold-crossover.png';
+import brownCrossoverImg from '@/assets/cars/crossover/brown-crossover.png';
+import redCrossoverImg from '@/assets/cars/crossover/red-crossover.png';
+import orangeCrossoverImg from '@/assets/cars/crossover/orange-crossover.png';
+import pinkCrossoverImg from '@/assets/cars/crossover/pink-crossover.png';
+import grayCrossoverImg from '@/assets/cars/crossover/gray-crossover.png';
+import blueCrossoverImg from '@/assets/cars/crossover/blue-crossover.png';
+import purpleCrossoverImg from '@/assets/cars/crossover/purple-crossover.png';
+import blackCrossoverImg from '@/assets/cars/crossover/black-crossover.png';
 
 // Импорт изображений внедорожников (12 цветов)
-import белыйВнедорожник from '@/assets/cars/suv/белый-внедорожник.png';
-import желтыйВнедорожник from '@/assets/cars/suv/желтый-внедорожник.png';
-import зеленыйВнедорожник from '@/assets/cars/suv/зеленый-внедорожник.png';
-import золотистыйВнедорожник from '@/assets/cars/suv/золотистый-внедорожник.png';
-import коричневыйВнедорожник from '@/assets/cars/suv/коричневый-внедорожник.png';
-import красныйВнедорожник from '@/assets/cars/suv/красный-внедорожник.png';
-import оранжевыйВнедорожник from '@/assets/cars/suv/оранжевый-внедорожник.png';
-import розовыйВнедорожник from '@/assets/cars/suv/розовый-внедорожник.png';
-import серыйВнедорожник from '@/assets/cars/suv/серый-внедорожник.png';
-import синийВнедорожник from '@/assets/cars/suv/синий-внедорожник.png';
-import фиолетовыйВнедорожник from '@/assets/cars/suv/фиолетовый-внедорожник.png';
-import черныйВнедорожник from '@/assets/cars/suv/черный-внедорожник.png';
+import whiteSuvImg from '@/assets/cars/suv/white-suv.png';
+import yellowSuvImg from '@/assets/cars/suv/yellow-suv.png';
+import greenSuvImg from '@/assets/cars/suv/green-suv.png';
+import goldSuvImg from '@/assets/cars/suv/gold-suv.png';
+import brownSuvImg from '@/assets/cars/suv/brown-suv.png';
+import redSuvImg from '@/assets/cars/suv/red-suv.png';
+import orangeSuvImg from '@/assets/cars/suv/orange-suv.png';
+import pinkSuvImg from '@/assets/cars/suv/pink-suv.png';
+import graySuvImg from '@/assets/cars/suv/gray-suv.png';
+import blueSuvImg from '@/assets/cars/suv/blue-suv.png';
+import purpleSuvImg from '@/assets/cars/suv/purple-suv.png';
+import blackSuvImg from '@/assets/cars/suv/black-suv.png';
 
-// Импорт изображений минивенов (12 цветов - полный набор)
-import белыйМинивен from '@/assets/cars/minivan/белый-минивен.png';
-import желтыйМинивен from '@/assets/cars/minivan/желтый-минивен.png';
-import зеленыйМинивен from '@/assets/cars/minivan/зеленый-минивен.png';
-import золотистыйМинивен from '@/assets/cars/minivan/золотистый-минивен.png';
-import коричневыйМинивен from '@/assets/cars/minivan/коричневый-минивен.png';
-import красныйМинивен from '@/assets/cars/minivan/красный-минивен.png';
-import оранжевыйМинивен from '@/assets/cars/minivan/оранжевый-минивен.png';
-import розовыйМинивен from '@/assets/cars/minivan/розовый-минивен.png';
-import серыйМинивен from '@/assets/cars/minivan/серый-минивен.png';
-import синийМинивен from '@/assets/cars/minivan/синий-минивен.png';
-import фиолетовыйМинивен from '@/assets/cars/minivan/фиолетовый-минивен.png';
-import черныйМинивен from '@/assets/cars/minivan/черный-минивен.png';
+// Импорт изображений минивенов (12 цветов)
+import whiteMinivanImg from '@/assets/cars/minivan/white-minivan.png';
+import yellowMinivanImg from '@/assets/cars/minivan/yellow-minivan.png';
+import greenMinivanImg from '@/assets/cars/minivan/green-minivan.png';
+import goldMinivanImg from '@/assets/cars/minivan/gold-minivan.png';
+import brownMinivanImg from '@/assets/cars/minivan/brown-minivan.png';
+import redMinivanImg from '@/assets/cars/minivan/red-minivan.png';
+import orangeMinivanImg from '@/assets/cars/minivan/orange-minivan.png';
+import pinkMinivanImg from '@/assets/cars/minivan/pink-minivan.png';
+import grayMinivanImg from '@/assets/cars/minivan/gray-minivan.png';
+import blueMinivanImg from '@/assets/cars/minivan/blue-minivan.png';
+import purpleMinivanImg from '@/assets/cars/minivan/purple-minivan.png';
+import blackMinivanImg from '@/assets/cars/minivan/black-minivan.png';
 
 // Импорт типа и функции определения кузова
 import { type BodyType, getBodyTypeFromModel } from '@/data/car-body-types';
 export { type BodyType, getBodyTypeFromModel };
 
 // Дефолтный цвет если не найден
-const DEFAULT_COLOR = 'черный';
+const DEFAULT_COLOR = 'black';
 
-// Маппинг цветов из базы данных к имени файла изображения
+// Маппинг цветов из базы данных к внутреннему ключу
 const colorMapping: Record<string, string> = {
   // Белый
-  'Белый': 'белый',
+  'Белый': 'white',
   
   // Жёлтый группа (бежевый → желтый)
-  'Желтый': 'желтый',
-  'Бежевый': 'желтый',
+  'Желтый': 'yellow',
+  'Бежевый': 'yellow',
   
   // Синий группа (голубой, синий, темно-синий → синий)
-  'Синий': 'синий',
-  'Голубой': 'синий',
-  'Темно-синий': 'синий',
+  'Синий': 'blue',
+  'Голубой': 'blue',
+  'Темно-синий': 'blue',
   
   // Зелёный группа (зеленый, темно-зеленый → зеленый)
-  'Зеленый': 'зеленый',
-  'Темно-зеленый': 'зеленый',
+  'Зеленый': 'green',
+  'Темно-зеленый': 'green',
   
   // Серый группа (серый, светло-серый, темно-серый, серебристый → серый)
-  'Серый': 'серый',
-  'Светло-серый': 'серый',
-  'Темно-серый': 'серый',
-  'Серебристый': 'серый',
+  'Серый': 'gray',
+  'Светло-серый': 'gray',
+  'Темно-серый': 'gray',
+  'Серебристый': 'gray',
   
   // Красный группа (красный, бордовый → красный)
-  'Красный': 'красный',
-  'Бордовый': 'красный',
+  'Красный': 'red',
+  'Бордовый': 'red',
   
   // Остальные цвета 1:1
-  'Золотистый': 'золотистый',
-  'Коричневый': 'коричневый',
-  'Оранжевый': 'оранжевый',
-  'Розовый': 'розовый',
-  'Черный': 'черный',
-  'Фиолетовый': 'фиолетовый',
+  'Золотистый': 'gold',
+  'Коричневый': 'brown',
+  'Оранжевый': 'orange',
+  'Розовый': 'pink',
+  'Черный': 'black',
+  'Фиолетовый': 'purple',
 };
 
 // Изображения седанов по цветам (все 12 цветов)
 const sedanImages: Record<string, string> = {
-  'белый': белыйСедан,
-  'желтый': желтыйСедан,
-  'зеленый': зеленыйСедан,
-  'золотистый': золотистыйСедан,
-  'коричневый': коричневыйСедан,
-  'красный': красныйСедан,
-  'оранжевый': оранжевыйСедан,
-  'розовый': розовыйСедан,
-  'серый': серыйСедан,
-  'синий': синийСедан,
-  'фиолетовый': фиолетовыйСедан,
-  'черный': черныйСедан,
+  'white': whiteSedanImg,
+  'yellow': yellowSedanImg,
+  'green': greenSedanImg,
+  'gold': goldSedanImg,
+  'brown': brownSedanImg,
+  'red': redSedanImg,
+  'orange': orangeSedanImg,
+  'pink': pinkSedanImg,
+  'gray': graySedanImg,
+  'blue': blueSedanImg,
+  'purple': purpleSedanImg,
+  'black': blackSedanImg,
 };
 
 // Изображения кроссоверов по цветам (все 12 цветов)
 const crossoverImages: Record<string, string> = {
-  'белый': белыйКроссовер,
-  'желтый': желтыйКроссовер,
-  'зеленый': зеленыйКроссовер,
-  'золотистый': золотистыйКроссовер,
-  'коричневый': коричневыйКроссовер,
-  'красный': красныйКроссовер,
-  'оранжевый': оранжевыйКроссовер,
-  'розовый': розовыйКроссовер,
-  'серый': серыйКроссовер,
-  'синий': синийКроссовер,
-  'фиолетовый': фиолетовыйКроссовер,
-  'черный': черныйКроссовер,
+  'white': whiteCrossoverImg,
+  'yellow': yellowCrossoverImg,
+  'green': greenCrossoverImg,
+  'gold': goldCrossoverImg,
+  'brown': brownCrossoverImg,
+  'red': redCrossoverImg,
+  'orange': orangeCrossoverImg,
+  'pink': pinkCrossoverImg,
+  'gray': grayCrossoverImg,
+  'blue': blueCrossoverImg,
+  'purple': purpleCrossoverImg,
+  'black': blackCrossoverImg,
 };
 
 // Изображения внедорожников по цветам (все 12 цветов)
 const suvImages: Record<string, string> = {
-  'белый': белыйВнедорожник,
-  'желтый': желтыйВнедорожник,
-  'зеленый': зеленыйВнедорожник,
-  'золотистый': золотистыйВнедорожник,
-  'коричневый': коричневыйВнедорожник,
-  'красный': красныйВнедорожник,
-  'оранжевый': оранжевыйВнедорожник,
-  'розовый': розовыйВнедорожник,
-  'серый': серыйВнедорожник,
-  'синий': синийВнедорожник,
-  'фиолетовый': фиолетовыйВнедорожник,
-  'черный': черныйВнедорожник,
+  'white': whiteSuvImg,
+  'yellow': yellowSuvImg,
+  'green': greenSuvImg,
+  'gold': goldSuvImg,
+  'brown': brownSuvImg,
+  'red': redSuvImg,
+  'orange': orangeSuvImg,
+  'pink': pinkSuvImg,
+  'gray': graySuvImg,
+  'blue': blueSuvImg,
+  'purple': purpleSuvImg,
+  'black': blackSuvImg,
 };
 
 // Изображения минивенов по цветам (все 12 цветов)
 const minivanImages: Record<string, string> = {
-  'белый': белыйМинивен,
-  'желтый': желтыйМинивен,
-  'зеленый': зеленыйМинивен,
-  'золотистый': золотистыйМинивен,
-  'коричневый': коричневыйМинивен,
-  'красный': красныйМинивен,
-  'оранжевый': оранжевыйМинивен,
-  'розовый': розовыйМинивен,
-  'серый': серыйМинивен,
-  'синий': синийМинивен,
-  'фиолетовый': фиолетовыйМинивен,
-  'черный': черныйМинивен,
+  'white': whiteMinivanImg,
+  'yellow': yellowMinivanImg,
+  'green': greenMinivanImg,
+  'gold': goldMinivanImg,
+  'brown': brownMinivanImg,
+  'red': redMinivanImg,
+  'orange': orangeMinivanImg,
+  'pink': pinkMinivanImg,
+  'gray': grayMinivanImg,
+  'blue': blueMinivanImg,
+  'purple': purpleMinivanImg,
+  'black': blackMinivanImg,
 };
 
 // Изображения по типам кузова
@@ -171,7 +171,7 @@ const bodyTypeImages: Record<BodyType, Record<string, string>> = {
 };
 
 // Дефолтное изображение (чёрный седан)
-const defaultCarImage = черныйСедан;
+const defaultCarImage = blackSedanImg;
 
 /**
  * Получить изображение машины по цвету и типу кузова
