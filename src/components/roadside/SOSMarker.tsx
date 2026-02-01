@@ -109,20 +109,19 @@ export const createSOSMarkerLayout = (ymaps: any) => {
         }
       }
     </style>
-  `, {
-    build: function() {
-      this.constructor.superclass.build.call(this);
-      const container = this.getParentElement().getElementsByClassName('sos-marker-container')[0];
-      if (container) {
-        container.addEventListener('click', () => {
-          const data = this.getData();
-          if (data && data.properties && data.properties.onClick) {
-            data.properties.onClick();
-          }
-        });
-      }
-    }
-  });
+  `);
+};
+
+// Store click handlers separately since they can't be passed in template properties
+const clickHandlers = new Map<any, () => void>();
+
+export const registerSOSClickHandler = (placemark: any, onClick: () => void) => {
+  clickHandlers.set(placemark, onClick);
+};
+
+export const handleSOSPlacemarkClick = (placemark: any) => {
+  const handler = clickHandlers.get(placemark);
+  if (handler) handler();
 };
 
 export const createSOSPlacemark = (
@@ -140,7 +139,6 @@ export const createSOSPlacemark = (
       avatarUrl: avatarUrl || '',
       initials,
       hasResponder,
-      onClick,
     },
     {
       iconLayout: CustomLayout,
@@ -151,6 +149,12 @@ export const createSOSPlacemark = (
       },
     }
   );
+
+  // Register click handler and add event listener
+  registerSOSClickHandler(placemark, onClick);
+  placemark.events.add('click', () => {
+    handleSOSPlacemarkClick(placemark);
+  });
 
   return placemark;
 };
