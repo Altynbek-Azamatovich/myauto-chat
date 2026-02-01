@@ -462,10 +462,13 @@ const RoadsideHelp = () => {
 
   const myActiveRequest = helpRequests.find(r => r.user_id === currentUserId);
 
+  // Bottom nav height is ~80px (h-20), add safe margin
+  const bottomNavOffset = 'bottom-24'; // 96px from bottom
+
   return (
-    <div className="min-h-screen bg-background flex flex-col relative pb-20">
-      {/* Map container - full screen */}
-      <div className="absolute inset-0 bottom-20">
+    <div className="min-h-screen bg-background flex flex-col relative">
+      {/* Map container - FULL SCREEN */}
+      <div className="absolute inset-0">
         <div ref={mapContainer} className="w-full h-full" />
         
         {/* Loading overlay */}
@@ -478,8 +481,8 @@ const RoadsideHelp = () => {
           </div>
         )}
         
-        {/* Locate me button */}
-        <div className="absolute right-4 bottom-32 z-40">
+        {/* Locate me button - above bottom nav */}
+        <div className={`absolute right-4 ${bottomNavOffset} z-40`}>
           <Button
             onClick={handleLocateMe}
             size="icon"
@@ -490,9 +493,9 @@ const RoadsideHelp = () => {
           </Button>
         </div>
         
-        {/* Need help button */}
-        {!myActiveRequest && (
-          <div className="absolute bottom-6 left-4 right-4 z-40">
+        {/* Need help button - above bottom nav */}
+        {!myActiveRequest && !selectedRequest && (
+          <div className={`absolute ${bottomNavOffset} left-4 right-20 z-40`}>
             <Button 
               onClick={() => setShowRequestDialog(true)}
               className="w-full shadow-2xl h-14 text-base rounded-2xl bg-destructive hover:bg-destructive/90 text-destructive-foreground"
@@ -504,9 +507,9 @@ const RoadsideHelp = () => {
           </div>
         )}
         
-        {/* My active request card */}
+        {/* My active request card - above bottom nav */}
         {myActiveRequest && !selectedRequest && (
-          <div className="absolute bottom-6 left-4 right-4 z-40">
+          <div className={`absolute ${bottomNavOffset} left-4 right-4 z-40`}>
             <div className="bg-card rounded-2xl shadow-2xl p-4 border border-border/50">
               <div className="flex items-start gap-3">
                 <div className="h-10 w-10 rounded-full bg-destructive/10 flex items-center justify-center flex-shrink-0">
@@ -532,9 +535,9 @@ const RoadsideHelp = () => {
         )}
       </div>
 
-      {/* Selected request bottom sheet */}
+      {/* Selected request bottom sheet - above bottom nav */}
       {selectedRequest && (
-        <div className="fixed inset-x-0 bottom-20 z-50 animate-in slide-in-from-bottom duration-300">
+        <div className="fixed inset-x-0 bottom-24 z-50 animate-in slide-in-from-bottom duration-300 px-4">
           <HelpRequestCard
             request={{
               ...selectedRequest,
