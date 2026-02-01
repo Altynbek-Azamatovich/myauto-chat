@@ -174,21 +174,21 @@ const Home = () => {
         <Card className="p-4 glass-card rounded-3xl">
           <div className="space-y-3">
             <div className="mb-2">
-              <div className="text-white">
+              <div className="text-foreground">
                 <span className="text-2xl leading-none inline-block h-6">ⓘ</span>
               </div>
             </div>
             <div className="w-full">
-              <h3 className="font-semibold text-base leading-tight text-white">
+              <h3 className="font-semibold text-base leading-tight text-foreground">
                 {primaryVehicle ? `${brandName} ${primaryVehicle.model}` : <button onClick={() => navigate('/my-vehicles')} className="text-primary hover:underline">
                     {t('addYourCar')}
                   </button>}
               </h3>
-              {primaryVehicle?.license_plate && <p className="text-sm text-white/70 mt-1">{primaryVehicle.license_plate}</p>}
+              {primaryVehicle?.license_plate && <p className="text-sm text-muted-foreground mt-1">{primaryVehicle.license_plate}</p>}
             </div>
             <div>
-              <p className="text-xs text-white/70">{t('mileage')}</p>
-              <p className="font-semibold text-sm text-white">
+              <p className="text-xs text-muted-foreground">{t('mileage')}</p>
+              <p className="font-semibold text-sm text-foreground">
                 {primaryVehicle ? primaryVehicle.mileage.toLocaleString() : '0'} км
               </p>
             </div>
@@ -198,21 +198,21 @@ const Home = () => {
         <Card className="p-4 glass-card rounded-3xl">
           <div className="space-y-3">
             <div className="mb-2">
-              <div className="text-white">
+              <div className="text-foreground">
                 <AlertTriangle className="h-6 w-6" />
               </div>
             </div>
             <div className="flex items-start gap-2">
-              <Droplet className="h-4 w-4 text-blue-400 flex-shrink-0" />
+              <Droplet className="h-4 w-4 text-blue-500 dark:text-blue-400 flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-white/70 mb-1">{t('oilChange')}</p>
+                <p className="text-xs text-muted-foreground mb-1">{t('oilChange')}</p>
                 <Popover open={isOilChangeDateOpen} onOpenChange={setIsOilChangeDateOpen}>
                   <PopoverTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
                       <div className="text-left">
-                        <p className="text-sm font-medium leading-tight flex items-center gap-1 text-white">
+                        <p className="text-sm font-medium leading-tight flex items-center gap-1 text-foreground">
                           {oilChangeDate ? format(oilChangeDate, 'dd.MM.yyyy') : '—'}
-                          <Edit className="h-3 w-3 text-white/70" />
+                          <Edit className="h-3 w-3 text-muted-foreground" />
                         </p>
                       </div>
                     </Button>
@@ -232,14 +232,14 @@ const Home = () => {
             <div className="flex items-start gap-2">
               <Clock className="h-4 w-4 text-orange-500 flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-white/70 mb-1">Страховка до</p>
+                <p className="text-xs text-muted-foreground mb-1">Страховка до</p>
                 <Popover open={isInsuranceDateOpen} onOpenChange={setIsInsuranceDateOpen}>
                   <PopoverTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
                       <div className="text-left">
-                        <p className="text-sm font-medium leading-tight flex items-center gap-1 text-white">
+                        <p className="text-sm font-medium leading-tight flex items-center gap-1 text-foreground">
                           {insuranceDate ? format(insuranceDate, 'dd.MM.yyyy') : '—'}
-                          <Edit className="h-3 w-3 text-white/70" />
+                          <Edit className="h-3 w-3 text-muted-foreground" />
                         </p>
                       </div>
                     </Button>
@@ -266,17 +266,17 @@ const Home = () => {
             <HeartPulse className="h-5 w-5 text-app-green flex-shrink-0 mt-0.5" />
             <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-white">{t('technicalCondition')}</span>
-                <span className="text-xl font-bold text-green-600">
+                <span className="text-sm font-medium text-foreground">{t('technicalCondition')}</span>
+                <span className="text-xl font-bold text-app-green">
                   {primaryVehicle?.technical_condition || 0}%
                 </span>
               </div>
               <Progress value={primaryVehicle?.technical_condition || 0} className="h-2 [&>div]:bg-app-green" />
-              <div className="flex justify-between text-xs text-white/70 mt-1">
+              <div className="flex justify-between text-xs text-muted-foreground mt-1">
                 <span>0%</span>
                 <span>100%</span>
               </div>
-              {(!primaryVehicle?.technical_condition || primaryVehicle.technical_condition === 0) && <p className="text-xs mt-2 flex items-center gap-1 text-amber-200">
+              {(!primaryVehicle?.technical_condition || primaryVehicle.technical_condition === 0) && <p className="text-xs mt-2 flex items-center gap-1 text-amber-600 dark:text-amber-300">
                   <Bell className="h-3 w-3" />
                   Актуальное состояние будет после прохождения ТО
                 </p>}
@@ -290,8 +290,8 @@ const Home = () => {
           <div className="flex items-start space-x-2">
               <div className="text-xl mt-0.5">⚡</div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-white/70">{t('avgConsumption')}</p>
-                {primaryVehicle?.average_consumption ? <p className="font-semibold text-sm text-white">{primaryVehicle.average_consumption} л/100км</p> : <p className="text-xs mt-1 text-amber-200">Будет доступно после ТО</p>}
+                <p className="text-xs text-muted-foreground">{t('avgConsumption')}</p>
+                {primaryVehicle?.average_consumption ? <p className="font-semibold text-sm text-foreground">{primaryVehicle.average_consumption} л/100км</p> : <p className="text-xs mt-1 text-amber-600 dark:text-amber-300">Будет доступно после ТО</p>}
               </div>
             </div>
           </Card>
@@ -300,14 +300,14 @@ const Home = () => {
           <div className="flex items-start space-x-2">
               <div className="text-xl mt-0.5">📋</div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-white/70">{t('nextService')}</p>
+                <p className="text-xs text-muted-foreground">{t('nextService')}</p>
                 <Popover open={isNextServiceDateOpen} onOpenChange={setIsNextServiceDateOpen}>
                   <PopoverTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
                       <div className="text-left">
-                        <p className="font-semibold text-sm flex items-center gap-1 text-white">
+                        <p className="font-semibold text-sm flex items-center gap-1 text-foreground">
                           {nextServiceDate ? format(nextServiceDate, 'dd.MM.yyyy') : '—'}
-                          <Edit className="h-3 w-3 text-white/70" />
+                          <Edit className="h-3 w-3 text-muted-foreground" />
                         </p>
                       </div>
                     </Button>
