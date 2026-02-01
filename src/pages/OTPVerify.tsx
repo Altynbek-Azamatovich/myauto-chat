@@ -13,6 +13,7 @@ const OTPVerify = () => {
   const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
   const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(60);
+  const [resendAttempts, setResendAttempts] = useState(0);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   
   const phone = localStorage.getItem('auth_phone') || '';
@@ -179,11 +180,14 @@ const OTPVerify = () => {
   const handleResend = async () => {
     if (resendTimer > 0) return;
     
+    // Progressive rate limiting: after 2 attempts, require 2 minutes wait
+    const newAttemptCount = resendAttempts + 1;
+    
     try {
-      console.log('Resending OTP to:', phone);
+      console.log('Resending OTP to:', phone, 'attempt:', newAttemptCount);
       
       const { data, error } = await supabase.functions.invoke('send-otp', {
-        body: { phone }
+        body: { phone, language }
       });
 
       if (error) {
@@ -195,16 +199,29 @@ const OTPVerify = () => {
         throw new Error(data?.error || 'Failed to resend OTP');
       }
 
-      setResendTimer(60);
+      setResendAttempts(newAttemptCount);
+      
+      // After 2 attempts (this is the 3rd send), require 2 minutes wait
+      if (newAttemptCount >= 2) {
+        setResendTimer(120); // 2 minutes
+        toast({
+          title: language === 'ru' ? "Код отправлен" : "Код жіберілді",
+          description: language === 'ru' 
+            ? "Код отправлен. Следующая попытка через 2 минуты." 
+            : "Код жіберілді. Келесі әрекет 2 минуттан кейін.",
+        });
+      } else {
+        setResendTimer(60); // 1 minute
+        toast({
+          title: language === 'ru' ? "Код отправлен" : "Код жіберілді",
+          description: language === 'ru' 
+            ? "Новый код отправлен на ваш номер" 
+            : "Жаңа код нөміріңізге жіберілді",
+        });
+      }
+      
       setOtp(["", "", "", ""]);
       inputRefs.current[0]?.focus();
-      
-      toast({
-        title: language === 'ru' ? "Код отправлен" : "Код жіберілді",
-        description: language === 'ru' 
-          ? "Новый код отправлен на ваш номер" 
-          : "Жаңа код нөміріңізге жіберілді",
-      });
     } catch (error: any) {
       console.error('Error in handleResend:', error);
       toast({

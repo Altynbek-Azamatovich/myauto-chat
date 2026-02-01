@@ -12,8 +12,8 @@ serve(async (req) => {
   }
 
   try {
-    const { phone } = await req.json();
-    console.log('Sending OTP to phone:', phone);
+    const { phone, language = 'ru' } = await req.json();
+    console.log('Sending OTP to phone:', phone, 'language:', language);
 
     if (!phone || phone.length < 10) {
       throw new Error('Invalid phone number');
@@ -119,8 +119,21 @@ serve(async (req) => {
     // Mobizon returns code: 0 for success
     if (smsResult.code !== 0) {
       console.error('Mobizon error:', smsResult);
+      
+      // Check if it's a carrier/direction not supported error
+      const isCarrierNotSupported = smsResult.data?.recipient?.includes('отсутствует возможность отправки') ||
+                                     smsResult.data?.recipient?.includes('данного направления');
+      
+      const errorMessage = isCarrierNotSupported
+        ? (language === 'ru' 
+            ? 'К сожалению, ваш оператор не поддерживается. Попробуйте другой номер телефона.' 
+            : 'Өкінішке орай, сіздің оператор қолдау көрсетілмейді. Басқа телефон нөмірін қолданып көріңіз.')
+        : (language === 'ru' 
+            ? 'Не удалось отправить код. Попробуйте позже.' 
+            : 'Кодты жіберу мүмкін болмады. Кейінірек қайталап көріңіз.');
+      
       return new Response(
-        JSON.stringify({ error: 'Unable to send verification code. Please try again later.' }),
+        JSON.stringify({ error: errorMessage, isCarrierNotSupported }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }

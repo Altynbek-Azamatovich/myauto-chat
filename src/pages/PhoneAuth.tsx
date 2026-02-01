@@ -96,7 +96,7 @@ const PhoneAuth = () => {
       
       // Send OTP via edge function
       const { data, error } = await supabase.functions.invoke('send-otp', {
-        body: { phone: cleanPhone }
+        body: { phone: cleanPhone, language }
       });
 
       if (error) throw error;
