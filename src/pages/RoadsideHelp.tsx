@@ -152,10 +152,10 @@ const RoadsideHelp = () => {
       // Create custom SOS marker layout
       sosLayoutRef.current = createSOSMarkerLayout(ymaps);
 
-      // Add custom zoom control
+      // Add custom zoom control - right side, centered vertically
       const zoomControl = new ymaps.control.ZoomControl({
         options: {
-          position: { right: 16, top: '45%' },
+          position: { right: 16, top: 'calc(50% - 60px)' },
           size: 'small',
         }
       });
@@ -481,8 +481,8 @@ const RoadsideHelp = () => {
           </div>
         )}
         
-        {/* Locate me button - above bottom nav */}
-        <div className={`absolute right-4 ${bottomNavOffset} z-40`}>
+        {/* Locate me button - below zoom controls, right side */}
+        <div className="absolute right-4 top-1/2 mt-12 z-40">
           <Button
             onClick={handleLocateMe}
             size="icon"
@@ -493,9 +493,9 @@ const RoadsideHelp = () => {
           </Button>
         </div>
         
-        {/* Need help button - above bottom nav */}
+        {/* Need help button - full width above bottom nav */}
         {!myActiveRequest && !selectedRequest && (
-          <div className={`absolute ${bottomNavOffset} left-4 right-20 z-40`}>
+          <div className={`absolute ${bottomNavOffset} left-4 right-4 z-40`}>
             <Button 
               onClick={() => setShowRequestDialog(true)}
               className="w-full shadow-2xl h-14 text-base rounded-2xl bg-destructive hover:bg-destructive/90 text-destructive-foreground"
