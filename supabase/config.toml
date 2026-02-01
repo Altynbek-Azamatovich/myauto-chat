@@ -32,3 +32,12 @@ verify_jwt = false
 
 [functions.save-chat-session]
 verify_jwt = false
+
+[functions.audit-logger]
+verify_jwt = false
+
+[functions.siem-export]
+verify_jwt = false
+
+[functions.get-yandex-maps-key]
+verify_jwt = false

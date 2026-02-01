@@ -55,6 +55,7 @@ import PendingVerification from "./pages/partner/PendingVerification";
 
 // Admin Pages
 import PartnerApplications from "./pages/admin/PartnerApplications";
+import AuditLogs from "./pages/admin/AuditLogs";
 
 const AppContent = () => {
   const location = useLocation();
@@ -149,6 +150,7 @@ const AppContent = () => {
         
         {/* Admin Routes */}
         <Route path="/admin/partner-applications" element={<PartnerApplications />} />
+        <Route path="/admin/audit-logs" element={<AuditLogs />} />
         
         <Route path="*" element={<NotFound />} />
       </Routes>

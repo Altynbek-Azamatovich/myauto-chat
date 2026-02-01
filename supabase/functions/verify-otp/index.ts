@@ -1,15 +1,18 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { writeAuditLog, extractRequestInfo, logAuthEvent } from "../_shared/audit-helper.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-request-id, x-forwarded-for',
 };
 
-serve(async (req) => {
+Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
+
+  const operationStartTime = new Date().toISOString();
+  const { clientIp, userAgent, requestId } = extractRequestInfo(req);
 
   try {
     const { phone, code } = await req.json();
@@ -21,6 +24,16 @@ serve(async (req) => {
 
     // Validate code is 4 digits
     if (!/^\d{4}$/.test(code)) {
+      await logAuthEvent('OTP_FAILED', {
+        userAccountName: phone,
+        clientIp,
+        userAgent,
+        requestId,
+        success: false,
+        errorMessage: 'Code must be 4 digits',
+        metadata: { code_format: 'invalid' }
+      });
+      
       return new Response(
         JSON.stringify({ success: false, error: 'Code must be 4 digits' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -60,6 +73,27 @@ serve(async (req) => {
       if (phoneRateLimit.data.blocked_until && new Date(phoneRateLimit.data.blocked_until) > new Date()) {
         const minutesLeft = Math.ceil((new Date(phoneRateLimit.data.blocked_until).getTime() - Date.now()) / 60000);
         console.log('Phone blocked until:', phoneRateLimit.data.blocked_until);
+        
+        // Логируем попытку доступа заблокированного пользователя
+        await writeAuditLog({
+          sourceService: 'verify-otp',
+          category: 'SECURITY',
+          eventType: 'BLOCKED_ACCESS_ATTEMPT',
+          description: `Попытка верификации от заблокированного номера: ${phone}`,
+          userAccountName: phone,
+          clientIp,
+          level: 'ALERT',
+          requestId,
+          metadata: { blocked_until: phoneRateLimit.data.blocked_until, minutes_left: minutesLeft },
+          success: false,
+          errorMessage: 'Phone is blocked',
+          httpMethod: 'POST',
+          httpPath: '/verify-otp',
+          httpStatusCode: 429,
+          userAgent,
+          operationStartTime
+        });
+        
         return new Response(
           JSON.stringify({ error: `Слишком много неудачных попыток. Подождите ${minutesLeft} минут.` }),
           { 
@@ -77,6 +111,27 @@ serve(async (req) => {
           .eq('id', phoneRateLimit.data.id);
         
         console.log('Too many failed attempts, blocking phone:', phone);
+        
+        // Логируем блокировку
+        await writeAuditLog({
+          sourceService: 'verify-otp',
+          category: 'SECURITY',
+          eventType: 'ACCOUNT_BLOCKED',
+          description: `Номер заблокирован из-за множественных неудачных попыток: ${phone}`,
+          userAccountName: phone,
+          clientIp,
+          level: 'ALERT',
+          requestId,
+          metadata: { blocked_until: blockedUntil, attempt_count: phoneRateLimit.data.attempt_count },
+          success: false,
+          errorMessage: 'Too many failed attempts',
+          httpMethod: 'POST',
+          httpPath: '/verify-otp',
+          httpStatusCode: 429,
+          userAgent,
+          operationStartTime
+        });
+        
         return new Response(
           JSON.stringify({ error: 'Слишком много неудачных попыток. Подождите 15 минут.' }),
           { 
@@ -127,6 +182,19 @@ serve(async (req) => {
           last_attempt_at: new Date().toISOString()
         });
       }
+      
+      // Логируем неудачную попытку верификации
+      await logAuthEvent('OTP_FAILED', {
+        userAccountName: phone,
+        clientIp,
+        userAgent,
+        requestId,
+        success: false,
+        errorMessage: 'Invalid or expired OTP code',
+        metadata: { 
+          attempt_count: (phoneRateLimit.data?.attempt_count || 0) + 1 
+        }
+      });
       
       return new Response(
         JSON.stringify({ 
@@ -267,6 +335,31 @@ serve(async (req) => {
       .eq('identifier', phone)
       .eq('request_type', 'verify_otp');
 
+    // Логируем успешную верификацию OTP
+    await logAuthEvent('OTP_VERIFIED', {
+      userId,
+      userAccountName: phone,
+      clientIp,
+      userAgent,
+      requestId,
+      success: true,
+      metadata: { isNewUser }
+    });
+
+    // Логируем успешный вход
+    await logAuthEvent('LOGIN_SUCCESS', {
+      userId,
+      userAccountName: phone,
+      clientIp,
+      userAgent,
+      requestId,
+      success: true,
+      metadata: { 
+        isNewUser,
+        login_method: 'otp_sms'
+      }
+    });
+
     return new Response(
       JSON.stringify({
         success: true,
@@ -280,6 +373,25 @@ serve(async (req) => {
     );
   } catch (error: any) {
     console.error('Error in verify-otp function:', error);
+    
+    // Логируем общую ошибку
+    await writeAuditLog({
+      sourceService: 'verify-otp',
+      category: 'SYSTEM',
+      eventType: 'UNHANDLED_ERROR',
+      description: `Необработанная ошибка в verify-otp`,
+      clientIp,
+      level: 'ERROR',
+      requestId,
+      success: false,
+      errorMessage: error.message,
+      httpMethod: 'POST',
+      httpPath: '/verify-otp',
+      httpStatusCode: 500,
+      userAgent,
+      operationStartTime
+    });
+    
     return new Response(
       JSON.stringify({ 
         error: 'Unable to verify code. Please try again later.'
