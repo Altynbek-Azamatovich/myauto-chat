@@ -1299,6 +1299,10 @@ export type Database = {
       }
       delete_expired_otp_codes: { Args: never; Returns: undefined }
       format_syslog_message: { Args: { p_log_id: string }; Returns: string }
+      get_audit_statistics: {
+        Args: { p_end_date?: string; p_start_date?: string }
+        Returns: Json
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

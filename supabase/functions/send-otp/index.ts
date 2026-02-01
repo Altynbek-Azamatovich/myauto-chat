@@ -1,21 +1,34 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { writeAuditLog, extractRequestInfo, logAuthEvent, logExternalApiCall } from "../_shared/audit-helper.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-request-id, x-forwarded-for',
 };
 
-serve(async (req) => {
+Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
+
+  const operationStartTime = new Date().toISOString();
+  const { clientIp, userAgent, requestId } = extractRequestInfo(req);
 
   try {
     const { phone, language = 'ru' } = await req.json();
     console.log('Sending OTP to phone:', phone, 'language:', language);
 
     if (!phone || phone.length < 10) {
+      // Логируем неудачную попытку
+      await logAuthEvent('OTP_SENT', {
+        userAccountName: phone,
+        clientIp,
+        userAgent,
+        requestId,
+        success: false,
+        errorMessage: 'Invalid phone number',
+        metadata: { language }
+      });
       throw new Error('Invalid phone number');
     }
 
@@ -35,6 +48,27 @@ serve(async (req) => {
 
     if (phoneRateLimit.data) {
       console.log('Rate limit exceeded for phone:', phone);
+      
+      // Логируем превышение лимита
+      await writeAuditLog({
+        sourceService: 'send-otp',
+        category: 'SECURITY',
+        eventType: 'RATE_LIMIT_EXCEEDED',
+        description: `Превышен лимит запросов OTP для номера: ${phone}`,
+        userAccountName: phone,
+        clientIp,
+        level: 'WARNING',
+        requestId,
+        metadata: { reason: 'phone_rate_limit' },
+        success: false,
+        errorMessage: 'Rate limit exceeded',
+        httpMethod: 'POST',
+        httpPath: '/send-otp',
+        httpStatusCode: 429,
+        userAgent,
+        operationStartTime
+      });
+      
       return new Response(
         JSON.stringify({ error: 'Слишком много попыток. Подождите минуту.' }),
         { 
@@ -45,7 +79,6 @@ serve(async (req) => {
     }
 
     // Rate limiting check - IP address (3 requests per 5 minutes)
-    const clientIp = req.headers.get('x-forwarded-for') || 'unknown';
     const ipRateLimit = await supabase
       .from('rate_limits')
       .select('*')
@@ -56,6 +89,27 @@ serve(async (req) => {
 
     if (ipRateLimit.data && ipRateLimit.data.attempt_count >= 3) {
       console.log('Rate limit exceeded for IP:', clientIp);
+      
+      // Логируем превышение лимита по IP
+      await writeAuditLog({
+        sourceService: 'send-otp',
+        category: 'SECURITY',
+        eventType: 'RATE_LIMIT_EXCEEDED',
+        description: `Превышен лимит запросов OTP для IP: ${clientIp}`,
+        userAccountName: phone,
+        clientIp,
+        level: 'WARNING',
+        requestId,
+        metadata: { reason: 'ip_rate_limit', attempt_count: ipRateLimit.data.attempt_count },
+        success: false,
+        errorMessage: 'IP rate limit exceeded',
+        httpMethod: 'POST',
+        httpPath: '/send-otp',
+        httpStatusCode: 429,
+        userAgent,
+        operationStartTime
+      });
+      
       return new Response(
         JSON.stringify({ error: 'Слишком много попыток. Подождите 5 минут.' }),
         { 
@@ -82,6 +136,25 @@ serve(async (req) => {
 
     if (dbError) {
       console.error('Database error:', dbError);
+      
+      await writeAuditLog({
+        sourceService: 'send-otp',
+        category: 'SYSTEM',
+        eventType: 'DATABASE_ERROR',
+        description: `Ошибка сохранения OTP кода для: ${phone}`,
+        userAccountName: phone,
+        clientIp,
+        level: 'ERROR',
+        requestId,
+        success: false,
+        errorMessage: dbError.message,
+        httpMethod: 'POST',
+        httpPath: '/send-otp',
+        httpStatusCode: 500,
+        userAgent,
+        operationStartTime
+      });
+      
       return new Response(
         JSON.stringify({ error: 'Unable to process request. Please try again later.' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -116,6 +189,19 @@ serve(async (req) => {
     const smsResult = await smsResponse.json();
     console.log('Mobizon response:', JSON.stringify(smsResult));
 
+    // Логируем запрос к внешнему API
+    await logExternalApiCall({
+      apiName: 'mobizon',
+      endpoint: 'sendsmsmessage',
+      userAccountName: phone,
+      clientIp,
+      requestId,
+      success: smsResult.code === 0,
+      responseCode: smsResult.code,
+      errorMessage: smsResult.code !== 0 ? JSON.stringify(smsResult.data) : undefined,
+      metadata: { messageId: smsResult.data?.messageId }
+    });
+
     // Mobizon returns code: 0 for success
     if (smsResult.code !== 0) {
       console.error('Mobizon error:', smsResult);
@@ -131,6 +217,17 @@ serve(async (req) => {
         : (language === 'ru' 
             ? 'Не удалось отправить код. Попробуйте позже.' 
             : 'Кодты жіберу мүмкін болмады. Кейінірек қайталап көріңіз.');
+      
+      // Логируем неудачную отправку
+      await logAuthEvent('OTP_SENT', {
+        userAccountName: phone,
+        clientIp,
+        userAgent,
+        requestId,
+        success: false,
+        errorMessage: errorMessage,
+        metadata: { language, isCarrierNotSupported, mobizon_error: smsResult }
+      });
       
       return new Response(
         JSON.stringify({ error: errorMessage, isCarrierNotSupported }),
@@ -164,6 +261,16 @@ serve(async (req) => {
       });
     }
 
+    // Логируем успешную отправку OTP
+    await logAuthEvent('OTP_SENT', {
+      userAccountName: phone,
+      clientIp,
+      userAgent,
+      requestId,
+      success: true,
+      metadata: { language, messageId: smsResult.data?.messageId }
+    });
+
     return new Response(
       JSON.stringify({ 
         success: true, 
@@ -177,6 +284,25 @@ serve(async (req) => {
     );
   } catch (error: any) {
     console.error('Error in send-otp function:', error);
+    
+    // Логируем общую ошибку
+    await writeAuditLog({
+      sourceService: 'send-otp',
+      category: 'SYSTEM',
+      eventType: 'UNHANDLED_ERROR',
+      description: `Необработанная ошибка в send-otp`,
+      clientIp,
+      level: 'ERROR',
+      requestId,
+      success: false,
+      errorMessage: error.message,
+      httpMethod: 'POST',
+      httpPath: '/send-otp',
+      httpStatusCode: 500,
+      userAgent,
+      operationStartTime
+    });
+    
     return new Response(
       JSON.stringify({ 
         error: 'Unable to send verification code. Please try again later.'
