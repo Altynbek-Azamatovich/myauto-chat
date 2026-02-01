@@ -177,31 +177,40 @@ export type Database = {
       }
       help_requests: {
         Row: {
+          address: string | null
           created_at: string
           id: string
           latitude: number
           longitude: number
           message: string
+          responder_eta_minutes: number | null
+          responder_id: string | null
           status: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          address?: string | null
           created_at?: string
           id?: string
           latitude: number
           longitude: number
           message: string
+          responder_eta_minutes?: number | null
+          responder_id?: string | null
           status?: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          address?: string | null
           created_at?: string
           id?: string
           latitude?: number
           longitude?: number
           message?: string
+          responder_eta_minutes?: number | null
+          responder_id?: string | null
           status?: string
           updated_at?: string
           user_id?: string
@@ -503,10 +512,13 @@ export type Database = {
           car_year: number | null
           city: string | null
           created_at: string
+          engine_volume: string | null
           first_name: string | null
+          fuel_type: string | null
           full_name: string | null
           gender: string | null
           id: string
+          is_verified: boolean | null
           last_name: string | null
           license_plate: string | null
           onboarding_completed: boolean | null
@@ -514,6 +526,8 @@ export type Database = {
           phone_number: string
           preferred_language: string | null
           updated_at: string
+          verification_selfie_url: string | null
+          verification_status: string | null
         }
         Insert: {
           age?: number | null
@@ -524,10 +538,13 @@ export type Database = {
           car_year?: number | null
           city?: string | null
           created_at?: string
+          engine_volume?: string | null
           first_name?: string | null
+          fuel_type?: string | null
           full_name?: string | null
           gender?: string | null
           id: string
+          is_verified?: boolean | null
           last_name?: string | null
           license_plate?: string | null
           onboarding_completed?: boolean | null
@@ -535,6 +552,8 @@ export type Database = {
           phone_number: string
           preferred_language?: string | null
           updated_at?: string
+          verification_selfie_url?: string | null
+          verification_status?: string | null
         }
         Update: {
           age?: number | null
@@ -545,10 +564,13 @@ export type Database = {
           car_year?: number | null
           city?: string | null
           created_at?: string
+          engine_volume?: string | null
           first_name?: string | null
+          fuel_type?: string | null
           full_name?: string | null
           gender?: string | null
           id?: string
+          is_verified?: boolean | null
           last_name?: string | null
           license_plate?: string | null
           onboarding_completed?: boolean | null
@@ -556,6 +578,8 @@ export type Database = {
           phone_number?: string
           preferred_language?: string | null
           updated_at?: string
+          verification_selfie_url?: string | null
+          verification_status?: string | null
         }
         Relationships: []
       }
