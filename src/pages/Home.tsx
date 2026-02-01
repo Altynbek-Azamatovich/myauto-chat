@@ -137,28 +137,30 @@ const Home = () => {
         </Button>
       </header>
 
-      {/* Car Display */}
-      <div className="relative mt-6">
-        <img 
-          src={primaryVehicle?.color ? getCarImage(primaryVehicle.color, getBodyTypeFromModel(primaryVehicle.model)) : carCoveredImage} 
-          alt={primaryVehicle ? `${brandName} ${primaryVehicle.model}` : "Автомобиль"} 
-          className="w-full h-auto object-contain" 
-        />
+      {/* Car Display - 110% width, aligned to right edge */}
+      <div className="relative mt-6 overflow-hidden">
+        <div className="flex justify-end">
+          <img 
+            src={primaryVehicle?.color ? getCarImage(primaryVehicle.color, getBodyTypeFromModel(primaryVehicle.model)) : carCoveredImage} 
+            alt={primaryVehicle ? `${brandName} ${primaryVehicle.model}` : "Автомобиль"} 
+            className="w-[110%] h-auto object-contain object-right" 
+          />
+        </div>
         
         {/* Interactive Points */}
-        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[25%] left-[30%] w-6 h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform mx-[50px]">
+        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[25%] left-[25%] w-6 h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white" />
         </button>
         
-        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[30%] right-[25%] w-6 h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
+        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[30%] right-[20%] w-6 h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white" />
         </button>
         
-        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[50%] left-[20%] w-6 h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform mx-[60px] px-0 py-0 my-0">
+        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[50%] left-[15%] w-6 h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white" />
         </button>
         
-        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[55%] right-[30%] w-6 h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform mx-0">
+        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[55%] right-[25%] w-6 h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white" />
         </button>
 
