@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Navigation, AlertCircle, Loader2, X, ChevronLeft } from "lucide-react";
+import { Navigation, AlertCircle, Loader2, X, ChevronLeft, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,8 +7,8 @@ import { toast } from "sonner";
 import BottomNavigation from "@/components/BottomNavigation";
 import { HelpRequestCard } from "@/components/roadside/HelpRequestCard";
 import { CreateRequestDialog } from "@/components/roadside/CreateRequestDialog";
+import { HelpChat } from "@/components/roadside/HelpChat";
 import { createSOSMarkerLayout, createSOSPlacemark } from "@/components/roadside/SOSMarker";
-
 interface HelpRequest {
   id: string;
   user_id: string;
@@ -79,6 +79,20 @@ const RoadsideHelp = () => {
   const [selectedRequest, setSelectedRequest] = useState<HelpRequest | null>(null);
   const [isMapLoading, setIsMapLoading] = useState(true);
   const [userPosition, setUserPosition] = useState<[number, number] | null>(null);
+  const [activeChat, setActiveChat] = useState<{
+    requestId: string;
+    otherUser: {
+      id: string;
+      first_name: string | null;
+      last_name: string | null;
+      avatar_url: string | null;
+      phone_number?: string;
+      car_brand?: string | null;
+      car_model?: string | null;
+    };
+    requestMessage: string;
+    isRequester: boolean;
+  } | null>(null);
   
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<any>(null);
@@ -120,6 +134,44 @@ const RoadsideHelp = () => {
       unsubscribe?.();
     };
   }, [currentUserId, !!map.current]);
+
+  // Watch for when someone responds to my request - open chat
+  useEffect(() => {
+    if (!currentUserId) return;
+    
+    const myRequest = helpRequests.find(r => r.user_id === currentUserId && r.responder_id);
+    
+    if (myRequest && myRequest.responder_id && !activeChat) {
+      // Someone responded to my request - fetch their profile and open chat
+      const openChatWithResponder = async () => {
+        const { data: responderProfile } = await supabase
+          .from('profiles')
+          .select('first_name, last_name, avatar_url, phone_number, car_brand, car_model')
+          .eq('id', myRequest.responder_id!)
+          .single();
+        
+        if (responderProfile) {
+          setActiveChat({
+            requestId: myRequest.id,
+            otherUser: {
+              id: myRequest.responder_id!,
+              first_name: responderProfile.first_name,
+              last_name: responderProfile.last_name,
+              avatar_url: responderProfile.avatar_url,
+              phone_number: responderProfile.phone_number,
+              car_brand: responderProfile.car_brand,
+              car_model: responderProfile.car_model,
+            },
+            requestMessage: myRequest.message,
+            isRequester: true,
+          });
+          toast.success('К вам едет помощь! Открываем чат. 🚗');
+        }
+      };
+      
+      openChatWithResponder();
+    }
+  }, [helpRequests, currentUserId, activeChat]);
 
   const initMap = async () => {
     if (!mapContainer.current || map.current) return;
@@ -395,13 +447,30 @@ const RoadsideHelp = () => {
         responder_id: user.id,
       });
 
-    toast.success('Вы откликнулись! Маршрут построен. 🚗');
+    toast.success('Вы откликнулись! Открываем чат. 🚗');
     setSelectedRequest(null);
 
     // Build route to the person in need
     if (map.current && window.ymaps && userPosition) {
       buildRoute(userPosition, [request.latitude, request.longitude]);
     }
+
+    // Open chat with the requester
+    const requesterProfile = request.profiles;
+    setActiveChat({
+      requestId: requestId,
+      otherUser: {
+        id: request.user_id,
+        first_name: requesterProfile?.first_name || null,
+        last_name: requesterProfile?.last_name || null,
+        avatar_url: requesterProfile?.avatar_url || null,
+        phone_number: undefined, // We'll fetch phone separately if needed
+        car_brand: requesterProfile?.car_brand || null,
+        car_model: requesterProfile?.car_model || null,
+      },
+      requestMessage: request.message,
+      isRequester: false,
+    });
   };
 
   const buildRoute = (from: [number, number], to: [number, number]) => {
@@ -520,27 +589,69 @@ const RoadsideHelp = () => {
         )}
         
         {/* My active request card - above bottom nav */}
-        {myActiveRequest && !selectedRequest && (
+        {myActiveRequest && !selectedRequest && !activeChat && (
           <div className={`absolute ${bottomNavOffset} left-4 right-4 z-[1000]`}>
-            <div className="bg-card rounded-2xl shadow-2xl p-4 border border-border/50">
+            <div className={`rounded-2xl shadow-2xl p-4 border ${myActiveRequest.responder_id ? 'bg-primary/10 border-primary/30' : 'bg-card border-border/50'}`}>
               <div className="flex items-start gap-3">
-                <div className="h-10 w-10 rounded-full bg-destructive/10 flex items-center justify-center flex-shrink-0">
-                  <AlertCircle className="h-5 w-5 text-destructive" />
+                <div className={`h-10 w-10 rounded-full flex items-center justify-center flex-shrink-0 ${myActiveRequest.responder_id ? 'bg-primary/20' : 'bg-destructive/10'}`}>
+                  {myActiveRequest.responder_id ? (
+                    <MessageCircle className="h-5 w-5 text-primary" />
+                  ) : (
+                    <AlertCircle className="h-5 w-5 text-destructive" />
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-foreground">Ваш активный запрос</div>
+                  <div className="font-semibold text-foreground">
+                    {myActiveRequest.responder_id ? 'Помощь в пути!' : 'Ваш активный запрос'}
+                  </div>
                   <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                    {myActiveRequest.message}
+                    {myActiveRequest.responder_id ? 'Нажмите чтобы открыть чат' : myActiveRequest.message}
                   </p>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="flex-shrink-0 text-destructive hover:bg-destructive/10"
-                  onClick={cancelMyRequest}
-                >
-                  <X className="h-5 w-5" />
-                </Button>
+                {myActiveRequest.responder_id ? (
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="flex-shrink-0"
+                    onClick={async () => {
+                      // Open chat with responder
+                      const { data: responderProfile } = await supabase
+                        .from('profiles')
+                        .select('first_name, last_name, avatar_url, phone_number, car_brand, car_model')
+                        .eq('id', myActiveRequest.responder_id!)
+                        .single();
+                      
+                      if (responderProfile) {
+                        setActiveChat({
+                          requestId: myActiveRequest.id,
+                          otherUser: {
+                            id: myActiveRequest.responder_id!,
+                            first_name: responderProfile.first_name,
+                            last_name: responderProfile.last_name,
+                            avatar_url: responderProfile.avatar_url,
+                            phone_number: responderProfile.phone_number,
+                            car_brand: responderProfile.car_brand,
+                            car_model: responderProfile.car_model,
+                          },
+                          requestMessage: myActiveRequest.message,
+                          isRequester: true,
+                        });
+                      }
+                    }}
+                  >
+                    <MessageCircle className="h-4 w-4 mr-1" />
+                    Чат
+                  </Button>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="flex-shrink-0 text-destructive hover:bg-destructive/10"
+                    onClick={cancelMyRequest}
+                  >
+                    <X className="h-5 w-5" />
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -581,6 +692,18 @@ const RoadsideHelp = () => {
         onOpenChange={setShowRequestDialog}
         onSubmit={handleCreateRequest}
       />
+
+      {/* Help chat */}
+      {activeChat && currentUserId && (
+        <HelpChat
+          helpRequestId={activeChat.requestId}
+          currentUserId={currentUserId}
+          otherUser={activeChat.otherUser}
+          requestMessage={activeChat.requestMessage}
+          isRequester={activeChat.isRequester}
+          onBack={() => setActiveChat(null)}
+        />
+      )}
 
       {/* Bottom navigation */}
       <BottomNavigation />
