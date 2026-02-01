@@ -137,36 +137,37 @@ const Home = () => {
         </Button>
       </header>
 
-      {/* Car Display - 110% width, aligned to right edge */}
-      <div className="relative mt-6 overflow-hidden">
-        <div className="flex justify-end">
+      {/* Car Display - 120% width, aligned to right edge, responsive */}
+      <div className="relative mt-4 sm:mt-6 overflow-hidden">
+        <div className="flex justify-end -mr-0">
           <img 
             src={primaryVehicle?.color ? getCarImage(primaryVehicle.color, getBodyTypeFromModel(primaryVehicle.model)) : carCoveredImage} 
             alt={primaryVehicle ? `${brandName} ${primaryVehicle.model}` : "Автомобиль"} 
-            className="w-[110%] h-auto object-contain object-right" 
+            className="w-[120%] max-w-none h-auto object-contain object-right" 
+            style={{ marginRight: 0 }}
           />
         </div>
         
-        {/* Interactive Points */}
-        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[25%] left-[25%] w-6 h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white" />
+        {/* Interactive Points - adjusted for larger image */}
+        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[25%] left-[20%] w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white" />
         </button>
         
-        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[30%] right-[20%] w-6 h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white" />
+        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[30%] right-[15%] w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white" />
         </button>
         
-        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[50%] left-[15%] w-6 h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white" />
+        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[50%] left-[10%] w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white" />
         </button>
         
-        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[55%] right-[25%] w-6 h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white" />
+        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[55%] right-[20%] w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white" />
         </button>
 
         {/* 360 Button */}
-        <button onClick={() => toast.info('3D модели авто в разработке')} className="absolute -bottom-2 right-4 p-0 bg-transparent hover:opacity-80 transition-opacity border-0 outline-none">
-          <img src={icon360} alt="360" className="w-16 h-16 opacity-40" />
+        <button onClick={() => toast.info('3D модели авто в разработке')} className="absolute -bottom-2 right-2 sm:right-4 p-0 bg-transparent hover:opacity-80 transition-opacity border-0 outline-none">
+          <img src={icon360} alt="360" className="w-12 h-12 sm:w-16 sm:h-16 opacity-40" />
         </button>
       </div>
 
