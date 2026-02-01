@@ -100,6 +100,9 @@ const RoadsideHelp = () => {
     requestMessage: string;
     isRequester: boolean;
   } | null>(null);
+  const [chatMinimized, setChatMinimized] = useState(false);
+  // Track which request IDs have already auto-opened chat (to avoid re-opening after minimize)
+  const autoOpenedChatRef = useRef<Set<string>>(new Set());
   
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<any>(null);
@@ -141,13 +144,17 @@ const RoadsideHelp = () => {
     };
   }, [currentUserId, !!map.current]);
 
-  // Watch for when someone responds to my request - open chat
+  // Watch for when someone responds to my request - open chat (only once)
   useEffect(() => {
     if (!currentUserId) return;
     
     const myRequest = helpRequests.find(r => r.user_id === currentUserId && r.responder_id);
     
-    if (myRequest && myRequest.responder_id && !activeChat) {
+    // Only auto-open if: we have a responder, no active chat, and we haven't already auto-opened for this request
+    if (myRequest && myRequest.responder_id && !activeChat && !autoOpenedChatRef.current.has(myRequest.id)) {
+      // Mark as auto-opened so we don't reopen after user minimizes
+      autoOpenedChatRef.current.add(myRequest.id);
+      
       // Someone responded to my request - fetch their profile and open chat
       const openChatWithResponder = async () => {
         const { data: responderProfile } = await supabase
@@ -171,6 +178,7 @@ const RoadsideHelp = () => {
             requestMessage: myRequest.message,
             isRequester: true,
           });
+          setChatMinimized(false);
           toast.success('К вам едет помощь! Открываем чат. 🚗');
         }
       };
@@ -577,10 +585,10 @@ const RoadsideHelp = () => {
           </div>
         )}
         
-        {/* My active request card - above bottom nav */}
-        {myActiveRequest && !selectedRequest && !activeChat && (
+        {/* My active request card - above bottom nav (show when chat is minimized OR no active chat) */}
+        {myActiveRequest && !selectedRequest && (!activeChat || chatMinimized) && (
           <div className={`absolute ${bottomNavOffset} left-4 right-4 z-[1000]`}>
-            <div className={`rounded-2xl shadow-2xl p-4 border ${myActiveRequest.responder_id ? 'bg-primary/10 border-primary/30' : 'bg-card border-border/50'}`}>
+            <div className={`rounded-2xl shadow-2xl p-4 border ${myActiveRequest.responder_id ? 'bg-card border-primary/50' : 'bg-card border-border/50'}`}>
               <div className="flex items-start gap-3">
                 <div className={`h-10 w-10 rounded-full flex items-center justify-center flex-shrink-0 ${myActiveRequest.responder_id ? 'bg-primary/20' : 'bg-destructive/10'}`}>
                   {myActiveRequest.responder_id ? (
@@ -601,7 +609,7 @@ const RoadsideHelp = () => {
                   <Button
                     variant="default"
                     size="sm"
-                    className="flex-shrink-0"
+                    className="flex-shrink-0 shadow-md"
                     onClick={async () => {
                       // Open chat with responder
                       const { data: responderProfile } = await supabase
@@ -625,6 +633,7 @@ const RoadsideHelp = () => {
                           requestMessage: myActiveRequest.message,
                           isRequester: true,
                         });
+                        setChatMinimized(false);
                       }
                     }}
                   >
@@ -677,15 +686,15 @@ const RoadsideHelp = () => {
         onSubmit={handleCreateRequest}
       />
 
-      {/* Help chat */}
-      {activeChat && currentUserId && (
+      {/* Help chat - only show if not minimized */}
+      {activeChat && currentUserId && !chatMinimized && (
         <HelpChat
           helpRequestId={activeChat.requestId}
           currentUserId={currentUserId}
           otherUser={activeChat.otherUser}
           requestMessage={activeChat.requestMessage}
           isRequester={activeChat.isRequester}
-          onBack={() => setActiveChat(null)}
+          onBack={() => setChatMinimized(true)}
         />
       )}
 
