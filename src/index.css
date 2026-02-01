@@ -179,6 +179,37 @@ All colors MUST be HSL.
   max-height: 300px !important;
 }
 
+/* iOS 26 Glass Effect */
+.glass-card {
+  background: linear-gradient(
+    135deg,
+    hsl(0 0% 100% / 0.15) 0%,
+    hsl(0 0% 100% / 0.08) 50%,
+    hsl(0 0% 100% / 0.05) 100%
+  );
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid hsl(0 0% 100% / 0.18);
+  box-shadow: 
+    0 8px 32px hsl(0 0% 0% / 0.12),
+    inset 0 1px 0 hsl(0 0% 100% / 0.2),
+    inset 0 -1px 0 hsl(0 0% 0% / 0.05);
+}
+
+.dark .glass-card {
+  background: linear-gradient(
+    135deg,
+    hsl(0 0% 100% / 0.08) 0%,
+    hsl(0 0% 100% / 0.04) 50%,
+    hsl(0 0% 100% / 0.02) 100%
+  );
+  border: 1px solid hsl(0 0% 100% / 0.12);
+  box-shadow: 
+    0 8px 32px hsl(0 0% 0% / 0.25),
+    inset 0 1px 0 hsl(0 0% 100% / 0.1),
+    inset 0 -1px 0 hsl(0 0% 0% / 0.1);
+}
+
 /* Scanner animation */
 @keyframes scan {
   0% {
