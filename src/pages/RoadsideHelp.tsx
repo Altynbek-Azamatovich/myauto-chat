@@ -1,24 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { ArrowLeft, MapPin, AlertCircle, Info, Navigation, X, Loader2, Car, Phone } from "lucide-react";
+import { ArrowLeft, MapPin, AlertCircle, Info, Navigation, X, Loader2, Car } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-
-// Fix Leaflet default marker icon
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-});
 
 interface HelpRequest {
   id: string;
@@ -36,6 +25,45 @@ interface HelpRequest {
   } | null;
 }
 
+declare global {
+  interface Window {
+    ymaps: any;
+    respondToHelpRequest: (requestId: string) => Promise<void>;
+  }
+}
+
+let ymapsLoadPromise: Promise<void> | null = null;
+
+const loadYandexMapsScript = (apiKey: string): Promise<void> => {
+  if (ymapsLoadPromise) {
+    return ymapsLoadPromise;
+  }
+
+  ymapsLoadPromise = new Promise((resolve, reject) => {
+    if (window.ymaps && window.ymaps.ready) {
+      window.ymaps.ready(resolve);
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = `https://api-maps.yandex.ru/2.1/?apikey=${apiKey}&lang=ru_RU`;
+    script.async = true;
+    
+    script.onload = () => {
+      window.ymaps.ready(resolve);
+    };
+    
+    script.onerror = () => {
+      ymapsLoadPromise = null;
+      reject(new Error('Failed to load Yandex Maps API'));
+    };
+    
+    document.head.appendChild(script);
+  });
+
+  return ymapsLoadPromise;
+};
+
 const RoadsideHelp = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
@@ -46,10 +74,11 @@ const RoadsideHelp = () => {
   const [showRequestDialog, setShowRequestDialog] = useState(false);
   const [showInfoCard, setShowInfoCard] = useState(false);
   const [isTrackingLocation, setIsTrackingLocation] = useState(false);
+  const [isMapLoading, setIsMapLoading] = useState(true);
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<L.Map | null>(null);
-  const markersRef = useRef<Map<string, L.Marker>>(new Map());
-  const userLocationMarker = useRef<L.Marker | null>(null);
+  const map = useRef<any>(null);
+  const markersRef = useRef<Map<string, any>>(new Map());
+  const userLocationMarker = useRef<any>(null);
   const watchIdRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -68,68 +97,47 @@ const RoadsideHelp = () => {
     subscribeToHelpRequests();
   };
 
-  const initMap = () => {
+  const initMap = async () => {
     if (!mapContainer.current || map.current) return;
 
     try {
-      // Initialize Leaflet map
-      const leafletMap = L.map(mapContainer.current, {
-        zoomControl: false,
-        attributionControl: false,
-      }).setView([43.2220, 76.9286], 12);
+      // Получаем API ключ через edge function
+      const { data, error } = await supabase.functions.invoke('get-yandex-maps-key');
+      
+      if (error || !data?.apiKey) {
+        console.error('Error fetching Yandex Maps API key:', error);
+        toast.error('Не удалось загрузить карту');
+        setIsMapLoading(false);
+        return;
+      }
 
-      // Add OpenStreetMap tiles with beautiful grayscale filter
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        className: 'map-tiles-grayscale'
-      }).addTo(leafletMap);
+      await loadYandexMapsScript(data.apiKey);
+
+      const ymaps = window.ymaps;
+      
+      const yandexMap = new ymaps.Map(mapContainer.current, {
+        center: [43.2220, 76.9286], // Алматы
+        zoom: 12,
+        controls: [],
+      }, {
+        suppressMapOpenBlock: true,
+      });
 
       // Добавляем кастомный zoom control
-      const zoomControl = L.control.zoom({
-        position: 'topright',
-        zoomInTitle: 'Приблизить',
-        zoomOutTitle: 'Отдалить'
-      });
-      
-      leafletMap.addControl(zoomControl);
-      
-      // Стилизуем zoom control
-      setTimeout(() => {
-        const zoomElement = document.querySelector('.leaflet-control-zoom') as HTMLElement;
-        if (zoomElement) {
-          zoomElement.style.top = '50%';
-          zoomElement.style.transform = 'translateY(-50%)';
-          zoomElement.style.marginTop = '0';
-          zoomElement.style.marginRight = '16px';
-          zoomElement.style.border = 'none';
-          zoomElement.style.borderRadius = '12px';
-          zoomElement.style.overflow = 'hidden';
-          zoomElement.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-          
-          const buttons = zoomElement.querySelectorAll('a');
-          buttons.forEach((btn: Element) => {
-            const button = btn as HTMLElement;
-            button.style.width = '44px';
-            button.style.height = '44px';
-            button.style.lineHeight = '44px';
-            button.style.fontSize = '20px';
-            button.style.border = 'none';
-            button.style.borderBottom = '1px solid rgba(0,0,0,0.1)';
-            button.style.backgroundColor = 'hsl(var(--card))';
-            button.style.color = 'hsl(var(--foreground))';
-            button.style.transition = 'all 0.2s';
-          });
-          
-          buttons[buttons.length - 1]?.setAttribute('style', 
-            (buttons[buttons.length - 1] as HTMLElement).style.cssText + 'border-bottom: none;'
-          );
+      const zoomControl = new ymaps.control.ZoomControl({
+        options: {
+          position: { right: 16, top: 200 },
+          size: 'large',
         }
-      }, 100);
+      });
+      yandexMap.controls.add(zoomControl);
 
-      map.current = leafletMap;
+      map.current = yandexMap;
+      setIsMapLoading(false);
     } catch (error) {
-      console.error('Error initializing map:', error);
+      console.error('Error initializing Yandex Map:', error);
       toast.error('Не удалось загрузить карту');
+      setIsMapLoading(false);
     }
   };
 
@@ -187,10 +195,8 @@ const RoadsideHelp = () => {
         async (payload: any) => {
           console.log('New help response:', payload);
           
-          // Проверяем, это отклик на наш запрос?
           const myRequest = helpRequests.find(r => r.user_id === currentUserId);
           if (myRequest && payload.new.help_request_id === myRequest.id) {
-            // Получаем информацию об откликнувшемся
             const { data: profile } = await supabase
               .from('profiles')
               .select('first_name, last_name, phone_number')
@@ -215,11 +221,13 @@ const RoadsideHelp = () => {
   };
 
   const updateMapMarkers = (requests: HelpRequest[]) => {
-    if (!map.current) return;
+    if (!map.current || !window.ymaps) return;
+
+    const ymaps = window.ymaps;
 
     // Remove old markers
     markersRef.current.forEach(marker => {
-      marker.remove();
+      map.current.geoObjects.remove(marker);
     });
     markersRef.current.clear();
 
@@ -227,33 +235,6 @@ const RoadsideHelp = () => {
     requests.forEach((request) => {
       const isOwnRequest = request.user_id === currentUserId;
       
-      // Create custom icon
-      const iconHtml = `
-        <div style="
-          width: 40px;
-          height: 40px;
-          background: ${isOwnRequest ? '#ef4444' : '#22c55e'};
-          border-radius: 50%;
-          border: 3px solid white;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 20px;
-        ">🚗</div>
-      `;
-
-      const customIcon = L.divIcon({
-        html: iconHtml,
-        className: '',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-      });
-
-      const marker = L.marker([request.latitude, request.longitude], {
-        icon: customIcon,
-      }).addTo(map.current!);
-
       const name = request.profiles?.first_name 
         ? `${request.profiles.first_name} ${request.profiles.last_name || ''}`
         : 'Водитель';
@@ -262,20 +243,19 @@ const RoadsideHelp = () => {
       const avatarUrl = request.profiles?.avatar_url || '';
       const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
 
-      const popupContent = `
+      const balloonContent = `
         <div style="
           padding: 16px; 
           min-width: 280px;
           font-family: system-ui, -apple-system, sans-serif;
         ">
-          <!-- Profile Section -->
           <div style="
             display: flex;
             align-items: center;
             gap: 12px;
             margin-bottom: 16px;
             padding-bottom: 16px;
-            border-bottom: 1px solid hsl(var(--border));
+            border-bottom: 1px solid #e5e7eb;
           ">
             <div style="
               width: 56px;
@@ -283,7 +263,7 @@ const RoadsideHelp = () => {
               border-radius: 50%;
               overflow: hidden;
               flex-shrink: 0;
-              background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+              background: linear-gradient(135deg, #3b82f6, #8b5cf6);
               display: flex;
               align-items: center;
               justify-content: center;
@@ -298,10 +278,10 @@ const RoadsideHelp = () => {
                 font-weight: 600; 
                 font-size: 16px; 
                 margin-bottom: 4px;
-                color: hsl(var(--foreground));
+                color: #1f2937;
               ">${name}</div>
               <div style="
-                color: hsl(var(--muted-foreground)); 
+                color: #6b7280; 
                 font-size: 13px;
                 display: flex;
                 align-items: center;
@@ -313,15 +293,14 @@ const RoadsideHelp = () => {
             </div>
           </div>
           
-          <!-- Message Section -->
           <div style="
-            background: hsl(var(--muted) / 0.5);
+            background: #f3f4f6;
             border-radius: 8px;
             padding: 12px;
             margin-bottom: 16px;
           ">
             <div style="
-              color: hsl(var(--foreground)); 
+              color: #1f2937; 
               font-size: 14px; 
               line-height: 1.6;
             ">${request.message}</div>
@@ -329,11 +308,11 @@ const RoadsideHelp = () => {
           
           ${!isOwnRequest ? `
             <button
-              onclick="respondToHelpRequest('${request.id}')"
+              onclick="window.respondToHelpRequest('${request.id}')"
               style="
                 width: 100%;
                 padding: 12px 16px;
-                background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+                background: linear-gradient(135deg, #3b82f6, #8b5cf6);
                 color: white;
                 border: none;
                 border-radius: 10px;
@@ -345,10 +324,8 @@ const RoadsideHelp = () => {
                 align-items: center;
                 justify-content: center;
                 gap: 8px;
-                box-shadow: 0 4px 12px hsl(var(--primary) / 0.3);
+                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
               "
-              onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 16px hsl(var(--primary) / 0.4)';"
-              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px hsl(var(--primary) / 0.3)';"
             >
               <span style="font-size: 18px;">🚗</span>
               Откликнуться на помощь
@@ -357,24 +334,31 @@ const RoadsideHelp = () => {
         </div>
       `;
 
-      marker.bindPopup(popupContent, {
-        maxWidth: 300,
-        className: 'custom-popup'
-      });
+      const placemark = new ymaps.Placemark(
+        [request.latitude, request.longitude],
+        {
+          balloonContent,
+          hintContent: name,
+        },
+        {
+          preset: isOwnRequest ? 'islands#redAutoIcon' : 'islands#greenAutoIcon',
+          iconColor: isOwnRequest ? '#ef4444' : '#22c55e',
+        }
+      );
 
-      markersRef.current.set(request.id, marker);
+      map.current.geoObjects.add(placemark);
+      markersRef.current.set(request.id, placemark);
     });
   };
 
   // Глобальная функция для кнопки в popup
-  (window as any).respondToHelpRequest = async (requestId: string) => {
+  window.respondToHelpRequest = async (requestId: string) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       toast.error('Необходима авторизация');
       return;
     }
 
-    // Проверяем, что пользователь не откликается на свой собственный запрос
     const request = helpRequests.find(r => r.id === requestId);
     if (request && request.user_id === user.id) {
       toast.error('Вы не можете откликнуться на свой собственный запрос о помощи');
@@ -417,7 +401,7 @@ const RoadsideHelp = () => {
           return;
         }
 
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from('help_requests' as any)
           .insert({
             user_id: user.id,
@@ -438,10 +422,10 @@ const RoadsideHelp = () => {
           setShowRequestDialog(false);
           
           if (map.current) {
-            map.current.setView(
+            map.current.setCenter(
               [position.coords.latitude, position.coords.longitude],
               16,
-              { animate: true, duration: 1 }
+              { duration: 500 }
             );
           }
         }
@@ -477,7 +461,6 @@ const RoadsideHelp = () => {
         toast.error('Не удалось отменить запрос');
       } else {
         toast.success('Запрос отменён');
-        // Удаляем запрос из локального состояния
         setHelpRequests(prev => prev.filter(r => r.id !== myRequest.id));
       }
     } catch (err) {
@@ -492,20 +475,25 @@ const RoadsideHelp = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          if (map.current) {
-            map.current.setView(
+          if (map.current && window.ymaps) {
+            map.current.setCenter(
               [position.coords.latitude, position.coords.longitude],
               16,
-              { animate: true, duration: 1 }
+              { duration: 500 }
             );
             
-            const marker = L.marker([position.coords.latitude, position.coords.longitude])
-              .addTo(map.current)
-              .bindPopup('📍 Вы здесь')
-              .openPopup();
+            const ymaps = window.ymaps;
+            const marker = new ymaps.Placemark(
+              [position.coords.latitude, position.coords.longitude],
+              { balloonContent: '📍 Вы здесь' },
+              { preset: 'islands#blueCircleDotIcon' }
+            );
+            
+            map.current.geoObjects.add(marker);
+            marker.balloon.open();
             
             setTimeout(() => {
-              marker.remove();
+              map.current.geoObjects.remove(marker);
             }, 3000);
           }
         },
@@ -521,46 +509,38 @@ const RoadsideHelp = () => {
 
   const toggleLocationTracking = () => {
     if (isTrackingLocation) {
-      // Остановить отслеживание
       if (watchIdRef.current !== null) {
         navigator.geolocation.clearWatch(watchIdRef.current);
         watchIdRef.current = null;
       }
       if (userLocationMarker.current && map.current) {
-        map.current.removeLayer(userLocationMarker.current);
+        map.current.geoObjects.remove(userLocationMarker.current);
         userLocationMarker.current = null;
       }
       setIsTrackingLocation(false);
       toast.info('Отслеживание остановлено');
     } else {
-      // Начать отслеживание
       if (navigator.geolocation) {
         const watchId = navigator.geolocation.watchPosition(
           (position) => {
             const { latitude, longitude } = position.coords;
             
-            if (map.current) {
-              // Создаем или обновляем маркер
+            if (map.current && window.ymaps) {
+              const ymaps = window.ymaps;
+              
               if (!userLocationMarker.current) {
-                const icon = L.icon({
-                  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
-                  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-                  iconSize: [25, 41],
-                  iconAnchor: [12, 41],
-                  popupAnchor: [1, -34],
-                  shadowSize: [41, 41]
-                });
-                
-                userLocationMarker.current = L.marker([latitude, longitude], { icon })
-                  .addTo(map.current)
-                  .bindPopup('📍 Ваше местоположение');
+                userLocationMarker.current = new ymaps.Placemark(
+                  [latitude, longitude],
+                  { balloonContent: '📍 Ваше местоположение' },
+                  { preset: 'islands#greenCircleDotIcon' }
+                );
+                map.current.geoObjects.add(userLocationMarker.current);
               } else {
-                userLocationMarker.current.setLatLng([latitude, longitude]);
+                userLocationMarker.current.geometry.setCoordinates([latitude, longitude]);
               }
               
-              // Центрируем карту на первом обновлении
               if (!isTrackingLocation) {
-                map.current.setView([latitude, longitude], 15, { animate: true });
+                map.current.setCenter([latitude, longitude], 15, { duration: 500 });
               }
             }
           },
@@ -591,34 +571,16 @@ const RoadsideHelp = () => {
       if (watchIdRef.current !== null) {
         navigator.geolocation.clearWatch(watchIdRef.current);
       }
+      if (map.current) {
+        map.current.destroy();
+        map.current = null;
+      }
     };
   }, []);
 
   return (
     <div className="min-h-screen bg-background flex flex-col relative">
-      {/* Custom popup styles and map filters */}
-      <style>{`
-        /* Beautiful grayscale map filter */
-        .map-tiles-grayscale {
-          filter: grayscale(100%) contrast(1.1) brightness(1.05);
-        }
-        
-        .custom-popup .leaflet-popup-content-wrapper {
-          border-radius: 16px;
-          box-shadow: 0 12px 40px rgba(0,0,0,0.2);
-          padding: 0;
-          overflow: hidden;
-          border: 1px solid hsl(var(--border));
-        }
-        .custom-popup .leaflet-popup-content {
-          margin: 0;
-        }
-        .custom-popup .leaflet-popup-tip {
-          box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-        }
-      `}</style>
-
-      {/* Header - прозрачный с тенью */}
+      {/* Header */}
       <div className="absolute top-0 left-0 right-0 z-[1001] px-4 py-4 flex items-center gap-3">
         <Button
           variant="ghost"
@@ -633,11 +595,21 @@ const RoadsideHelp = () => {
         </h1>
       </div>
 
-      {/* Map - на весь экран */}
+      {/* Map */}
       <div className="absolute inset-0">
         <div ref={mapContainer} className="w-full h-full" />
         
-        {/* Информационная кнопка/карточка - левый верхний угол */}
+        {/* Loading overlay */}
+        {isMapLoading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-[1000]">
+            <div className="flex flex-col items-center gap-3">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <span className="text-sm text-muted-foreground">Загрузка карты...</span>
+            </div>
+          </div>
+        )}
+        
+        {/* Info card */}
         <div className="absolute top-20 left-4 z-[1001]">
           {!showInfoCard ? (
             <Button
@@ -671,15 +643,11 @@ const RoadsideHelp = () => {
                 <ul className="space-y-3.5 text-sm">
                   <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
                     <span className="text-lg mt-0.5">🟢</span>
-                    <span className="text-muted-foreground leading-relaxed">Зелёные маркеры — ваше местоположение</span>
+                    <span className="text-muted-foreground leading-relaxed">Зелёные маркеры — водители, которым нужна помощь</span>
                   </li>
                   <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
                     <span className="text-lg mt-0.5">🔴</span>
-                    <span className="text-muted-foreground leading-relaxed">Красные маркеры — водители, которым нужна помощь</span>
-                  </li>
-                  <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
-                    <span className="text-lg mt-0.5">🔵</span>
-                    <span className="text-muted-foreground leading-relaxed">Синий маркер — ваш активный запрос о помощи</span>
+                    <span className="text-muted-foreground leading-relaxed">Красные маркеры — ваш активный запрос о помощи</span>
                   </li>
                   <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
                     <span className="text-lg mt-0.5">📍</span>
@@ -691,9 +659,8 @@ const RoadsideHelp = () => {
           )}
         </div>
         
-        {/* Кнопки навигации - справа по центру */}
+        {/* Navigation buttons */}
         <div className="absolute right-4 top-1/2 -translate-y-1/2 mt-16 z-[1000] flex flex-col gap-3">
-          {/* Кнопка отслеживания местоположения */}
           <Button
             onClick={toggleLocationTracking}
             size="icon"
@@ -707,7 +674,6 @@ const RoadsideHelp = () => {
             <Navigation className={`h-5 w-5 ${isTrackingLocation ? 'animate-pulse' : ''}`} />
           </Button>
           
-          {/* Кнопка моей геолокации */}
           <Button
             onClick={handleLocateMe}
             size="icon"
@@ -718,7 +684,7 @@ const RoadsideHelp = () => {
           </Button>
         </div>
         
-        {/* Floating action button - внизу по центру */}
+        {/* Floating action button */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[1100]">
           {!myActiveRequest ? (
             <Dialog open={showRequestDialog} onOpenChange={setShowRequestDialog}>
