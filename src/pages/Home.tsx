@@ -19,6 +19,8 @@ import icon360 from "@/assets/360-icon.png";
 import Logo from "@/components/Logo";
 import BottomNavigation from '@/components/BottomNavigation';
 import { AppSidebar } from '@/components/AppSidebar';
+import { useNotifications } from '@/contexts/NotificationContext';
+import NotificationBadge from '@/components/NotificationBadge';
 import { usePersistedState } from '@/hooks/usePersistedState';
 interface Vehicle {
   id: string;
@@ -53,6 +55,7 @@ const Home = () => {
     language
   } = useLanguage();
   const navigate = useNavigate();
+  const { unreadCount } = useNotifications();
   useEffect(() => {
     checkAuthAndFetchData();
   }, []);
@@ -132,8 +135,9 @@ const Home = () => {
 
         <Logo size="md" />
 
-        <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground" onClick={() => navigate('/notifications')}>
+        <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground relative" onClick={() => navigate('/notifications')}>
           <Bell className="w-[20px] h-[20px] text-foreground" strokeWidth={2.5} />
+          <NotificationBadge count={unreadCount} size="sm" />
         </Button>
       </header>
 
