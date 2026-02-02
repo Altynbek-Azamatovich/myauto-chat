@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Upload, User, Check, ChevronsUpDown, Trash2, Shield, Loader2 } from 'lucide-react';
+import { ArrowLeft, Upload, User, Check, ChevronsUpDown, ChevronRight, Shield, Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -23,13 +22,14 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
 export default function ProfileSettings() {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
+  const [showDeleteInfo, setShowDeleteInfo] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deletingAccount, setDeletingAccount] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -81,13 +81,11 @@ export default function ProfileSettings() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Check file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       toast.error('Файл слишком большой. Максимальный размер 5MB');
       return;
     }
 
-    // Check file type
     if (!file.type.startsWith('image/')) {
       toast.error('Пожалуйста, выберите изображение');
       return;
@@ -99,7 +97,6 @@ export default function ProfileSettings() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not found');
 
-      // Delete old avatar if exists
       if (avatarUrl) {
         const oldPath = avatarUrl.split('/').pop();
         if (oldPath) {
@@ -109,7 +106,6 @@ export default function ProfileSettings() {
         }
       }
 
-      // Upload new avatar
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random()}.${fileExt}`;
       const filePath = `${user.id}/${fileName}`;
@@ -120,12 +116,10 @@ export default function ProfileSettings() {
 
       if (uploadError) throw uploadError;
 
-      // Get public URL
       const { data: { publicUrl } } = supabase.storage
         .from('avatars')
         .getPublicUrl(filePath);
 
-      // Update profile
       const { error: updateError } = await supabase
         .from('profiles')
         .update({ avatar_url: publicUrl } as any)
@@ -180,7 +174,6 @@ export default function ProfileSettings() {
 
       if (error) throw error;
 
-      // Clear local storage
       localStorage.clear();
       
       toast.success('Аккаунт успешно удалён');
@@ -190,95 +183,104 @@ export default function ProfileSettings() {
       toast.error(error.message || 'Не удалось удалить аккаунт');
     } finally {
       setDeletingAccount(false);
+      setShowDeleteConfirm(false);
+      setShowDeleteInfo(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <header className="flex items-center justify-between p-4 border-b">
+      <header className="flex items-center gap-4 px-4 py-4 bg-background/80 backdrop-blur-xl sticky top-0 z-50">
         <Button
           variant="ghost"
           size="icon"
           onClick={() => navigate('/')}
-          className="rounded-full hover:bg-muted/30 hover:text-foreground"
+          className="rounded-full hover:bg-muted/30"
         >
-          <ArrowLeft className="h-8 w-8" />
+          <ArrowLeft className="h-6 w-6" />
         </Button>
         <h1 className="text-lg font-semibold">{t('profileSettingsTitle')}</h1>
-        <div className="w-10" />
       </header>
 
-      <div className="p-4">
-        <Card className="p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Avatar Upload */}
-            <div className="flex flex-col items-center space-y-4">
-              <div className="relative">
-                <Avatar className="h-32 w-32">
-                  <AvatarImage src={avatarUrl || ''} alt="Avatar" />
-                  <AvatarFallback className="bg-muted">
-                    <User className="h-16 w-16 text-muted-foreground" />
-                  </AvatarFallback>
-                </Avatar>
-                <label 
-                  htmlFor="avatar-upload"
-                  className="absolute bottom-0 right-0 h-10 w-10 rounded-full bg-primary hover:bg-primary/90 flex items-center justify-center cursor-pointer transition-colors"
-                >
-                  <Upload className="h-5 w-5 text-primary-foreground" />
-                </label>
-                <input
-                  id="avatar-upload"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleAvatarUpload}
-                  disabled={uploadingAvatar}
-                />
-              </div>
-              {uploadingAvatar && (
-                <p className="text-sm text-muted-foreground">{t('loading')}</p>
-              )}
+      <div className="px-4 space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Avatar Upload */}
+          <div className="flex flex-col items-center py-4">
+            <div className="relative">
+              <Avatar className="h-28 w-28">
+                <AvatarImage src={avatarUrl || ''} alt="Avatar" />
+                <AvatarFallback className="bg-muted">
+                  <User className="h-12 w-12 text-muted-foreground" />
+                </AvatarFallback>
+              </Avatar>
+              <label 
+                htmlFor="avatar-upload"
+                className="absolute bottom-0 right-0 h-9 w-9 rounded-full bg-primary hover:bg-primary/90 flex items-center justify-center cursor-pointer transition-colors shadow-lg"
+              >
+                <Upload className="h-4 w-4 text-primary-foreground" />
+              </label>
+              <input
+                id="avatar-upload"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleAvatarUpload}
+                disabled={uploadingAvatar}
+              />
             </div>
+            {uploadingAvatar && (
+              <p className="text-sm text-muted-foreground mt-2">{t('loading')}</p>
+            )}
+          </div>
 
-            <div>
-              <Label>{t('phoneNumber')}</Label>
+          {/* Form Fields */}
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label className="text-sm text-muted-foreground">{t('phoneNumber')}</Label>
               <Input
                 value={formData.phone_number}
                 onChange={(e) => setFormData({ ...formData, phone_number: e.target.value })}
                 disabled
-                className="bg-muted"
+                className="bg-muted/50 border-0 rounded-xl h-12"
               />
             </div>
-            <div>
-              <Label>{t('profileLastName')}</Label>
+            
+            <div className="space-y-2">
+              <Label className="text-sm text-muted-foreground">{t('profileLastName')}</Label>
               <Input
                 value={formData.last_name}
                 onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+                className="border-0 bg-muted/30 rounded-xl h-12 focus:bg-muted/50 transition-colors"
               />
             </div>
-            <div>
-              <Label>{t('profileFirstName')}</Label>
+            
+            <div className="space-y-2">
+              <Label className="text-sm text-muted-foreground">{t('profileFirstName')}</Label>
               <Input
                 value={formData.first_name}
                 onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+                className="border-0 bg-muted/30 rounded-xl h-12 focus:bg-muted/50 transition-colors"
               />
             </div>
-            <div>
-              <Label>{t('profilePatronymic')}</Label>
+            
+            <div className="space-y-2">
+              <Label className="text-sm text-muted-foreground">{t('profilePatronymic')}</Label>
               <Input
                 value={formData.patronymic}
                 onChange={(e) => setFormData({ ...formData, patronymic: e.target.value })}
+                className="border-0 bg-muted/30 rounded-xl h-12 focus:bg-muted/50 transition-colors"
               />
             </div>
-            <div>
-              <Label>{t('profileCity')}</Label>
+            
+            <div className="space-y-2">
+              <Label className="text-sm text-muted-foreground">{t('profileCity')}</Label>
               <Popover open={cityOpen} onOpenChange={setCityOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
                     role="combobox"
                     aria-expanded={cityOpen}
-                    className="w-full justify-between"
+                    className="w-full justify-between border-0 bg-muted/30 rounded-xl h-12 hover:bg-muted/50"
                   >
                     {formData.city || t('selectCity')}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -314,71 +316,93 @@ export default function ProfileSettings() {
                 </PopoverContent>
               </Popover>
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {t('save')}
-            </Button>
-          </form>
-        </Card>
+          </div>
 
-        {/* Privacy Policy Link */}
-        <Card className="p-4 mt-4">
-          <Button 
-            variant="ghost" 
-            className="w-full justify-start" 
-            onClick={() => navigate('/privacy-policy')}
-          >
-            <Shield className="h-5 w-5 mr-3" />
-            {t('privacyPolicy')}
+          <Button type="submit" className="w-full rounded-xl h-12" disabled={loading}>
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : t('save')}
           </Button>
-        </Card>
+        </form>
 
-        {/* Delete Account Section */}
-        <Card className="p-4 mt-4 border-destructive/50">
-          <h3 className="font-semibold text-destructive mb-2">{t('deleteAccount')}</h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            {t('deleteAccountWarning')}
-          </p>
-          
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button 
-                variant="destructive" 
-                className="w-full"
-                disabled={deletingAccount}
-              >
-                {deletingAccount ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    {t('deleting')}
-                  </>
-                ) : (
-                  <>
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    {t('deleteAccount')}
-                  </>
-                )}
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>{t('deleteAccountConfirmTitle')}</AlertDialogTitle>
-                <AlertDialogDescription>
-                  {t('deleteAccountConfirmDescription')}
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleDeleteAccount}
-                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                >
-                  {t('deleteForever')}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </Card>
+        {/* Action Buttons */}
+        <div className="space-y-3 pt-4">
+          {/* Privacy Policy */}
+          <button 
+            onClick={() => navigate('/privacy-policy')}
+            className="w-full flex items-center justify-between p-4 bg-muted/30 hover:bg-muted/50 rounded-2xl transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <Shield className="h-5 w-5 text-muted-foreground" />
+              <span className="font-medium">{t('privacyPolicy')}</span>
+            </div>
+            <ChevronRight className="h-5 w-5 text-muted-foreground" />
+          </button>
+
+          {/* Delete Account */}
+          <button 
+            onClick={() => setShowDeleteInfo(true)}
+            className="w-full flex items-center justify-between p-4 bg-destructive/10 hover:bg-destructive/20 rounded-2xl transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <Trash2 className="h-5 w-5 text-destructive" />
+              <span className="font-medium text-destructive">{t('deleteAccount')}</span>
+            </div>
+            <ChevronRight className="h-5 w-5 text-destructive" />
+          </button>
+        </div>
       </div>
+
+      {/* Delete Info Dialog */}
+      <AlertDialog open={showDeleteInfo} onOpenChange={setShowDeleteInfo}>
+        <AlertDialogContent className="rounded-3xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('deleteAccountConfirmTitle')}</AlertDialogTitle>
+            <AlertDialogDescription className="space-y-3">
+              <p>{t('deleteAccountWarning')}</p>
+              <ul className="list-disc list-inside text-sm space-y-1">
+                <li>Все ваши данные будут удалены</li>
+                <li>История заказов будет потеряна</li>
+                <li>Восстановить аккаунт будет невозможно</li>
+              </ul>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
+            <Button
+              variant="destructive"
+              onClick={() => {
+                setShowDeleteInfo(false);
+                setShowDeleteConfirm(true);
+              }}
+              className="w-full rounded-xl"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              {t('deleteAccount')}
+            </Button>
+            <AlertDialogCancel className="w-full rounded-xl mt-0">{t('cancel')}</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent className="rounded-3xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Вы уверены?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Это действие нельзя отменить. Ваш аккаунт будет удалён навсегда.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-row gap-3">
+            <AlertDialogCancel className="flex-1 rounded-xl m-0">Нет</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteAccount}
+              disabled={deletingAccount}
+              className="flex-1 bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-xl"
+            >
+              {deletingAccount ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Да, удалить'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

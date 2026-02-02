@@ -59,7 +59,6 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
   const menuItems = [
     { icon: Car, label: t('myVehicles'), path: '/my-vehicles' },
     { icon: History, label: t('serviceHistoryTitle'), path: '/service-history' },
-    { icon: UserCog, label: t('profileSettingsTitle'), path: '/profile-settings' },
   ];
 
   const settingsItems = [
@@ -88,9 +87,14 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
                       <User className="h-6 w-6 text-muted-foreground" />
                     </AvatarFallback>
                   </Avatar>
-                  <div className="flex-1 min-w-0">
+                  <div className="flex-1 min-w-0 overflow-hidden">
                     {userProfile?.first_name || userProfile?.last_name ? (
-                      <p className="font-semibold text-lg truncate">
+                      <p 
+                        className="font-semibold truncate"
+                        style={{
+                          fontSize: `${Math.max(12, 18 - Math.max(0, ((userProfile?.first_name || '').length + (userProfile?.last_name || '').length + 1 - 15) * 0.3))}px`
+                        }}
+                      >
                         {userProfile.first_name} {userProfile.last_name}
                       </p>
                     ) : (
@@ -120,9 +124,6 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
 
               {/* Settings Section */}
               <div className="px-3 mt-6">
-                <p className="px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
-                  {t('settings')}
-                </p>
 
                 {/* Theme Toggle */}
                 <div className="px-3 py-3">
