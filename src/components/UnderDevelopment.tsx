@@ -35,21 +35,21 @@ export const UnderDevelopment = ({ title, subtitle, backPath = '/services', onBa
       </header>
 
       {/* Content */}
-      <div className="flex flex-col items-center justify-center px-6 py-8 text-center">
-        {/* Animation Container (same alignment behavior as AutoForum placeholder) */}
-        <div className="relative w-screen -mx-6 h-[clamp(240px,52vw,360px)] mb-6 overflow-hidden">
-          {/* Construction Barrier - slides from left and aligns to left edge */}
+      <div className="flex flex-col items-center px-6 text-center">
+        {/* Animation Container - centered between header and text */}
+        <div className="relative w-screen -mx-6 h-[clamp(180px,40vw,280px)] mb-4 overflow-hidden flex items-center">
+          {/* Construction Barrier - slides from left */}
           <img
             src={barrierImage}
             alt="Under construction"
-            className="absolute left-0 top-1/2 -translate-y-1/2 block h-[clamp(144px,33vw,240px)] w-auto object-contain will-change-transform animate-[slide-barrier_4s_ease-in-out_infinite]"
+            className="absolute left-0 top-1/2 -translate-y-1/2 block h-[clamp(100px,22vw,160px)] w-auto object-contain will-change-transform animate-[slide-barrier_4s_ease-in-out_infinite]"
           />
 
-          {/* Car - slides from right and aligns to right edge */}
+          {/* Car - slides from right */}
           <img
             src={carImage}
             alt="Car"
-            className="absolute right-0 top-1/2 -translate-y-1/2 block h-[clamp(168px,39vw,285px)] w-auto object-contain will-change-transform animate-[slide-car_4s_ease-in-out_infinite]"
+            className="absolute right-0 top-1/2 -translate-y-1/2 block h-[clamp(120px,26vw,190px)] w-auto object-contain will-change-transform animate-[slide-car_4s_ease-in-out_infinite]"
           />
         </div>
 
