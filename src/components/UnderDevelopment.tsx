@@ -36,24 +36,27 @@ export const UnderDevelopment = ({ title, subtitle, backPath = '/services', onBa
 
       {/* Content */}
       <div className="flex flex-col items-center px-6 text-center">
-        {/* Animation Container - centered between header and text */}
-        <div className="relative w-screen -mx-6 h-[clamp(180px,40vw,280px)] mb-4 overflow-hidden flex items-center">
+        {/* Animation Container */}
+        <div className="relative w-screen -mx-6 h-[clamp(200px,45vw,320px)] mb-4 overflow-hidden flex items-center">
           {/* Construction Barrier - slides from left */}
           <img
             src={barrierImage}
             alt="Under construction"
-            className="absolute left-0 top-1/2 -translate-y-1/2 block h-[clamp(100px,22vw,160px)] w-auto object-contain will-change-transform animate-[slide-barrier_4s_ease-in-out_infinite]"
+            className="absolute left-0 top-1/2 -translate-y-1/2 block h-[clamp(120px,28vw,200px)] w-auto object-contain will-change-transform animate-[slide-barrier_4s_ease-in-out_infinite]"
           />
 
           {/* Car - slides from right */}
           <img
             src={carImage}
             alt="Car"
-            className="absolute right-0 top-1/2 -translate-y-1/2 block h-[clamp(120px,26vw,190px)] w-auto object-contain will-change-transform animate-[slide-car_4s_ease-in-out_infinite]"
+            className="absolute right-0 top-1/2 -translate-y-1/2 block h-[clamp(140px,32vw,240px)] w-auto object-contain will-change-transform animate-[slide-car_4s_ease-in-out_infinite]"
           />
         </div>
 
-        {/* Text */}
+        {/* Spacer to push text lower */}
+        <div className="flex-1 min-h-8" />
+
+        {/* Text with transparent background */}
         <h2 className="text-2xl font-bold mb-3">
           {t('underDevelopmentTitle')}
         </h2>
