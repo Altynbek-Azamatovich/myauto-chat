@@ -188,7 +188,7 @@ const TuningSection = ({ onClose }: TuningSectionProps) => {
           </div>
 
           {/* Second row - overlapping half of top row */}
-          <div className="grid grid-cols-2 gap-3 -mt-[50%] relative z-10">
+          <div className="grid grid-cols-2 gap-3 -mt-[25%] relative z-10">
             {displayCategories.slice(2, 4).map((category) => (
               <div
                 key={category.id}
