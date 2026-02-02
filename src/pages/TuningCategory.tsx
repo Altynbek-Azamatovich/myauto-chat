@@ -48,19 +48,23 @@ const TuningCategory = () => {
       {/* Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-4">
         {/* Animation container */}
-        <div className="relative w-full max-w-sm h-64 mb-8 overflow-hidden">
-          {/* Car animation - enters from right, aligns to right */}
-          <img
-            src={carImage}
-            alt="Car"
-            className="h-32 object-contain animate-car-slide"
-          />
-          {/* Barrier animation - enters from left, aligns to left */}
-          <img
-            src={constructionBarrier}
-            alt="Under Construction"
-            className="h-24 object-contain animate-barrier-slide"
-          />
+        <div className="relative w-full max-w-sm h-40 mb-8 overflow-hidden flex flex-col justify-center gap-2">
+          {/* Barrier animation - enters from right, aligns to left */}
+          <div className="overflow-hidden w-full">
+            <img
+              src={constructionBarrier}
+              alt="Under Construction"
+              className="h-16 object-contain animate-barrier-ping-pong"
+            />
+          </div>
+          {/* Car animation - enters from right, aligns to left */}
+          <div className="overflow-hidden w-full">
+            <img
+              src={carImage}
+              alt="Car"
+              className="h-20 object-contain animate-car-ping-pong"
+            />
+          </div>
         </div>
 
         {/* Text */}
@@ -83,56 +87,23 @@ const TuningCategory = () => {
         </Button>
       </div>
 
-      {/* Custom animation styles */}
+      {/* Custom animation styles - ping pong like AutoForum */}
       <style>{`
-        @keyframes carSlide {
-          0% {
-            right: 100%;
-            opacity: 0;
-          }
-          20% {
-            right: 0;
-            opacity: 1;
-          }
-          80% {
-            right: 0;
-            opacity: 1;
-          }
-          100% {
-            right: 100%;
-            opacity: 0;
-          }
+        @keyframes ping-pong-car {
+          0%, 100% { transform: translateX(calc(100vw - 100%)); }
+          50% { transform: translateX(0); }
+        }
+        @keyframes ping-pong-barrier {
+          0%, 100% { transform: translateX(0); }
+          50% { transform: translateX(calc(100vw - 100%)); }
         }
         
-        @keyframes barrierSlide {
-          0% {
-            left: 100%;
-            opacity: 0;
-          }
-          20% {
-            left: 0;
-            opacity: 1;
-          }
-          80% {
-            left: 0;
-            opacity: 1;
-          }
-          100% {
-            left: 100%;
-            opacity: 0;
-          }
+        .animate-car-ping-pong {
+          animation: ping-pong-car 8s ease-in-out infinite;
         }
         
-        .animate-car-slide {
-          animation: carSlide 5s ease-in-out infinite;
-          position: absolute;
-          right: 0;
-        }
-        
-        .animate-barrier-slide {
-          animation: barrierSlide 5s ease-in-out infinite;
-          position: absolute;
-          left: 0;
+        .animate-barrier-ping-pong {
+          animation: ping-pong-barrier 8s ease-in-out infinite;
         }
       `}</style>
     </div>

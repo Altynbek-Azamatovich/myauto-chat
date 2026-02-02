@@ -74,11 +74,12 @@ const TuningSection = ({ onClose }: TuningSectionProps) => {
     <>
       <div className="absolute inset-0">
         {category.isPainting ? (
-          <div className="w-full h-full bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-800 overflow-hidden">
+          <div className="w-full h-full bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-800 overflow-hidden flex items-center justify-end">
             <img
               src={redSedan}
               alt="Red car"
-              className="w-full h-full object-cover object-right"
+              className="h-[70%] w-auto object-contain"
+              style={{ marginRight: '-5%' }}
             />
           </div>
         ) : (
@@ -186,8 +187,8 @@ const TuningSection = ({ onClose }: TuningSectionProps) => {
             ))}
           </div>
 
-          {/* Second row - overlapping */}
-          <div className="grid grid-cols-2 gap-3 -mt-10 relative z-10">
+          {/* Second row - overlapping half of top row */}
+          <div className="grid grid-cols-2 gap-3 -mt-[50%] relative z-10">
             {displayCategories.slice(2, 4).map((category) => (
               <div
                 key={category.id}
