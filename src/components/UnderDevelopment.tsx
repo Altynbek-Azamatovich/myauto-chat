@@ -54,8 +54,7 @@ export const UnderDevelopment = ({ title, subtitle, backPath = '/services' }: Un
         {/* Support Button */}
         <div className="space-y-3 w-full max-w-xs">
           <Button 
-            variant="outline"
-            className="w-full gap-2 border-2 border-destructive text-destructive hover:bg-destructive/10 font-semibold rounded-xl h-12"
+            className="w-full gap-2 bg-destructive text-destructive-foreground hover:bg-destructive/90 font-semibold rounded-xl h-12"
             onClick={() => {
               window.open('https://pay.kaspi.kz/pay/devnqngt', '_blank');
             }}
