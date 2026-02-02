@@ -11,7 +11,7 @@ import NotificationBadge from "@/components/NotificationBadge";
 import { supabase } from "@/integrations/supabase/client";
 import { StoriesCarousel } from "@/components/StoriesCarousel";
 import { AutoForumMarquee } from "@/components/AutoForumMarquee";
-import roadsideHelpImg from "@/assets/services/roadside-help-new.png";
+import { RoadsideHelpCover } from "@/components/RoadsideHelpCover";
 import autoServicesImg from "@/assets/services/auto-services.png";
 import autoShopsImg from "@/assets/services/auto-shops.png";
 import detailingImg from "@/assets/services/detailing.png";
@@ -149,12 +149,12 @@ const Services = () => {
             className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
             onClick={() => navigate('/roadside-help')}
           >
-            <img src={roadsideHelpImg} alt={t('roadHelp')} className="absolute inset-0 w-full h-full object-cover" />
-            <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
+            <RoadsideHelpCover />
+            <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent z-10">
               <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('roadHelp')}</h3>
             </div>
             {helpResponseCount > 0 && (
-              <div className="absolute top-2 right-2">
+              <div className="absolute top-2 right-2 z-10">
                 <NotificationBadge count={helpResponseCount} />
               </div>
             )}
@@ -182,9 +182,9 @@ const Services = () => {
             <img 
               src={newsBg} 
               alt={t('news')} 
-              className="absolute inset-0 w-full h-full object-contain" 
+              className="absolute inset-0 w-full h-full object-contain brightness-90" 
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-3">
               <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">{t('news')}</h3>
               <p className="text-[10px] text-white/80 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">{t('newsSubtitle')}</p>
@@ -216,7 +216,8 @@ const Services = () => {
             className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
             onClick={() => navigate('/service-booking')}
           >
-            <img src={autoServicesImg} alt={t('servicesTitle')} className="absolute inset-0 w-full h-full object-cover object-top" />
+            <img src={autoServicesImg} alt={t('servicesTitle')} className="absolute inset-0 w-full h-full object-cover object-top brightness-90" />
+            <div className="absolute inset-0 bg-black/15" />
             <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
               <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('servicesTitle')}</h3>
             </div>
@@ -227,7 +228,8 @@ const Services = () => {
             className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
             onClick={() => navigate('/auto-shops')}
           >
-            <img src={autoShopsImg} alt={t('autoShops')} className="absolute inset-0 w-full h-full object-cover object-top" />
+            <img src={autoShopsImg} alt={t('autoShops')} className="absolute inset-0 w-full h-full object-cover object-top brightness-90" />
+            <div className="absolute inset-0 bg-black/15" />
             <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
               <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('autoShops')}</h3>
             </div>
@@ -238,7 +240,8 @@ const Services = () => {
             className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
             onClick={() => navigate('/detailing')}
           >
-            <img src={detailingImg} alt={t('detailing')} className="absolute inset-0 w-full h-full object-cover object-top" />
+            <img src={detailingImg} alt={t('detailing')} className="absolute inset-0 w-full h-full object-cover object-top brightness-90" />
+            <div className="absolute inset-0 bg-black/15" />
             <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
               <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('detailing')}</h3>
             </div>
@@ -249,7 +252,8 @@ const Services = () => {
             className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
             onClick={() => navigate('/paint-shop')}
           >
-            <img src={paintShopImg} alt={t('paintShop')} className="absolute inset-0 w-full h-full object-cover object-top" />
+            <img src={paintShopImg} alt={t('paintShop')} className="absolute inset-0 w-full h-full object-cover object-top brightness-90" />
+            <div className="absolute inset-0 bg-black/15" />
             <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
               <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('paintShop')}</h3>
             </div>
@@ -260,7 +264,8 @@ const Services = () => {
             className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
             onClick={() => navigate('/parts-dismantling')}
           >
-            <img src={partsDismantlingImg} alt={t('partsDismantling')} className="absolute inset-0 w-full h-full object-cover object-top" />
+            <img src={partsDismantlingImg} alt={t('partsDismantling')} className="absolute inset-0 w-full h-full object-cover object-top brightness-90" />
+            <div className="absolute inset-0 bg-black/15" />
             <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
               <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('partsDismantling')}</h3>
             </div>
@@ -271,7 +276,8 @@ const Services = () => {
             className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
             onClick={() => navigate('/car-wash')}
           >
-            <img src={carWashImg} alt={t('carWash')} className="absolute inset-0 w-full h-full object-cover object-top" />
+            <img src={carWashImg} alt={t('carWash')} className="absolute inset-0 w-full h-full object-cover object-top brightness-90" />
+            <div className="absolute inset-0 bg-black/15" />
             <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
               <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('carWash')}</h3>
             </div>
