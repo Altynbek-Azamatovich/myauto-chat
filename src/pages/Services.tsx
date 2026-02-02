@@ -35,7 +35,15 @@ const Services = () => {
       title: t('storiesNews'),
       preview: autoShopsImg,
       image: autoShopsImg,
-      icon: '📰'
+      icon: '📰',
+      isStatic: true,
+      customContent: {
+        type: 'support' as const,
+        title: 'Поддержите проект',
+        subtitle: 'Помогите нам развивать MyAuto и делать его лучше для всех автолюбителей',
+        buttonText: 'Поддержать проект',
+        buttonUrl: 'https://kaspi.kz/pay/myauto'
+      }
     },
     {
       id: 1,

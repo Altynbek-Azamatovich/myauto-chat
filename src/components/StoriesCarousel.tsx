@@ -1,6 +1,15 @@
 import { useState, useEffect, useRef } from "react";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+
+interface CustomContent {
+  type: 'support';
+  title: string;
+  subtitle: string;
+  buttonText: string;
+  buttonUrl: string;
+}
 
 interface Story {
   id: number;
@@ -9,6 +18,8 @@ interface Story {
   preview: string;
   icon?: string;
   color?: string;
+  isStatic?: boolean;
+  customContent?: CustomContent;
 }
 
 interface StoriesCarouselProps {
@@ -46,6 +57,40 @@ const SpinningBorder = () => {
   );
 };
 
+// Support page content component
+const SupportContent = ({ content, onButtonClick }: { content: CustomContent; onButtonClick: () => void }) => {
+  return (
+    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-primary/20 via-background to-accent/20 p-8">
+      <div className="text-center space-y-6 max-w-sm">
+        {/* Animated heart icon */}
+        <div className="relative mx-auto w-24 h-24">
+          <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping" />
+          <div className="absolute inset-2 rounded-full bg-primary/30 animate-pulse" />
+          <div className="relative w-full h-full flex items-center justify-center">
+            <Heart className="w-12 h-12 text-primary fill-primary" />
+          </div>
+        </div>
+        
+        <h3 className="text-2xl font-bold text-foreground drop-shadow-lg">
+          {content.title}
+        </h3>
+        <p className="text-foreground/80 text-base leading-relaxed">
+          {content.subtitle}
+        </p>
+        
+        <Button 
+          onClick={onButtonClick}
+          className="mt-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all"
+          size="lg"
+        >
+          <Heart className="w-5 h-5 mr-2" />
+          {content.buttonText}
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 // Colors for opened stories only - keep them colorful inside
 const storyColors: Record<string, string> = {
   'Новости': 'from-sky-400/80 to-blue-500/80',
@@ -66,6 +111,12 @@ export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
 
   useEffect(() => {
     if (selectedStory === null) return;
+    
+    // Don't auto-progress for static stories
+    const currentStory = stories[selectedStory];
+    if (currentStory?.isStatic) {
+      return;
+    }
 
     intervalRef.current = setInterval(() => {
       setProgress((prev) => {
@@ -80,7 +131,7 @@ export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [selectedStory]);
+  }, [selectedStory, stories]);
 
   const handleNext = () => {
     if (selectedStory !== null && selectedStory < stories.length - 1) {
@@ -227,22 +278,31 @@ export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
 
           {/* Story Content */}
           <div className="relative w-full h-full max-w-md mx-auto">
-            <div className={cn(
-              "w-full h-full flex flex-col items-center justify-center bg-gradient-to-br p-8",
-              getColorClass(stories[selectedStory].title)
-            )}>
-              <div className="text-center space-y-4">
-                <h3 className="text-white text-3xl font-bold drop-shadow-lg">
-                  {stories[selectedStory].title}
-                </h3>
-                <p className="text-white/90 text-lg">
-                  Скоро здесь появятся интересные истории и обновления!
-                </p>
-                <div className="mt-8 text-white/70 text-sm">
-                  Следите за новостями 👀
+            {stories[selectedStory].customContent ? (
+              <SupportContent 
+                content={stories[selectedStory].customContent} 
+                onButtonClick={() => {
+                  window.open(stories[selectedStory].customContent?.buttonUrl, '_blank');
+                }}
+              />
+            ) : (
+              <div className={cn(
+                "w-full h-full flex flex-col items-center justify-center bg-gradient-to-br p-8",
+                getColorClass(stories[selectedStory].title)
+              )}>
+                <div className="text-center space-y-4">
+                  <h3 className="text-white text-3xl font-bold drop-shadow-lg">
+                    {stories[selectedStory].title}
+                  </h3>
+                  <p className="text-white/90 text-lg">
+                    Скоро здесь появятся интересные истории и обновления!
+                  </p>
+                  <div className="mt-8 text-white/70 text-sm">
+                    Следите за новостями 👀
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       )}
