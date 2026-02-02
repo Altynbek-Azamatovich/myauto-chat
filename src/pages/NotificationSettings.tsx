@@ -1,6 +1,5 @@
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -50,8 +49,9 @@ const NotificationSettings = () => {
       </header>
 
       {/* Content */}
-      <div className="px-4 py-6 space-y-4">
-        <Card className="p-4">
+      <div className="px-4 py-6 space-y-6">
+        {/* Main Toggle */}
+        <div className="bg-muted/30 rounded-2xl p-4">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-semibold">{t('allNotifications')}</h3>
@@ -62,98 +62,104 @@ const NotificationSettings = () => {
               onCheckedChange={() => handleToggle('all')}
             />
           </div>
-        </Card>
+        </div>
 
+        {/* Notification Types */}
         <div className="space-y-3">
           <h3 className="text-sm font-semibold text-muted-foreground px-2">{t('notificationTypes')}</h3>
           
-          <Card className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-medium">{t('maintenanceReminders')}</h4>
-                <p className="text-sm text-muted-foreground">{t('maintenanceRemindersDesc')}</p>
+          <div className="bg-muted/30 rounded-2xl divide-y divide-border/50">
+            <div className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-medium">{t('maintenanceReminders')}</h4>
+                  <p className="text-sm text-muted-foreground">{t('maintenanceRemindersDesc')}</p>
+                </div>
+                <Switch 
+                  checked={notifications.maintenance}
+                  onCheckedChange={() => handleToggle('maintenance')}
+                  disabled={!notifications.all}
+                />
               </div>
-              <Switch 
-                checked={notifications.maintenance}
-                onCheckedChange={() => handleToggle('maintenance')}
-                disabled={!notifications.all}
-              />
             </div>
-          </Card>
 
-          <Card className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-medium">{t('insuranceReminders')}</h4>
-                <p className="text-sm text-muted-foreground">{t('insuranceRemindersDesc')}</p>
+            <div className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-medium">{t('insuranceReminders')}</h4>
+                  <p className="text-sm text-muted-foreground">{t('insuranceRemindersDesc')}</p>
+                </div>
+                <Switch 
+                  checked={notifications.insurance}
+                  onCheckedChange={() => handleToggle('insurance')}
+                  disabled={!notifications.all}
+                />
               </div>
-              <Switch 
-                checked={notifications.insurance}
-                onCheckedChange={() => handleToggle('insurance')}
-                disabled={!notifications.all}
-              />
             </div>
-          </Card>
 
-          <Card className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-medium">{t('oilChangeReminders')}</h4>
-                <p className="text-sm text-muted-foreground">{t('oilChangeRemindersDesc')}</p>
+            <div className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-medium">{t('oilChangeReminders')}</h4>
+                  <p className="text-sm text-muted-foreground">{t('oilChangeRemindersDesc')}</p>
+                </div>
+                <Switch 
+                  checked={notifications.oilChange}
+                  onCheckedChange={() => handleToggle('oilChange')}
+                  disabled={!notifications.all}
+                />
               </div>
-              <Switch 
-                checked={notifications.oilChange}
-                onCheckedChange={() => handleToggle('oilChange')}
-                disabled={!notifications.all}
-              />
             </div>
-          </Card>
 
-          <Card className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-medium">{t('newsUpdates')}</h4>
-                <p className="text-sm text-muted-foreground">{t('newsUpdatesDesc')}</p>
+            <div className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-medium">{t('newsUpdates')}</h4>
+                  <p className="text-sm text-muted-foreground">{t('newsUpdatesDesc')}</p>
+                </div>
+                <Switch 
+                  checked={notifications.news}
+                  onCheckedChange={() => handleToggle('news')}
+                  disabled={!notifications.all}
+                />
               </div>
-              <Switch 
-                checked={notifications.news}
-                onCheckedChange={() => handleToggle('news')}
-                disabled={!notifications.all}
-              />
             </div>
-          </Card>
+          </div>
         </div>
 
+        {/* Notification Behavior */}
         <div className="space-y-3">
           <h3 className="text-sm font-semibold text-muted-foreground px-2">{t('notificationBehavior')}</h3>
           
-          <Card className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-medium">{t('sound')}</h4>
-                <p className="text-sm text-muted-foreground">{t('soundDesc')}</p>
+          <div className="bg-muted/30 rounded-2xl divide-y divide-border/50">
+            <div className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-medium">{t('sound')}</h4>
+                  <p className="text-sm text-muted-foreground">{t('soundDesc')}</p>
+                </div>
+                <Switch 
+                  checked={notifications.sound}
+                  onCheckedChange={() => handleToggle('sound')}
+                  disabled={!notifications.all}
+                />
               </div>
-              <Switch 
-                checked={notifications.sound}
-                onCheckedChange={() => handleToggle('sound')}
-                disabled={!notifications.all}
-              />
             </div>
-          </Card>
 
-          <Card className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-medium">{t('vibration')}</h4>
-                <p className="text-sm text-muted-foreground">{t('vibrationDesc')}</p>
+            <div className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-medium">{t('vibration')}</h4>
+                  <p className="text-sm text-muted-foreground">{t('vibrationDesc')}</p>
+                </div>
+                <Switch 
+                  checked={notifications.vibration}
+                  onCheckedChange={() => handleToggle('vibration')}
+                  disabled={!notifications.all}
+                />
               </div>
-              <Switch 
-                checked={notifications.vibration}
-                onCheckedChange={() => handleToggle('vibration')}
-                disabled={!notifications.all}
-              />
             </div>
-          </Card>
+          </div>
         </div>
       </div>
     </div>

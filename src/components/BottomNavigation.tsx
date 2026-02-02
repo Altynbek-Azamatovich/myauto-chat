@@ -52,7 +52,7 @@ const BottomNavigation = () => {
               marginClass = firstActive ? 'ml-auto' : '';
             }
               return <Button key={item.path} variant="ghost" size="lg" className={`rounded-full aspect-square p-2 relative transition-all duration-300 ${active ? "bg-white/40 text-white hover:bg-white/50 ring-2 ring-white/60" : "text-white/70 hover:bg-white/10 hover:text-white"} ${marginClass}`} onClick={() => navigate(item.path)}>
-                  <item.icon size={26} strokeWidth={2.5} className="!w-[26px] !h-[26px]" />
+                  <item.icon size={22} strokeWidth={2.5} className="!w-[22px] !h-[22px]" />
                   <NotificationBadge count={item.count} size="sm" className="absolute -top-1 -right-1" />
                 </Button>;
           })}
@@ -62,7 +62,7 @@ const BottomNavigation = () => {
         {/* SuperChat FAB */}
         <div className={`bg-black/15 backdrop-blur-[2px] rounded-full shadow-lg p-3 border-2 transition-colors ${isChatActive ? "border-app-green" : "border-transparent"}`}>
           <Button size="lg" className="rounded-full aspect-square p-2 bg-transparent hover:bg-transparent relative" onClick={() => navigate("/super-chat")}>
-            <MessageCircle size={26} strokeWidth={2.5} className="text-white !w-[26px] !h-[26px]" />
+            <MessageCircle size={22} strokeWidth={2.5} className="text-white !w-[22px] !h-[22px]" />
             <NotificationBadge count={chatCount} size="sm" className="absolute -top-1 -right-1" />
           </Button>
         </div>
