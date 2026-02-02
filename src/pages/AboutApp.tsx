@@ -1,6 +1,5 @@
-import { ArrowLeft, Car, MessageSquare, Camera, Wrench, Shield, Star, Users, Clock, Zap } from "lucide-react";
+import { ArrowLeft, Sparkles, Zap, Shield, MessageSquare, Car, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -9,151 +8,96 @@ const AboutApp = () => {
   const { t } = useLanguage();
 
   const features = [
-    {
-      icon: <Car className="h-8 w-8 text-app-orange" />,
-      title: t('aboutFeature1Title'),
-      description: t('aboutFeature1Desc')
-    },
-    {
-      icon: <MessageSquare className="h-8 w-8 text-app-green" />,
-      title: t('aboutFeature2Title'),
-      description: t('aboutFeature2Desc')
-    },
-    {
-      icon: <Camera className="h-8 w-8 text-app-orange" />,
-      title: t('aboutFeature3Title'),
-      description: t('aboutFeature3Desc')
-    },
-    {
-      icon: <Wrench className="h-8 w-8 text-app-green" />,
-      title: t('aboutFeature4Title'),
-      description: t('aboutFeature4Desc')
-    }
+    { icon: Car, label: t('aboutFeature1Title') },
+    { icon: MessageSquare, label: t('aboutFeature2Title') },
+    { icon: Camera, label: t('aboutFeature3Title') },
+    { icon: Shield, label: t('aboutFeature4Title') },
   ];
 
-  const benefits = [
-    { icon: <Shield className="h-6 w-6" />, text: t('aboutBenefit1') },
-    { icon: <Star className="h-6 w-6" />, text: t('aboutBenefit2') },
-    { icon: <Clock className="h-6 w-6" />, text: t('aboutBenefit3') },
-    { icon: <Zap className="h-6 w-6" />, text: t('aboutBenefit4') },
-    { icon: <Users className="h-6 w-6" />, text: t('aboutBenefit5') }
+  const updates = [
+    { version: '1.2.0', date: t('aboutUpdateDate1'), text: t('aboutUpdate1') },
+    { version: '1.1.0', date: t('aboutUpdateDate2'), text: t('aboutUpdate2') },
+    { version: '1.0.0', date: t('aboutUpdateDate3'), text: t('aboutUpdate3') },
   ];
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="flex items-center px-4 pt-6 pb-3 sticky top-0 bg-background/95 backdrop-blur-sm z-10 border-b">
+      <header className="flex items-center gap-4 px-4 py-4 bg-background/80 backdrop-blur-xl sticky top-0 z-50">
         <Button 
           variant="ghost" 
           size="icon" 
-          onClick={() => navigate('/')}
-          className="rounded-full hover:bg-muted/30 hover:text-foreground"
+          onClick={() => navigate(-1)}
+          className="rounded-full hover:bg-muted/30"
         >
-          <ArrowLeft className="h-8 w-8" />
+          <ArrowLeft className="h-6 w-6" />
         </Button>
-        <h1 className="text-xl font-bold ml-4">{t('aboutApp')}</h1>
+        <h1 className="text-lg font-semibold">{t('aboutApp')}</h1>
       </header>
 
       {/* Content */}
-      <div className="px-4 py-6 space-y-6">
-        {/* Welcome Section */}
-        <Card className="p-6 bg-gradient-to-br from-app-orange/10 to-app-green/10 border-none">
-          <h2 className="text-2xl font-bold mb-3">{t('aboutWelcomeTitle')}</h2>
-          <p className="text-muted-foreground leading-relaxed">
-            {t('aboutWelcomeText')}
-          </p>
-        </Card>
+      <div className="px-5 py-6 pb-24 space-y-8">
+        {/* Logo & Version */}
+        <div className="flex flex-col items-center text-center">
+          <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center mb-4 shadow-lg shadow-primary/20">
+            <Sparkles className="h-10 w-10 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold">myAuto</h2>
+          <p className="text-sm text-muted-foreground mt-1">{t('aboutVersion')}</p>
+        </div>
 
-        {/* Features */}
+        {/* Description */}
+        <div className="text-center">
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            {t('aboutDescription')}
+          </p>
+        </div>
+
+        {/* Features Grid */}
         <div>
-          <h3 className="text-lg font-semibold mb-4">{t('aboutFeaturesTitle')}</h3>
-          <div className="space-y-4">
+          <h3 className="text-sm font-medium text-muted-foreground mb-3">{t('aboutFeaturesTitle')}</h3>
+          <div className="grid grid-cols-2 gap-3">
             {features.map((feature, index) => (
-              <Card key={index} className="p-4">
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 mt-1">
-                    {feature.icon}
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-1">{feature.title}</h4>
-                    <p className="text-sm text-muted-foreground">{feature.description}</p>
-                  </div>
+              <div 
+                key={index}
+                className="flex items-center gap-3 p-3 rounded-2xl bg-muted/30"
+              >
+                <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <feature.icon className="h-4 w-4 text-primary" />
                 </div>
-              </Card>
+                <span className="text-xs font-medium flex-1">{feature.label}</span>
+              </div>
             ))}
           </div>
         </div>
 
-        {/* Benefits */}
+        {/* Updates */}
         <div>
-          <h3 className="text-lg font-semibold mb-4">{t('aboutBenefitsTitle')}</h3>
-          <Card className="p-4">
-            <div className="space-y-3">
-              {benefits.map((benefit, index) => (
-                <div key={index} className="flex items-center space-x-3">
-                  <div className="text-app-green flex-shrink-0">
-                    {benefit.icon}
+          <h3 className="text-sm font-medium text-muted-foreground mb-3">{t('aboutUpdatesTitle')}</h3>
+          <div className="space-y-3">
+            {updates.map((update, index) => (
+              <div 
+                key={index}
+                className="p-4 rounded-2xl bg-muted/30"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <Zap className="h-3.5 w-3.5 text-primary" />
+                    <span className="text-sm font-semibold">v{update.version}</span>
                   </div>
-                  <p className="text-sm">{benefit.text}</p>
+                  <span className="text-xs text-muted-foreground">{update.date}</span>
                 </div>
-              ))}
-            </div>
-          </Card>
+                <p className="text-xs text-muted-foreground leading-relaxed">{update.text}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* How to Use Guide */}
-        <div>
-          <h3 className="text-lg font-semibold mb-4">{t('aboutGuideTitle')}</h3>
-          <Card className="p-4">
-            <div className="space-y-4">
-              <div>
-                <div className="flex items-center space-x-2 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-app-orange text-white flex items-center justify-center font-bold text-sm">
-                    1
-                  </div>
-                  <h4 className="font-semibold">{t('aboutStep1Title')}</h4>
-                </div>
-                <p className="text-sm text-muted-foreground ml-10">{t('aboutStep1Desc')}</p>
-              </div>
-
-              <div>
-                <div className="flex items-center space-x-2 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-app-orange text-white flex items-center justify-center font-bold text-sm">
-                    2
-                  </div>
-                  <h4 className="font-semibold">{t('aboutStep2Title')}</h4>
-                </div>
-                <p className="text-sm text-muted-foreground ml-10">{t('aboutStep2Desc')}</p>
-              </div>
-
-              <div>
-                <div className="flex items-center space-x-2 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-app-green text-white flex items-center justify-center font-bold text-sm">
-                    3
-                  </div>
-                  <h4 className="font-semibold">{t('aboutStep3Title')}</h4>
-                </div>
-                <p className="text-sm text-muted-foreground ml-10">{t('aboutStep3Desc')}</p>
-              </div>
-
-              <div>
-                <div className="flex items-center space-x-2 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-app-green text-white flex items-center justify-center font-bold text-sm">
-                    4
-                  </div>
-                  <h4 className="font-semibold">{t('aboutStep4Title')}</h4>
-                </div>
-                <p className="text-sm text-muted-foreground ml-10">{t('aboutStep4Desc')}</p>
-              </div>
-            </div>
-          </Card>
+        {/* Footer */}
+        <div className="text-center pt-4">
+          <p className="text-xs text-muted-foreground">© 2025 myAuto</p>
+          <p className="text-xs text-muted-foreground mt-1">{t('aboutRights')}</p>
         </div>
-
-        {/* Version Info */}
-        <Card className="p-4 text-center">
-          <p className="text-sm text-muted-foreground">myAuto v1.0.0</p>
-          <p className="text-xs text-muted-foreground mt-1">© 2025 myAuto. {t('aboutRights')}</p>
-        </Card>
       </div>
     </div>
   );
