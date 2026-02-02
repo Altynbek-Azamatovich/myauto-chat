@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
 import { usePersistedState } from "@/hooks/usePersistedState";
-import { ServiceUnderDevelopment } from "@/components/ServiceUnderDevelopment";
 
 const CarWash = () => {
   const navigate = useNavigate();
@@ -73,8 +72,6 @@ const CarWash = () => {
       </header>
 
       <div className="px-4 space-y-6">
-        <ServiceUnderDevelopment />
-        
         <div>
           <p className="text-lg font-medium mb-3">{t('servicesLabel')}</p>
           <div className="space-y-4">

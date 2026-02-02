@@ -8,7 +8,6 @@ interface Story {
   title: string;
   preview: string;
   icon?: string;
-  color?: string;
 }
 
 interface StoriesCarouselProps {
@@ -77,51 +76,26 @@ export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
     }
   };
 
-  const getGradientByIndex = (index: number) => {
-    const gradients = [
-      "from-blue-500/20 via-cyan-500/20 to-teal-500/20",
-      "from-purple-500/20 via-pink-500/20 to-rose-500/20",
-      "from-amber-500/20 via-orange-500/20 to-red-500/20",
-      "from-emerald-500/20 via-green-500/20 to-lime-500/20",
-    ];
-    return gradients[index % gradients.length];
-  };
-
-  const getIconBgByIndex = (index: number) => {
-    const bgs = [
-      "bg-blue-500/20",
-      "bg-purple-500/20",
-      "bg-amber-500/20",
-      "bg-emerald-500/20",
-    ];
-    return bgs[index % bgs.length];
-  };
-
   return (
     <>
-      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-        {stories.map((story, index) => (
+      <div className="flex gap-3 overflow-x-auto pb-2 px-4 scrollbar-hide">
+        {stories.map((story) => (
           <button
             key={story.id}
             onClick={() => {
               setSelectedStory(story.id);
               setProgress(0);
             }}
-            className="flex-shrink-0 flex flex-col items-center gap-1.5"
+            className="flex-shrink-0 flex flex-col items-center gap-1"
           >
-            <div className={cn(
-              "w-16 h-16 rounded-2xl p-[2px]",
-              "bg-gradient-to-br",
-              getGradientByIndex(index)
-            )}>
-              <div className={cn(
-                "w-full h-full rounded-[14px] flex items-center justify-center text-2xl",
-                getIconBgByIndex(index)
-              )}>
-                {story.icon || '📱'}
+            <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-primary/30 via-accent/30 to-secondary/30 p-[2px]">
+              <div className="w-full h-full rounded-full bg-background p-[2px] flex items-center justify-center">
+                <div className="w-full h-full rounded-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center text-2xl">
+                  {story.icon || '📱'}
+                </div>
               </div>
             </div>
-            <span className="text-[10px] text-muted-foreground truncate max-w-[64px]">
+            <span className="text-xs text-muted-foreground truncate max-w-[64px]">
               {story.title}
             </span>
           </button>
@@ -194,11 +168,7 @@ export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
 
           {/* Story Content */}
           <div className="relative w-full h-full max-w-md mx-auto">
-            <div className={cn(
-              "w-full h-full flex flex-col items-center justify-center p-8",
-              "bg-gradient-to-br",
-              getGradientByIndex(selectedStory)
-            )}>
+            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-primary/20 via-accent/20 to-secondary/20 p-8">
               <div className="text-center space-y-4">
                 <div className="text-6xl mb-4">
                   {stories[selectedStory].icon || '📱'}

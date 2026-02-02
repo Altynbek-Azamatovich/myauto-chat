@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
 import { usePersistedState } from "@/hooks/usePersistedState";
-import { ServiceUnderDevelopment } from "@/components/ServiceUnderDevelopment";
 
 const Detailing = () => {
   const navigate = useNavigate();
@@ -82,8 +81,6 @@ const Detailing = () => {
       </header>
 
       <div className="px-4 space-y-4">
-        <ServiceUnderDevelopment />
-        
         {services.map((service) => (
           <div key={service.id} className={`p-5 rounded-2xl transition-all ${selectedService === service.id ? 'bg-primary/5 ring-1 ring-primary/20' : 'bg-muted/30'}`}>
             <div className="flex items-start gap-4 mb-4">

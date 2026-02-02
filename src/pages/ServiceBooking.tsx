@@ -15,7 +15,6 @@ import { ru, kk } from "date-fns/locale";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import { usePersistedState } from "@/hooks/usePersistedState";
-import { ServiceUnderDevelopment } from "@/components/ServiceUnderDevelopment";
 
 interface ServicePartner {
   id: string;

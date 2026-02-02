@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Car, History, UserCog, LogOut, Sun, Moon, Bell, Info, User, ChevronRight } from 'lucide-react';
+import { Car, History, UserCog, LogOut, Globe, Sun, Moon, Bell, Info, User, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
@@ -73,98 +73,88 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
         <SheetTrigger asChild>
           {trigger}
         </SheetTrigger>
-        <SheetContent side="left" className="w-[280px] p-0 border-0">
+        <SheetContent side="left" className="w-[300px] p-0 border-0">
           <ScrollArea className="h-full">
             <div className="flex flex-col min-h-full">
               {/* User Profile Header */}
-              <div className="p-5 pb-4">
+              <div className="p-6 pb-4">
                 <div 
-                  className="flex items-center gap-3 cursor-pointer"
+                  className="flex items-center gap-4 cursor-pointer"
                   onClick={() => handleNavigation('/profile-settings')}
                 >
-                  <Avatar className="h-12 w-12 ring-2 ring-primary/10">
+                  <Avatar className="h-14 w-14 ring-2 ring-primary/10">
                     <AvatarImage src={userProfile?.avatar_url || ''} alt="Avatar" />
                     <AvatarFallback className="bg-muted">
-                      <User className="h-5 w-5 text-muted-foreground" />
+                      <User className="h-6 w-6 text-muted-foreground" />
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     {userProfile?.first_name || userProfile?.last_name ? (
-                      <p className="font-semibold text-base truncate">
+                      <p className="font-semibold text-lg truncate">
                         {userProfile.first_name} {userProfile.last_name}
                       </p>
                     ) : (
-                      <p className="font-semibold text-base">{t('profileTitle')}</p>
+                      <p className="font-semibold text-lg">{t('profileTitle')}</p>
                     )}
-                    <p className="text-xs text-muted-foreground truncate">
+                    <p className="text-sm text-muted-foreground truncate">
                       {userProfile?.phone_number}
                     </p>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                  <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                 </div>
               </div>
 
               {/* Menu Items */}
-              <div className="px-3 space-y-0.5">
+              <div className="px-3 space-y-1">
                 {menuItems.map((item) => (
                   <button
                     key={item.path}
                     onClick={() => handleNavigation(item.path)}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left hover:bg-muted/50 transition-colors"
+                    className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left hover:bg-muted/50 transition-colors"
                   >
                     <item.icon className="h-5 w-5 text-muted-foreground" strokeWidth={2} />
-                    <span className="text-sm font-medium">{item.label}</span>
+                    <span className="font-medium">{item.label}</span>
                   </button>
                 ))}
               </div>
 
-              {/* Settings Items */}
-              <div className="px-3 mt-4 space-y-0.5">
-                {settingsItems.map((item) => (
-                  <button
-                    key={item.path}
-                    onClick={() => handleNavigation(item.path)}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left hover:bg-muted/50 transition-colors"
-                  >
-                    <item.icon className="h-5 w-5 text-muted-foreground" strokeWidth={2} />
-                    <span className="text-sm font-medium">{item.label}</span>
-                  </button>
-                ))}
-              </div>
+              {/* Settings Section */}
+              <div className="px-3 mt-6">
+                <p className="px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
+                  {t('settings')}
+                </p>
 
-              {/* Theme & Language */}
-              <div className="px-3 mt-6 space-y-4">
                 {/* Theme Toggle */}
-                <div className="px-1">
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">{t('appTheme')}</p>
-                  <div className="flex gap-1.5">
+                <div className="px-3 py-3">
+                  <p className="text-sm font-medium mb-3">{t('appTheme')}</p>
+                  <div className="flex gap-2">
                     <Button
-                      variant={theme === 'light' ? 'default' : 'ghost'}
+                      variant={theme === 'light' ? 'default' : 'outline'}
                       size="sm"
-                      className="flex-1 h-9 rounded-xl text-xs"
+                      className="flex-1 h-9 rounded-xl"
                       onClick={() => setTheme('light')}
                     >
-                      <Sun className="h-3.5 w-3.5 mr-1.5" />
+                      <Sun className="h-4 w-4 mr-2" />
                       {t('lightTheme')}
                     </Button>
                     <Button
-                      variant={theme === 'dark' ? 'default' : 'ghost'}
+                      variant={theme === 'dark' ? 'default' : 'outline'}
                       size="sm"
-                      className="flex-1 h-9 rounded-xl text-xs"
+                      className="flex-1 h-9 rounded-xl"
                       onClick={() => setTheme('dark')}
                     >
-                      <Moon className="h-3.5 w-3.5 mr-1.5" />
+                      <Moon className="h-4 w-4 mr-2" />
                       {t('darkTheme')}
                     </Button>
                   </div>
                 </div>
 
                 {/* Language Toggle */}
-                <div className="px-1">
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">{t('language')}</p>
-                  <div className="flex gap-1.5">
+                <div className="px-3 py-3">
+                  <p className="text-sm font-medium mb-3">{t('language')}</p>
+                  <div className="flex gap-2">
                     <Button
-                      variant={language === 'kk' ? 'default' : 'ghost'}
+                      variant={language === 'kk' ? 'default' : 'outline'}
                       size="sm"
                       className="flex-1 h-9 rounded-xl text-xs"
                       onClick={() => setLanguage('kk')}
@@ -172,7 +162,7 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
                       ҚАЗ
                     </Button>
                     <Button
-                      variant={language === 'ru' ? 'default' : 'ghost'}
+                      variant={language === 'ru' ? 'default' : 'outline'}
                       size="sm"
                       className="flex-1 h-9 rounded-xl text-xs"
                       onClick={() => setLanguage('ru')}
@@ -180,7 +170,7 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
                       РУС
                     </Button>
                     <Button
-                      variant={language === 'en' ? 'default' : 'ghost'}
+                      variant={language === 'en' ? 'default' : 'outline'}
                       size="sm"
                       className="flex-1 h-9 rounded-xl text-xs"
                       onClick={() => setLanguage('en')}
@@ -189,19 +179,33 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
                     </Button>
                   </div>
                 </div>
+
+                {/* Other Settings */}
+                <div className="space-y-1 mt-2">
+                  {settingsItems.map((item) => (
+                    <button
+                      key={item.path}
+                      onClick={() => handleNavigation(item.path)}
+                      className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left hover:bg-muted/50 transition-colors"
+                    >
+                      <item.icon className="h-5 w-5 text-muted-foreground" strokeWidth={2} />
+                      <span className="font-medium">{item.label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* Logout Button */}
-              <div className="mt-auto p-3 pt-8">
+              <div className="mt-auto p-3 pt-6">
                 <button
                   onClick={() => {
                     setIsOpen(false);
                     setIsLogoutDialogOpen(true);
                   }}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left text-destructive hover:bg-destructive/10 transition-colors"
+                  className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left text-destructive hover:bg-destructive/10 transition-colors"
                 >
                   <LogOut className="h-5 w-5" strokeWidth={2} />
-                  <span className="text-sm font-medium">{t('logoutTitle')}</span>
+                  <span className="font-medium">{t('logoutTitle')}</span>
                 </button>
               </div>
             </div>
