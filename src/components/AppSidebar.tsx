@@ -123,56 +123,42 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
               {/* Theme Toggle */}
               <div className="px-6 mt-6">
                 <p className="text-sm mb-2 text-muted-foreground">{t('appTheme')}</p>
-                <div className="flex gap-1.5">
+                <div className="grid grid-cols-2 gap-2">
                   <Button
                     variant={theme === 'light' ? 'default' : 'outline'}
                     size="sm"
-                    className="flex-1 h-8 rounded-lg text-[11px] px-1.5"
+                    className="h-10 rounded-xl text-xs"
                     onClick={() => setTheme('light')}
                   >
-                    <Sun className="h-3 w-3 mr-1" />
+                    <Sun className="h-4 w-4 mr-1.5" />
                     {t('lightTheme')}
                   </Button>
                   <Button
                     variant={theme === 'dark' ? 'default' : 'outline'}
                     size="sm"
-                    className="flex-1 h-8 rounded-lg text-[11px] px-1.5"
+                    className="h-10 rounded-xl text-xs"
                     onClick={() => setTheme('dark')}
                   >
-                    <Moon className="h-3 w-3 mr-1" />
+                    <Moon className="h-4 w-4 mr-1.5" />
                     {t('darkTheme')}
                   </Button>
                 </div>
               </div>
 
-              {/* Language Toggle */}
+              {/* Language Select Dropdown */}
               <div className="px-6 mt-4">
                 <p className="text-sm mb-2 text-muted-foreground">{t('language')}</p>
-                <div className="flex gap-1.5">
-                  <Button
-                    variant={language === 'kk' ? 'default' : 'outline'}
-                    size="sm"
-                    className="flex-1 h-8 rounded-lg text-[11px] px-1.5"
-                    onClick={() => setLanguage('kk')}
+                <div className="relative">
+                  <select
+                    value={language}
+                    onChange={(e) => setLanguage(e.target.value as 'kk' | 'ru' | 'en')}
+                    className="w-full h-10 px-3 rounded-xl border border-input bg-background text-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring"
                   >
-                    ҚАЗ
-                  </Button>
-                  <Button
-                    variant={language === 'ru' ? 'default' : 'outline'}
-                    size="sm"
-                    className="flex-1 h-8 rounded-lg text-[11px] px-1.5"
-                    onClick={() => setLanguage('ru')}
-                  >
-                    РУС
-                  </Button>
-                  <Button
-                    variant={language === 'en' ? 'default' : 'outline'}
-                    size="sm"
-                    className="flex-1 h-8 rounded-lg text-[11px] px-1.5"
-                    onClick={() => setLanguage('en')}
-                  >
-                    ENG
-                  </Button>
+                    <option value="kk">Қазақша</option>
+                    <option value="ru">Русский</option>
+                    <option value="en">English</option>
+                  </select>
+                  <Globe className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                 </div>
               </div>
 

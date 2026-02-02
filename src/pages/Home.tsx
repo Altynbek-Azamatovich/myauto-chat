@@ -207,7 +207,10 @@ const Home = () => {
       {isTuningMode ? (
         <TuningSection onClose={() => setIsTuningMode(false)} />
       ) : (
-        <>
+        <div className={cn(
+          "transition-all duration-500 ease-out",
+          "opacity-100 translate-y-0"
+        )}>
       {/* Car Info Cards */}
       <div className="px-4 space-y-4 mt-3">
       <div className="grid grid-cols-2 gap-4">
@@ -367,7 +370,7 @@ const Home = () => {
           </Card>
         </div>
       </div>
-        </>
+        </div>
       )}
 
       <BottomNavigation />
