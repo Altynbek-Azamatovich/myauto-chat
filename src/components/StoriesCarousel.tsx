@@ -152,7 +152,7 @@ export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
               <SpinningBorder />
               {/* Inner circle with dark gray background and marquee text */}
               <div className="absolute inset-[2px] rounded-full bg-background">
-                <div className="absolute inset-[2px] rounded-full bg-zinc-600 dark:bg-zinc-700 overflow-hidden">
+                <div className="absolute inset-[2px] rounded-full bg-zinc-400 dark:bg-zinc-500 overflow-hidden">
                   <MarqueeText text={story.title} />
                 </div>
               </div>
