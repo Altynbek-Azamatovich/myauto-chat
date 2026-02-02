@@ -47,7 +47,6 @@ const TuningSection = ({ onClose }: TuningSectionProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Trigger slide-up animation
     requestAnimationFrame(() => {
       setIsVisible(true);
     });
@@ -57,7 +56,6 @@ const TuningSection = ({ onClose }: TuningSectionProps) => {
   const isExpanded = activeTab === "all";
 
   const handleCategoryClick = (categoryId: string) => {
-    // Store current tab in sessionStorage so we can return to it
     sessionStorage.setItem('tuningActiveTab', activeTab);
     navigate(`/tuning/${categoryId}`);
   };
@@ -66,28 +64,20 @@ const TuningSection = ({ onClose }: TuningSectionProps) => {
     setActiveTab("favorites");
   };
 
-  // Render a single category card
-  const renderCategoryCard = (category: TuningCategory, isBottomRow: boolean = false) => (
-    <div
-      key={category.id}
-      onClick={() => handleCategoryClick(category.id)}
-      className={cn(
-        "relative overflow-hidden cursor-pointer hover:scale-[1.02] transition-transform bg-muted",
-        isBottomRow && "shadow-[0_-8px_20px_rgba(0,0,0,0.3)]"
-      )}
-      style={{ 
-        height: isExpanded ? "120px" : "140px",
-        boxShadow: isExpanded ? "0 4px 20px rgba(0,0,0,0.25)" : undefined
-      }}
-    >
+  // Shared card styles
+  const cardBaseStyles = "relative overflow-hidden cursor-pointer hover:scale-[1.02] transition-transform";
+  const cardInnerShadow = "shadow-[inset_0_2px_15px_rgba(0,0,0,0.3),inset_0_-2px_15px_rgba(0,0,0,0.2)]";
+
+  // Render category card content
+  const renderCardContent = (category: TuningCategory) => (
+    <>
       <div className="absolute inset-0">
         {category.isPainting ? (
-          <div className="w-full h-full flex items-center justify-end bg-muted">
+          <div className="w-full h-full flex items-center justify-end bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-800 overflow-hidden">
             <img
               src={redSedan}
               alt="Red car"
-              className="h-full w-auto object-contain scale-[2] origin-right"
-              style={{ marginRight: 0 }}
+              className="h-[85%] w-auto object-contain mr-2"
             />
           </div>
         ) : (
@@ -98,12 +88,15 @@ const TuningSection = ({ onClose }: TuningSectionProps) => {
           />
         )}
       </div>
-      <div className="absolute top-3 left-3 right-3">
-        <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+      {/* Inner shadow overlay */}
+      <div className={cn("absolute inset-0 pointer-events-none", cardInnerShadow)} />
+      {/* Text with background shadow */}
+      <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/50 to-transparent">
+        <h3 className="text-white font-semibold text-sm">
           {category.title}
         </h3>
       </div>
-    </div>
+    </>
   );
 
   return (
@@ -116,7 +109,7 @@ const TuningSection = ({ onClose }: TuningSectionProps) => {
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"
       )}
     >
-      {/* Header with tabs or back button */}
+      {/* Header */}
       <div className={cn("flex items-center justify-between mb-4", isExpanded && "px-4")}>
         {isExpanded ? (
           <>
@@ -129,7 +122,7 @@ const TuningSection = ({ onClose }: TuningSectionProps) => {
               <ArrowLeft className="h-6 w-6" />
             </Button>
             <h2 className="text-2xl font-bold text-foreground">Тюнинг</h2>
-            <div className="w-10" /> {/* Spacer for alignment */}
+            <div className="w-10" />
           </>
         ) : (
           <>
@@ -164,12 +157,19 @@ const TuningSection = ({ onClose }: TuningSectionProps) => {
 
       {/* Categories Grid */}
       {isExpanded ? (
-        // Full page grid for "All" tab
         <div className="grid grid-cols-2 gap-3 px-4 animate-fade-in">
-          {displayCategories.map((category) => renderCategoryCard(category, false))}
+          {displayCategories.map((category) => (
+            <div
+              key={category.id}
+              onClick={() => handleCategoryClick(category.id)}
+              className={cardBaseStyles}
+              style={{ height: "120px", boxShadow: "0 4px 20px rgba(0,0,0,0.25)" }}
+            >
+              {renderCardContent(category)}
+            </div>
+          ))}
         </div>
       ) : (
-        // Overlapping layout for "Favorites" tab
         <div className="relative">
           {/* First row */}
           <div className="grid grid-cols-2 gap-3 mb-0">
@@ -177,57 +177,24 @@ const TuningSection = ({ onClose }: TuningSectionProps) => {
               <div
                 key={category.id}
                 onClick={() => handleCategoryClick(category.id)}
-                className="relative overflow-hidden cursor-pointer hover:scale-[1.02] transition-transform bg-muted shadow-lg"
+                className={cn(cardBaseStyles, "shadow-lg")}
                 style={{ height: "140px" }}
               >
-                <div className="absolute inset-0">
-                  <img
-                    src={category.image}
-                    alt={category.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="absolute top-3 left-3 right-3">
-                  <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                    {category.title}
-                  </h3>
-                </div>
+                {renderCardContent(category)}
               </div>
             ))}
           </div>
 
-          {/* Second row - overlapping more */}
+          {/* Second row - overlapping */}
           <div className="grid grid-cols-2 gap-3 -mt-10 relative z-10">
             {displayCategories.slice(2, 4).map((category) => (
               <div
                 key={category.id}
                 onClick={() => handleCategoryClick(category.id)}
-                className="relative overflow-hidden cursor-pointer hover:scale-[1.02] transition-transform bg-muted shadow-[0_-8px_20px_rgba(0,0,0,0.3)]"
+                className={cn(cardBaseStyles, "shadow-[0_-8px_25px_rgba(0,0,0,0.4)]")}
                 style={{ height: "140px" }}
               >
-                <div className="absolute inset-0">
-                  {category.isPainting ? (
-                    <div className="w-full h-full flex items-center justify-end bg-muted overflow-hidden">
-                      <img
-                        src={redSedan}
-                        alt="Red car"
-                        className="h-full w-auto object-contain scale-[2] origin-right"
-                        style={{ marginRight: 0 }}
-                      />
-                    </div>
-                  ) : (
-                    <img
-                      src={category.image}
-                      alt={category.title}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
-                </div>
-                <div className="absolute top-3 left-3 right-3">
-                  <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                    {category.title}
-                  </h3>
-                </div>
+                {renderCardContent(category)}
               </div>
             ))}
           </div>
