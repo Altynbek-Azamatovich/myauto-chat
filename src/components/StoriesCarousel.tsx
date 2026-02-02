@@ -8,11 +8,55 @@ interface Story {
   title: string;
   preview: string;
   icon?: string;
+  color?: string;
 }
 
 interface StoriesCarouselProps {
   stories: Story[];
 }
+
+// Infinite marquee text component
+const MarqueeText = ({ text, color }: { text: string; color: string }) => {
+  const repeatedText = Array(8).fill(text).join(' • ');
+  
+  return (
+    <div className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-full">
+      <div 
+        className="whitespace-nowrap text-[10px] font-bold text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
+        style={{
+          animation: 'story-marquee 6s linear infinite',
+        }}
+      >
+        {repeatedText}
+      </div>
+    </div>
+  );
+};
+
+// Spinning gradient border component
+const SpinningBorder = () => {
+  return (
+    <div 
+      className="absolute inset-0 rounded-full"
+      style={{
+        background: 'conic-gradient(from 0deg, #833ab4, #fd1d1d, #fcb045, #833ab4)',
+        animation: 'spin-border 2s linear infinite',
+      }}
+    />
+  );
+};
+
+// Story colors
+const storyColors: Record<string, string> = {
+  'Новости': 'from-blue-500 via-blue-600 to-indigo-700',
+  'Акции': 'from-rose-500 via-pink-500 to-fuchsia-600',
+  'Советы': 'from-emerald-500 via-green-500 to-teal-600',
+  'Обзоры': 'from-amber-500 via-orange-500 to-red-500',
+  'News': 'from-blue-500 via-blue-600 to-indigo-700',
+  'Promo': 'from-rose-500 via-pink-500 to-fuchsia-600',
+  'Tips': 'from-emerald-500 via-green-500 to-teal-600',
+  'Reviews': 'from-amber-500 via-orange-500 to-red-500',
+};
 
 export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
   const [selectedStory, setSelectedStory] = useState<number | null>(null);
@@ -76,9 +120,24 @@ export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
     }
   };
 
+  const getColorClass = (title: string) => {
+    return storyColors[title] || 'from-primary via-accent to-secondary';
+  };
+
   return (
     <>
-      <div className="flex gap-3 overflow-x-auto pb-2 px-4 scrollbar-hide">
+      <style>{`
+        @keyframes story-marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        @keyframes spin-border {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
+      
+      <div className="flex gap-4 overflow-x-auto pb-2 px-4 scrollbar-hide">
         {stories.map((story) => (
           <button
             key={story.id}
@@ -86,18 +145,21 @@ export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
               setSelectedStory(story.id);
               setProgress(0);
             }}
-            className="flex-shrink-0 flex flex-col items-center gap-1"
+            className="flex-shrink-0 flex flex-col items-center"
           >
-            <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-primary/30 via-accent/30 to-secondary/30 p-[2px]">
-              <div className="w-full h-full rounded-full bg-background p-[2px] flex items-center justify-center">
-                <div className="w-full h-full rounded-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center text-2xl">
-                  {story.icon || '📱'}
+            {/* Spinning Instagram-style border */}
+            <div className="relative w-[72px] h-[72px]">
+              <SpinningBorder />
+              {/* Inner circle with gradient background and marquee text */}
+              <div className="absolute inset-[3px] rounded-full bg-background">
+                <div className={cn(
+                  "absolute inset-[2px] rounded-full bg-gradient-to-br overflow-hidden",
+                  getColorClass(story.title)
+                )}>
+                  <MarqueeText text={story.title} color={getColorClass(story.title)} />
                 </div>
               </div>
             </div>
-            <span className="text-xs text-muted-foreground truncate max-w-[64px]">
-              {story.title}
-            </span>
           </button>
         ))}
       </div>
@@ -168,18 +230,18 @@ export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
 
           {/* Story Content */}
           <div className="relative w-full h-full max-w-md mx-auto">
-            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-primary/20 via-accent/20 to-secondary/20 p-8">
+            <div className={cn(
+              "w-full h-full flex flex-col items-center justify-center bg-gradient-to-br p-8",
+              getColorClass(stories[selectedStory].title)
+            )}>
               <div className="text-center space-y-4">
-                <div className="text-6xl mb-4">
-                  {stories[selectedStory].icon || '📱'}
-                </div>
-                <h3 className="text-white text-2xl font-bold">
+                <h3 className="text-white text-3xl font-bold drop-shadow-lg">
                   {stories[selectedStory].title}
                 </h3>
-                <p className="text-white/80 text-lg">
+                <p className="text-white/90 text-lg">
                   Скоро здесь появятся интересные истории и обновления!
                 </p>
-                <div className="mt-8 text-white/60 text-sm">
+                <div className="mt-8 text-white/70 text-sm">
                   Следите за новостями 👀
                 </div>
               </div>
