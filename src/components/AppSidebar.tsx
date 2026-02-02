@@ -112,17 +112,17 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
                   <button
                     key={item.path}
                     onClick={() => handleNavigation(item.path)}
-                    className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left hover:bg-muted/50 transition-colors"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left hover:bg-muted/50 transition-colors"
                   >
                     <item.icon className="h-5 w-5 text-muted-foreground" strokeWidth={2} />
-                    <span className="font-medium">{item.label}</span>
+                    <span className="text-sm">{item.label}</span>
                   </button>
                 ))}
               </div>
 
               {/* Theme Toggle */}
               <div className="px-6 mt-6">
-                <p className="text-xs font-medium mb-2 text-muted-foreground">{t('appTheme')}</p>
+                <p className="text-sm mb-2 text-muted-foreground">{t('appTheme')}</p>
                 <div className="flex gap-1.5">
                   <Button
                     variant={theme === 'light' ? 'default' : 'outline'}
@@ -147,7 +147,7 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
 
               {/* Language Toggle */}
               <div className="px-6 mt-4">
-                <p className="text-xs font-medium mb-2 text-muted-foreground">{t('language')}</p>
+                <p className="text-sm mb-2 text-muted-foreground">{t('language')}</p>
                 <div className="flex gap-1.5">
                   <Button
                     variant={language === 'kk' ? 'default' : 'outline'}
@@ -186,7 +186,7 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
                   className="flex items-center gap-2 text-destructive hover:text-destructive/80 transition-colors text-sm"
                 >
                   <LogOut className="h-4 w-4" strokeWidth={2} />
-                  <span>{t('logoutFromAccount')}</span>
+                  <span className="text-sm">{t('logoutFromAccount')}</span>
                 </button>
               </div>
             </div>
