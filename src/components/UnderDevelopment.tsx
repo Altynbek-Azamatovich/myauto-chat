@@ -33,19 +33,25 @@ export const UnderDevelopment = ({ title, subtitle, backPath = '/services' }: Un
       {/* Content */}
       <div className="flex flex-col items-center justify-center px-6 py-8 text-center">
         {/* Animation Container */}
-        <div className="relative w-full h-40 mb-6 overflow-hidden">
+        <div className="relative w-full h-40 mb-6 flex items-center justify-between overflow-hidden">
           {/* Construction Barrier - slides from left */}
           <img
             src={barrierImage}
             alt="Under construction"
-            className="absolute left-0 top-1/2 -translate-y-1/2 h-24 w-auto object-contain animate-slide-barrier"
+            className="h-24 w-auto object-contain"
+            style={{
+              animation: 'slide-barrier 4s ease-in-out infinite',
+            }}
           />
           
           {/* Car - slides from right */}
           <img
             src={carImage}
             alt="Car"
-            className="absolute right-0 top-1/2 -translate-y-1/2 h-28 w-auto object-contain animate-slide-car"
+            className="h-28 w-auto object-contain"
+            style={{
+              animation: 'slide-car 4s ease-in-out infinite',
+            }}
           />
         </div>
 
