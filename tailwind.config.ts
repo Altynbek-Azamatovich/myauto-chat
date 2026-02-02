@@ -92,10 +92,40 @@ export default {
             height: "0",
           },
         },
+        "slide-car": {
+          "0%": {
+            transform: "translateX(100%) translateY(-50%)",
+          },
+          "25%": {
+            transform: "translateX(0%) translateY(-50%)",
+          },
+          "75%": {
+            transform: "translateX(0%) translateY(-50%)",
+          },
+          "100%": {
+            transform: "translateX(100%) translateY(-50%)",
+          },
+        },
+        "slide-barrier": {
+          "0%": {
+            transform: "translateX(-100%) translateY(-50%)",
+          },
+          "25%": {
+            transform: "translateX(0%) translateY(-50%)",
+          },
+          "75%": {
+            transform: "translateX(0%) translateY(-50%)",
+          },
+          "100%": {
+            transform: "translateX(-100%) translateY(-50%)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "slide-car": "slide-car 4s ease-in-out infinite",
+        "slide-barrier": "slide-barrier 4s ease-in-out infinite",
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(ellipse at center, var(--tw-gradient-stops))',
