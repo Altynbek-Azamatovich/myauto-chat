@@ -149,8 +149,17 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
 
 export const useNotifications = () => {
   const context = useContext(NotificationContext);
+  // Return default values if context is not available (during HMR)
   if (context === undefined) {
-    throw new Error('useNotifications must be used within a NotificationProvider');
+    return {
+      notifications: [],
+      unreadCount: 0,
+      unreadByCategory: {},
+      markAsRead: async () => {},
+      markAllAsRead: async () => {},
+      deleteNotification: async () => {},
+      refreshNotifications: async () => {},
+    };
   }
   return context;
 };

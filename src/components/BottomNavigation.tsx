@@ -1,18 +1,28 @@
 import { Home, Settings, Camera, MessageCircle } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useContext } from "react";
+import { LanguageContext } from "@/contexts/LanguageContext";
 import { useNotifications } from "@/contexts/NotificationContext";
 import NotificationBadge from "@/components/NotificationBadge";
+
+const translations = {
+  home: { ru: 'Главная', kk: 'Басты бет', en: 'Home' },
+  services: { ru: 'Сервисы', kk: 'Сервистер', en: 'Services' },
+  photoDiagnostics: { ru: 'Фото', kk: 'Фото', en: 'Photo' },
+};
+
 const BottomNavigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const {
-    t
-  } = useLanguage();
-  const {
-    unreadByCategory
-  } = useNotifications();
+  const context = useContext(LanguageContext) as { language: 'ru' | 'kk' | 'en' } | undefined;
+  const language = context?.language || 'kk';
+  const t = (key: string) => {
+    const trans = translations[key as keyof typeof translations];
+    return trans ? trans[language] : key;
+  };
+  const notificationContext = useNotifications();
+  const unreadByCategory = notificationContext?.unreadByCategory || {};
   const homeCount = unreadByCategory['home'] || 0;
   const servicesCount = unreadByCategory['services'] || 0;
   const chatCount = unreadByCategory['chat'] || 0;
