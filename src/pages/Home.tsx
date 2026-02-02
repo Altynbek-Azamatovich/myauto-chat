@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, Bell, RotateCcw, AlertTriangle, Clock, HeartPulse, CalendarIcon, Edit, Droplet } from "lucide-react";
+import { Menu, Bell, RotateCcw, AlertTriangle, Clock, HeartPulse, CalendarIcon, Edit, Droplet, RotateCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -15,13 +15,13 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import carCoveredImage from "@/assets/car-covered-new.png";
 import { getCarImage, getBodyTypeFromModel } from "@/utils/carImageResolver";
-import icon360 from "@/assets/360-icon.png";
 import Logo from "@/components/Logo";
 import BottomNavigation from '@/components/BottomNavigation';
 import { AppSidebar } from '@/components/AppSidebar';
 import { useNotifications } from '@/contexts/NotificationContext';
 import NotificationBadge from '@/components/NotificationBadge';
 import { usePersistedState } from '@/hooks/usePersistedState';
+import TuningSection from '@/components/TuningSection';
 interface Vehicle {
   id: string;
   brand_id: string;
@@ -50,6 +50,7 @@ const Home = () => {
   const [nextServiceDate, setNextServiceDate] = useState<Date>();
   const [primaryVehicle, setPrimaryVehicle] = useState<Vehicle | null>(null);
   const [brandName, setBrandName] = useState<string>('');
+  const [isTuningMode, setIsTuningMode] = useState(false);
   const {
     t,
     language
@@ -170,11 +171,28 @@ const Home = () => {
         </button>
 
         {/* 360 Button */}
-        <button onClick={() => toast.info('3D модели авто в разработке')} className="absolute -bottom-2 right-2 sm:right-4 p-0 bg-transparent hover:opacity-80 transition-opacity border-0 outline-none">
-          <img src={icon360} alt="360" className="w-12 h-12 sm:w-16 sm:h-16 opacity-40" />
+        <button 
+          onClick={() => setIsTuningMode(!isTuningMode)} 
+          className={cn(
+            "absolute -bottom-2 right-2 sm:right-4 flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300",
+            isTuningMode 
+              ? "bg-foreground text-background" 
+              : "bg-background/80 backdrop-blur-sm text-foreground border border-border/50"
+          )}
+        >
+          <RotateCw className={cn(
+            "h-5 w-5 transition-transform duration-500",
+            isTuningMode && "rotate-180"
+          )} />
+          <span className="text-sm font-medium">360°</span>
         </button>
       </div>
 
+      {/* Content - either Car Info or Tuning Section */}
+      {isTuningMode ? (
+        <TuningSection onClose={() => setIsTuningMode(false)} />
+      ) : (
+        <>
       {/* Car Info Cards */}
       <div className="px-4 space-y-4 mt-3">
       <div className="grid grid-cols-2 gap-4">
@@ -334,6 +352,8 @@ const Home = () => {
           </Card>
         </div>
       </div>
+        </>
+      )}
 
       <BottomNavigation />
     </div>;
