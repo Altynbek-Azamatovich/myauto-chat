@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { ArrowLeft, Droplet, Clock, DollarSign, MapPin, Check } from "lucide-react";
+import { ArrowLeft, Droplet, Clock, MapPin, Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
@@ -10,146 +9,124 @@ import { usePersistedState } from "@/hooks/usePersistedState";
 
 const CarWash = () => {
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [selectedService, setSelectedService] = usePersistedState<number | null>("carwash_selected_service", null);
 
   const services = [
     {
       id: 1,
-      name: "Экспресс мойка",
-      nameKk: "Экспресс жуу",
-      duration: "15 мин",
-      durationKk: "15 мин",
+      name: { ru: "Экспресс мойка", kk: "Экспресс жуу", en: "Express Wash" },
+      duration: { ru: "15 мин", kk: "15 мин", en: "15 min" },
       price: "2,000 ₸",
-      description: "Быстрая наружная мойка",
-      descriptionKk: "Жылдам сыртқы жуу",
-      features: ["Мойка кузова", "Мойка дисков", "Сушка"]
+      description: { ru: "Быстрая наружная мойка", kk: "Жылдам сыртқы жуу", en: "Quick exterior wash" },
+      features: { ru: ["Мойка кузова", "Мойка дисков", "Сушка"], kk: ["Кузовты жуу", "Дискілерді жуу", "Кептіру"], en: ["Body wash", "Wheel wash", "Drying"] }
     },
     {
       id: 2,
-      name: "Стандартная мойка",
-      nameKk: "Стандартты жуу",
-      duration: "30 мин",
-      durationKk: "30 мин",
+      name: { ru: "Стандартная мойка", kk: "Стандартты жуу", en: "Standard Wash" },
+      duration: { ru: "30 мин", kk: "30 мин", en: "30 min" },
       price: "3,500 ₸",
-      description: "Наружная мойка + внутренняя уборка",
-      descriptionKk: "Сыртқы жуу + ішкі тазалау",
-      features: ["Всё из экспресс", "Уборка салона", "Протирка панелей"]
+      description: { ru: "Мойка + уборка салона", kk: "Жуу + салон тазалау", en: "Wash + interior vacuum" },
+      features: { ru: ["Всё из экспресс", "Уборка салона", "Протирка панелей"], kk: ["Экспресс бәрі", "Салон тазалау", "Панельдерді сүрту"], en: ["All from express", "Interior vacuum", "Panel wipe"] }
     },
     {
       id: 3,
-      name: "Премиум мойка",
-      nameKk: "Премиум жуу",
-      duration: "1 час",
-      durationKk: "1 сағат",
+      name: { ru: "Премиум мойка", kk: "Премиум жуу", en: "Premium Wash" },
+      duration: { ru: "1 час", kk: "1 сағат", en: "1 hour" },
       price: "6,000 ₸",
-      description: "Полная мойка с воском",
-      descriptionKk: "Балаумен толық жуу",
-      features: ["Всё из стандартной", "Восковое покрытие", "Чернение шин"]
+      description: { ru: "Полная мойка с воском", kk: "Балаумен толық жуу", en: "Full wash with wax" },
+      features: { ru: ["Всё из стандартной", "Восковое покрытие", "Чернение шин"], kk: ["Стандарттың бәрі", "Балау жабыны", "Шиналарды қарайту"], en: ["All from standard", "Wax coating", "Tire shine"] }
     },
     {
       id: 4,
-      name: "Делюкс пакет",
-      nameKk: "Делюкс пакет",
-      duration: "2 часа",
-      durationKk: "2 сағат",
+      name: { ru: "Делюкс пакет", kk: "Делюкс пакет", en: "Deluxe Package" },
+      duration: { ru: "2 часа", kk: "2 сағат", en: "2 hours" },
       price: "10,000 ₸",
-      description: "Полная очистка внутри и снаружи",
-      descriptionKk: "Ішінде және сыртында толық тазалау",
-      features: ["Всё из премиум", "Химчистка салона", "Полировка кузова"]
+      description: { ru: "Полная очистка", kk: "Толық тазалау", en: "Complete cleaning" },
+      features: { ru: ["Всё из премиум", "Химчистка салона", "Полировка кузова"], kk: ["Премиумның бәрі", "Салонды химиялық тазалау", "Кузовты жылтырату"], en: ["All from premium", "Cabin dry cleaning", "Body polish"] }
     }
   ];
 
   const locations = [
-    { id: 1, name: "City Center Wash", distance: "1.2 км", open: true },
-    { id: 2, name: "Mall Parking Wash", distance: "2.5 км", open: true },
-    { id: 3, name: "Highway Wash Station", distance: "4.3 км", open: false }
+    { id: 1, name: "City Center Wash", distance: "1.2 km", open: true },
+    { id: 2, name: "Mall Parking Wash", distance: "2.5 km", open: true },
+    { id: 3, name: "Highway Wash Station", distance: "4.3 km", open: false }
   ];
+
+  const inCartLabel = { ru: 'В корзине', kk: 'Себетте', en: 'In Cart' };
 
   const handleBook = (serviceId: number) => {
     setSelectedService(serviceId);
-    toast.success("Услуга добавлена в корзину!");
+    toast.success(language === 'en' ? "Added to cart!" : language === 'kk' ? "Себетке қосылды!" : "Добавлено в корзину!");
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <header className="flex items-center gap-4 px-4 py-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/services')}>
-          <ArrowLeft className="h-8 w-8" />
-        </Button>
-        <h1 className="text-xl font-bold text-foreground">{t('carWash')}</h1>
+    <div className="min-h-screen bg-background pb-24">
+      <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-xl">
+        <div className="flex items-center gap-4 px-4 py-4">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/services')} className="rounded-full h-10 w-10">
+            <ArrowLeft className="h-5 w-5" strokeWidth={2.5} />
+          </Button>
+          <h1 className="text-xl font-bold">{t('carWash')}</h1>
+        </div>
       </header>
 
-      <div className="p-4 space-y-6">
+      <div className="px-4 space-y-6">
         <div>
-          <h2 className="text-lg font-semibold mb-3">{t('servicesLabel')}</h2>
-          <div className="space-y-3">
+          <p className="text-lg font-medium mb-3">{t('servicesLabel')}</p>
+          <div className="space-y-4">
             {services.map((service) => (
-              <Card key={service.id} className={`transition-all ${selectedService === service.id ? 'border-primary shadow-lg' : 'hover:shadow-md'}`}>
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className="bg-primary/10 p-3 rounded-lg">
-                      <Droplet className="h-6 w-6 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <CardTitle className="text-base">{service.name}</CardTitle>
-                      <p className="text-sm text-muted-foreground mt-1">{service.description}</p>
-                    </div>
+              <div key={service.id} className={`p-5 rounded-2xl transition-all ${selectedService === service.id ? 'bg-primary/5 ring-1 ring-primary/20' : 'bg-muted/30'}`}>
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="p-3 rounded-xl bg-primary/10">
+                    <Droplet className="h-5 w-5 text-primary" />
                   </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    {service.features.map((feature, index) => (
-                      <div key={index} className="flex items-center gap-2 text-sm">
-                        <Check className="h-4 w-4 text-primary" />
-                        <span className="text-muted-foreground">{feature}</span>
-                      </div>
-                    ))}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-base">{service.name[language]}</h3>
+                    <p className="text-sm text-muted-foreground mt-0.5">{service.description[language]}</p>
                   </div>
-                  <div className="flex items-center justify-between pt-3 border-t">
-                    <div className="flex items-center gap-4 text-sm">
-                      <span className="flex items-center gap-1 text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        {service.duration}
-                      </span>
-                      <span className="flex items-center gap-1 font-semibold text-primary text-lg">
-                        {service.price}
-                      </span>
+                </div>
+                <div className="space-y-2 mb-4">
+                  {service.features[language].map((feature, index) => (
+                    <div key={index} className="flex items-center gap-2 text-sm">
+                      <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                      <span className="text-muted-foreground">{feature}</span>
                     </div>
-                    <Button 
-                      size="sm" 
-                      onClick={() => handleBook(service.id)}
-                      variant={selectedService === service.id ? "secondary" : "default"}
-                    >
-                      {selectedService === service.id ? "В корзине ✓" : t('book')}
-                    </Button>
+                  ))}
+                </div>
+                <div className="flex items-center justify-between pt-3 border-t border-border/50">
+                  <div className="flex items-center gap-4">
+                    <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                      <Clock className="h-4 w-4" />
+                      {service.duration[language]}
+                    </span>
+                    <span className="font-semibold text-primary">{service.price}</span>
                   </div>
-                </CardContent>
-              </Card>
+                  <Button size="sm" className="rounded-xl h-9 px-4" onClick={() => handleBook(service.id)} variant={selectedService === service.id ? "secondary" : "default"}>
+                    {selectedService === service.id ? `${inCartLabel[language]} ✓` : t('book')}
+                  </Button>
+                </div>
+              </div>
             ))}
           </div>
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold mb-3">{t('nearbyLocations')}</h2>
+          <p className="text-lg font-medium mb-3">{t('nearbyLocations')}</p>
           <div className="space-y-2">
             {locations.map((location) => (
-              <Card key={location.id} className="bg-card hover:bg-muted/30 transition-colors cursor-pointer">
-                <CardContent className="py-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <div>
-                        <p className="font-medium text-sm">{location.name}</p>
-                        <p className="text-xs text-muted-foreground">{location.distance}</p>
-                      </div>
-                    </div>
-                    <Badge variant={location.open ? "default" : "secondary"}>
-                      {location.open ? t('open') : t('closed')}
-                    </Badge>
+              <div key={location.id} className="flex items-center justify-between p-4 rounded-2xl bg-muted/30">
+                <div className="flex items-center gap-3">
+                  <MapPin className="h-4 w-4 text-muted-foreground" />
+                  <div>
+                    <p className="font-medium text-sm">{location.name}</p>
+                    <p className="text-xs text-muted-foreground">{location.distance}</p>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+                <Badge variant={location.open ? "default" : "secondary"} className="rounded-full">
+                  {location.open ? t('open') : t('closed')}
+                </Badge>
+              </div>
             ))}
           </div>
         </div>

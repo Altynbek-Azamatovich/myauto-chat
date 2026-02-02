@@ -6,18 +6,17 @@ import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { ChevronLeft, Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { kazakhstanCities } from "@/data/kazakhstan-cities";
-import { Card } from "@/components/ui/card";
 import { Logo } from "@/components/Logo";
 
 const ProfileSetup = () => {
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -53,7 +52,7 @@ const ProfileSetup = () => {
     if (!isFormValid()) {
       toast({
         title: t('error'),
-        description: "Заполните все обязательные поля",
+        description: t('fillAllFields'),
         variant: "destructive",
       });
       return;
@@ -64,7 +63,6 @@ const ProfileSetup = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not found');
 
-      // Update profile
       const { error: profileError } = await supabase
         .from('profiles')
         .update({
@@ -92,98 +90,125 @@ const ProfileSetup = () => {
     }
   };
 
+  const labels = {
+    title: { ru: 'Заполните профиль', kk: 'Профильді толтырыңыз', en: 'Complete Your Profile' },
+    subtitle: { ru: 'Расскажите немного о себе', kk: 'Өзіңіз туралы айтып беріңіз', en: 'Tell us a bit about yourself' },
+    firstName: { ru: 'Имя', kk: 'Аты', en: 'First Name' },
+    firstNamePlaceholder: { ru: 'Введите имя', kk: 'Атыңызды енгізіңіз', en: 'Enter first name' },
+    lastName: { ru: 'Фамилия', kk: 'Тегі', en: 'Last Name' },
+    lastNamePlaceholder: { ru: 'Введите фамилию', kk: 'Тегіңізді енгізіңіз', en: 'Enter last name' },
+    patronymic: { ru: 'Отчество', kk: 'Әкесінің аты', en: 'Patronymic' },
+    optional: { ru: 'необязательно', kk: 'міндетті емес', en: 'optional' },
+    patronymicPlaceholder: { ru: 'Введите отчество', kk: 'Әкеңіздің атын енгізіңіз', en: 'Enter patronymic' },
+    age: { ru: 'Возраст', kk: 'Жасы', en: 'Age' },
+    agePlaceholder: { ru: 'Введите возраст', kk: 'Жасыңызды енгізіңіз', en: 'Enter age' },
+    gender: { ru: 'Пол', kk: 'Жынысы', en: 'Gender' },
+    selectGender: { ru: 'Выберите пол', kk: 'Жынысыңызды таңдаңыз', en: 'Select gender' },
+    male: { ru: 'Мужской', kk: 'Ер', en: 'Male' },
+    female: { ru: 'Женский', kk: 'Әйел', en: 'Female' },
+    city: { ru: 'Город', kk: 'Қала', en: 'City' },
+    selectCity: { ru: 'Выберите город', kk: 'Қаланы таңдаңыз', en: 'Select city' },
+    searchCity: { ru: 'Поиск города...', kk: 'Қала іздеу...', en: 'Search city...' },
+    cityNotFound: { ru: 'Город не найден', kk: 'Қала табылмады', en: 'City not found' },
+    continue: { ru: 'Продолжить', kk: 'Жалғастыру', en: 'Continue' },
+    saving: { ru: 'Сохранение...', kk: 'Сақталуда...', en: 'Saving...' },
+  };
+
+  const getLabel = (key: keyof typeof labels) => labels[key][language] || labels[key].en;
+
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-center mb-8">
+      <div className="flex items-center justify-center pt-8 pb-4">
         <Logo size="md" />
       </div>
 
-      <div className="text-center mb-6">
-        <h1 className="text-2xl font-bold">Заполните профиль</h1>
-        <p className="text-muted-foreground mt-2">Расскажите немного о себе</p>
-      </div>
+      {/* Content */}
+      <div className="flex-1 px-6 pb-8">
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold">{getLabel('title')}</h1>
+          <p className="text-muted-foreground mt-2">{getLabel('subtitle')}</p>
+        </div>
 
-      <Card className="p-6">
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* First Name */}
           <div className="space-y-2">
-            <Label htmlFor="firstName">
-              Имя <span className="text-destructive">*</span>
+            <Label className="text-sm font-medium">
+              {getLabel('firstName')} <span className="text-destructive">*</span>
             </Label>
             <Input
-              id="firstName"
               value={formData.firstName}
               onChange={(e) => handleChange('firstName', e.target.value)}
-              placeholder="Введите имя"
+              placeholder={getLabel('firstNamePlaceholder')}
+              className="h-12 rounded-xl bg-muted/50 border-0 focus-visible:ring-1"
             />
           </div>
 
           {/* Last Name */}
           <div className="space-y-2">
-            <Label htmlFor="lastName">
-              Фамилия <span className="text-destructive">*</span>
+            <Label className="text-sm font-medium">
+              {getLabel('lastName')} <span className="text-destructive">*</span>
             </Label>
             <Input
-              id="lastName"
               value={formData.lastName}
               onChange={(e) => handleChange('lastName', e.target.value)}
-              placeholder="Введите фамилию"
+              placeholder={getLabel('lastNamePlaceholder')}
+              className="h-12 rounded-xl bg-muted/50 border-0 focus-visible:ring-1"
             />
           </div>
 
           {/* Patronymic */}
           <div className="space-y-2">
-            <Label htmlFor="patronymic">
-              Отчество <span className="text-muted-foreground text-xs">(необязательно)</span>
+            <Label className="text-sm font-medium">
+              {getLabel('patronymic')} <span className="text-muted-foreground text-xs">({getLabel('optional')})</span>
             </Label>
             <Input
-              id="patronymic"
               value={formData.patronymic}
               onChange={(e) => handleChange('patronymic', e.target.value)}
-              placeholder="Введите отчество"
+              placeholder={getLabel('patronymicPlaceholder')}
+              className="h-12 rounded-xl bg-muted/50 border-0 focus-visible:ring-1"
             />
           </div>
 
           {/* Age */}
           <div className="space-y-2">
-            <Label htmlFor="age">
-              Возраст <span className="text-destructive">*</span>
+            <Label className="text-sm font-medium">
+              {getLabel('age')} <span className="text-destructive">*</span>
             </Label>
             <Input
-              id="age"
               type="number"
               min="1"
               max="120"
               value={formData.age}
               onChange={(e) => handleChange('age', e.target.value)}
-              placeholder="Введите возраст"
+              placeholder={getLabel('agePlaceholder')}
+              className="h-12 rounded-xl bg-muted/50 border-0 focus-visible:ring-1"
             />
           </div>
 
           {/* Gender */}
           <div className="space-y-2">
-            <Label>
-              Пол <span className="text-destructive">*</span>
+            <Label className="text-sm font-medium">
+              {getLabel('gender')} <span className="text-destructive">*</span>
             </Label>
             <Select
               value={formData.gender}
               onValueChange={(value) => handleChange('gender', value)}
             >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Выберите пол" />
+              <SelectTrigger className="h-12 rounded-xl bg-muted/50 border-0 focus:ring-1">
+                <SelectValue placeholder={getLabel('selectGender')} />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="male">Мужской</SelectItem>
-                <SelectItem value="female">Женский</SelectItem>
+              <SelectContent className="rounded-xl">
+                <SelectItem value="male" className="rounded-lg">{getLabel('male')}</SelectItem>
+                <SelectItem value="female" className="rounded-lg">{getLabel('female')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {/* City */}
           <div className="space-y-2">
-            <Label>
-              Город <span className="text-destructive">*</span>
+            <Label className="text-sm font-medium">
+              {getLabel('city')} <span className="text-destructive">*</span>
             </Label>
             <Popover open={isCityOpen} onOpenChange={setIsCityOpen}>
               <PopoverTrigger asChild>
@@ -191,17 +216,17 @@ const ProfileSetup = () => {
                   variant="outline"
                   role="combobox"
                   aria-expanded={isCityOpen}
-                  className="w-full justify-between"
+                  className="w-full h-12 justify-between rounded-xl bg-muted/50 border-0 font-normal hover:bg-muted/70"
                 >
-                  {formData.city || "Выберите город"}
+                  {formData.city || getLabel('selectCity')}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-full p-0 z-[100]" align="start">
+              <PopoverContent className="w-full p-0 rounded-xl" align="start">
                 <Command>
-                  <CommandInput placeholder="Поиск города..." />
-                  <CommandList className="max-h-[300px] overflow-y-auto">
-                    <CommandEmpty>Город не найден</CommandEmpty>
+                  <CommandInput placeholder={getLabel('searchCity')} className="h-12" />
+                  <CommandList className="max-h-[250px] overflow-y-auto">
+                    <CommandEmpty>{getLabel('cityNotFound')}</CommandEmpty>
                     <CommandGroup>
                       {kazakhstanCities.map((city) => (
                         <CommandItem
@@ -211,6 +236,7 @@ const ProfileSetup = () => {
                             handleChange('city', currentValue);
                             setIsCityOpen(false);
                           }}
+                          className="rounded-lg"
                         >
                           <Check
                             className={cn(
@@ -228,15 +254,17 @@ const ProfileSetup = () => {
             </Popover>
           </div>
 
-          <Button 
-            type="submit" 
-            className="w-full mt-6" 
-            disabled={loading || !isFormValid()}
-          >
-            {loading ? "Сохранение..." : "Продолжить"}
-          </Button>
+          <div className="pt-4">
+            <Button 
+              type="submit" 
+              className="w-full h-14 text-lg font-semibold rounded-2xl" 
+              disabled={loading || !isFormValid()}
+            >
+              {loading ? getLabel('saving') : getLabel('continue')}
+            </Button>
+          </div>
         </form>
-      </Card>
+      </div>
     </div>
   );
 };
