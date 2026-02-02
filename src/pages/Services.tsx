@@ -40,7 +40,7 @@ const Services = () => {
       customContent: {
         type: 'support' as const,
         title: 'Поддержите проект',
-        subtitle: 'Помогите нам развивать MyAuto и делать его лучше для всех автолюбителей',
+        subtitle: 'Помогите нам развивать myauto и делать его лучше для всех автолюбителей',
         buttonText: 'Поддержать проект',
         buttonUrl: 'https://kaspi.kz/pay/myauto'
       }
