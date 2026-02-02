@@ -1,7 +1,9 @@
-import { ArrowLeft, Construction, Heart } from 'lucide-react';
+import { ArrowLeft, Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
+import carImage from '@/assets/car-covered-new.png';
+import barrierImage from '@/assets/construction-barrier.png';
 
 interface UnderDevelopmentProps {
   title: string;
@@ -29,15 +31,22 @@ export const UnderDevelopment = ({ title, subtitle, backPath = '/services' }: Un
       </header>
 
       {/* Content */}
-      <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
-        {/* Illustration */}
-        <div className="relative mb-8">
-          <div className="w-32 h-32 rounded-full bg-muted/50 flex items-center justify-center">
-            <Construction className="h-16 w-16 text-muted-foreground/50" />
-          </div>
-          <div className="absolute -bottom-2 -right-2 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-            <span className="text-xl">🚗</span>
-          </div>
+      <div className="flex flex-col items-center justify-center px-6 py-8 text-center">
+        {/* Animation Container */}
+        <div className="relative w-full h-40 mb-6 overflow-hidden">
+          {/* Construction Barrier - slides from left */}
+          <img
+            src={barrierImage}
+            alt="Under construction"
+            className="absolute left-0 top-1/2 -translate-y-1/2 h-24 w-auto object-contain animate-slide-barrier"
+          />
+          
+          {/* Car - slides from right */}
+          <img
+            src={carImage}
+            alt="Car"
+            className="absolute right-0 top-1/2 -translate-y-1/2 h-28 w-auto object-contain animate-slide-car"
+          />
         </div>
 
         {/* Text */}
