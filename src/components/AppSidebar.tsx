@@ -177,7 +177,7 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
               </div>
 
               {/* Logout Button */}
-              <div className="mt-auto px-6 pb-8 pt-6">
+              <div className="mt-auto px-6 pb-8 pt-12">
                 <button
                   onClick={() => {
                     setIsOpen(false);
