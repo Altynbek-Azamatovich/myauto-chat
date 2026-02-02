@@ -231,7 +231,7 @@ All colors MUST be HSL.
 /* Under development animations */
 @keyframes slide-car {
   0% {
-    transform: translateX(100%);
+    transform: translateX(110%);
   }
   25% {
     transform: translateX(0%);
@@ -240,13 +240,13 @@ All colors MUST be HSL.
     transform: translateX(0%);
   }
   100% {
-    transform: translateX(100%);
+    transform: translateX(110%);
   }
 }
 
 @keyframes slide-barrier {
   0% {
-    transform: translateX(-100%);
+    transform: translateX(-110%);
   }
   25% {
     transform: translateX(0%);
@@ -255,6 +255,6 @@ All colors MUST be HSL.
     transform: translateX(0%);
   }
   100% {
-    transform: translateX(-100%);
+    transform: translateX(-110%);
   }
 }
