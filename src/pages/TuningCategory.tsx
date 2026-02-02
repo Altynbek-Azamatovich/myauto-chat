@@ -48,18 +48,18 @@ const TuningCategory = () => {
       {/* Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-4">
         {/* Animation container */}
-        <div className="relative w-full max-w-sm h-64 mb-8">
-          {/* Car animation */}
+        <div className="relative w-full max-w-sm h-64 mb-8 overflow-hidden">
+          {/* Car animation - enters from right, aligns to right */}
           <img
             src={carImage}
             alt="Car"
-            className="absolute left-0 h-32 object-contain animate-car-slide"
+            className="h-32 object-contain animate-car-slide"
           />
-          {/* Barrier animation */}
+          {/* Barrier animation - enters from left, aligns to left */}
           <img
             src={constructionBarrier}
             alt="Under Construction"
-            className="absolute right-0 h-24 object-contain animate-barrier-slide"
+            className="h-24 object-contain animate-barrier-slide"
           />
         </div>
 
@@ -87,56 +87,52 @@ const TuningCategory = () => {
       <style>{`
         @keyframes carSlide {
           0% {
-            transform: translateX(-100%);
+            right: 100%;
             opacity: 0;
           }
           20% {
-            transform: translateX(20%);
-            opacity: 1;
-          }
-          50% {
-            transform: translateX(20%);
+            right: 0;
             opacity: 1;
           }
           80% {
-            transform: translateX(20%);
+            right: 0;
             opacity: 1;
           }
           100% {
-            transform: translateX(-100%);
+            right: 100%;
             opacity: 0;
           }
         }
         
         @keyframes barrierSlide {
           0% {
-            transform: translateX(100%);
+            left: 100%;
             opacity: 0;
           }
           20% {
-            transform: translateX(-20%);
-            opacity: 1;
-          }
-          50% {
-            transform: translateX(-20%);
+            left: 0;
             opacity: 1;
           }
           80% {
-            transform: translateX(-20%);
+            left: 0;
             opacity: 1;
           }
           100% {
-            transform: translateX(100%);
+            left: 100%;
             opacity: 0;
           }
         }
         
         .animate-car-slide {
           animation: carSlide 5s ease-in-out infinite;
+          position: absolute;
+          right: 0;
         }
         
         .animate-barrier-slide {
           animation: barrierSlide 5s ease-in-out infinite;
+          position: absolute;
+          left: 0;
         }
       `}</style>
     </div>

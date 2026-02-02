@@ -11,6 +11,7 @@ import interiorImage from "@/assets/tuning/interior.jpg";
 import suspensionImage from "@/assets/tuning/suspension.jpg";
 import lightsImage from "@/assets/tuning/lights.jpg";
 import wheelImage from "@/assets/tuning/wheel.png";
+import audioImage from "@/assets/tuning/audio.png";
 
 // Import car images for painting section
 import redSedan from "@/assets/cars/sedan/red-sedan.png";
@@ -34,7 +35,7 @@ const allCategories: TuningCategory[] = [
   { id: "interior", title: "Интерьер", image: interiorImage },
   { id: "suspension", title: "Подвеска", image: suspensionImage },
   { id: "lighting", title: "Оптика", image: lightsImage },
-  { id: "audio", title: "Аудиосистема", image: interiorImage },
+  { id: "audio", title: "Аудиосистема", image: audioImage },
 ];
 
 interface TuningSectionProps {
@@ -73,11 +74,11 @@ const TuningSection = ({ onClose }: TuningSectionProps) => {
     <>
       <div className="absolute inset-0">
         {category.isPainting ? (
-          <div className="w-full h-full flex items-center justify-end bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-800 overflow-hidden">
+          <div className="w-full h-full bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-800 overflow-hidden">
             <img
               src={redSedan}
               alt="Red car"
-              className="h-[85%] w-auto object-contain mr-2"
+              className="w-full h-full object-cover object-right"
             />
           </div>
         ) : (
@@ -105,7 +106,7 @@ const TuningSection = ({ onClose }: TuningSectionProps) => {
         "transition-all duration-500 ease-out",
         isExpanded 
           ? "fixed inset-0 z-[100] bg-background pt-4 pb-24 overflow-y-auto"
-          : "px-4 pb-24",
+          : "px-4 pb-24 mt-4",
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"
       )}
     >
@@ -163,7 +164,7 @@ const TuningSection = ({ onClose }: TuningSectionProps) => {
               key={category.id}
               onClick={() => handleCategoryClick(category.id)}
               className={cardBaseStyles}
-              style={{ height: "120px", boxShadow: "0 4px 20px rgba(0,0,0,0.25)" }}
+              style={{ aspectRatio: "1/1", boxShadow: "0 4px 20px rgba(0,0,0,0.25)" }}
             >
               {renderCardContent(category)}
             </div>
@@ -178,7 +179,7 @@ const TuningSection = ({ onClose }: TuningSectionProps) => {
                 key={category.id}
                 onClick={() => handleCategoryClick(category.id)}
                 className={cn(cardBaseStyles, "shadow-lg")}
-                style={{ height: "140px" }}
+                style={{ aspectRatio: "1/1" }}
               >
                 {renderCardContent(category)}
               </div>
@@ -192,7 +193,7 @@ const TuningSection = ({ onClose }: TuningSectionProps) => {
                 key={category.id}
                 onClick={() => handleCategoryClick(category.id)}
                 className={cn(cardBaseStyles, "shadow-[0_-8px_25px_rgba(0,0,0,0.4)]")}
-                style={{ height: "140px" }}
+                style={{ aspectRatio: "1/1" }}
               >
                 {renderCardContent(category)}
               </div>
