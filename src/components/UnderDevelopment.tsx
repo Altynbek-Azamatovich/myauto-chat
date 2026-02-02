@@ -8,7 +8,7 @@ interface UnderDevelopmentProps {
   subtitle?: string;
 }
 
-export const UnderDevelopment = ({ title, subtitle }: UnderDevelopmentProps) => {
+export const UnderDevelopment = ({ title }: UnderDevelopmentProps) => {
   const navigate = useNavigate();
   const { t } = useLanguage();
 
@@ -37,17 +37,11 @@ export const UnderDevelopment = ({ title, subtitle }: UnderDevelopmentProps) => 
           <Wrench className="h-10 w-10 text-muted-foreground" />
         </div>
         
-        <h2 className="text-xl font-semibold text-center mb-2">
+        <h2 className="text-xl font-semibold text-center mb-8">
           {t('underDevelopmentTitle')}
         </h2>
-        
-        {subtitle && (
-          <p className="text-sm text-muted-foreground text-center max-w-[280px] mb-8">
-            {subtitle}
-          </p>
-        )}
 
-        <div className="w-full max-w-[280px] space-y-3 mt-4">
+        <div className="w-full max-w-[280px] space-y-3">
           <Button
             onClick={handleSupport}
             variant="outline"
