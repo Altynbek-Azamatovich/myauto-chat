@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, ShoppingCart, Package, Newspaper, Box, ArrowRight, Smartphone } from "lucide-react";
+import { Menu, ShoppingCart, Package, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -19,6 +19,9 @@ import paintShopImg from "@/assets/services/paint-shop.png";
 import partsDismantlingImg from "@/assets/services/parts-dismantling.png";
 import carWashImg from "@/assets/services/car-wash.png";
 import carCoveredImg from "@/assets/car-covered.png";
+import showroomBg from "@/assets/showroom-bg.png";
+import showroom3dBg from "@/assets/showroom-3d-bg.png";
+import newsBg from "@/assets/news-bg.png";
 
 const Services = () => {
   const navigate = useNavigate();
@@ -170,79 +173,60 @@ const Services = () => {
 
         {/* Каталог - Full Width */}
         <Card 
-          className="bg-muted/50 hover:bg-muted transition-all cursor-pointer border-0"
+          className="relative overflow-hidden border-0 hover:scale-[1.02] transition-transform cursor-pointer h-32"
           onClick={() => navigate('/parts-catalog')}
         >
-          <div className="p-4 sm:p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-1">
-                  <Package className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
-                  <h3 className="text-xl sm:text-2xl font-bold text-foreground">{t('catalog')}</h3>
-                </div>
-                <p className="text-xs sm:text-sm text-muted-foreground">{t('catalogSubtitle')}</p>
+          <img 
+            src={showroomBg} 
+            alt={t('catalog')} 
+            className="absolute inset-0 w-full h-full object-cover" 
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30" />
+          <div className="relative z-10 p-4 sm:p-6 h-full flex items-center justify-between">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-1">
+                <Package className="h-6 w-6 sm:h-8 sm:w-8 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
+                <h3 className="text-xl sm:text-2xl font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">{t('catalog')}</h3>
               </div>
-              <div className="flex items-center gap-2 sm:gap-3">
-                <div className="flex flex-col gap-1 text-primary/40">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                    <Package className="h-4 w-4 sm:h-5 sm:w-5" />
-                  </div>
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary/30 flex items-center justify-center">
-                    <Package className="h-4 w-4 sm:h-5 sm:w-5" />
-                  </div>
-                </div>
-                <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground flex-shrink-0" />
-              </div>
+              <p className="text-xs sm:text-sm text-white/80 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">{t('catalogSubtitle')}</p>
             </div>
+            <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 text-white/80 flex-shrink-0 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
           </div>
         </Card>
 
         {/* Новости и 3D-Шоурум */}
         <div className="grid grid-cols-2 gap-4">
+          {/* Новости - картинка справа */}
           <Card 
-            className="aspect-square bg-muted/50 hover:bg-muted transition-all cursor-pointer border-0"
+            className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
             onClick={() => navigate('/news')}
           >
-            <div className="p-4 sm:p-6 h-full flex flex-col">
-              <div className="flex items-start justify-between mb-3 sm:mb-4">
-                <Newspaper className="h-5 w-5 sm:h-7 sm:w-7 text-primary" />
-                <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
-              </div>
-              <div className="flex-1 flex items-center justify-center mb-2 sm:mb-3">
-                <div className="flex gap-1.5 sm:gap-2">
-                  <Smartphone className="h-8 w-8 sm:h-12 sm:w-12 text-primary/40 transform -rotate-12" />
-                  <Smartphone className="h-8 w-8 sm:h-12 sm:w-12 text-primary/60 transform rotate-12" />
-                </div>
-              </div>
-              <div>
-                <h3 className="text-base sm:text-lg font-bold mb-0.5 sm:mb-1 text-foreground">{t('news')}</h3>
-                <p className="text-[10px] sm:text-xs text-muted-foreground">{t('newsSubtitle')}</p>
-              </div>
+            <img 
+              src={newsBg} 
+              alt={t('news')} 
+              className="absolute inset-0 w-full h-full object-cover object-right" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-3">
+              <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">{t('news')}</h3>
+              <p className="text-[10px] text-white/80 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">{t('newsSubtitle')}</p>
             </div>
           </Card>
 
+          {/* 3D-Шоурум - картинка слева */}
           <Card 
-            className="aspect-square bg-muted/50 hover:bg-muted transition-all cursor-pointer border-0"
+            className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
             onClick={() => navigate('/showroom-3d')}
           >
-            <div className="p-4 sm:p-6 h-full flex flex-col">
-              <div className="flex items-start justify-between mb-3 sm:mb-4">
-                <Box className="h-5 w-5 sm:h-7 sm:w-7 text-primary" />
-                <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
-              </div>
-              <div className="flex-1 flex items-center justify-center mb-2 sm:mb-3">
-                <div className="relative">
-                  <div className="w-12 h-6 sm:w-16 sm:h-8 bg-primary/30 rounded-lg shadow-lg" 
-                       style={{ transform: 'perspective(100px) rotateY(-15deg)' }}>
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent rounded-lg" />
-                    <div className="absolute bottom-1 left-2 right-2 h-2 bg-black/20 rounded" />
-                  </div>
-                </div>
-              </div>
-              <div>
-                <h3 className="text-base sm:text-lg font-bold mb-0.5 sm:mb-1 text-foreground">{t('showroom3D')}</h3>
-                <p className="text-[10px] sm:text-xs text-muted-foreground">{t('showroomSubtitle')}</p>
-              </div>
+            <img 
+              src={showroom3dBg} 
+              alt={t('showroom3D')} 
+              className="absolute inset-0 w-full h-full object-cover object-left" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-l from-black/70 via-black/40 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-3">
+              <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">{t('showroom3D')}</h3>
+              <p className="text-[10px] text-white/80 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">{t('showroomSubtitle')}</p>
             </div>
           </Card>
         </div>
