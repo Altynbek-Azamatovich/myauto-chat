@@ -191,35 +191,6 @@ const translations: Translations = {
   // Partner Analytics
   masterWorkload: { ru: 'Загрузка мастеров', kk: 'Шеберлердің жүктемесі', en: 'Master Workload' },
   
-  // About App
-  aboutWelcomeTitle: { ru: 'Добро пожаловать в myAuto!', kk: 'myAuto-ға қош келдіңіз!', en: 'Welcome to myAuto!' },
-  aboutWelcomeText: { ru: 'Ваш умный помощник по уходу за автомобилем.', kk: 'Сіздің ақылды көлік күтімі көмекшісі.', en: 'Your smart car care assistant.' },
-  aboutFeaturesTitle: { ru: 'Основные возможности', kk: 'Негізгі мүмкіндіктер', en: 'Key Features' },
-  aboutFeature1Title: { ru: 'Мониторинг автомобиля', kk: 'Көлікті бақылау', en: 'Car Monitoring' },
-  aboutFeature1Desc: { ru: 'Отслеживайте пробег, техническое состояние и важные даты обслуживания', kk: 'Жүгіріс, техникалық жағдай және қызмет көрсетудің маңызды күндерін қадағалаңыз', en: 'Track mileage, condition and service dates' },
-  aboutFeature2Title: { ru: 'AI-Консультант', kk: 'AI-Консультант', en: 'AI Consultant' },
-  aboutFeature2Desc: { ru: 'Получайте мгновенные ответы на вопросы об обслуживании', kk: 'Қызмет көрсету туралы сұрақтарға жылдам жауаптар алыңыз', en: 'Get instant answers about maintenance' },
-  aboutFeature3Title: { ru: 'Фото-диагностика', kk: 'Фото-диагностика', en: 'Photo Diagnostics' },
-  aboutFeature3Desc: { ru: 'Сфотографируйте повреждение и получите оценку ремонта', kk: 'Зақымдауды суретке түсіріп, жөндеу бағасын алыңыз', en: 'Photo damage and get repair estimate' },
-  aboutFeature4Title: { ru: 'Сервисы', kk: 'Қызметтер', en: 'Services' },
-  aboutFeature4Desc: { ru: 'Быстрый доступ к проверенным автосервисам', kk: 'Тексерілген автосервистерге жылдам қолжетімділік', en: 'Quick access to verified services' },
-  aboutBenefitsTitle: { ru: 'Преимущества', kk: 'Артықшылықтар', en: 'Benefits' },
-  aboutBenefit1: { ru: 'Экономьте время на поиске информации', kk: 'Ақпарат іздеуге уақыт үнемдеңіз', en: 'Save time searching for info' },
-  aboutBenefit2: { ru: 'Никогда не пропускайте важные сроки ТО', kk: 'ТҚ маңызды мерзімдерін ешқашан өткізіп алмаңыз', en: 'Never miss service dates' },
-  aboutBenefit3: { ru: 'Контролируйте расходы на обслуживание', kk: 'Қызмет көрсету шығындарын бақылаңыз', en: 'Control maintenance costs' },
-  aboutBenefit4: { ru: 'Быстрая диагностика проблем', kk: 'Мәселелерді жылдам диагностикалау', en: 'Quick problem diagnosis' },
-  aboutBenefit5: { ru: 'Сообщество автолюбителей', kk: 'Автомобиль әуесқойларының қауымдастығы', en: 'Car enthusiast community' },
-  aboutGuideTitle: { ru: 'Как пользоваться', kk: 'Қалай пайдалану', en: 'How to Use' },
-  aboutStep1Title: { ru: 'Добавьте свой автомобиль', kk: 'Көлігіңізді қосыңыз', en: 'Add your car' },
-  aboutStep1Desc: { ru: 'Внесите данные о марке, модели и пробеге', kk: 'Марка, модель және жүгіріс туралы деректерді енгізіңіз', en: 'Enter make, model and mileage' },
-  aboutStep2Title: { ru: 'Настройте напоминания', kk: 'Еске салғыштарды орнатыңыз', en: 'Set reminders' },
-  aboutStep2Desc: { ru: 'Установите даты замены масла, страховки', kk: 'Май ауыстыру, сақтандыру күндерін белгілеңіз', en: 'Set oil change and insurance dates' },
-  aboutStep3Title: { ru: 'Задавайте вопросы AI', kk: 'AI-ға сұрақтар қойыңыз', en: 'Ask AI questions' },
-  aboutStep3Desc: { ru: 'Получайте консультации по обслуживанию', kk: 'Қызмет көрсету бойынша кеңес алыңыз', en: 'Get maintenance advice' },
-  aboutStep4Title: { ru: 'Используйте фото-диагностику', kk: 'Фото-диагностиканы пайдаланыңыз', en: 'Use photo diagnostics' },
-  aboutStep4Desc: { ru: 'Сфотографируйте проблему и получите рекомендации', kk: 'Мәселені суретке түсіріп, ұсыныстар алыңыз', en: 'Photo issues and get recommendations' },
-  aboutRights: { ru: 'Все права защищены', kk: 'Барлық құқықтар қорғалған', en: 'All rights reserved' },
-  
   // Privacy & Account
   privacyPolicy: { ru: 'Политика конфиденциальности', kk: 'Құпиялылық саясаты', en: 'Privacy Policy' },
   dangerZone: { ru: 'Опасная зона', kk: 'Қауіпті аймақ', en: 'Danger Zone' },
@@ -342,7 +313,7 @@ const translations: Translations = {
   home: { ru: 'Главная', kk: 'Басты', en: 'Home' },
   services: { ru: 'Сервисы', kk: 'Қызметтер', en: 'Services' },
   photoDiagnostics: { ru: 'Фото диагностика', kk: 'Фото диагностика', en: 'Photo Diagnostics' },
-  superChat: { ru: 'Супер Чат', kk: 'Супер Чат', en: 'Super Chat' },
+  superChat: { ru: 'Чат', kk: 'Чат', en: 'Chat' },
   
   // Photo Diagnostics
   comingSoon: { ru: 'Скоро!', kk: 'Жақында!', en: 'Coming Soon!' },
@@ -454,6 +425,7 @@ const translations: Translations = {
   // Under Development
   underDevelopmentTitle: { ru: 'Раздел в разработке', kk: 'Бөлім әзірленуде', en: 'Under Development' },
   underDevelopmentDesc: { ru: 'Мы усердно работаем над этим разделом, чтобы предоставить вам лучший сервис. Совсем скоро здесь появится что-то интересное!', kk: 'Біз сізге ең жақсы қызметті ұсыну үшін осы бөлімде жұмыс істеп жатырмыз. Жақында мұнда қызықты нәрсе пайда болады!', en: 'We are working hard on this section to provide you the best service. Something interesting will appear here soon!' },
+  underDevelopmentDescShort: { ru: 'Мы усердно работаем над этим разделом, чтобы предоставить вам лучший сервис.', kk: 'Біз сізге ең жақсы қызметті ұсыну үшін осы бөлімде жұмыс істеп жатырмыз.', en: 'We are working hard on this section to provide you the best service.' },
   supportProject: { ru: 'Поддержать проект', kk: 'Жобаны қолдау', en: 'Support Project' },
   supportProjectDesc: { ru: 'Ваша поддержка поможет нам быстрее развивать приложение', kk: 'Сіздің қолдауыңыз қосымшаны тезірек дамытуға көмектеседі', en: 'Your support helps us develop the app faster' },
   
@@ -468,6 +440,49 @@ const translations: Translations = {
   soonNews: { ru: 'Скоро: новости автомира и обновления приложения', kk: 'Жақында: автоәлем жаңалықтары мен қосымша жаңартулары', en: 'Coming soon: auto world news and app updates' },
   soonShowroom: { ru: 'Скоро: виртуальный осмотр автомобилей', kk: 'Жақында: автомобильдерді виртуалды қарау', en: 'Coming soon: virtual car viewing' },
   soonAutoShops: { ru: 'Скоро: автомагазины рядом с вами', kk: 'Жақында: сіздің жаныңыздағы автодүкендер', en: 'Coming soon: auto shops near you' },
+  
+  // About App - New
+  aboutTagline: { ru: 'Твой автомобиль в одном приложении', kk: 'Сіздің автомобиліңіз бір қосымшада', en: 'Your car in one app' },
+  aboutDescription: { ru: 'myauto — это единая цифровая экосистема для автовладельцев Казахстана. Мы создали этот сервис, чтобы избавить вас от рутины, бумажной волокиты и бесконечного поиска нужных контактов.', kk: 'myauto — Қазақстан автоиелеріне арналған біртұтас цифрлық экожүйе. Біз бұл қызметті сізді күнделікті жұмыстан, қағаз жұмыстарынан және қажетті байланыстарды шексіз іздеуден құтқару үшін жасадық.', en: 'myauto is a unified digital ecosystem for car owners in Kazakhstan. We created this service to save you from routine, paperwork and endless search for needed contacts.' },
+  aboutBenefit1Title: { ru: 'Мгновенная регистрация', kk: 'Лезде тіркеу', en: 'Instant Registration' },
+  aboutBenefit1Desc: { ru: 'Забудьте о ручном вводе данных. Просто введите госномер, и мы сами подтянем технические характеристики авто через государственные базы данных.', kk: 'Деректерді қолмен енгізуді ұмытыңыз. Мемлекеттік нөмірді енгізіңіз, біз мемлекеттік дерекқорлар арқылы авто техникалық сипаттамаларын аламыз.', en: 'Forget manual data entry. Just enter license plate, and we will pull vehicle specs through government databases.' },
+  aboutBenefit2Title: { ru: 'Прозрачная история', kk: 'Ашық тарих', en: 'Transparent History' },
+  aboutBenefit2Desc: { ru: 'Узнавайте о штрафах, истории ДТП и технических параметрах автомобиля в режиме реального времени.', kk: 'Айыппұлдар, ЖКО тарихы және автомобильдің техникалық параметрлері туралы нақты уақытта біліңіз.', en: 'Learn about fines, accident history and vehicle specifications in real time.' },
+  aboutBenefit3Title: { ru: 'Сервис под рукой', kk: 'Қолыңыздағы сервис', en: 'Service at Hand' },
+  aboutBenefit3Desc: { ru: 'Найдите проверенные СТО, автомойки и магазины запчастей, экономя свое время.', kk: 'Уақытыңызды үнемдей отырып, тексерілген СТО, автожуғыштар мен бөлшек дүкендерін табыңыз.', en: 'Find verified service centers, car washes and parts stores, saving your time.' },
+  aboutMissionTitle: { ru: 'Наша миссия', kk: 'Біздің миссия', en: 'Our Mission' },
+  aboutMissionDesc: { ru: 'Мы верим, что владение автомобилем в Казахстане должно быть комфортным и прозрачным. Мы объединяем государственные технологии и частный сектор, чтобы у вас в кармане был личный авто-ассистент, который знает о машине всё.', kk: 'Біз Қазақстанда автомобиль иелену ыңғайлы және ашық болуы керек деп сенеміз. Біз мемлекеттік технологиялар мен жеке секторды біріктіріп, қалтаңызда көлік туралы бәрін білетін жеке авто-көмекші болуы үшін жұмыс істейміз.', en: 'We believe car ownership in Kazakhstan should be comfortable and transparent. We combine government technologies and private sector so you have a personal car assistant in your pocket who knows everything about your vehicle.' },
+  aboutSecurityTitle: { ru: 'Безопасность и данные', kk: 'Қауіпсіздік және деректер', en: 'Security & Data' },
+  aboutSecurityDesc: { ru: 'Мы работаем в рамках законодательства РК. Все данные передаются по защищенным протоколам и используются исключительно для вашего удобства. Мы не передаем персональные данные третьим лицам без вашего согласия.', kk: 'Біз ҚР заңнамасы шеңберінде жұмыс істейміз. Барлық деректер қорғалған хаттамалар арқылы беріледі және тек сіздің ыңғайлылығыңыз үшін пайдаланылады. Біз сіздің келісіміңізсіз жеке деректерді үшінші тұлғаларға бермейміз.', en: 'We operate within Kazakhstan legislation. All data is transmitted via secure protocols and used exclusively for your convenience. We do not share personal data with third parties without your consent.' },
+  aboutDeveloper: { ru: 'Разработчик: Команда myauto', kk: 'Әзірлеуші: myauto командасы', en: 'Developer: myauto Team' },
+  aboutVersion: { ru: 'Версия: 1.0.1 (Beta)', kk: 'Нұсқа: 1.0.1 (Beta)', en: 'Version: 1.0.1 (Beta)' },
+  aboutContact: { ru: 'Связь с нами: info@myautoplus.kz', kk: 'Байланыс: info@myautoplus.kz', en: 'Contact us: info@myautoplus.kz' },
+  
+  // Logout
+  logoutFromAccount: { ru: 'Выйти из аккаунта', kk: 'Аккаунттан шығу', en: 'Log Out' },
+  logoutConfirmTitle: { ru: 'Выйти из аккаунта?', kk: 'Аккаунттан шығу керек пе?', en: 'Log out?' },
+  logoutConfirmDesc: { ru: 'Вы уверены, что хотите выйти?', kk: 'Шығуға сенімдісіз бе?', en: 'Are you sure you want to log out?' },
+  yesExit: { ru: 'Да, выйти', kk: 'Иә, шығу', en: 'Yes, log out' },
+  no: { ru: 'Нет', kk: 'Жоқ', en: 'No' },
+  
+  // Cart
+  clear: { ru: 'Очистить', kk: 'Тазалау', en: 'Clear' },
+  addServicesToCart: { ru: 'Добавьте услуги в корзину', kk: 'Себетке қызметтерді қосыңыз', en: 'Add services to cart' },
+  goToServices: { ru: 'Перейти к услугам', kk: 'Қызметтерге өту', en: 'Go to Services' },
+  total: { ru: 'Итого', kk: 'Барлығы', en: 'Total' },
+  processing: { ru: 'Оформление...', kk: 'Ресімдеу...', en: 'Processing...' },
+  checkout: { ru: 'Оформить заказ', kk: 'Тапсырысты ресімдеу', en: 'Checkout' },
+  
+  // SuperChat Archive
+  archive: { ru: 'Архив', kk: 'Мұрағат', en: 'Archive' },
+  archiveEmpty: { ru: 'Архив пуст', kk: 'Мұрағат бос', en: 'Archive is empty' },
+  archiveEmptyDesc: { ru: 'Ваши разговоры с ИИ будут сохраняться здесь автоматически', kk: 'Сіздің AI-мен сөйлесулеріңіз осы жерде автоматты түрде сақталады', en: 'Your AI conversations will be saved here automatically' },
+  messages: { ru: 'сообщений', kk: 'хабарлама', en: 'messages' },
+  continueConversation: { ru: 'Продолжить разговор', kk: 'Әңгімені жалғастыру', en: 'Continue Conversation' },
+  conversationResumed: { ru: 'Разговор возобновлён', kk: 'Әңгіме жалғасты', en: 'Conversation resumed' },
+  sessionDeleted: { ru: 'Сессия удалена', kk: 'Сессия жойылды', en: 'Session deleted' },
+  deleteError: { ru: 'Ошибка удаления', kk: 'Жою қатесі', en: 'Delete error' },
+  voiceInDevelopment: { ru: 'Голосовой ввод в разработке', kk: 'Дауыстық енгізу әзірленуде', en: 'Voice input in development' },
 };
 
 interface LanguageContextType {
