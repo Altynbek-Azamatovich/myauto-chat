@@ -53,6 +53,7 @@ const Home = () => {
   const [primaryVehicle, setPrimaryVehicle] = useState<Vehicle | null>(null);
   const [brandName, setBrandName] = useState<string>('');
   const [isTuningMode, setIsTuningMode] = useState(false);
+  const [infoEnterNonce, setInfoEnterNonce] = useState(0);
   const {
     t,
     language
@@ -69,6 +70,10 @@ const Home = () => {
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
+
+  useEffect(() => {
+    if (!isTuningMode) setInfoEnterNonce((n) => n + 1);
+  }, [isTuningMode]);
   useEffect(() => {
     checkAuthAndFetchData();
   }, []);
@@ -204,10 +209,10 @@ const Home = () => {
       </div>
 
       {/* Content - either Car Info or Tuning Section */}
-      {isTuningMode ? (
-        <TuningSection onClose={() => setIsTuningMode(false)} />
-      ) : (
-        <div className="animate-fade-in">
+       {isTuningMode ? (
+         <TuningSection onClose={() => setIsTuningMode(false)} />
+       ) : (
+         <div key={infoEnterNonce} className="animate-[fade-in_0.6s_ease-out]">
       {/* Car Info Cards */}
       <div className="px-4 space-y-4 mt-3">
       <div className="grid grid-cols-2 gap-4">
