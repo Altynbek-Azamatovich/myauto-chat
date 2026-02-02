@@ -16,12 +16,6 @@ const row3Brands = [
   'tesla', 'rivian', 'lucid', 'lotus', 'mini', 'smart', 'maybach', 'koenigsegg', 'pagani', 'rimac'
 ];
 
-// Row 4: 20 more brands
-const row4Brands = [
-  'pontiac', 'oldsmobile', 'mercury', 'hummer', 'saturn', 'scion', 'daewoo', 'ssangyong', 'proton', 'perodua',
-  'tata', 'mahindra', 'maruti', 'geely', 'byd', 'nio', 'xpeng', 'haval', 'chery', 'great-wall'
-];
-
 const getLogoUrl = (brand: string) => {
   return `https://www.carlogos.org/car-logos/${brand}-logo.png`;
 };
@@ -44,7 +38,7 @@ const MarqueeRow = ({ brands, direction }: MarqueeRowProps) => {
       {brands.map((brand, idx) => (
         <div 
           key={idx} 
-          className="flex-shrink-0 w-6 h-6 flex items-center justify-center"
+          className="flex-shrink-0 w-7 h-7 flex items-center justify-center"
         >
           <img 
             src={getLogoUrl(brand)} 
@@ -62,7 +56,7 @@ export const AutoForumMarquee = () => {
   return (
     <div className="absolute inset-0 overflow-hidden bg-gradient-to-br from-primary/90 via-primary/70 to-accent/80">
       {/* Rows container - centered vertically */}
-      <div className="absolute inset-0 flex flex-col items-start justify-center gap-1 py-3">
+      <div className="absolute inset-0 flex flex-col items-start justify-center gap-2 py-3">
         {/* Row 1 - left to right */}
         <div className="overflow-hidden w-full">
           <MarqueeRow brands={row1Brands} direction="ltr" />
@@ -74,10 +68,6 @@ export const AutoForumMarquee = () => {
         {/* Row 3 - left to right */}
         <div className="overflow-hidden w-full">
           <MarqueeRow brands={row3Brands} direction="ltr" />
-        </div>
-        {/* Row 4 - right to left */}
-        <div className="overflow-hidden w-full">
-          <MarqueeRow brands={row4Brands} direction="rtl" />
         </div>
       </div>
       
