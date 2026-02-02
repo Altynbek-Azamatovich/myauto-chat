@@ -7,7 +7,7 @@ const PartsDismantling = () => {
   return (
     <UnderDevelopment 
       title={t('partsDismantling')}
-      subtitle="Скоро: б/у запчасти по выгодным ценам"
+      subtitle={t('soonUsedParts')}
     />
   );
 };

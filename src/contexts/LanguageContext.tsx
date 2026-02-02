@@ -450,6 +450,24 @@ const translations: Translations = {
   failedToLoadVehicles: { ru: 'Ошибка загрузки автомобилей', kk: 'Көліктерді жүктеу қатесі', en: 'Failed to load vehicles' },
   failedToLoadMasters: { ru: 'Ошибка загрузки мастеров', kk: 'Шеберлерді жүктеу қатесі', en: 'Failed to load masters' },
   notAuthenticated: { ru: 'Не авторизован', kk: 'Авторизацияланбаған', en: 'Not authenticated' },
+  
+  // Under Development
+  underDevelopmentTitle: { ru: 'Раздел в разработке', kk: 'Бөлім әзірленуде', en: 'Under Development' },
+  underDevelopmentDesc: { ru: 'Мы усердно работаем над этим разделом, чтобы предоставить вам лучший сервис. Совсем скоро здесь появится что-то интересное!', kk: 'Біз сізге ең жақсы қызметті ұсыну үшін осы бөлімде жұмыс істеп жатырмыз. Жақында мұнда қызықты нәрсе пайда болады!', en: 'We are working hard on this section to provide you the best service. Something interesting will appear here soon!' },
+  supportProject: { ru: 'Поддержать проект', kk: 'Жобаны қолдау', en: 'Support Project' },
+  supportProjectDesc: { ru: 'Ваша поддержка поможет нам быстрее развивать приложение', kk: 'Сіздің қолдауыңыз қосымшаны тезірек дамытуға көмектеседі', en: 'Your support helps us develop the app faster' },
+  
+  // Service subtitles
+  soonUsedParts: { ru: 'Скоро: б/у запчасти по выгодным ценам', kk: 'Жақында: тиімді бағамен б/ү бөлшектер', en: 'Coming soon: used parts at great prices' },
+  soonCarWashes: { ru: 'Скоро: автомойки рядом с вами', kk: 'Жақында: сіздің жаныңыздағы автожуғыштар', en: 'Coming soon: car washes near you' },
+  soonPaintShop: { ru: 'Скоро: покраска и кузовной ремонт', kk: 'Жақында: бояу және шанақ жөндеу', en: 'Coming soon: painting and body repair' },
+  soonDetailing: { ru: 'Скоро: профессиональный детейлинг', kk: 'Жақында: кәсіби детейлинг', en: 'Coming soon: professional detailing' },
+  soonAutoServices: { ru: 'Скоро: запись на СТО онлайн', kk: 'Жақында: СТО-ға онлайн жазылу', en: 'Coming soon: online service booking' },
+  soonAutoForum: { ru: 'Скоро: обсуждения, советы и опыт автолюбителей', kk: 'Жақында: талқылаулар, кеңестер және автосүйгіштер тәжірибесі', en: 'Coming soon: discussions, tips and car enthusiasts experience' },
+  soonCatalog: { ru: 'Скоро: каталог автозапчастей', kk: 'Жақында: автобөлшектер каталогы', en: 'Coming soon: auto parts catalog' },
+  soonNews: { ru: 'Скоро: новости автомира и обновления приложения', kk: 'Жақында: автоәлем жаңалықтары мен қосымша жаңартулары', en: 'Coming soon: auto world news and app updates' },
+  soonShowroom: { ru: 'Скоро: виртуальный осмотр автомобилей', kk: 'Жақында: автомобильдерді виртуалды қарау', en: 'Coming soon: virtual car viewing' },
+  soonAutoShops: { ru: 'Скоро: автомагазины рядом с вами', kk: 'Жақында: сіздің жаныңыздағы автодүкендер', en: 'Coming soon: auto shops near you' },
 };
 
 interface LanguageContextType {

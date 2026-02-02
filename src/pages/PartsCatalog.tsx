@@ -7,7 +7,7 @@ const PartsCatalog = () => {
   return (
     <UnderDevelopment 
       title={t('catalog')}
-      subtitle="Скоро: каталог автозапчастей"
+      subtitle={t('soonCatalog')}
     />
   );
 };

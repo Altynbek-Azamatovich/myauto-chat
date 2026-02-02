@@ -1,10 +1,13 @@
 import { UnderDevelopment } from "@/components/UnderDevelopment";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Showroom3D = () => {
+  const { t } = useLanguage();
+  
   return (
     <UnderDevelopment 
-      title="3D Шоурум"
-      subtitle="Скоро: виртуальный осмотр автомобилей"
+      title={t('showroom3D')}
+      subtitle={t('soonShowroom')}
     />
   );
 };
