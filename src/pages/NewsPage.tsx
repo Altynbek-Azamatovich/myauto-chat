@@ -1,10 +1,13 @@
 import { UnderDevelopment } from "@/components/UnderDevelopment";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const NewsPage = () => {
+  const { t } = useLanguage();
+  
   return (
     <UnderDevelopment 
-      title="Новости"
-      subtitle="Скоро: новости автомира и обновления приложения"
+      title={t('news')}
+      subtitle={t('soonNews')}
     />
   );
 };
