@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Edit2, Trash2, Check, ChevronsUpDown } from 'lucide-react';
+import { ArrowLeft, Plus, Edit2, Check, ChevronsUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,6 +15,7 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { carBrands, getCarModels } from '@/data/car-brands';
 import { carColors } from '@/data/car-colors';
+import { SwipeableItem } from '@/components/SwipeableItem';
 
 interface Vehicle {
   id: string;
@@ -592,51 +592,46 @@ export default function MyVehicles() {
           vehicles.map((vehicle) => {
             const brand = carBrandsDb.find(b => b.id === vehicle.brand_id);
             return (
-              <Card key={vehicle.id} className="p-4">
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <h3 className="font-semibold text-lg">
-                      {brand?.brand_name} {vehicle.model}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">{vehicle.year}</p>
-                    {vehicle.is_primary && (
-                      <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full mt-1 inline-block">
-                        {t('isPrimary')}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex gap-2">
+              <SwipeableItem
+                key={vehicle.id}
+                onDelete={() => setDeleteVehicleId(vehicle.id)}
+              >
+                <div className="p-4 bg-muted/20 rounded-2xl">
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <h3 className="font-semibold text-base">
+                        {brand?.brand_name} {vehicle.model}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">{vehicle.year}</p>
+                      {vehicle.is_primary && (
+                        <span className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded-full mt-1 inline-block">
+                          {t('isPrimary')}
+                        </span>
+                      )}
+                    </div>
                     <Button
                       size="icon"
                       variant="ghost"
                       onClick={() => openEditDialog(vehicle)}
-                      className="h-8 w-8"
+                      className="h-8 w-8 rounded-full"
                     >
                       <Edit2 className="h-4 w-4" />
                     </Button>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={() => setDeleteVehicleId(vehicle.id)}
-                      className="h-8 w-8"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    {vehicle.color && (
+                      <p><span className="text-muted-foreground">{t('carColor')}:</span> {vehicle.color}</p>
+                    )}
+                    {vehicle.license_plate && (
+                      <p><span className="text-muted-foreground">{t('plate')}:</span> {vehicle.license_plate}</p>
+                    )}
+                    {vehicle.vin && (
+                      <p><span className="text-muted-foreground">{t('vin')}:</span> {vehicle.vin}</p>
+                    )}
+                    <p><span className="text-muted-foreground">{t('vehicleMileage')}:</span> {vehicle.mileage} км</p>
                   </div>
                 </div>
-                <div className="space-y-1 text-sm">
-                  {vehicle.color && (
-                    <p><span className="text-muted-foreground">{t('carColor')}:</span> {vehicle.color}</p>
-                  )}
-                  {vehicle.license_plate && (
-                    <p><span className="text-muted-foreground">{t('plate')}:</span> {vehicle.license_plate}</p>
-                  )}
-                  {vehicle.vin && (
-                    <p><span className="text-muted-foreground">{t('vin')}:</span> {vehicle.vin}</p>
-                  )}
-                  <p><span className="text-muted-foreground">{t('vehicleMileage')}:</span> {vehicle.mileage} км</p>
-                </div>
-              </Card>
+              </SwipeableItem>
             );
           })
         )}
