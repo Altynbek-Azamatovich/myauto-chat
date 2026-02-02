@@ -7,7 +7,7 @@ const AutoShops = () => {
   return (
     <UnderDevelopment 
       title={t('autoShops')}
-      subtitle="Скоро: каталог проверенных автомагазинов вашего города"
+      subtitle={t('soonAutoShops')}
     />
   );
 };

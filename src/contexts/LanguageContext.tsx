@@ -453,21 +453,31 @@ const translations: Translations = {
   
   // Under Development
   underDevelopmentTitle: { ru: 'Раздел в разработке', kk: 'Бөлім әзірленуде', en: 'Under Development' },
-  underDevelopmentDesc: { ru: 'Мы усердно работаем над этим разделом, чтобы предоставить вам лучший сервис. Совсем скоро здесь появится что-то интересное!', kk: 'Біз сізге ең жақсы қызметті ұсыну үшін осы бөлімде жұмыс істеп жатырмыз. Жақында мұнда қызықты нәрсе пайда болады!', en: 'We are working hard on this section to provide you the best service. Something interesting will appear here soon!' },
   supportProject: { ru: 'Поддержать проект', kk: 'Жобаны қолдау', en: 'Support Project' },
   supportProjectDesc: { ru: 'Ваша поддержка поможет нам быстрее развивать приложение', kk: 'Сіздің қолдауыңыз қосымшаны тезірек дамытуға көмектеседі', en: 'Your support helps us develop the app faster' },
   
   // Service subtitles
-  soonUsedParts: { ru: 'Скоро: б/у запчасти по выгодным ценам', kk: 'Жақында: тиімді бағамен б/ү бөлшектер', en: 'Coming soon: used parts at great prices' },
-  soonCarWashes: { ru: 'Скоро: автомойки рядом с вами', kk: 'Жақында: сіздің жаныңыздағы автожуғыштар', en: 'Coming soon: car washes near you' },
-  soonPaintShop: { ru: 'Скоро: покраска и кузовной ремонт', kk: 'Жақында: бояу және шанақ жөндеу', en: 'Coming soon: painting and body repair' },
-  soonDetailing: { ru: 'Скоро: профессиональный детейлинг', kk: 'Жақында: кәсіби детейлинг', en: 'Coming soon: professional detailing' },
-  soonAutoServices: { ru: 'Скоро: запись на СТО онлайн', kk: 'Жақында: СТО-ға онлайн жазылу', en: 'Coming soon: online service booking' },
-  soonAutoForum: { ru: 'Скоро: обсуждения, советы и опыт автолюбителей', kk: 'Жақында: талқылаулар, кеңестер және автосүйгіштер тәжірибесі', en: 'Coming soon: discussions, tips and car enthusiasts experience' },
-  soonCatalog: { ru: 'Скоро: каталог автозапчастей', kk: 'Жақында: автобөлшектер каталогы', en: 'Coming soon: auto parts catalog' },
-  soonNews: { ru: 'Скоро: новости автомира и обновления приложения', kk: 'Жақында: автоәлем жаңалықтары мен қосымша жаңартулары', en: 'Coming soon: auto world news and app updates' },
-  soonShowroom: { ru: 'Скоро: виртуальный осмотр автомобилей', kk: 'Жақында: автомобильдерді виртуалды қарау', en: 'Coming soon: virtual car viewing' },
-  soonAutoShops: { ru: 'Скоро: автомагазины рядом с вами', kk: 'Жақында: сіздің жаныңыздағы автодүкендер', en: 'Coming soon: auto shops near you' },
+  soonUsedParts: { ru: 'Б/у запчасти по выгодным ценам', kk: 'Тиімді бағамен б/ү бөлшектер', en: 'Used parts at great prices' },
+  soonCarWashes: { ru: 'Автомойки рядом с вами', kk: 'Сіздің жаныңыздағы автожуғыштар', en: 'Car washes near you' },
+  soonPaintShop: { ru: 'Покраска и кузовной ремонт', kk: 'Бояу және шанақ жөндеу', en: 'Painting and body repair' },
+  soonDetailing: { ru: 'Профессиональный детейлинг', kk: 'Кәсіби детейлинг', en: 'Professional detailing' },
+  soonAutoServices: { ru: 'Запись на СТО онлайн', kk: 'СТО-ға онлайн жазылу', en: 'Online service booking' },
+  soonAutoForum: { ru: 'Обсуждения, советы и опыт автолюбителей', kk: 'Талқылаулар, кеңестер және автосүйгіштер тәжірибесі', en: 'Discussions, tips and car enthusiasts experience' },
+  soonCatalog: { ru: 'Каталог автозапчастей', kk: 'Автобөлшектер каталогы', en: 'Auto parts catalog' },
+  soonNews: { ru: 'Новости автомира', kk: 'Автоәлем жаңалықтары', en: 'Auto world news' },
+  soonShowroom: { ru: 'Виртуальный осмотр автомобилей', kk: 'Автомобильдерді виртуалды қарау', en: 'Virtual car viewing' },
+  soonAutoShops: { ru: 'Автомагазины рядом с вами', kk: 'Сіздің жаныңыздағы автодүкендер', en: 'Auto shops near you' },
+  
+  // About App new translations
+  aboutVersion: { ru: 'Версия 1.2.0', kk: '1.2.0 нұсқасы', en: 'Version 1.2.0' },
+  aboutDescription: { ru: 'Умный помощник по уходу за вашим автомобилем. Отслеживайте ТО, получайте напоминания и находите лучшие сервисы рядом.', kk: 'Көлігіңізге күтім жасаудағы ақылды көмекші. ТҚ-ны бақылаңыз, еске салғыштар алыңыз және жақын жердегі үздік сервистерді табыңыз.', en: 'Smart assistant for your car care. Track maintenance, get reminders and find the best services nearby.' },
+  aboutUpdatesTitle: { ru: 'Последние обновления', kk: 'Соңғы жаңартулар', en: 'Recent Updates' },
+  aboutUpdateDate1: { ru: 'Январь 2025', kk: 'Қаңтар 2025', en: 'January 2025' },
+  aboutUpdate1: { ru: 'Добавлена AI фото-диагностика повреждений, обновленный интерфейс и поддержка английского языка', kk: 'AI зақым фото-диагностикасы, жаңартылған интерфейс және ағылшын тілін қолдау қосылды', en: 'Added AI photo damage diagnostics, updated interface and English language support' },
+  aboutUpdateDate2: { ru: 'Декабрь 2024', kk: 'Желтоқсан 2024', en: 'December 2024' },
+  aboutUpdate2: { ru: 'Новый AI-чат консультант, история обслуживания и управление несколькими автомобилями', kk: 'Жаңа AI-чат консультант, қызмет көрсету тарихы және бірнеше көлікті басқару', en: 'New AI chat consultant, service history and multiple vehicle management' },
+  aboutUpdateDate3: { ru: 'Ноябрь 2024', kk: 'Қараша 2024', en: 'November 2024' },
+  aboutUpdate3: { ru: 'Запуск приложения с основными функциями мониторинга автомобиля', kk: 'Көлікті бақылаудың негізгі функцияларымен қосымшаны іске қосу', en: 'App launch with core car monitoring features' },
 };
 
 interface LanguageContextType {
