@@ -129,7 +129,7 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
               </div>
 
               {/* Settings Section */}
-              <div className="px-3 mt-4 space-y-0.5">
+              <div className="px-3 mt-2 space-y-0.5">
                 {settingsItems.map((item) => (
                   <button
                     key={item.path}
