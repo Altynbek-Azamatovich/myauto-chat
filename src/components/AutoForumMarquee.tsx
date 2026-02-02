@@ -54,7 +54,7 @@ const MarqueeRow = ({ brands, direction }: MarqueeRowProps) => {
 
 export const AutoForumMarquee = () => {
   return (
-    <div className="absolute inset-0 overflow-hidden bg-gradient-to-br from-zinc-500 via-zinc-400 to-zinc-500">
+    <div className="absolute inset-0 overflow-hidden bg-gradient-to-br from-zinc-400 via-zinc-300 to-zinc-400">
       {/* Rows container - centered vertically with slight offset down */}
       <div className="absolute inset-0 flex flex-col items-start justify-center gap-2 py-4 pt-6">
         {/* Row 1 - left to right */}
