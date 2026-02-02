@@ -44,7 +44,7 @@ const BottomNavigation = () => {
   }];
   const isActive = (path: string) => location.pathname === path;
   const isChatActive = location.pathname === "/super-chat";
-  return <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
+  return <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-[9999]">
       <div className="flex items-center space-x-4">
         {/* Main navigation buttons */}
         <div className="flex items-center bg-black/15 backdrop-blur-[2px] rounded-full p-3 min-w-[220px]">

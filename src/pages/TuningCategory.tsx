@@ -1,7 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 // Import animation assets
 import carImage from "@/assets/cars/sedan/red-sedan.png";
@@ -21,18 +20,22 @@ const categoryTitles: Record<string, string> = {
 const TuningCategory = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const navigate = useNavigate();
-  const { t } = useLanguage();
 
   const title = categoryId ? categoryTitles[categoryId] || "Тюнинг" : "Тюнинг";
 
+  const handleBack = () => {
+    // Return to Home with tuning mode active
+    navigate('/', { state: { tuningMode: true } });
+  };
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       {/* Header with back button */}
       <header className="flex items-center px-4 py-4 relative z-10">
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate(-1)}
+          onClick={handleBack}
           className="rounded-full hover:bg-muted/30"
         >
           <ArrowLeft className="h-6 w-6" />
@@ -43,27 +46,21 @@ const TuningCategory = () => {
       </header>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 pb-24">
+      <div className="flex-1 flex flex-col items-center justify-center px-4">
         {/* Animation container */}
-        <div className="relative w-full h-48 mb-8 overflow-hidden">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <img
-              src={carImage}
-              alt="Car"
-              className="h-32 object-contain animate-[slide-in-right_2s_ease-out_infinite]"
-              style={{
-                animation: "carSlide 4s ease-in-out infinite",
-              }}
-            />
-            <img
-              src={constructionBarrier}
-              alt="Under Construction"
-              className="absolute h-20 object-contain"
-              style={{
-                animation: "barrierSlide 4s ease-in-out infinite",
-              }}
-            />
-          </div>
+        <div className="relative w-full max-w-sm h-64 mb-8">
+          {/* Car animation */}
+          <img
+            src={carImage}
+            alt="Car"
+            className="absolute left-0 h-32 object-contain animate-car-slide"
+          />
+          {/* Barrier animation */}
+          <img
+            src={constructionBarrier}
+            alt="Under Construction"
+            className="absolute right-0 h-24 object-contain animate-barrier-slide"
+          />
         </div>
 
         {/* Text */}
@@ -89,41 +86,57 @@ const TuningCategory = () => {
       {/* Custom animation styles */}
       <style>{`
         @keyframes carSlide {
-          0%, 100% {
-            transform: translateX(100%);
+          0% {
+            transform: translateX(-100%);
             opacity: 0;
           }
           20% {
-            transform: translateX(0);
+            transform: translateX(20%);
             opacity: 1;
           }
           50% {
-            transform: translateX(0);
+            transform: translateX(20%);
             opacity: 1;
           }
-          70% {
+          80% {
+            transform: translateX(20%);
+            opacity: 1;
+          }
+          100% {
             transform: translateX(-100%);
             opacity: 0;
           }
         }
         
         @keyframes barrierSlide {
-          0%, 100% {
-            transform: translateX(-100%);
-            opacity: 0;
-          }
-          20% {
-            transform: translateX(0);
-            opacity: 1;
-          }
-          50% {
-            transform: translateX(0);
-            opacity: 1;
-          }
-          70% {
+          0% {
             transform: translateX(100%);
             opacity: 0;
           }
+          20% {
+            transform: translateX(-20%);
+            opacity: 1;
+          }
+          50% {
+            transform: translateX(-20%);
+            opacity: 1;
+          }
+          80% {
+            transform: translateX(-20%);
+            opacity: 1;
+          }
+          100% {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+        }
+        
+        .animate-car-slide {
+          animation: carSlide 5s ease-in-out infinite;
+        }
+        
+        .animate-barrier-slide {
+          animation: barrierSlide 5s ease-in-out infinite;
         }
       `}</style>
     </div>
