@@ -137,7 +137,7 @@ export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
         }
       `}</style>
       
-      <div className="flex justify-between w-full overflow-hidden pb-1">
+      <div className="grid grid-cols-4 gap-1 w-full overflow-hidden pb-1">
         {stories.map((story) => (
           <button
             key={story.id}
@@ -145,14 +145,14 @@ export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
               setSelectedStory(story.id);
               setProgress(0);
             }}
-            className="flex-shrink-0 flex flex-col items-center"
+            className="flex flex-col items-center justify-center"
           >
             {/* Spinning border - subtle */}
-            <div className="relative w-[68px] h-[68px] sm:w-[76px] sm:h-[76px]">
+            <div className="relative w-[72px] h-[72px] sm:w-[80px] sm:h-[80px] md:w-[88px] md:h-[88px]">
               <SpinningBorder />
-              {/* Inner circle with darker gray background and marquee text */}
+              {/* Inner circle with dark gray background and marquee text */}
               <div className="absolute inset-[2px] rounded-full bg-background">
-                <div className="absolute inset-[2px] rounded-full bg-muted overflow-hidden">
+                <div className="absolute inset-[2px] rounded-full bg-zinc-600 dark:bg-zinc-700 overflow-hidden">
                   <MarqueeText text={story.title} />
                 </div>
               </div>
