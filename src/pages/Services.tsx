@@ -42,7 +42,7 @@ const Services = () => {
         title: 'Поддержите проект',
         subtitle: 'Помогите нам развивать myauto и делать его лучше для всех автолюбителей',
         buttonText: 'Поддержать проект',
-        buttonUrl: 'https://kaspi.kz/pay/myauto'
+        buttonUrl: 'https://pay.kaspi.kz/pay/devnqngt'
       }
     },
     {
