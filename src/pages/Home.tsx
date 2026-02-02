@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { Menu, Bell, RotateCcw, AlertTriangle, Clock, HeartPulse, CalendarIcon, Edit, Droplet, RotateCw } from "lucide-react";
+import { useLocation } from "react-router-dom";
+import { Menu, Bell, RotateCcw, AlertTriangle, Clock, HeartPulse, CalendarIcon, Edit, Droplet } from "lucide-react";
+import icon360 from "@/assets/360-icon.png";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -56,7 +58,17 @@ const Home = () => {
     language
   } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
   const { unreadCount } = useNotifications();
+
+  // Handle returning from tuning category page
+  useEffect(() => {
+    if (location.state?.tuningMode) {
+      setIsTuningMode(true);
+      // Clear the state to prevent it from persisting on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
   useEffect(() => {
     checkAuthAndFetchData();
   }, []);
@@ -174,17 +186,20 @@ const Home = () => {
         <button 
           onClick={() => setIsTuningMode(!isTuningMode)} 
           className={cn(
-            "absolute -bottom-2 right-2 sm:right-4 flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300",
+            "absolute -bottom-2 right-4 w-14 h-14 rounded-full transition-all duration-300 overflow-hidden",
             isTuningMode 
-              ? "bg-foreground text-background" 
-              : "bg-background/80 backdrop-blur-sm text-foreground border border-border/50"
+              ? "ring-2 ring-foreground ring-offset-2 ring-offset-background" 
+              : "ring-1 ring-border/30"
           )}
         >
-          <RotateCw className={cn(
-            "h-5 w-5 transition-transform duration-500",
-            isTuningMode && "rotate-180"
-          )} />
-          <span className="text-sm font-medium">360°</span>
+          <img 
+            src={icon360} 
+            alt="360" 
+            className={cn(
+              "w-full h-full object-cover transition-transform duration-500",
+              isTuningMode && "scale-110"
+            )} 
+          />
         </button>
       </div>
 
