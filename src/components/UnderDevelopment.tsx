@@ -42,28 +42,29 @@ export const UnderDevelopment = ({ title, subtitle, backPath = '/services' }: Un
 
         {/* Text */}
         <h2 className="text-2xl font-bold mb-3">
-          {t('underDevelopmentTitle')}
+          {t('underDevelopmentTitle') || 'Раздел в разработке'}
         </h2>
         <p className="text-muted-foreground mb-2 max-w-sm leading-relaxed">
-          {t('underDevelopmentDescShort')}
+          {t('underDevelopmentDesc') || 'Мы усердно работаем над этим разделом, чтобы предоставить вам лучший сервис. Совсем скоро здесь появится что-то интересное!'}
         </p>
         {subtitle && (
           <p className="text-sm text-muted-foreground/70 mb-8">{subtitle}</p>
         )}
 
         {/* Support Button */}
-        <div className="space-y-3 w-full max-w-xs mt-4">
+        <div className="space-y-3 w-full max-w-xs">
           <Button 
             className="w-full gap-2 bg-[#F5C400] hover:bg-[#E5B600] text-black font-semibold rounded-xl h-12"
             onClick={() => {
-              window.open('https://pay.kaspi.kz/pay/devnqngt', '_blank');
+              // Kaspi link will be added later
+              window.open('https://kaspi.kz', '_blank');
             }}
           >
             <Heart className="h-4 w-4" />
-            {t('supportProject')}
+            {t('supportProject') || 'Поддержать проект'}
           </Button>
           <p className="text-xs text-muted-foreground">
-            {t('supportProjectDesc')}
+            {t('supportProjectDesc') || 'Ваша поддержка поможет нам быстрее развивать приложение'}
           </p>
         </div>
       </div>

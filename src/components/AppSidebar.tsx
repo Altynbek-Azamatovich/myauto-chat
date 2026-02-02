@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Car, History, LogOut, Globe, Sun, Moon, Bell, Info, User, ChevronRight } from 'lucide-react';
+import { Car, History, UserCog, LogOut, Globe, Sun, Moon, Bell, Info, User, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
@@ -59,6 +59,9 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
   const menuItems = [
     { icon: Car, label: t('myVehicles'), path: '/my-vehicles' },
     { icon: History, label: t('serviceHistoryTitle'), path: '/service-history' },
+  ];
+
+  const settingsItems = [
     { icon: Bell, label: t('notificationSettings'), path: '/notification-settings' },
     { icon: Info, label: t('aboutApp'), path: '/about-app' },
   ];
@@ -69,15 +72,11 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
         <SheetTrigger asChild>
           {trigger}
         </SheetTrigger>
-        <SheetContent 
-          side="left" 
-          className="w-[300px] p-0 border-0 rounded-r-3xl" 
-          hideCloseButton
-        >
+        <SheetContent side="left" className="w-[300px] p-0 border-0">
           <ScrollArea className="h-full">
             <div className="flex flex-col min-h-full">
               {/* User Profile Header */}
-              <div className="p-6 pt-12 pb-6">
+              <div className="p-6 pb-4">
                 <div 
                   className="flex items-center gap-4 cursor-pointer"
                   onClick={() => handleNavigation('/profile-settings')}
@@ -115,7 +114,7 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
                   <button
                     key={item.path}
                     onClick={() => handleNavigation(item.path)}
-                    className="w-full flex items-center gap-3 px-3 py-3.5 rounded-xl text-left hover:bg-muted/50 transition-colors"
+                    className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left hover:bg-muted/50 transition-colors"
                   >
                     <item.icon className="h-5 w-5 text-muted-foreground" strokeWidth={2} />
                     <span className="font-medium">{item.label}</span>
@@ -125,26 +124,27 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
 
               {/* Settings Section */}
               <div className="px-3 mt-6">
+
                 {/* Theme Toggle */}
                 <div className="px-3 py-3">
                   <p className="text-sm font-medium mb-3">{t('appTheme')}</p>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="flex gap-2">
                     <Button
                       variant={theme === 'light' ? 'default' : 'outline'}
                       size="sm"
-                      className="h-9 rounded-xl text-xs"
+                      className="flex-1 h-9 rounded-xl"
                       onClick={() => setTheme('light')}
                     >
-                      <Sun className="h-4 w-4 mr-1.5" />
+                      <Sun className="h-4 w-4 mr-2" />
                       {t('lightTheme')}
                     </Button>
                     <Button
                       variant={theme === 'dark' ? 'default' : 'outline'}
                       size="sm"
-                      className="h-9 rounded-xl text-xs"
+                      className="flex-1 h-9 rounded-xl"
                       onClick={() => setTheme('dark')}
                     >
-                      <Moon className="h-4 w-4 mr-1.5" />
+                      <Moon className="h-4 w-4 mr-2" />
                       {t('darkTheme')}
                     </Button>
                   </div>
@@ -153,11 +153,11 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
                 {/* Language Toggle */}
                 <div className="px-3 py-3">
                   <p className="text-sm font-medium mb-3">{t('language')}</p>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="flex gap-2">
                     <Button
                       variant={language === 'kk' ? 'default' : 'outline'}
                       size="sm"
-                      className="h-9 rounded-xl text-xs px-2"
+                      className="flex-1 h-9 rounded-xl text-xs"
                       onClick={() => setLanguage('kk')}
                     >
                       ҚАЗ
@@ -165,7 +165,7 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
                     <Button
                       variant={language === 'ru' ? 'default' : 'outline'}
                       size="sm"
-                      className="h-9 rounded-xl text-xs px-2"
+                      className="flex-1 h-9 rounded-xl text-xs"
                       onClick={() => setLanguage('ru')}
                     >
                       РУС
@@ -173,17 +173,31 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
                     <Button
                       variant={language === 'en' ? 'default' : 'outline'}
                       size="sm"
-                      className="h-9 rounded-xl text-xs px-2"
+                      className="flex-1 h-9 rounded-xl text-xs"
                       onClick={() => setLanguage('en')}
                     >
                       ENG
                     </Button>
                   </div>
                 </div>
+
+                {/* Other Settings */}
+                <div className="space-y-1 mt-2">
+                  {settingsItems.map((item) => (
+                    <button
+                      key={item.path}
+                      onClick={() => handleNavigation(item.path)}
+                      className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left hover:bg-muted/50 transition-colors"
+                    >
+                      <item.icon className="h-5 w-5 text-muted-foreground" strokeWidth={2} />
+                      <span className="font-medium">{item.label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* Logout Button */}
-              <div className="mt-auto p-3 pt-8">
+              <div className="mt-auto p-3 pt-6">
                 <button
                   onClick={() => {
                     setIsOpen(false);
@@ -192,13 +206,8 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
                   className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left text-destructive hover:bg-destructive/10 transition-colors"
                 >
                   <LogOut className="h-5 w-5" strokeWidth={2} />
-                  <span className="font-medium">{t('logoutFromAccount')}</span>
+                  <span className="font-medium">{t('logoutTitle')}</span>
                 </button>
-              </div>
-
-              {/* Footer */}
-              <div className="px-6 pb-8 pt-2">
-                <p className="text-xs text-muted-foreground text-center">myautoplus.kz</p>
               </div>
             </div>
           </ScrollArea>
@@ -206,14 +215,14 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
       </Sheet>
 
       <AlertDialog open={isLogoutDialogOpen} onOpenChange={setIsLogoutDialogOpen}>
-        <AlertDialogContent className="rounded-2xl max-w-[280px]">
+        <AlertDialogContent className="rounded-2xl">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-center">{t('logoutConfirmTitle')}</AlertDialogTitle>
-            <AlertDialogDescription className="text-center">{t('logoutConfirmDesc')}</AlertDialogDescription>
+            <AlertDialogTitle>{t('logoutTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('logoutConfirmation')}</AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="flex-row gap-2">
-            <AlertDialogCancel className="flex-1 rounded-xl m-0">{t('no')}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleLogout} className="flex-1 rounded-xl m-0">{t('yesExit')}</AlertDialogAction>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="rounded-xl">{t('cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleLogout} className="rounded-xl">{t('confirm')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

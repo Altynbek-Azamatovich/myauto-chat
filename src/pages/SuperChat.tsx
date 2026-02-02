@@ -1,16 +1,18 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Menu, Bell, Mic, ArrowUp, Archive, Loader2, Trash2 } from "lucide-react";
+import { Menu, Bell, Mic, ArrowUp, Archive, Loader2, Volume2, VolumeX, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import { AppSidebar } from "@/components/AppSidebar";
+import { useVoiceChat, playTTS } from "@/hooks/useVoiceChat";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { SwipeableItem } from "@/components/SwipeableItem";
+import { VoiceRecordingIndicator } from "@/components/VoiceRecordingIndicator";
 
 interface Message {
   id: number;
@@ -50,7 +52,6 @@ const SuperChat = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
   const [activeTab, setActiveTab] = useState<"chat" | "archive">("chat");
-  const [showMicTooltip, setShowMicTooltip] = useState(false);
   
   // Initialize messages from sessionStorage to persist between section navigation
   const defaultMessage: Message = {
@@ -62,12 +63,23 @@ const SuperChat = () => {
   
   const [messages, setMessages] = useState<Message[]>(() => loadStoredChat(defaultMessage));
   const [isLoading, setIsLoading] = useState(false);
+  const [ttsEnabled, setTtsEnabled] = useState(true);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const [archivedSessions, setArchivedSessions] = useState<ArchivedSession[]>([]);
   const [selectedSession, setSelectedSession] = useState<ArchivedSession | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [sessionStartTime] = useState(new Date());
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  const { isRecording, isProcessing, startRecording, stopRecording, cancelRecording } = useVoiceChat({
+    onTranscript: (text) => {
+      setMessage(text);
+      setTimeout(() => {
+        handleSendMessage(text);
+      }, 100);
+    }
+  });
 
   // Save messages to sessionStorage whenever they change (persists between section navigation)
   useEffect(() => {
@@ -120,6 +132,46 @@ const SuperChat = () => {
       return firstUserMsg.text.substring(0, 50) + (firstUserMsg.text.length > 50 ? '...' : '');
     }
     return 'Разговор ' + format(new Date(), 'd MMM HH:mm', { locale: ru });
+  };
+
+  const saveCurrentSession = async () => {
+    // Require at least 4 messages for a meaningful conversation
+    if (!userId || messages.length < 4) return;
+
+    try {
+      // Create conversation
+      const { data: conversation, error: convError } = await supabase
+        .from('chat_conversations')
+        .insert({
+          user_id: userId,
+          title: generateSessionTitle(messages)
+        })
+        .select()
+        .single();
+
+      if (convError) throw convError;
+
+      // Save all messages
+      const messagesToSave = messages.map(msg => ({
+        conversation_id: conversation.id,
+        user_id: userId,
+        role: msg.isBot ? 'assistant' : 'user',
+        content: msg.text
+      }));
+
+      const { error: msgError } = await supabase
+        .from('chat_messages')
+        .insert(messagesToSave);
+
+      if (msgError) throw msgError;
+
+      // Clean up old sessions - keep only last 10
+      await cleanupOldSessions(userId);
+
+      console.log('Session saved to archive');
+    } catch (error) {
+      console.error('Error saving session:', error);
+    }
   };
 
   const cleanupOldSessions = async (uid: string) => {
@@ -299,6 +351,13 @@ const SuperChat = () => {
           }
         }
       }
+
+      // Play TTS if enabled
+      if (ttsEnabled && assistantText) {
+        setIsSpeaking(true);
+        await playTTS(assistantText);
+        setIsSpeaking(false);
+      }
     } catch (error) {
       console.error("Error:", error);
       toast({
@@ -317,17 +376,12 @@ const SuperChat = () => {
     }
   };
 
-  const handleMicClick = () => {
-    setShowMicTooltip(true);
-    setTimeout(() => setShowMicTooltip(false), 2000);
-  };
-
   const resumeSession = (session: ArchivedSession) => {
     setMessages(session.messages);
     setSelectedSession(null);
     setActiveTab("chat");
     toast({
-      title: t('conversationResumed'),
+      title: "Разговор возобновлён",
       description: session.title
     });
   };
@@ -348,17 +402,17 @@ const SuperChat = () => {
 
       setArchivedSessions(prev => prev.filter(s => s.id !== sessionId));
       setSelectedSession(null);
-      toast({ title: t('sessionDeleted') });
+      toast({ title: "Сессия удалена" });
     } catch (error) {
       console.error('Error deleting session:', error);
-      toast({ title: t('deleteError'), variant: "destructive" });
+      toast({ title: "Ошибка удаления", variant: "destructive" });
     }
   };
 
   // Selected session view
   if (selectedSession) {
     return (
-      <div className="h-screen bg-background flex flex-col overflow-hidden">
+      <div className="h-screen bg-white dark:bg-background flex flex-col overflow-hidden">
         <header className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md flex items-center justify-between px-4 py-4 z-20 bg-background/80 backdrop-blur-lg">
           <Button 
             variant="ghost" 
@@ -366,7 +420,7 @@ const SuperChat = () => {
             onClick={() => setSelectedSession(null)}
             className="rounded-full hover:bg-muted/30"
           >
-            <Archive className="h-5 w-5 text-foreground" strokeWidth={2} />
+            <Archive className="h-[20px] w-[20px] text-foreground" strokeWidth={2.5} />
           </Button>
 
           <div className="flex-1 text-center">
@@ -382,27 +436,27 @@ const SuperChat = () => {
             onClick={() => deleteSession(selectedSession.id)}
             className="rounded-full hover:bg-destructive/10 text-destructive"
           >
-            <Trash2 className="h-5 w-5" strokeWidth={2} />
+            <Trash2 className="h-[20px] w-[20px]" strokeWidth={2.5} />
           </Button>
         </header>
 
         <div className="flex-1 overflow-y-auto px-4 pt-20 pb-24">
-          <div className="space-y-3">
+          <div className="space-y-4">
             {selectedSession.messages.map((msg) => (
               <div 
                 key={msg.id} 
                 className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'}`}
               >
-                <div className={`max-w-[80%] px-4 py-3 rounded-2xl ${
+                <Card className={`max-w-[75%] p-4 rounded-2xl border-0 shadow-sm ${
                   msg.isBot 
-                    ? 'bg-muted/50 text-foreground' 
+                    ? 'bg-muted/80 text-foreground' 
                     : 'bg-primary text-primary-foreground'
                 }`}>
                   <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.text}</p>
-                  <p className="text-xs mt-1.5 opacity-60">
-                    {msg.timestamp}
+                  <p className="text-xs mt-2 opacity-60">
+                    {msg.isBot ? 'myAuto AI' : t('you')} • {msg.timestamp}
                   </p>
-                </div>
+                </Card>
               </div>
             ))}
           </div>
@@ -411,9 +465,10 @@ const SuperChat = () => {
         <div className="fixed bottom-24 left-1/2 -translate-x-1/2 w-full max-w-md px-4 py-3">
           <Button 
             onClick={() => resumeSession(selectedSession)}
-            className="w-full rounded-xl h-12"
+            className="w-full"
+            size="lg"
           >
-            {t('continueConversation')}
+            Продолжить разговор
           </Button>
         </div>
       </div>
@@ -421,13 +476,13 @@ const SuperChat = () => {
   }
 
   return (
-    <div className="h-screen bg-background flex flex-col overflow-hidden">
+    <div className="h-screen bg-white dark:bg-background flex flex-col overflow-hidden">
       {/* Header */}
       <header className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md flex items-center justify-between px-4 py-4 z-20 bg-background/80 backdrop-blur-lg">
         <AppSidebar 
           trigger={
-            <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30">
-              <Menu className="h-6 w-6 text-foreground" strokeWidth={2} />
+            <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted/30 hover:text-foreground">
+              <Menu className="h-[25px] w-[25px] text-foreground" strokeWidth={2.5} />
             </Button>
           }
         />
@@ -435,9 +490,9 @@ const SuperChat = () => {
         <div className="flex items-center gap-0.5 bg-muted/50 backdrop-blur-lg rounded-full px-1 py-1">
           <button
             onClick={() => setActiveTab("chat")}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
               activeTab === "chat"
-                ? "bg-background text-foreground shadow-sm"
+                ? "bg-white/70 text-primary"
                 : "text-muted-foreground"
             }`}
           >
@@ -448,24 +503,38 @@ const SuperChat = () => {
               setActiveTab("archive");
               if (userId) fetchArchivedSessions(userId);
             }}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
               activeTab === "archive"
-                ? "bg-background text-foreground shadow-sm"
+                ? "bg-white/70 text-primary"
                 : "text-muted-foreground"
             }`}
           >
-            {t('archive')}
+            Архив
           </button>
         </div>
 
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="rounded-full hover:bg-muted/30"
-          onClick={() => navigate('/notifications')}
-        >
-          <Bell className="h-5 w-5 text-foreground" strokeWidth={2} />
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full hover:bg-muted/30 hover:text-foreground"
+            onClick={() => setTtsEnabled(!ttsEnabled)}
+          >
+            {ttsEnabled ? (
+              <Volume2 className="h-[20px] w-[20px] text-primary" strokeWidth={2.5} />
+            ) : (
+              <VolumeX className="h-[20px] w-[20px] text-muted-foreground" strokeWidth={2.5} />
+            )}
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full hover:bg-muted/30 hover:text-foreground"
+            onClick={() => navigate('/notifications')}
+          >
+            <Bell className="h-[20px] w-[20px] text-foreground" strokeWidth={2.5} />
+          </Button>
+        </div>
       </header>
 
       {/* Archive Tab */}
@@ -473,36 +542,33 @@ const SuperChat = () => {
         <div className="flex-1 overflow-y-auto px-4 pt-20 pb-32">
           {archivedSessions.length === 0 ? (
             <div className="flex flex-col items-center justify-center min-h-[50vh] text-center">
-              <div className="w-20 h-20 rounded-full bg-muted/30 flex items-center justify-center mb-4">
-                <Archive className="h-10 w-10 text-muted-foreground/50" />
-              </div>
-              <h3 className="text-base font-medium mb-1">{t('archiveEmpty')}</h3>
+              <Archive className="h-16 w-16 text-muted-foreground/50 mb-4" />
+              <h3 className="text-lg font-medium mb-2">Архив пуст</h3>
               <p className="text-sm text-muted-foreground">
-                {t('archiveEmptyDesc')}
+                Ваши разговоры с ИИ будут сохраняться здесь автоматически
               </p>
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-3">
               {archivedSessions.map((session) => (
-                <SwipeableItem
+                <Card 
                   key={session.id}
-                  onDelete={() => deleteSession(session.id)}
+                  className="p-4 cursor-pointer hover:bg-muted/50 transition-colors"
+                  onClick={() => setSelectedSession(session)}
                 >
-                  <div 
-                    className="p-4 bg-muted/20 rounded-2xl cursor-pointer"
-                    onClick={() => setSelectedSession(session)}
-                  >
-                    <p className="font-medium text-sm truncate">{session.title}</p>
-                    <div className="flex items-center justify-between mt-1.5">
-                      <p className="text-xs text-muted-foreground">
-                        {format(new Date(session.created_at), 'd MMM, HH:mm', { locale: ru })}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{session.title}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {format(new Date(session.created_at), 'd MMMM yyyy, HH:mm', { locale: ru })}
                       </p>
-                      <p className="text-xs text-muted-foreground">
-                        {session.messages.length} {t('messages')}
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {session.messages.length} сообщений
                       </p>
                     </div>
+                    <Archive className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                   </div>
-                </SwipeableItem>
+                </Card>
               ))}
             </div>
           )}
@@ -510,28 +576,36 @@ const SuperChat = () => {
       ) : (
         /* Chat Tab */
         <div className="flex-1 overflow-y-auto px-4 pt-20 pb-36">
-          <div className="space-y-3">
+          <div className="space-y-4">
             {messages.map((msg) => (
               <div 
                 key={msg.id} 
                 className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'} animate-fade-in`}
               >
-                <div className={`max-w-[80%] px-4 py-3 rounded-2xl ${
+                <Card className={`max-w-[75%] p-4 rounded-2xl border-0 shadow-sm ${
                   msg.isBot 
-                    ? 'bg-muted/50 text-foreground' 
+                    ? 'bg-muted/80 text-foreground' 
                     : 'bg-primary text-primary-foreground'
                 }`}>
                   <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.text}</p>
-                  <p className="text-xs mt-1.5 opacity-60">
-                    {msg.timestamp}
+                  <p className="text-xs mt-2 opacity-60">
+                    {msg.isBot ? 'myAuto AI' : t('you')} • {msg.timestamp}
                   </p>
-                </div>
+                </Card>
               </div>
             ))}
             {isLoading && messages[messages.length - 1]?.isBot !== true && (
               <div className="flex justify-start animate-fade-in">
-                <div className="max-w-[80%] px-4 py-3 rounded-2xl bg-muted/50 text-foreground">
+                <Card className="max-w-[75%] p-4 rounded-2xl border-0 shadow-sm bg-muted/80 text-foreground">
                   <p className="text-sm">{t('thinking')}</p>
+                </Card>
+              </div>
+            )}
+            {isSpeaking && (
+              <div className="flex justify-center">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Volume2 className="h-4 w-4 animate-pulse" />
+                  <span>Озвучивание...</span>
                 </div>
               </div>
             )}
@@ -540,43 +614,44 @@ const SuperChat = () => {
         </div>
       )}
 
+      {/* Voice Recording Overlay */}
+      <VoiceRecordingIndicator
+        isRecording={isRecording}
+        isProcessing={isProcessing}
+        onStop={stopRecording}
+        onCancel={cancelRecording}
+      />
+
       {/* Input Area */}
       {activeTab === "chat" && (
         <div className="fixed bottom-24 left-1/2 -translate-x-1/2 w-full max-w-md px-4 py-3 z-10">
-          <div className="flex items-center gap-2">
-            <div className="relative flex items-center bg-muted/50 rounded-2xl px-4 h-12 flex-1">
+          <div className="flex items-center space-x-2">
+            <div className="flex items-center bg-black/15 dark:bg-muted/50 backdrop-blur-[2px] rounded-full px-3 h-10 flex-1">
               <Input
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder={t('message')}
-                className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-0 h-10 text-sm"
+                className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-2 h-8"
               />
 
-              <div className="relative">
-                {showMicTooltip && (
-                  <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-foreground text-background text-xs px-3 py-1.5 rounded-lg shadow-lg animate-fade-in">
-                    {t('voiceInDevelopment')}
-                  </div>
-                )}
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-8 w-8 flex-shrink-0 text-muted-foreground"
-                  onClick={handleMicClick}
-                >
-                  <Mic className="h-5 w-5" />
-                </Button>
-              </div>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8 flex-shrink-0"
+                onClick={startRecording}
+              >
+                <Mic className="h-5 w-5" />
+              </Button>
             </div>
 
             <Button 
               onClick={() => handleSendMessage()}
               size="icon" 
-              className="rounded-xl bg-primary hover:bg-primary/90 flex-shrink-0 h-12 w-12"
+              className="rounded-full bg-primary hover:bg-primary/90 flex-shrink-0 h-10 w-10"
               disabled={isLoading || !message.trim()}
             >
-              <ArrowUp className="h-5 w-5" />
+              <ArrowUp className="h-4 w-4" />
             </Button>
           </div>
         </div>

@@ -1,13 +1,14 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ShoppingCart, Minus, Plus } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Minus, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCart } from "@/contexts/CartContext";
 import Logo from "@/components/Logo";
+import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useState } from "react";
-import { SwipeableItem } from "@/components/SwipeableItem";
 
 const ServiceCart = () => {
   const { t } = useLanguage();
@@ -71,14 +72,14 @@ const ServiceCart = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="flex items-center justify-between px-4 py-4 bg-background/80 backdrop-blur-xl sticky top-0 z-50">
+      <header className="flex items-center justify-between px-4 py-4 border-b">
         <Button 
           variant="ghost" 
           size="icon" 
           onClick={() => navigate(-1)}
-          className="rounded-full hover:bg-muted/30"
+          className="rounded-full hover:bg-muted/30 hover:text-foreground"
         >
-          <ArrowLeft className="h-6 w-6" />
+          <ArrowLeft className="h-8 w-8" />
         </Button>
 
         <Logo size="md" />
@@ -87,104 +88,102 @@ const ServiceCart = () => {
       </header>
 
       {/* Content */}
-      <div className="px-4 py-4 pb-32">
+      <div className="px-4 py-6 pb-32">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-xl font-bold">{t('cart')}</h1>
+          <h1 className="text-2xl font-bold">{t('cart')}</h1>
           {items.length > 0 && (
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={clearCart}
-              className="text-muted-foreground"
-            >
-              {t('clear')}
+            <Button variant="ghost" size="sm" onClick={clearCart}>
+              Очистить
             </Button>
           )}
         </div>
 
         {items.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="w-20 h-20 rounded-full bg-muted/30 flex items-center justify-center mb-4">
-              <ShoppingCart className="h-10 w-10 text-muted-foreground/50" />
+          <Card className="p-8 text-center border-dashed">
+            <div className="flex flex-col items-center justify-center space-y-4">
+              <div className="rounded-full bg-muted/30 p-6">
+                <ShoppingCart className="h-12 w-12 text-muted-foreground" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg mb-2">{t('emptyCart')}</h3>
+                <p className="text-sm text-muted-foreground">
+                  Добавьте услуги в корзину
+                </p>
+              </div>
+              <Button onClick={() => navigate('/services')}>
+                Перейти к услугам
+              </Button>
             </div>
-            <h3 className="font-medium mb-1">{t('emptyCart')}</h3>
-            <p className="text-sm text-muted-foreground mb-6">
-              {t('addServicesToCart')}
-            </p>
-            <Button onClick={() => navigate('/services')} variant="outline" className="rounded-xl">
-              {t('goToServices')}
-            </Button>
-          </div>
+          </Card>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {items.map(item => (
-              <SwipeableItem
-                key={item.id}
-                onDelete={() => removeFromCart(item.id)}
-              >
-                <div className="p-4 bg-muted/20 rounded-2xl">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-sm">{item.name}</h3>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {item.category}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <Button
-                        size="icon"
-                        variant="outline"
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="h-7 w-7 rounded-lg"
-                      >
-                        <Minus className="h-3 w-3" />
-                      </Button>
-                      <span className="w-6 text-center text-sm font-medium">
-                        {item.quantity}
-                      </span>
-                      <Button
-                        size="icon"
-                        variant="outline"
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="h-7 w-7 rounded-lg"
-                      >
-                        <Plus className="h-3 w-3" />
-                      </Button>
-                    </div>
+              <Card key={item.id} className="p-4">
+                <div className="flex items-start gap-4">
+                  <div className="flex-1">
+                    <h3 className="font-semibold mb-1">{item.name}</h3>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      {item.category}
+                    </p>
+                    <p className="font-bold text-primary">
+                      {(item.price * item.quantity).toLocaleString()}₸
+                    </p>
                   </div>
-                  <p className="font-semibold text-sm mt-3">
-                    {(item.price * item.quantity).toLocaleString()}₸
-                  </p>
+
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      className="h-8 w-8"
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                    <span className="w-8 text-center font-medium">
+                      {item.quantity}
+                    </span>
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      className="h-8 w-8"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => removeFromCart(item.id)}
+                      className="h-8 w-8 text-destructive hover:text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
-              </SwipeableItem>
+              </Card>
             ))}
 
-            {/* Total */}
-            <div className="mt-6 pt-4 border-t border-border">
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">{t('total')}:</span>
-                <span className="text-xl font-bold">
+            <Separator className="my-4" />
+
+            <Card className="p-4 bg-muted/30">
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-lg font-semibold">Итого:</span>
+                <span className="text-2xl font-bold text-primary">
                   {totalPrice.toLocaleString()}₸
                 </span>
               </div>
-            </div>
+              <Button
+                className="w-full"
+                size="lg"
+                onClick={handleCheckout}
+                disabled={submitting}
+              >
+                {submitting ? 'Оформление...' : 'Оформить заказ'}
+              </Button>
+            </Card>
           </div>
         )}
       </div>
-
-      {/* Bottom Button */}
-      {items.length > 0 && (
-        <div className="fixed bottom-24 left-0 right-0 px-4 py-3 bg-background/80 backdrop-blur-xl">
-          <Button
-            className="w-full h-12 rounded-xl font-semibold"
-            onClick={handleCheckout}
-            disabled={submitting}
-          >
-            {submitting ? t('processing') : t('checkout')}
-          </Button>
-        </div>
-      )}
     </div>
   );
 };
