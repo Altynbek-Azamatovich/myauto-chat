@@ -22,7 +22,7 @@ const MarqueeText = ({ text }: { text: string }) => {
   return (
     <div className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-full">
       <div 
-        className="whitespace-nowrap text-xs font-bold text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]"
+        className="whitespace-nowrap text-[10px] font-bold text-foreground/80 drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]"
         style={{
           animation: 'story-marquee 12s linear infinite',
         }}
@@ -33,20 +33,20 @@ const MarqueeText = ({ text }: { text: string }) => {
   );
 };
 
-// Subtle spinning border component - pastel colors
+// Subtle spinning border component - soft colors
 const SpinningBorder = () => {
   return (
     <div 
-      className="absolute inset-0 rounded-full opacity-70"
+      className="absolute inset-0 rounded-full opacity-50"
       style={{
-        background: 'conic-gradient(from 0deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--secondary)), hsl(var(--primary)))',
-        animation: 'spin-border 4s linear infinite',
+        background: 'conic-gradient(from 0deg, hsl(var(--primary)), hsl(var(--muted)), hsl(var(--secondary)), hsl(var(--primary)))',
+        animation: 'spin-border 6s linear infinite',
       }}
     />
   );
 };
 
-// Pastel story colors
+// Colors for opened stories only - keep them colorful inside
 const storyColors: Record<string, string> = {
   'Новости': 'from-sky-400/80 to-blue-500/80',
   'Акции': 'from-rose-400/80 to-pink-500/80',
@@ -137,7 +137,7 @@ export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
         }
       `}</style>
       
-      <div className="flex gap-3 overflow-hidden pb-1">
+      <div className="flex justify-between w-full overflow-hidden pb-1">
         {stories.map((story) => (
           <button
             key={story.id}
@@ -148,14 +148,11 @@ export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
             className="flex-shrink-0 flex flex-col items-center"
           >
             {/* Spinning border - subtle */}
-            <div className="relative w-[60px] h-[60px]">
+            <div className="relative w-[68px] h-[68px] sm:w-[76px] sm:h-[76px]">
               <SpinningBorder />
-              {/* Inner circle with gradient background and marquee text */}
+              {/* Inner circle with light gray background and marquee text */}
               <div className="absolute inset-[2px] rounded-full bg-background">
-                <div className={cn(
-                  "absolute inset-[2px] rounded-full bg-gradient-to-br overflow-hidden",
-                  getColorClass(story.title)
-                )}>
+                <div className="absolute inset-[2px] rounded-full bg-muted/50 overflow-hidden">
                   <MarqueeText text={story.title} />
                 </div>
               </div>
