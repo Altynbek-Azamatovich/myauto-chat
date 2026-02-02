@@ -1,16 +1,25 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { ArrowLeft, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useNotifications } from "@/contexts/NotificationContext";
 import Logo from "@/components/Logo";
-import NotificationBadge from "@/components/NotificationBadge";
+import { SwipeableItem } from "@/components/SwipeableItem";
 
 const Notifications = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const { notifications, unreadCount, markAsRead, markAllAsRead, deleteNotification } = useNotifications();
+
+  // Auto-mark all as read when leaving the page
+  useEffect(() => {
+    return () => {
+      if (unreadCount > 0) {
+        markAllAsRead();
+      }
+    };
+  }, [unreadCount, markAllAsRead]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -27,76 +36,73 @@ const Notifications = () => {
 
         <Logo size="md" />
 
-        <div className="w-10" /> {/* Spacer for centering */}
+        <div className="w-10" />
       </header>
 
       {/* Content */}
       <div className="px-4 py-6 pb-24">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">{t('notifications')}</h1>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-xl font-bold">{t('notifications')}</h1>
           {unreadCount > 0 && (
-            <Button variant="ghost" size="sm" onClick={markAllAsRead}>
-              Отметить все прочитанными
-            </Button>
+            <span className="text-sm text-muted-foreground">
+              {unreadCount} новых
+            </span>
           )}
         </div>
         
         {notifications.length === 0 ? (
-          <Card className="p-8 text-center border-dashed">
+          <div className="bg-muted/30 rounded-2xl p-8 text-center">
             <div className="flex flex-col items-center justify-center space-y-4">
-              <div className="rounded-full bg-muted/30 p-6">
-                <Bell className="h-12 w-12 text-muted-foreground" />
+              <div className="rounded-full bg-muted/50 p-5">
+                <Bell className="h-10 w-10 text-muted-foreground" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg mb-2">{t('noNotifications')}</h3>
+                <h3 className="font-semibold text-lg mb-1">{t('noNotifications')}</h3>
                 <p className="text-sm text-muted-foreground">
                   У вас пока нет уведомлений
                 </p>
               </div>
             </div>
-          </Card>
+          </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {notifications.map((notification) => (
-              <Card 
+              <SwipeableItem 
                 key={notification.id}
-                className={`p-4 cursor-pointer transition-colors ${
-                  notification.is_read ? 'bg-card' : 'bg-primary/5 border-primary/20'
-                }`}
-                onClick={() => {
-                  if (!notification.is_read) {
-                    markAsRead(notification.id);
-                  }
-                  if (notification.action_url) {
-                    navigate(notification.action_url);
-                  }
-                }}
+                onDelete={() => deleteNotification(notification.id)}
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-semibold">{notification.title}</h3>
-                      {!notification.is_read && (
-                        <div className="h-2 w-2 rounded-full bg-primary" />
-                      )}
+                <div 
+                  className={`p-4 cursor-pointer transition-colors rounded-2xl ${
+                    notification.is_read ? 'bg-muted/30' : 'bg-primary/5'
+                  }`}
+                  onClick={() => {
+                    if (!notification.is_read) {
+                      markAsRead(notification.id);
+                    }
+                    if (notification.action_url) {
+                      navigate(notification.action_url);
+                    }
+                  }}
+                >
+                  <div className="flex items-start gap-3">
+                    {!notification.is_read && (
+                      <div className="h-2 w-2 rounded-full bg-primary mt-2 shrink-0" />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-medium text-sm">{notification.title}</h3>
+                      <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5">{notification.message}</p>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        {new Date(notification.created_at).toLocaleString('ru-RU', {
+                          day: 'numeric',
+                          month: 'short',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </p>
                     </div>
-                    <p className="text-sm text-muted-foreground">{notification.message}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(notification.created_at).toLocaleString('ru-RU')}
-                    </p>
                   </div>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteNotification(notification.id);
-                    }}
-                  >
-                    Удалить
-                  </Button>
                 </div>
-              </Card>
+              </SwipeableItem>
             ))}
           </div>
         )}

@@ -6,6 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 import { usePersistedState } from "@/hooks/usePersistedState";
+import { ServiceUnderDevelopment } from "@/components/ServiceUnderDevelopment";
 
 const PaintShop = () => {
   const navigate = useNavigate();
@@ -101,6 +102,8 @@ const PaintShop = () => {
 
       {/* Services List */}
       <div className="px-4 space-y-4">
+        <ServiceUnderDevelopment />
+        
         {services.map((service) => (
           <div 
             key={service.id} 
