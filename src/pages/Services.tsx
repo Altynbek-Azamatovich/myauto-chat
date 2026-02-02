@@ -10,8 +10,8 @@ import { useCart } from "@/contexts/CartContext";
 import NotificationBadge from "@/components/NotificationBadge";
 import { supabase } from "@/integrations/supabase/client";
 import { StoriesCarousel } from "@/components/StoriesCarousel";
-import roadsideHelpImg from "@/assets/services/roadside-help.png";
-import autoForumImg from "@/assets/services/auto-forum.png";
+import { AutoForumMarquee } from "@/components/AutoForumMarquee";
+import roadsideHelpImg from "@/assets/services/roadside-help-new.png";
 import autoServicesImg from "@/assets/services/auto-services.png";
 import autoShopsImg from "@/assets/services/auto-shops.png";
 import detailingImg from "@/assets/services/detailing.png";
@@ -20,8 +20,8 @@ import partsDismantlingImg from "@/assets/services/parts-dismantling.png";
 import carWashImg from "@/assets/services/car-wash.png";
 import carCoveredImg from "@/assets/car-covered.png";
 import showroomBg from "@/assets/showroom-bg.png";
-import showroom3dBg from "@/assets/showroom-3d-bg.png";
-import newsBg from "@/assets/news-bg.png";
+import showroom3dBg from "@/assets/services/showroom-3d-new.png";
+import newsBg from "@/assets/services/news-cover.png";
 
 const Services = () => {
   const navigate = useNavigate();
@@ -142,36 +142,143 @@ const Services = () => {
 
       {/* Services Grid */}
       <div className="px-4 pb-24 space-y-4">
+        {/* Первый ряд: Помощь на дороге + Авто Форум */}
         <div className="grid grid-cols-2 gap-4">
-        {/* Помощь на дороге */}
-        <Card 
-          className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer bg-gray-100 dark:bg-gray-800"
-          onClick={() => navigate('/roadside-help')}
-        >
-          <img src={roadsideHelpImg} alt={t('roadHelp')} className="absolute inset-0 w-full h-full object-cover object-top" />
-          <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
-            <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('roadHelp')}</h3>
-          </div>
-          {helpResponseCount > 0 && (
-            <div className="absolute top-2 right-2">
-              <NotificationBadge count={helpResponseCount} />
+          {/* Помощь на дороге */}
+          <Card 
+            className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
+            onClick={() => navigate('/roadside-help')}
+          >
+            <img src={roadsideHelpImg} alt={t('roadHelp')} className="absolute inset-0 w-full h-full object-cover" />
+            <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
+              <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('roadHelp')}</h3>
             </div>
-          )}
-        </Card>
-        
-        {/* Авто Форум */}
-        <Card 
-          className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer bg-gray-100 dark:bg-gray-800"
-          onClick={() => navigate('/auto-forum')}
-        >
-          <img src={autoForumImg} alt={t('autoForum')} className="absolute inset-0 w-full h-full object-cover object-top" />
-          <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
-            <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('autoForum')}</h3>
-          </div>
-        </Card>
+            {helpResponseCount > 0 && (
+              <div className="absolute top-2 right-2">
+                <NotificationBadge count={helpResponseCount} />
+              </div>
+            )}
+          </Card>
+          
+          {/* Авто Форум с анимированной обложкой */}
+          <Card 
+            className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
+            onClick={() => navigate('/auto-forum')}
+          >
+            <AutoForumMarquee />
+            <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent z-10">
+              <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('autoForum')}</h3>
+            </div>
+          </Card>
         </div>
 
-        {/* Каталог - Full Width */}
+        {/* Новости и 3D-Шоурум */}
+        <div className="grid grid-cols-2 gap-4">
+          {/* Новости */}
+          <Card 
+            className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
+            onClick={() => navigate('/news')}
+          >
+            <img 
+              src={newsBg} 
+              alt={t('news')} 
+              className="absolute inset-0 w-full h-full object-contain" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-3">
+              <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">{t('news')}</h3>
+              <p className="text-[10px] text-white/80 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">{t('newsSubtitle')}</p>
+            </div>
+          </Card>
+
+          {/* 3D-Шоурум */}
+          <Card 
+            className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
+            onClick={() => navigate('/showroom-3d')}
+          >
+            <img 
+              src={showroom3dBg} 
+              alt={t('showroom3D')} 
+              className="absolute inset-0 w-full h-full object-cover" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-3">
+              <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">{t('showroom3D')}</h3>
+              <p className="text-[10px] text-white/80 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">{t('showroomSubtitle')}</p>
+            </div>
+          </Card>
+        </div>
+
+        {/* Автосервисы, Автомагазины, Детейлинг, Автомаляры, Разборки, Автомойки */}
+        <div className="grid grid-cols-2 gap-4">
+          {/* Автосервисы */}
+          <Card 
+            className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
+            onClick={() => navigate('/service-booking')}
+          >
+            <img src={autoServicesImg} alt={t('servicesTitle')} className="absolute inset-0 w-full h-full object-cover object-top" />
+            <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
+              <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('servicesTitle')}</h3>
+            </div>
+          </Card>
+
+          {/* Автомагазины */}
+          <Card 
+            className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
+            onClick={() => navigate('/auto-shops')}
+          >
+            <img src={autoShopsImg} alt={t('autoShops')} className="absolute inset-0 w-full h-full object-cover object-top" />
+            <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
+              <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('autoShops')}</h3>
+            </div>
+          </Card>
+
+          {/* Детейлинг */}
+          <Card 
+            className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
+            onClick={() => navigate('/detailing')}
+          >
+            <img src={detailingImg} alt={t('detailing')} className="absolute inset-0 w-full h-full object-cover object-top" />
+            <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
+              <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('detailing')}</h3>
+            </div>
+          </Card>
+
+          {/* Автомаляры */}
+          <Card 
+            className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
+            onClick={() => navigate('/paint-shop')}
+          >
+            <img src={paintShopImg} alt={t('paintShop')} className="absolute inset-0 w-full h-full object-cover object-top" />
+            <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
+              <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('paintShop')}</h3>
+            </div>
+          </Card>
+
+          {/* Разборки */}
+          <Card 
+            className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
+            onClick={() => navigate('/parts-dismantling')}
+          >
+            <img src={partsDismantlingImg} alt={t('partsDismantling')} className="absolute inset-0 w-full h-full object-cover object-top" />
+            <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
+              <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('partsDismantling')}</h3>
+            </div>
+          </Card>
+
+          {/* Автомойки */}
+          <Card 
+            className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
+            onClick={() => navigate('/car-wash')}
+          >
+            <img src={carWashImg} alt={t('carWash')} className="absolute inset-0 w-full h-full object-cover object-top" />
+            <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
+              <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('carWash')}</h3>
+            </div>
+          </Card>
+        </div>
+
+        {/* Каталог - Full Width - в самом низу */}
         <Card 
           className="relative overflow-hidden border-0 hover:scale-[1.02] transition-transform cursor-pointer h-32"
           onClick={() => navigate('/parts-catalog')}
@@ -193,112 +300,6 @@ const Services = () => {
             <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 text-white/80 flex-shrink-0 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
           </div>
         </Card>
-
-        {/* Новости и 3D-Шоурум */}
-        <div className="grid grid-cols-2 gap-4">
-          {/* Новости - картинка справа */}
-          <Card 
-            className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
-            onClick={() => navigate('/news')}
-          >
-            <img 
-              src={newsBg} 
-              alt={t('news')} 
-              className="absolute inset-0 w-full h-full object-cover object-right" 
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-3">
-              <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">{t('news')}</h3>
-              <p className="text-[10px] text-white/80 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">{t('newsSubtitle')}</p>
-            </div>
-          </Card>
-
-          {/* 3D-Шоурум - картинка слева */}
-          <Card 
-            className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer"
-            onClick={() => navigate('/showroom-3d')}
-          >
-            <img 
-              src={showroom3dBg} 
-              alt={t('showroom3D')} 
-              className="absolute inset-0 w-full h-full object-cover object-left" 
-            />
-            <div className="absolute inset-0 bg-gradient-to-l from-black/70 via-black/40 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-3">
-              <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">{t('showroom3D')}</h3>
-              <p className="text-[10px] text-white/80 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">{t('showroomSubtitle')}</p>
-            </div>
-          </Card>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-
-        {/* Автосервисы */}
-        <Card 
-          className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer bg-gray-100 dark:bg-gray-800"
-          onClick={() => navigate('/service-booking')}
-        >
-          <img src={autoServicesImg} alt={t('servicesTitle')} className="absolute inset-0 w-full h-full object-cover object-top" />
-          <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
-            <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('servicesTitle')}</h3>
-          </div>
-        </Card>
-
-        {/* Автомагазины */}
-        <Card 
-          className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer bg-gray-100 dark:bg-gray-800"
-          onClick={() => navigate('/auto-shops')}
-        >
-          <img src={autoShopsImg} alt={t('autoShops')} className="absolute inset-0 w-full h-full object-cover object-top" />
-          <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
-            <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('autoShops')}</h3>
-          </div>
-        </Card>
-
-        {/* Детейлинг */}
-        <Card 
-          className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer bg-gray-100 dark:bg-gray-800"
-          onClick={() => navigate('/detailing')}
-        >
-          <img src={detailingImg} alt={t('detailing')} className="absolute inset-0 w-full h-full object-cover object-top" />
-          <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
-            <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('detailing')}</h3>
-          </div>
-        </Card>
-
-        {/* Автомаляры */}
-        <Card 
-          className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer bg-gray-100 dark:bg-gray-800"
-          onClick={() => navigate('/paint-shop')}
-        >
-          <img src={paintShopImg} alt={t('paintShop')} className="absolute inset-0 w-full h-full object-cover object-top" />
-          <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
-            <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('paintShop')}</h3>
-          </div>
-        </Card>
-
-        {/* Разборки */}
-        <Card 
-          className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer bg-gray-100 dark:bg-gray-800"
-          onClick={() => navigate('/parts-dismantling')}
-        >
-          <img src={partsDismantlingImg} alt={t('partsDismantling')} className="absolute inset-0 w-full h-full object-cover object-top" />
-          <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
-            <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('partsDismantling')}</h3>
-          </div>
-        </Card>
-
-        {/* Автомойки */}
-        <Card 
-          className="aspect-square relative overflow-hidden border-0 hover:scale-105 transition-transform cursor-pointer bg-gray-100 dark:bg-gray-800"
-          onClick={() => navigate('/car-wash')}
-        >
-          <img src={carWashImg} alt={t('carWash')} className="absolute inset-0 w-full h-full object-cover object-top" />
-          <div className="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/60 to-transparent">
-            <h3 className="text-white font-semibold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t('carWash')}</h3>
-          </div>
-        </Card>
-        </div>
       </div>
     </div>
   );
