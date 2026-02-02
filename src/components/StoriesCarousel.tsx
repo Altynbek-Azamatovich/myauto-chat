@@ -71,11 +71,15 @@ const SupportContent = ({ content, onButtonClick }: { content: CustomContent; on
           </div>
         </div>
         
-        <h3 className="text-2xl font-bold text-foreground drop-shadow-lg">
+        <h3 className="text-2xl font-bold text-foreground drop-shadow-lg font-['League_Spartan']">
           {content.title}
         </h3>
         <p className="text-foreground/80 text-base leading-relaxed">
-          {content.subtitle}
+          {content.subtitle.split('myauto').map((part, i, arr) => (
+            i < arr.length - 1 ? (
+              <span key={i}>{part}<span className="font-['League_Spartan'] font-semibold">myauto</span></span>
+            ) : part
+          ))}
         </p>
         
         <Button 
