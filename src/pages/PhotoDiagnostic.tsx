@@ -163,7 +163,7 @@ const PhotoDiagnostic = () => {
             onClick={() => setSelectedReport(null)} 
             className="rounded-full hover:bg-muted/30"
           >
-            <ArrowLeft className="h-[25px] w-[25px] text-foreground" strokeWidth={2.5} />
+            <ArrowLeft className="h-[30px] w-[30px] text-foreground" strokeWidth={2.5} />
           </Button>
           <Logo size="md" />
           <div className="w-10" />

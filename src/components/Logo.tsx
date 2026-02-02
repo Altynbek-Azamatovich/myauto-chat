@@ -15,12 +15,13 @@ export const Logo = ({ className, size = "md" }: LogoProps) => {
   return (
     <span
       className={cn(
-        "font-logo font-bold tracking-tight text-foreground",
+        "font-logo font-bold tracking-tight",
         sizeClasses[size],
         className
       )}
     >
-      myauto
+      <span className="text-primary">my</span>
+      <span className="text-foreground">auto</span>
     </span>
   );
 };
