@@ -476,7 +476,7 @@ interface LanguageContextType {
   t: (key: string) => string;
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+export const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<Language>('kk');
@@ -506,8 +506,13 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
+  // Return default values if context is not available (during HMR)
   if (!context) {
-    throw new Error('useLanguage must be used within LanguageProvider');
+    return {
+      language: 'kk' as const,
+      setLanguage: () => {},
+      t: (key: string) => key,
+    };
   }
   return context;
 };
