@@ -26,8 +26,8 @@ const AboutApp = () => {
       <div className="px-6 py-8 space-y-8">
         {/* Hero */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold mb-2">
-            <span className="text-primary">my</span>auto
+          <h2 className="text-3xl font-bold mb-2 font-logo tracking-tight">
+            myauto
           </h2>
           <p className="text-muted-foreground">
             {t('aboutTagline')}

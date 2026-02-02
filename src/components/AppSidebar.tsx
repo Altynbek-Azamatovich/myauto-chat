@@ -82,26 +82,23 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
                   className="flex items-center gap-4 cursor-pointer"
                   onClick={() => handleNavigation('/profile-settings')}
                 >
-                  <Avatar className="h-14 w-14 ring-2 ring-primary/10">
+                  <Avatar className="h-12 w-12 ring-2 ring-primary/10">
                     <AvatarImage src={userProfile?.avatar_url || ''} alt="Avatar" />
                     <AvatarFallback className="bg-muted">
-                      <User className="h-6 w-6 text-muted-foreground" />
+                      <User className="h-5 w-5 text-muted-foreground" />
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0 overflow-hidden">
                     {userProfile?.first_name || userProfile?.last_name ? (
                       <p 
-                        className="font-semibold truncate"
-                        style={{
-                          fontSize: `${Math.max(12, 18 - Math.max(0, ((userProfile?.first_name || '').length + (userProfile?.last_name || '').length + 1 - 15) * 0.3))}px`
-                        }}
+                        className="font-medium truncate text-[15px]"
                       >
                         {userProfile.first_name} {userProfile.last_name}
                       </p>
                     ) : (
-                      <p className="font-semibold text-lg">{t('profileTitle')}</p>
+                      <p className="font-medium text-[15px]">{t('profileTitle')}</p>
                     )}
-                    <p className="text-sm text-muted-foreground truncate">
+                    <p className="text-xs text-muted-foreground truncate">
                       {userProfile?.phone_number}
                     </p>
                   </div>
@@ -125,24 +122,24 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
 
               {/* Theme Toggle */}
               <div className="px-6 mt-6">
-                <p className="text-sm font-medium mb-3">{t('appTheme')}</p>
-                <div className="flex gap-2">
+                <p className="text-xs font-medium mb-2 text-muted-foreground">{t('appTheme')}</p>
+                <div className="flex gap-1.5">
                   <Button
                     variant={theme === 'light' ? 'default' : 'outline'}
                     size="sm"
-                    className="flex-1 h-9 rounded-xl text-xs px-2"
+                    className="flex-1 h-8 rounded-lg text-[11px] px-1.5"
                     onClick={() => setTheme('light')}
                   >
-                    <Sun className="h-3.5 w-3.5 mr-1.5" />
+                    <Sun className="h-3 w-3 mr-1" />
                     {t('lightTheme')}
                   </Button>
                   <Button
                     variant={theme === 'dark' ? 'default' : 'outline'}
                     size="sm"
-                    className="flex-1 h-9 rounded-xl text-xs px-2"
+                    className="flex-1 h-8 rounded-lg text-[11px] px-1.5"
                     onClick={() => setTheme('dark')}
                   >
-                    <Moon className="h-3.5 w-3.5 mr-1.5" />
+                    <Moon className="h-3 w-3 mr-1" />
                     {t('darkTheme')}
                   </Button>
                 </div>
@@ -150,12 +147,12 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
 
               {/* Language Toggle */}
               <div className="px-6 mt-4">
-                <p className="text-sm font-medium mb-3">{t('language')}</p>
-                <div className="flex gap-2">
+                <p className="text-xs font-medium mb-2 text-muted-foreground">{t('language')}</p>
+                <div className="flex gap-1.5">
                   <Button
                     variant={language === 'kk' ? 'default' : 'outline'}
                     size="sm"
-                    className="flex-1 h-9 rounded-xl text-xs px-2"
+                    className="flex-1 h-8 rounded-lg text-[11px] px-1.5"
                     onClick={() => setLanguage('kk')}
                   >
                     ҚАЗ
@@ -163,7 +160,7 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
                   <Button
                     variant={language === 'ru' ? 'default' : 'outline'}
                     size="sm"
-                    className="flex-1 h-9 rounded-xl text-xs px-2"
+                    className="flex-1 h-8 rounded-lg text-[11px] px-1.5"
                     onClick={() => setLanguage('ru')}
                   >
                     РУС
@@ -171,7 +168,7 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
                   <Button
                     variant={language === 'en' ? 'default' : 'outline'}
                     size="sm"
-                    className="flex-1 h-9 rounded-xl text-xs px-2"
+                    className="flex-1 h-8 rounded-lg text-[11px] px-1.5"
                     onClick={() => setLanguage('en')}
                   >
                     ENG
@@ -180,15 +177,15 @@ export function AppSidebar({ trigger }: AppSidebarProps) {
               </div>
 
               {/* Logout Button */}
-              <div className="mt-auto p-6 pt-8">
+              <div className="mt-auto px-6 pb-8 pt-6">
                 <button
                   onClick={() => {
                     setIsOpen(false);
                     setIsLogoutDialogOpen(true);
                   }}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-destructive bg-destructive/10 hover:bg-destructive/20 transition-colors font-medium"
+                  className="flex items-center gap-2 text-destructive hover:text-destructive/80 transition-colors text-sm"
                 >
-                  <LogOut className="h-5 w-5" strokeWidth={2} />
+                  <LogOut className="h-4 w-4" strokeWidth={2} />
                   <span>{t('logoutFromAccount')}</span>
                 </button>
               </div>
