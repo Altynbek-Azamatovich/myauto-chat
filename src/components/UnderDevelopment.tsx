@@ -9,9 +9,10 @@ interface UnderDevelopmentProps {
   title: string;
   subtitle?: string;
   backPath?: string;
+  onBack?: () => void;
 }
 
-export const UnderDevelopment = ({ title, subtitle, backPath = '/services' }: UnderDevelopmentProps) => {
+export const UnderDevelopment = ({ title, subtitle, backPath = '/services', onBack }: UnderDevelopmentProps) => {
   const navigate = useNavigate();
   const { t } = useLanguage();
 
@@ -22,7 +23,10 @@ export const UnderDevelopment = ({ title, subtitle, backPath = '/services' }: Un
         <Button 
           variant="ghost" 
           size="icon" 
-          onClick={() => navigate(backPath)}
+          onClick={() => {
+            if (onBack) return onBack();
+            navigate(backPath);
+          }}
           className="rounded-full hover:bg-muted/30"
         >
           <ArrowLeft className="h-6 w-6" />
@@ -32,20 +36,20 @@ export const UnderDevelopment = ({ title, subtitle, backPath = '/services' }: Un
 
       {/* Content */}
       <div className="flex flex-col items-center justify-center px-6 py-8 text-center">
-        {/* Animation Container */}
-        <div className="relative w-screen -mx-6 h-[clamp(240px,52vw,360px)] mb-6 flex items-center justify-between overflow-hidden">
-          {/* Construction Barrier - slides from left */}
+        {/* Animation Container (same alignment behavior as AutoForum placeholder) */}
+        <div className="relative w-screen -mx-6 h-[clamp(240px,52vw,360px)] mb-6 overflow-hidden">
+          {/* Construction Barrier - slides from left and aligns to left edge */}
           <img
             src={barrierImage}
             alt="Under construction"
-            className="block h-[clamp(144px,33vw,240px)] w-auto object-contain will-change-transform animate-[slide-barrier_4s_ease-in-out_infinite]"
+            className="absolute left-0 top-1/2 -translate-y-1/2 block h-[clamp(144px,33vw,240px)] w-auto object-contain will-change-transform animate-[slide-barrier_4s_ease-in-out_infinite]"
           />
-          
-          {/* Car - slides from right */}
+
+          {/* Car - slides from right and aligns to right edge */}
           <img
             src={carImage}
             alt="Car"
-            className="block h-[clamp(168px,39vw,285px)] w-auto object-contain will-change-transform animate-[slide-car_4s_ease-in-out_infinite]"
+            className="absolute right-0 top-1/2 -translate-y-1/2 block h-[clamp(168px,39vw,285px)] w-auto object-contain will-change-transform animate-[slide-car_4s_ease-in-out_infinite]"
           />
         </div>
 
