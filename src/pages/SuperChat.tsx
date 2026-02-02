@@ -182,12 +182,18 @@ const SuperChat = () => {
     }
   };
 
+  const prevMessagesLengthRef = useRef(messages.length);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // Only scroll to bottom when NEW messages are added, not on initial load
   useEffect(() => {
-    scrollToBottom();
+    if (messages.length > prevMessagesLengthRef.current) {
+      scrollToBottom();
+    }
+    prevMessagesLengthRef.current = messages.length;
   }, [messages]);
 
   const handleSendMessage = async (inputText?: string) => {
