@@ -42,6 +42,7 @@ import NewsPage from "./pages/NewsPage";
 import Showroom3D from "./pages/Showroom3D";
 import Car360View from "./pages/Car360View";
 import Car3DModel from "./pages/Car3DModel";
+import TuningCategory from "./pages/TuningCategory";
 
 // Partner Pages
 import PartnerDashboard from "./pages/partner/Dashboard";
@@ -77,7 +78,7 @@ const AppContent = () => {
     '/car-3d-model',
     '/partner/pending-verification',
     '/privacy-policy'
-  ].includes(location.pathname);
+  ].includes(location.pathname) || location.pathname.startsWith('/tuning/');
   
   const isPartnerRoute = location.pathname.startsWith('/partner');
 
@@ -137,6 +138,7 @@ const AppContent = () => {
         <Route path="/showroom-3d" element={<Showroom3D />} />
         <Route path="/car-360-view" element={<Car360View />} />
         <Route path="/car-3d-model" element={<Car3DModel />} />
+        <Route path="/tuning/:categoryId" element={<TuningCategory />} />
         
         {/* Partner Routes */}
         <Route path="/partner/pending-verification" element={<PendingVerification />} />
