@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, MapPin, Star, Phone, Clock, Calendar as CalendarIcon, User, Wrench } from "lucide-react";
+import { ArrowLeft, MapPin, Star, Phone, Clock, Calendar as CalendarIcon, User, Wrench, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { ru } from "date-fns/locale";
+import { ru, kk } from "date-fns/locale";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import { usePersistedState } from "@/hooks/usePersistedState";
@@ -45,14 +44,14 @@ interface Vehicle {
 }
 
 const SERVICE_TYPES = [
-  { value: "maintenance", labelRu: "Техническое обслуживание", labelKk: "Техникалық қызмет көрсету" },
-  { value: "repair", labelRu: "Ремонт", labelKk: "Жөндеу" },
-  { value: "diagnostics", labelRu: "Диагностика", labelKk: "Диагностика" },
-  { value: "tire_service", labelRu: "Шиномонтаж", labelKk: "Шина монтажы" },
-  { value: "body_work", labelRu: "Кузовной ремонт", labelKk: "Кузов жөндеу" },
-  { value: "painting", labelRu: "Покраска", labelKk: "Бояу" },
-  { value: "detailing", labelRu: "Детейлинг", labelKk: "Детейлинг" },
-  { value: "oil_change", labelRu: "Замена масла", labelKk: "Май ауыстыру" },
+  { value: "maintenance", label: { ru: "Техническое обслуживание", kk: "Техникалық қызмет көрсету", en: "Maintenance" } },
+  { value: "repair", label: { ru: "Ремонт", kk: "Жөндеу", en: "Repair" } },
+  { value: "diagnostics", label: { ru: "Диагностика", kk: "Диагностика", en: "Diagnostics" } },
+  { value: "tire_service", label: { ru: "Шиномонтаж", kk: "Шина монтажы", en: "Tire Service" } },
+  { value: "body_work", label: { ru: "Кузовной ремонт", kk: "Кузов жөндеу", en: "Body Work" } },
+  { value: "painting", label: { ru: "Покраска", kk: "Бояу", en: "Painting" } },
+  { value: "detailing", label: { ru: "Детейлинг", kk: "Детейлинг", en: "Detailing" } },
+  { value: "oil_change", label: { ru: "Замена масла", kk: "Май ауыстыру", en: "Oil Change" } },
 ];
 
 const TIME_SLOTS = [
@@ -71,13 +70,35 @@ const ServiceBooking = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Form state with persistence
   const [vehicleId, setVehicleId] = usePersistedState("booking_vehicle_id", "");
   const [masterId, setMasterId] = usePersistedState("booking_master_id", "");
   const [serviceType, setServiceType] = usePersistedState("booking_service_type", "");
   const [description, setDescription] = usePersistedState("booking_description", "");
   const [selectedDate, setSelectedDate] = usePersistedState<Date | undefined>("booking_selected_date", undefined);
   const [selectedTime, setSelectedTime] = usePersistedState("booking_selected_time", "");
+
+  const labels = {
+    title: { ru: 'Запись на обслуживание', kk: 'Қызметке жазылу', en: 'Book Service' },
+    selectService: { ru: 'Выберите автосервис', kk: 'Автосервисті таңдаңыз', en: 'Select Service Center' },
+    vehicle: { ru: 'Автомобиль', kk: 'Автомобиль', en: 'Vehicle' },
+    selectVehicle: { ru: 'Выберите автомобиль', kk: 'Автомобильді таңдаңыз', en: 'Select vehicle' },
+    master: { ru: 'Мастер', kk: 'Шебер', en: 'Master' },
+    optional: { ru: 'необязательно', kk: 'міндетті емес', en: 'optional' },
+    selectMaster: { ru: 'Выберите мастера', kk: 'Шеберді таңдаңыз', en: 'Select master' },
+    workType: { ru: 'Тип работ', kk: 'Жұмыс түрі', en: 'Work Type' },
+    selectWorkType: { ru: 'Выберите тип работ', kk: 'Жұмыс түрін таңдаңыз', en: 'Select work type' },
+    date: { ru: 'Дата', kk: 'Күні', en: 'Date' },
+    selectDate: { ru: 'Выберите дату', kk: 'Күнді таңдаңыз', en: 'Select date' },
+    time: { ru: 'Время', kk: 'Уақыты', en: 'Time' },
+    selectTime: { ru: 'Выберите время', kk: 'Уақытты таңдаңыз', en: 'Select time' },
+    description: { ru: 'Описание проблемы', kk: 'Мәселенің сипаттамасы', en: 'Problem Description' },
+    descriptionPlaceholder: { ru: 'Опишите, что нужно сделать...', kk: 'Не істеу керектігін сипаттаңыз...', en: 'Describe what needs to be done...' },
+    submit: { ru: 'Отправить заявку', kk: 'Өтінімді жіберу', en: 'Submit Request' },
+    submitting: { ru: 'Отправка...', kk: 'Жіберілуде...', en: 'Submitting...' },
+    fillAll: { ru: 'Заполните все поля', kk: 'Барлық өрістерді толтырыңыз', en: 'Fill in all fields' },
+  };
+
+  const getLabel = (key: keyof typeof labels) => labels[key][language] || labels[key].en;
 
   useEffect(() => {
     fetchPartners();
@@ -105,10 +126,7 @@ const ServiceBooking = () => {
 
     const { data, error } = await supabase
       .from("user_vehicles")
-      .select(`
-        *,
-        car_brands (brand_name)
-      `)
+      .select(`*, car_brands (brand_name)`)
       .eq("user_id", user.id);
 
     if (error) {
@@ -142,7 +160,7 @@ const ServiceBooking = () => {
 
   const handleSubmit = async () => {
     if (!selectedPartner || !vehicleId || !serviceType || !description || !selectedDate || !selectedTime) {
-      toast.error(language === 'ru' ? "Заполните все поля" : "Барлық өрістерді толтырыңыз");
+      toast.error(getLabel('fillAll'));
       return;
     }
 
@@ -176,84 +194,91 @@ const ServiceBooking = () => {
     navigate("/services");
   };
 
+  const getDateLocale = () => {
+    if (language === 'ru') return ru;
+    if (language === 'kk') return kk;
+    return undefined;
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 pb-20">
+    <div className="min-h-screen bg-background pb-24">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border/50">
-        <div className="flex items-center justify-between p-4">
+      <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-xl">
+        <div className="flex items-center gap-4 px-4 py-4">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => step === 'details' ? setStep('partner') : navigate("/services")}
-            className="rounded-full"
+            className="rounded-full h-10 w-10"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-5 w-5" strokeWidth={2.5} />
           </Button>
-          <h1 className="text-xl font-bold">
-            {language === 'ru' ? 'Запись на обслуживание' : 'Қызметке жазылу'}
-          </h1>
-          <div className="w-10" />
+          <h1 className="text-xl font-bold">{getLabel('title')}</h1>
         </div>
-      </div>
+      </header>
 
-      <div className="p-4 space-y-4">
+      <div className="px-4 space-y-4">
         {step === 'partner' ? (
           <>
-            <h2 className="text-lg font-semibold mb-4">
-              {language === 'ru' ? 'Выберите автосервис' : 'Автосервисті таңдаңыз'}
-            </h2>
+            <p className="text-lg font-medium mb-2">{getLabel('selectService')}</p>
             {partners.map((partner) => (
-              <Card
+              <button
                 key={partner.id}
-                className="p-4 cursor-pointer hover:shadow-lg transition-all"
+                className="w-full p-4 rounded-2xl bg-muted/30 text-left hover:bg-muted/50 transition-colors"
                 onClick={() => handlePartnerSelect(partner)}
               >
-                <div className="space-y-3">
-                  <div className="flex items-start justify-between">
-                    <h3 className="font-bold text-lg">{partner.name}</h3>
-                    <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-                      <span className="font-semibold">{partner.rating.toFixed(1)}</span>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-semibold truncate">{partner.name}</h3>
+                      <div className="flex items-center gap-1 text-sm">
+                        <Star className="h-3.5 w-3.5 fill-yellow-500 text-yellow-500" />
+                        <span>{partner.rating.toFixed(1)}</span>
+                      </div>
                     </div>
-                  </div>
-
-                  <div className="flex items-start gap-2 text-sm text-muted-foreground">
-                    <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                    <span>{partner.address}, {partner.city}</span>
-                  </div>
-
-                  {partner.phone_number && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Phone className="h-4 w-4" />
-                      <span>{partner.phone_number}</span>
+                    <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                      <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
+                      <span className="truncate">{partner.address}, {partner.city}</span>
                     </div>
-                  )}
+                    {partner.phone_number && (
+                      <div className="flex items-center gap-1.5 text-sm text-muted-foreground mt-1">
+                        <Phone className="h-3.5 w-3.5" />
+                        <span>{partner.phone_number}</span>
+                      </div>
+                    )}
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0 ml-2" />
                 </div>
-              </Card>
+              </button>
             ))}
           </>
         ) : (
           <>
-            <Card className="p-4 bg-primary/5 border-primary/20">
-              <div className="flex items-start gap-3">
-                <Wrench className="h-5 w-5 text-primary mt-0.5" />
+            {/* Selected Partner */}
+            <div className="p-4 rounded-2xl bg-primary/5 border border-primary/10">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-primary/10">
+                  <Wrench className="h-5 w-5 text-primary" />
+                </div>
                 <div>
                   <p className="font-semibold">{selectedPartner?.name}</p>
                   <p className="text-sm text-muted-foreground">{selectedPartner?.address}</p>
                 </div>
               </div>
-            </Card>
+            </div>
 
-            <div className="space-y-4">
-              <div>
-                <Label>{language === 'ru' ? 'Автомобиль' : 'Автомобиль'}</Label>
+            {/* Form */}
+            <div className="space-y-5">
+              {/* Vehicle */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">{getLabel('vehicle')}</Label>
                 <Select value={vehicleId} onValueChange={setVehicleId}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={language === 'ru' ? 'Выберите автомобиль' : 'Автомобильді таңдаңыз'} />
+                  <SelectTrigger className="h-12 rounded-xl bg-muted/50 border-0">
+                    <SelectValue placeholder={getLabel('selectVehicle')} />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="rounded-xl">
                     {vehicles.map((vehicle) => (
-                      <SelectItem key={vehicle.id} value={vehicle.id}>
+                      <SelectItem key={vehicle.id} value={vehicle.id} className="rounded-lg">
                         {vehicle.car_brands.brand_name} {vehicle.model} ({vehicle.year})
                       </SelectItem>
                     ))}
@@ -261,23 +286,24 @@ const ServiceBooking = () => {
                 </Select>
               </div>
 
+              {/* Master */}
               {masters.length > 0 && (
-                <div>
-                  <Label>{language === 'ru' ? 'Мастер (необязательно)' : 'Шебер (міндетті емес)'}</Label>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">
+                    {getLabel('master')} <span className="text-muted-foreground text-xs">({getLabel('optional')})</span>
+                  </Label>
                   <Select value={masterId} onValueChange={setMasterId}>
-                    <SelectTrigger>
-                      <SelectValue placeholder={language === 'ru' ? 'Выберите мастера' : 'Шеберді таңдаңыз'} />
+                    <SelectTrigger className="h-12 rounded-xl bg-muted/50 border-0">
+                      <SelectValue placeholder={getLabel('selectMaster')} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="rounded-xl">
                       {masters.map((master) => (
-                        <SelectItem key={master.id} value={master.id}>
+                        <SelectItem key={master.id} value={master.id} className="rounded-lg">
                           <div className="flex items-center gap-2">
                             <User className="h-4 w-4" />
                             <span>{master.full_name}</span>
                             {master.specialization && (
-                              <span className="text-xs text-muted-foreground">
-                                ({master.specialization})
-                              </span>
+                              <span className="text-xs text-muted-foreground">({master.specialization})</span>
                             )}
                           </div>
                         </SelectItem>
@@ -287,60 +313,62 @@ const ServiceBooking = () => {
                 </div>
               )}
 
-              <div>
-                <Label>{language === 'ru' ? 'Тип работ' : 'Жұмыс түрі'}</Label>
+              {/* Service Type */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">{getLabel('workType')}</Label>
                 <Select value={serviceType} onValueChange={setServiceType}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={language === 'ru' ? 'Выберите тип работ' : 'Жұмыс түрін таңдаңыз'} />
+                  <SelectTrigger className="h-12 rounded-xl bg-muted/50 border-0">
+                    <SelectValue placeholder={getLabel('selectWorkType')} />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="rounded-xl">
                     {SERVICE_TYPES.map((type) => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {language === 'ru' ? type.labelRu : type.labelKk}
+                      <SelectItem key={type.value} value={type.value} className="rounded-lg">
+                        {type.label[language] || type.label.en}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              <div>
-                <Label>{language === 'ru' ? 'Дата' : 'Күні'}</Label>
+              {/* Date */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">{getLabel('date')}</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
                       className={cn(
-                        "w-full justify-start text-left font-normal",
+                        "w-full h-12 justify-start rounded-xl bg-muted/50 border-0 font-normal hover:bg-muted/70",
                         !selectedDate && "text-muted-foreground"
                       )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {selectedDate ? format(selectedDate, "PPP", { locale: ru }) : 
-                        (language === 'ru' ? 'Выберите дату' : 'Күнді таңдаңыз')}
+                      {selectedDate ? format(selectedDate, "PPP", { locale: getDateLocale() }) : getLabel('selectDate')}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
+                  <PopoverContent className="w-auto p-0 rounded-xl" align="start">
                     <Calendar
                       mode="single"
                       selected={selectedDate}
                       onSelect={setSelectedDate}
                       disabled={(date) => date < new Date()}
                       initialFocus
-                      className="pointer-events-auto"
+                      className="pointer-events-auto rounded-xl"
                     />
                   </PopoverContent>
                 </Popover>
               </div>
 
-              <div>
-                <Label>{language === 'ru' ? 'Время' : 'Уақыты'}</Label>
+              {/* Time */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">{getLabel('time')}</Label>
                 <Select value={selectedTime} onValueChange={setSelectedTime}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={language === 'ru' ? 'Выберите время' : 'Уақытты таңдаңыз'} />
+                  <SelectTrigger className="h-12 rounded-xl bg-muted/50 border-0">
+                    <SelectValue placeholder={getLabel('selectTime')} />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="rounded-xl">
                     {TIME_SLOTS.map((time) => (
-                      <SelectItem key={time} value={time}>
+                      <SelectItem key={time} value={time} className="rounded-lg">
                         <div className="flex items-center gap-2">
                           <Clock className="h-4 w-4" />
                           <span>{time}</span>
@@ -351,26 +379,24 @@ const ServiceBooking = () => {
                 </Select>
               </div>
 
-              <div>
-                <Label>{language === 'ru' ? 'Описание проблемы' : 'Мәселенің сипаттамасы'}</Label>
+              {/* Description */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">{getLabel('description')}</Label>
                 <Textarea
-                  placeholder={language === 'ru' ? 
-                    'Опишите, что нужно сделать...' : 
-                    'Не істеу керектігін сипаттаңыз...'}
+                  placeholder={getLabel('descriptionPlaceholder')}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={4}
+                  className="rounded-xl bg-muted/50 border-0 resize-none"
                 />
               </div>
 
               <Button 
                 onClick={handleSubmit} 
-                className="w-full"
+                className="w-full h-14 text-lg font-semibold rounded-2xl"
                 disabled={loading}
               >
-                {loading ? 
-                  (language === 'ru' ? 'Отправка...' : 'Жіберілуде...') :
-                  (language === 'ru' ? 'Отправить заявку' : 'Өтінімді жіберу')}
+                {loading ? getLabel('submitting') : getLabel('submit')}
               </Button>
             </div>
           </>
