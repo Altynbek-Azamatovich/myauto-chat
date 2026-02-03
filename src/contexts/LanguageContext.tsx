@@ -111,6 +111,7 @@ const translations: Translations = {
   notificationSettings: { ru: 'Настройки уведомлений', kk: 'Хабарландыру баптаулары', en: 'Notification Settings' },
   language: { ru: 'Язык', kk: 'Тіл', en: 'Language' },
   aboutApp: { ru: 'О приложении', kk: 'Қолданба туралы', en: 'About App' },
+  termsOfService: { ru: 'Пользовательское соглашение', kk: 'Пайдаланушы келісімі', en: 'Terms of Service' },
   support: { ru: 'Поддержка', kk: 'Қолдау', en: 'Support' },
   myCars: { ru: 'Мои автомобили', kk: 'Менің автомобильдерім', en: 'My Cars' },
   serviceHistory: { ru: 'История сервиса', kk: 'Қызмет тарихы', en: 'Service History' },

@@ -20,6 +20,7 @@ import MyVehicles from "./pages/MyVehicles";
 import ServiceBooking from "./pages/ServiceBooking";
 import ProfileSettings from "./pages/ProfileSettings";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
 import PhotoDiagnostic from "./pages/PhotoDiagnostic";
@@ -77,7 +78,8 @@ const AppContent = () => {
     '/car-360-view',
     '/car-3d-model',
     '/partner/pending-verification',
-    '/privacy-policy'
+    '/privacy-policy',
+    '/terms-of-service'
   ].includes(location.pathname) || location.pathname.startsWith('/tuning/');
   
   const isPartnerRoute = location.pathname.startsWith('/partner');
@@ -124,6 +126,7 @@ const AppContent = () => {
         <Route path="/notification-settings" element={<NotificationSettings />} />
         <Route path="/about-app" element={<AboutApp />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-service" element={<TermsOfService />} />
         
         {/* Service Pages */}
         <Route path="/roadside-help" element={<RoadsideHelp />} />
