@@ -118,13 +118,13 @@ Deno.serve(async (req) => {
       );
     }
 
-    // TODO: Send WhatsApp message via WhatsApp Business API
-    // Replace this section with actual WhatsApp Business API integration
-    const whatsappApiKey = Deno.env.get('WHATSAPP_API_KEY');
-    const whatsappPhoneId = Deno.env.get('WHATSAPP_PHONE_ID');
+    // Get smsc.kz credentials
+    const smscLogin = Deno.env.get('SMSC_LOGIN');
+    const smscPassword = Deno.env.get('SMSC_PASSWORD');
+    const smscWhatsappBot = Deno.env.get('SMSC_WHATSAPP_BOT');
 
-    if (!whatsappApiKey || !whatsappPhoneId) {
-      console.log('WhatsApp API not configured, returning mock response for testing');
+    if (!smscLogin || !smscPassword || !smscWhatsappBot) {
+      console.log('SMSC WhatsApp API not configured, returning mock response for testing');
       
       // For now, just log that we would send WhatsApp
       await logAuthEvent('OTP_WHATSAPP_SENT', {
@@ -158,50 +158,52 @@ Deno.serve(async (req) => {
       );
     }
 
-    // WhatsApp Business API call
-    // Format: https://graph.facebook.com/v18.0/{phone-number-id}/messages
+    // Format phone number for smsc.kz (remove + sign)
     const formattedPhone = phone.startsWith('+') ? phone.substring(1) : phone;
     
+    // Create message based on language
     const message = language === 'ru' 
       ? `Ваш код подтверждения myAuto: ${code}` 
       : `Сіздің myAuto растау кодыңыз: ${code}`;
 
-    const whatsappResponse = await fetch(
-      `https://graph.facebook.com/v18.0/${whatsappPhoneId}/messages`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${whatsappApiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messaging_product: 'whatsapp',
-          to: formattedPhone,
-          type: 'text',
-          text: {
-            body: message
-          }
-        })
-      }
-    );
+    // Build smsc.kz WhatsApp API URL
+    // Format: https://smsc.kz/sys/send.php?login=alex&psw=123&phones=79999999999&mes=Hello&bot=wa:79888888888
+    const smscUrl = new URL('https://smsc.kz/sys/send.php');
+    smscUrl.searchParams.set('login', smscLogin);
+    smscUrl.searchParams.set('psw', smscPassword);
+    smscUrl.searchParams.set('phones', formattedPhone);
+    smscUrl.searchParams.set('mes', message);
+    smscUrl.searchParams.set('bot', smscWhatsappBot);
+    smscUrl.searchParams.set('fmt', '3'); // JSON response format
+    smscUrl.searchParams.set('charset', 'utf-8');
 
-    const whatsappResult = await whatsappResponse.json();
-    console.log('WhatsApp response:', JSON.stringify(whatsappResult));
+    console.log('Sending WhatsApp via smsc.kz to:', formattedPhone);
+
+    const smscResponse = await fetch(smscUrl.toString());
+    const smscResult = await smscResponse.json();
+    
+    console.log('SMSC WhatsApp response:', JSON.stringify(smscResult));
 
     await logExternalApiCall({
-      apiName: 'whatsapp_business',
-      endpoint: 'messages',
+      apiName: 'smsc_whatsapp',
+      endpoint: 'send.php',
       userAccountName: phone,
       clientIp,
       requestId,
-      success: whatsappResponse.ok,
-      responseCode: whatsappResponse.status,
-      errorMessage: !whatsappResponse.ok ? JSON.stringify(whatsappResult) : undefined,
-      metadata: { messageId: whatsappResult.messages?.[0]?.id }
+      success: !smscResult.error,
+      responseCode: smscResponse.status,
+      errorMessage: smscResult.error ? `Error ${smscResult.error_code}: ${smscResult.error}` : undefined,
+      metadata: { 
+        messageId: smscResult.id,
+        cnt: smscResult.cnt,
+        cost: smscResult.cost
+      }
     });
 
-    if (!whatsappResponse.ok) {
-      console.error('WhatsApp error:', whatsappResult);
+    // Check for errors in smsc response
+    // smsc.kz returns error field if something went wrong
+    if (smscResult.error) {
+      console.error('SMSC WhatsApp error:', smscResult);
       
       await logAuthEvent('OTP_WHATSAPP_SENT', {
         userAccountName: phone,
@@ -209,8 +211,8 @@ Deno.serve(async (req) => {
         userAgent,
         requestId,
         success: false,
-        errorMessage: 'WhatsApp sending failed',
-        metadata: { language, whatsapp_error: whatsappResult }
+        errorMessage: 'WhatsApp sending failed via smsc.kz',
+        metadata: { language, smsc_error: smscResult }
       });
       
       return new Response(
@@ -239,7 +241,11 @@ Deno.serve(async (req) => {
       userAgent,
       requestId,
       success: true,
-      metadata: { language, messageId: whatsappResult.messages?.[0]?.id }
+      metadata: { 
+        language, 
+        messageId: smscResult.id,
+        cost: smscResult.cost
+      }
     });
 
     return new Response(
@@ -247,7 +253,7 @@ Deno.serve(async (req) => {
         success: true, 
         message: 'WhatsApp OTP sent successfully',
         channel: 'whatsapp',
-        messageId: whatsappResult.messages?.[0]?.id
+        messageId: smscResult.id
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
