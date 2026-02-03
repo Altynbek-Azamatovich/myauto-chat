@@ -37,19 +37,19 @@ export const UnderDevelopment = ({ title, subtitle, backPath = '/services', onBa
       {/* Content */}
       <div className="flex flex-col items-center px-6 text-center">
         {/* Animation Container */}
-        <div className="relative w-screen -mx-6 h-[clamp(200px,45vw,320px)] mb-4 overflow-hidden flex items-center">
+        <div className="relative w-screen -mx-6 h-[clamp(180px,40vw,280px)] mb-4 flex items-center justify-center">
           {/* Construction Barrier - slides from left */}
           <img
             src={barrierImage}
             alt="Under construction"
-            className="absolute left-0 top-1/2 -translate-y-1/2 block h-[clamp(120px,28vw,200px)] w-auto object-contain will-change-transform animate-[slide-barrier_4s_ease-in-out_infinite]"
+            className="absolute left-0 bottom-0 block h-[clamp(100px,24vw,160px)] w-auto object-contain will-change-transform animate-[slide-barrier_4s_ease-in-out_infinite]"
           />
 
           {/* Car - slides from right */}
           <img
             src={carImage}
             alt="Car"
-            className="absolute right-0 top-1/2 -translate-y-1/2 block h-[clamp(140px,32vw,240px)] w-auto object-contain will-change-transform animate-[slide-car_4s_ease-in-out_infinite]"
+            className="absolute right-0 bottom-0 block h-[clamp(120px,28vw,200px)] w-auto object-contain will-change-transform animate-[slide-car_4s_ease-in-out_infinite]"
           />
         </div>
 
