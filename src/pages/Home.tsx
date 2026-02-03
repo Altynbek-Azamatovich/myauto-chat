@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from 
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useDevMode } from "@/contexts/DevModeContext";
 import { useNavigate } from "react-router-dom";
 import { supabase } from '@/integrations/supabase/client';
 import { format } from "date-fns";
@@ -58,6 +59,7 @@ const Home = () => {
     t,
     language
   } = useLanguage();
+  const { isDevMode } = useDevMode();
   const navigate = useNavigate();
   const location = useLocation();
   const { unreadCount } = useNotifications();
@@ -74,9 +76,13 @@ const Home = () => {
   useEffect(() => {
     if (!isTuningMode) setInfoEnterNonce((n) => n + 1);
   }, [isTuningMode]);
+  
   useEffect(() => {
+    // Skip auth check in dev mode
+    if (isDevMode) return;
     checkAuthAndFetchData();
-  }, []);
+  }, [isDevMode]);
+
   const checkAuthAndFetchData = async () => {
     const {
       data: {
@@ -131,6 +137,10 @@ const Home = () => {
     }
   };
   const updateVehicleDate = async (field: string, date: Date | undefined) => {
+    if (isDevMode) {
+      toast.info(language === 'ru' ? 'Режим разработчика: данные не сохраняются' : 'Әзірлеуші режимі: деректер сақталмайды');
+      return;
+    }
     if (!primaryVehicle || !date) return;
     const {
       error
