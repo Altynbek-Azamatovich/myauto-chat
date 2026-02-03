@@ -1,11 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Globe } from "lucide-react";
+import { useDevMode } from "@/contexts/DevModeContext";
+import { Globe, Code2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { AnimatedCar } from "@/components/AnimatedCar";
 
 const Welcome = () => {
+  const { enableDevMode } = useDevMode();
   const navigate = useNavigate();
   const { t, language, setLanguage } = useLanguage();
   const [showLogo, setShowLogo] = useState(false);
@@ -81,12 +83,27 @@ const Welcome = () => {
       </div>
 
       {/* Continue Button */}
-      <div className={`px-6 pb-12 transition-all duration-500 ease-out ${showButton ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      <div className={`px-6 pb-8 transition-all duration-500 ease-out ${showButton ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <Button 
           onClick={() => navigate('/phone-auth')} 
           className="w-full h-14 text-lg font-semibold rounded-2xl bg-foreground text-background hover:bg-foreground/90 transition-all duration-300"
         >
           {t('continue') || 'Продолжить'}
+        </Button>
+      </div>
+
+      {/* Developer Mode Button */}
+      <div className={`px-6 pb-12 transition-all duration-500 ease-out ${showButton ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <Button 
+          onClick={() => {
+            enableDevMode();
+            navigate('/home');
+          }} 
+          variant="ghost"
+          className="w-full h-12 text-sm font-medium rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all duration-300 flex items-center justify-center gap-2"
+        >
+          <Code2 className="h-4 w-4" />
+          {language === 'ru' ? 'Режим разработчика' : 'Әзірлеуші режимі'}
         </Button>
       </div>
     </div>

@@ -11,6 +11,7 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { CartProvider } from "./contexts/CartContext";
+import { DevModeProvider } from "./contexts/DevModeContext";
 import Welcome from "./pages/Welcome";
 import PhoneAuth from "./pages/PhoneAuth";
 import OTPVerify from "./pages/OTPVerify";
@@ -174,17 +175,19 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
       <LanguageProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <NotificationProvider>
-              <CartProvider>
-                <AppContent />
-              </CartProvider>
-            </NotificationProvider>
-          </BrowserRouter>
-        </TooltipProvider>
+        <DevModeProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <NotificationProvider>
+                <CartProvider>
+                  <AppContent />
+                </CartProvider>
+              </NotificationProvider>
+            </BrowserRouter>
+          </TooltipProvider>
+        </DevModeProvider>
       </LanguageProvider>
     </ThemeProvider>
   </QueryClientProvider>
