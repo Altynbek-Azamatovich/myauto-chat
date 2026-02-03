@@ -112,6 +112,7 @@ const translations: Translations = {
   language: { ru: 'Язык', kk: 'Тіл', en: 'Language' },
   aboutApp: { ru: 'О приложении', kk: 'Қолданба туралы', en: 'About App' },
   termsOfService: { ru: 'Пользовательское соглашение', kk: 'Пайдаланушы келісімі', en: 'Terms of Service' },
+  deleteAccountRequest: { ru: 'Запрос на удаление', kk: 'Жою сұрауы', en: 'Delete Account Request' },
   support: { ru: 'Поддержка', kk: 'Қолдау', en: 'Support' },
   myCars: { ru: 'Мои автомобили', kk: 'Менің автомобильдерім', en: 'My Cars' },
   serviceHistory: { ru: 'История сервиса', kk: 'Қызмет тарихы', en: 'Service History' },
