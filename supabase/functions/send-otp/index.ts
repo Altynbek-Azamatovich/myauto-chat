@@ -161,59 +161,61 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Send SMS via Mobizon API
-    const mobizonApiKey = Deno.env.get('MOBIZON_API_KEY');
+    // Send SMS via SMSC.kz API
+    const smscLogin = Deno.env.get('SMSC_LOGIN');
+    const smscPassword = Deno.env.get('SMSC_PASSWORD');
 
-    if (!mobizonApiKey) {
-      throw new Error('Mobizon API key not configured');
+    if (!smscLogin || !smscPassword) {
+      throw new Error('SMSC credentials not configured');
     }
 
-    const message = `Ваш код подтверждения myAuto: ${code}`;
+    const message = `Ваш код авторизации для myAuto: ${code}`;
     
-    // Format phone number - remove + if present for Mobizon
+    // Format phone number - remove + if present for SMSC
     const formattedPhone = phone.startsWith('+') ? phone.substring(1) : phone;
     
-    // Mobizon API endpoint
-    const mobizonUrl = new URL('https://api.mobizon.kz/service/message/sendsmsmessage');
-    mobizonUrl.searchParams.append('apiKey', mobizonApiKey);
-    mobizonUrl.searchParams.append('recipient', formattedPhone);
-    mobizonUrl.searchParams.append('text', message);
-    mobizonUrl.searchParams.append('output', 'json');
+    // SMSC.kz API endpoint
+    const smscUrl = new URL('https://smsc.kz/sys/send.php');
+    smscUrl.searchParams.append('login', smscLogin);
+    smscUrl.searchParams.append('psw', smscPassword);
+    smscUrl.searchParams.append('phones', formattedPhone);
+    smscUrl.searchParams.append('mes', message);
+    smscUrl.searchParams.append('fmt', '3'); // JSON response
+    smscUrl.searchParams.append('charset', 'utf-8');
 
-    console.log('Sending SMS via Mobizon to:', formattedPhone);
+    console.log('Sending SMS via SMSC.kz to:', formattedPhone);
     
-    const smsResponse = await fetch(mobizonUrl.toString(), {
-      method: 'POST',
+    const smsResponse = await fetch(smscUrl.toString(), {
+      method: 'GET',
     });
     
     const smsResult = await smsResponse.json();
-    console.log('Mobizon response:', JSON.stringify(smsResult));
+    console.log('SMSC response:', JSON.stringify(smsResult));
 
     // Логируем запрос к внешнему API
     await logExternalApiCall({
-      apiName: 'mobizon',
-      endpoint: 'sendsmsmessage',
+      apiName: 'smsc',
+      endpoint: 'send.php',
       userAccountName: phone,
       clientIp,
       requestId,
-      success: smsResult.code === 0,
-      responseCode: smsResult.code,
-      errorMessage: smsResult.code !== 0 ? JSON.stringify(smsResult.data) : undefined,
-      metadata: { messageId: smsResult.data?.messageId }
+      success: !smsResult.error,
+      responseCode: smsResult.error_code || 0,
+      errorMessage: smsResult.error ? smsResult.error : undefined,
+      metadata: { messageId: smsResult.id, cnt: smsResult.cnt }
     });
 
-    // Mobizon returns code: 0 for success
-    if (smsResult.code !== 0) {
-      console.error('Mobizon error:', smsResult);
+    // SMSC returns error field if failed
+    if (smsResult.error) {
+      console.error('SMSC error:', smsResult);
       
-      // Check if it's a carrier/direction not supported error
-      const isCarrierNotSupported = smsResult.data?.recipient?.includes('отсутствует возможность отправки') ||
-                                     smsResult.data?.recipient?.includes('данного направления');
+      // Check for specific error codes
+      const isInvalidNumber = smsResult.error_code === 7 || smsResult.error_code === 8;
       
-      const errorMessage = isCarrierNotSupported
+      const errorMessage = isInvalidNumber
         ? (language === 'ru' 
-            ? 'К сожалению, ваш оператор не поддерживается. Попробуйте другой номер телефона.' 
-            : 'Өкінішке орай, сіздің оператор қолдау көрсетілмейді. Басқа телефон нөмірін қолданып көріңіз.')
+            ? 'Неверный формат номера телефона.' 
+            : 'Телефон нөмірінің пішімі дұрыс емес.')
         : (language === 'ru' 
             ? 'Не удалось отправить код. Попробуйте позже.' 
             : 'Кодты жіберу мүмкін болмады. Кейінірек қайталап көріңіз.');
@@ -226,11 +228,11 @@ Deno.serve(async (req) => {
         requestId,
         success: false,
         errorMessage: errorMessage,
-        metadata: { language, isCarrierNotSupported, mobizon_error: smsResult }
+        metadata: { language, isInvalidNumber, smsc_error: smsResult }
       });
       
       return new Response(
-        JSON.stringify({ error: errorMessage, isCarrierNotSupported }),
+        JSON.stringify({ error: errorMessage, isInvalidNumber }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
