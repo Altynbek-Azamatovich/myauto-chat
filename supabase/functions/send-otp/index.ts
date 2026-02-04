@@ -180,16 +180,8 @@ Deno.serve(async (req) => {
     // Meta WhatsApp Cloud API endpoint
     const whatsappUrl = `https://graph.facebook.com/v22.0/${whatsappPhoneNumberId}/messages`;
     
-    // Prepare message based on language
-    let messageText: string;
-    if (language === 'kk') {
-      messageText = `myAuto авторизация коды: ${code}. Кодты ешкімге бермеңіз.`;
-    } else if (language === 'en') {
-      messageText = `Your myAuto verification code: ${code}. Do not share this code.`;
-    } else {
-      messageText = `Ваш код авторизации myAuto: ${code}. Никому не сообщайте код.`;
-    }
-
+    // Use Meta's approved template format
+    const messageText = `${code} is your myAuto verification code. For your security, do not share this code`;
     console.log('Sending WhatsApp message via Meta API to:', formattedPhone);
     
     const whatsappResponse = await fetch(whatsappUrl, {
