@@ -156,7 +156,14 @@ Deno.serve(async (req) => {
     }
 
     // Format phone number for WhatsApp (remove + sign, keep only digits)
-    const formattedPhone = phone.replace(/\D/g, '');
+    let formattedPhone = phone.replace(/\D/g, '');
+    
+    // TEMPORARY: Meta development mode requires specific format for test number
+    // Convert 77772373000 to 787772373000 (Meta's expected format)
+    if (formattedPhone === '77772373000') {
+      formattedPhone = '787772373000';
+      console.log('Applying Meta test number format conversion: 77772373000 -> 787772373000');
+    }
     
     // Meta WhatsApp Cloud API endpoint
     const whatsappUrl = `https://graph.facebook.com/v22.0/${whatsappPhoneNumberId}/messages`;
