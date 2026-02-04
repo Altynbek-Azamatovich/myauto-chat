@@ -51,11 +51,16 @@ const Welcome = () => {
         <Button 
           variant="ghost" 
           size="sm" 
-          onClick={() => setLanguage(language === 'ru' ? 'kk' : 'ru')} 
+          onClick={() => {
+            const langs: ('ru' | 'kk' | 'en')[] = ['ru', 'kk', 'en'];
+            const currentIndex = langs.indexOf(language);
+            const nextIndex = (currentIndex + 1) % langs.length;
+            setLanguage(langs[nextIndex]);
+          }} 
           className="bg-muted/50 backdrop-blur-lg text-foreground hover:bg-muted/70"
         >
           <Globe className="h-4 w-4 mr-2" strokeWidth={2.5} />
-          {language === 'ru' ? 'РУ' : 'ҚЗ'}
+          {language === 'ru' ? 'РУ' : language === 'kk' ? 'ҚЗ' : 'EN'}
         </Button>
       </div>
 
@@ -103,7 +108,7 @@ const Welcome = () => {
           className="w-full h-12 text-sm font-medium rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all duration-300 flex items-center justify-center gap-2"
         >
           <Code2 className="h-4 w-4" />
-          {language === 'ru' ? 'Режим разработчика' : 'Әзірлеуші режимі'}
+          {language === 'ru' ? 'Режим разработчика' : language === 'kk' ? 'Әзірлеуші режимі' : 'Developer Mode'}
         </Button>
       </div>
     </div>
