@@ -19,7 +19,6 @@ Deno.serve(async (req) => {
     console.log('Sending OTP to phone:', phone, 'language:', language);
 
     if (!phone || phone.length < 10) {
-      // Логируем неудачную попытку
       await logAuthEvent('OTP_SENT', {
         userAccountName: phone,
         clientIp,
@@ -49,7 +48,6 @@ Deno.serve(async (req) => {
     if (phoneRateLimit.data) {
       console.log('Rate limit exceeded for phone:', phone);
       
-      // Логируем превышение лимита
       await writeAuditLog({
         sourceService: 'send-otp',
         category: 'SECURITY',
@@ -90,7 +88,6 @@ Deno.serve(async (req) => {
     if (ipRateLimit.data && ipRateLimit.data.attempt_count >= 3) {
       console.log('Rate limit exceeded for IP:', clientIp);
       
-      // Логируем превышение лимита по IP
       await writeAuditLog({
         sourceService: 'send-otp',
         category: 'SECURITY',
@@ -161,66 +158,87 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Send SMS via SMSC.kz API
-    const smscLogin = Deno.env.get('SMSC_LOGIN');
-    const smscPassword = Deno.env.get('SMSC_PASSWORD');
+    // Get WhatsApp credentials
+    const whatsappAccessToken = Deno.env.get('WHATSAPP_ACCESS_TOKEN');
+    const whatsappPhoneNumberId = Deno.env.get('WHATSAPP_PHONE_NUMBER_ID');
 
-    if (!smscLogin || !smscPassword) {
-      throw new Error('SMSC credentials not configured');
+    if (!whatsappAccessToken || !whatsappPhoneNumberId) {
+      console.error('WhatsApp credentials not configured');
+      throw new Error('WhatsApp credentials not configured');
     }
 
-    const message = `Ваш код авторизации для myAuto: ${code}`;
+    // Format phone number for WhatsApp (remove + sign, keep only digits)
+    let formattedPhone = phone.replace(/\D/g, '');
     
-    // Format phone number - remove + if present for SMSC
-    const formattedPhone = phone.startsWith('+') ? phone.substring(1) : phone;
+    // TEMPORARY: Meta development mode requires specific format for test number
+    // Convert 77772373000 to 787772373000 (Meta's expected format)
+    if (formattedPhone === '77772373000') {
+      formattedPhone = '787772373000';
+      console.log('Applying Meta test number format conversion: 77772373000 -> 787772373000');
+    }
     
-    // SMSC.kz API endpoint
-    const smscUrl = new URL('https://smsc.kz/sys/send.php');
-    smscUrl.searchParams.append('login', smscLogin);
-    smscUrl.searchParams.append('psw', smscPassword);
-    smscUrl.searchParams.append('phones', formattedPhone);
-    smscUrl.searchParams.append('mes', message);
-    smscUrl.searchParams.append('fmt', '3'); // JSON response
-    smscUrl.searchParams.append('charset', 'utf-8');
+    // Meta WhatsApp Cloud API endpoint
+    const whatsappUrl = `https://graph.facebook.com/v22.0/${whatsappPhoneNumberId}/messages`;
+    
+    // Prepare message based on language
+    let messageText: string;
+    if (language === 'kk') {
+      messageText = `myAuto авторизация коды: ${code}. Кодты ешкімге бермеңіз.`;
+    } else if (language === 'en') {
+      messageText = `Your myAuto verification code: ${code}. Do not share this code.`;
+    } else {
+      messageText = `Ваш код авторизации myAuto: ${code}. Никому не сообщайте код.`;
+    }
 
-    console.log('Sending SMS via SMSC.kz to:', formattedPhone);
+    console.log('Sending WhatsApp message via Meta API to:', formattedPhone);
     
-    const smsResponse = await fetch(smscUrl.toString(), {
-      method: 'GET',
+    const whatsappResponse = await fetch(whatsappUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${whatsappAccessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        recipient_type: 'individual',
+        to: formattedPhone,
+        type: 'text',
+        text: {
+          preview_url: false,
+          body: messageText
+        }
+      }),
     });
     
-    const smsResult = await smsResponse.json();
-    console.log('SMSC response:', JSON.stringify(smsResult));
+    const whatsappResult = await whatsappResponse.json();
+    console.log('WhatsApp API response:', JSON.stringify(whatsappResult));
 
-    // Логируем запрос к внешнему API
+    // Log external API call
     await logExternalApiCall({
-      apiName: 'smsc',
-      endpoint: 'send.php',
+      apiName: 'whatsapp_meta',
+      endpoint: 'messages',
       userAccountName: phone,
       clientIp,
       requestId,
-      success: !smsResult.error,
-      responseCode: smsResult.error_code || 0,
-      errorMessage: smsResult.error ? smsResult.error : undefined,
-      metadata: { messageId: smsResult.id, cnt: smsResult.cnt }
+      success: !whatsappResult.error,
+      responseCode: whatsappResponse.status,
+      errorMessage: whatsappResult.error ? JSON.stringify(whatsappResult.error) : undefined,
+      metadata: { 
+        messageId: whatsappResult.messages?.[0]?.id,
+        formattedPhone 
+      }
     });
 
-    // SMSC returns error field if failed
-    if (smsResult.error) {
-      console.error('SMSC error:', smsResult);
+    // Check for WhatsApp API error
+    if (whatsappResult.error) {
+      console.error('WhatsApp API error:', whatsappResult.error);
       
-      // Check for specific error codes
-      const isInvalidNumber = smsResult.error_code === 7 || smsResult.error_code === 8;
+      const errorMessage = language === 'ru' 
+        ? 'Не удалось отправить код через WhatsApp. Попробуйте позже.' 
+        : language === 'kk'
+        ? 'WhatsApp арқылы код жіберу мүмкін болмады. Кейінірек қайталаңыз.'
+        : 'Failed to send code via WhatsApp. Please try again later.';
       
-      const errorMessage = isInvalidNumber
-        ? (language === 'ru' 
-            ? 'Неверный формат номера телефона.' 
-            : 'Телефон нөмірінің пішімі дұрыс емес.')
-        : (language === 'ru' 
-            ? 'Не удалось отправить код. Попробуйте позже.' 
-            : 'Кодты жіберу мүмкін болмады. Кейінірек қайталап көріңіз.');
-      
-      // Логируем неудачную отправку
       await logAuthEvent('OTP_SENT', {
         userAccountName: phone,
         clientIp,
@@ -228,16 +246,16 @@ Deno.serve(async (req) => {
         requestId,
         success: false,
         errorMessage: errorMessage,
-        metadata: { language, isInvalidNumber, smsc_error: smsResult }
+        metadata: { language, whatsapp_error: whatsappResult.error }
       });
       
       return new Response(
-        JSON.stringify({ error: errorMessage, isInvalidNumber }),
+        JSON.stringify({ error: errorMessage }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Update rate limit records after successful SMS send
+    // Update rate limit records after successful send
     await supabase.from('rate_limits').upsert({
       identifier: phone,
       request_type: 'send_otp',
@@ -263,21 +281,25 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Логируем успешную отправку OTP
+    // Log successful OTP send
     await logAuthEvent('OTP_SENT', {
       userAccountName: phone,
       clientIp,
       userAgent,
       requestId,
       success: true,
-      metadata: { language, messageId: smsResult.data?.messageId }
+      metadata: { 
+        language, 
+        messageId: whatsappResult.messages?.[0]?.id,
+        channel: 'whatsapp'
+      }
     });
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: 'OTP sent successfully',
-        messageId: smsResult.data?.messageId
+        message: 'OTP sent successfully via WhatsApp',
+        messageId: whatsappResult.messages?.[0]?.id
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -287,7 +309,6 @@ Deno.serve(async (req) => {
   } catch (error: any) {
     console.error('Error in send-otp function:', error);
     
-    // Логируем общую ошибку
     await writeAuditLog({
       sourceService: 'send-otp',
       category: 'SYSTEM',
