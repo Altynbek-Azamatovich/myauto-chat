@@ -168,20 +168,13 @@ Deno.serve(async (req) => {
     }
 
     // Format phone number for WhatsApp (remove + sign, keep only digits)
-    let formattedPhone = phone.replace(/\D/g, '');
-    
-    // TEMPORARY: Meta development mode requires specific format for test number
-    // Convert 77772373000 to 787772373000 (Meta's expected format)
-    if (formattedPhone === '77772373000') {
-      formattedPhone = '787772373000';
-      console.log('Applying Meta test number format conversion: 77772373000 -> 787772373000');
-    }
+    const formattedPhone = phone.replace(/\D/g, '');
     
     // Meta WhatsApp Cloud API endpoint
     const whatsappUrl = `https://graph.facebook.com/v22.0/${whatsappPhoneNumberId}/messages`;
     
-    // Use Meta's approved template format
-    const messageText = `${code} is your myAuto verification code. For your security, do not share this code`;
+    // Use approved Russian template
+    const messageText = `Ваш код подтверждения — ${code}. Из соображений безопасности не сообщайте никому этот код.`;
     console.log('Sending WhatsApp message via Meta API to:', formattedPhone);
     
     const whatsappResponse = await fetch(whatsappUrl, {
