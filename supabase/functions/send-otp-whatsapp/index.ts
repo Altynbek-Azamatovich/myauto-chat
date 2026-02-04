@@ -118,25 +118,22 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Get smsc.kz credentials
-    const smscLogin = Deno.env.get('SMSC_LOGIN');
-    const smscPassword = Deno.env.get('SMSC_PASSWORD');
-    const smscWhatsappBot = Deno.env.get('SMSC_WHATSAPP_BOT');
+    // Get Meta WhatsApp Cloud API credentials
+    const whatsappAccessToken = Deno.env.get('WHATSAPP_ACCESS_TOKEN');
+    const whatsappPhoneNumberId = Deno.env.get('WHATSAPP_PHONE_NUMBER_ID');
 
-    if (!smscLogin || !smscPassword || !smscWhatsappBot) {
-      console.log('SMSC WhatsApp API not configured, returning mock response for testing');
+    if (!whatsappAccessToken || !whatsappPhoneNumberId) {
+      console.log('Meta WhatsApp API not configured, returning mock response for testing');
       
-      // For now, just log that we would send WhatsApp
       await logAuthEvent('OTP_WHATSAPP_SENT', {
         userAccountName: phone,
         clientIp,
         userAgent,
         requestId,
         success: true,
-        metadata: { language, mock: true, code } // Include code for testing
+        metadata: { language, mock: true, code }
       });
 
-      // Update rate limit records
       await supabase.from('rate_limits').upsert({
         identifier: phone,
         request_type: 'send_otp_whatsapp',
@@ -158,52 +155,58 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Format phone number for smsc.kz (remove + sign)
-    const formattedPhone = phone.startsWith('+') ? phone.substring(1) : phone;
+    // Format phone number for WhatsApp (remove + sign, keep only digits)
+    const formattedPhone = phone.replace(/\D/g, '');
     
-    // Create message based on language
-    const message = language === 'ru' 
-      ? `Ваш код подтверждения myAuto: ${code}` 
-      : `Сіздің myAuto растау кодыңыз: ${code}`;
-
-    // Build smsc.kz WhatsApp API URL
-    // Format: https://smsc.kz/sys/send.php?login=alex&psw=123&phones=79999999999&mes=Hello&bot=wa:79888888888
-    const smscUrl = new URL('https://smsc.kz/sys/send.php');
-    smscUrl.searchParams.set('login', smscLogin);
-    smscUrl.searchParams.set('psw', smscPassword);
-    smscUrl.searchParams.set('phones', formattedPhone);
-    smscUrl.searchParams.set('mes', message);
-    smscUrl.searchParams.set('bot', smscWhatsappBot);
-    smscUrl.searchParams.set('fmt', '3'); // JSON response format
-    smscUrl.searchParams.set('charset', 'utf-8');
-
-    console.log('Sending WhatsApp via smsc.kz to:', formattedPhone);
-
-    const smscResponse = await fetch(smscUrl.toString());
-    const smscResult = await smscResponse.json();
+    // Meta WhatsApp Cloud API endpoint
+    const whatsappUrl = `https://graph.facebook.com/v22.0/${whatsappPhoneNumberId}/messages`;
     
-    console.log('SMSC WhatsApp response:', JSON.stringify(smscResult));
+    // Build request body - using text message for OTP
+    // Note: For production, you'll need an approved authentication template
+    const requestBody = {
+      messaging_product: "whatsapp",
+      to: formattedPhone,
+      type: "text",
+      text: {
+        body: language === 'ru' 
+          ? `Ваш код подтверждения myAuto: ${code}` 
+          : `Сіздің myAuto растау кодыңыз: ${code}`
+      }
+    };
+
+    console.log('Sending WhatsApp via Meta Cloud API to:', formattedPhone);
+
+    const whatsappResponse = await fetch(whatsappUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${whatsappAccessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    const whatsappResult = await whatsappResponse.json();
+    
+    console.log('Meta WhatsApp response:', JSON.stringify(whatsappResult));
 
     await logExternalApiCall({
-      apiName: 'smsc_whatsapp',
-      endpoint: 'send.php',
+      apiName: 'meta_whatsapp',
+      endpoint: 'messages',
       userAccountName: phone,
       clientIp,
       requestId,
-      success: !smscResult.error,
-      responseCode: smscResponse.status,
-      errorMessage: smscResult.error ? `Error ${smscResult.error_code}: ${smscResult.error}` : undefined,
+      success: whatsappResponse.ok,
+      responseCode: whatsappResponse.status,
+      errorMessage: whatsappResult.error ? whatsappResult.error.message : undefined,
       metadata: { 
-        messageId: smscResult.id,
-        cnt: smscResult.cnt,
-        cost: smscResult.cost
+        messageId: whatsappResult.messages?.[0]?.id,
+        contacts: whatsappResult.contacts
       }
     });
 
-    // Check for errors in smsc response
-    // smsc.kz returns error field if something went wrong
-    if (smscResult.error) {
-      console.error('SMSC WhatsApp error:', smscResult);
+    // Check for errors in Meta response
+    if (!whatsappResponse.ok || whatsappResult.error) {
+      console.error('Meta WhatsApp error:', whatsappResult);
       
       await logAuthEvent('OTP_WHATSAPP_SENT', {
         userAccountName: phone,
@@ -211,8 +214,8 @@ Deno.serve(async (req) => {
         userAgent,
         requestId,
         success: false,
-        errorMessage: 'WhatsApp sending failed via smsc.kz',
-        metadata: { language, smsc_error: smscResult }
+        errorMessage: 'WhatsApp sending failed via Meta Cloud API',
+        metadata: { language, meta_error: whatsappResult.error }
       });
       
       return new Response(
@@ -220,7 +223,8 @@ Deno.serve(async (req) => {
           error: language === 'ru' 
             ? 'Не удалось отправить код через WhatsApp' 
             : 'WhatsApp арқылы код жіберу мүмкін болмады',
-          shouldFallbackToSms: true
+          shouldFallbackToSms: true,
+          details: whatsappResult.error?.message
         }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
@@ -243,8 +247,7 @@ Deno.serve(async (req) => {
       success: true,
       metadata: { 
         language, 
-        messageId: smscResult.id,
-        cost: smscResult.cost
+        messageId: whatsappResult.messages?.[0]?.id
       }
     });
 
@@ -253,7 +256,7 @@ Deno.serve(async (req) => {
         success: true, 
         message: 'WhatsApp OTP sent successfully',
         channel: 'whatsapp',
-        messageId: smscResult.id
+        messageId: whatsappResult.messages?.[0]?.id
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
