@@ -4,6 +4,12 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useDevMode } from "@/contexts/DevModeContext";
 import { Globe, Code2 } from "lucide-react";
 import { useState, useEffect } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { AnimatedCar } from "@/components/AnimatedCar";
 
 const Welcome = () => {
@@ -46,22 +52,31 @@ const Welcome = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col overflow-hidden">
-      {/* Language Toggle */}
+      {/* Language Dropdown */}
       <div className={`absolute top-4 right-4 z-10 transition-all duration-500 ${showContent ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={() => {
-            const langs: ('ru' | 'kk' | 'en')[] = ['ru', 'kk', 'en'];
-            const currentIndex = langs.indexOf(language);
-            const nextIndex = (currentIndex + 1) % langs.length;
-            setLanguage(langs[nextIndex]);
-          }} 
-          className="bg-muted/50 backdrop-blur-lg text-foreground hover:bg-muted/70"
-        >
-          <Globe className="h-4 w-4 mr-2" strokeWidth={2.5} />
-          {language === 'ru' ? 'РУ' : language === 'kk' ? 'ҚЗ' : 'EN'}
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="bg-muted/50 backdrop-blur-lg text-foreground hover:bg-muted/70"
+            >
+              <Globe className="h-4 w-4 mr-2" strokeWidth={2.5} />
+              {language === 'ru' ? 'РУ' : language === 'kk' ? 'ҚЗ' : 'EN'}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="bg-background border border-border">
+            <DropdownMenuItem onClick={() => setLanguage('ru')} className="cursor-pointer">
+              Русский
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setLanguage('kk')} className="cursor-pointer">
+              Қазақша
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setLanguage('en')} className="cursor-pointer">
+              English
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Main Content */}
