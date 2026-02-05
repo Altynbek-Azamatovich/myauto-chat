@@ -168,13 +168,7 @@ Deno.serve(async (req) => {
     }
 
     // Format phone number for WhatsApp (remove + sign, keep only digits)
-    let formattedPhone = phone.replace(/\D/g, '');
-    
-    // Kazakhstan numbers: convert 7xxx to 78xxx format for Meta WhatsApp API
-    if (formattedPhone.startsWith('7') && formattedPhone.length === 11) {
-      formattedPhone = '78' + formattedPhone.substring(1);
-      console.log('Converting KZ number format: 7xxx -> 78xxx');
-    }
+    const formattedPhone = phone.replace(/\D/g, '');
     
     // Meta WhatsApp Cloud API endpoint
     const whatsappUrl = `https://graph.facebook.com/v22.0/${whatsappPhoneNumberId}/messages`;
