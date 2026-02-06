@@ -141,7 +141,7 @@ const PhoneAuth = () => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className="rounded-full px-4">
-              {language === 'ru' ? 'RU' : 'KZ'} ▼
+              {language === 'ru' ? 'RU' : language === 'kk' ? 'KZ' : 'EN'} ▼
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -150,6 +150,9 @@ const PhoneAuth = () => {
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setLanguage('kk')}>
               Қазақша
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setLanguage('en')}>
+              English
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -41,7 +41,7 @@ interface Vehicle {
 
 export default function ServiceHistory() {
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [services, setServices] = useState<ServiceRecord[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -421,7 +421,7 @@ export default function ServiceHistory() {
                     {isPartnerService && (
                       <div className="inline-flex items-center gap-1 px-2 py-1 bg-primary/20 text-primary rounded-full text-xs font-medium mb-2">
                         <span>✓</span>
-                        <span>{t('language') === 'ru' ? 'Сервисный центр' : 'Қызмет орталығы'}</span>
+                        <span>{language === 'ru' ? 'Сервисный центр' : language === 'kk' ? 'Қызмет орталығы' : 'Service Center'}</span>
                       </div>
                     )}
                     <h3 className="font-semibold">{service.work_name || getServiceTypeLabel(service.service_type)}</h3>
@@ -458,7 +458,7 @@ export default function ServiceHistory() {
                     <p><span className="text-muted-foreground">{t('serviceProvider')}:</span> {service.partner_name}</p>
                   )}
                   {service.master_name && (
-                    <p><span className="text-muted-foreground">{t('language') === 'ru' ? 'Мастер' : 'Шебер'}:</span> {service.master_name}</p>
+                    <p><span className="text-muted-foreground">{language === 'ru' ? 'Мастер' : language === 'kk' ? 'Шебер' : 'Master'}:</span> {service.master_name}</p>
                   )}
                   {service.service_provider && !isPartnerService && (
                     <p><span className="text-muted-foreground">{t('serviceProvider')}:</span> {service.service_provider}</p>

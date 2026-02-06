@@ -21,6 +21,8 @@ const Notifications = () => {
     };
   }, [unreadCount, markAllAsRead]);
 
+  const { language } = useLanguage();
+
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -29,11 +31,18 @@ const Notifications = () => {
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
 
-    if (diffMins < 1) return 'Только что';
-    if (diffMins < 60) return `${diffMins} мин назад`;
-    if (diffHours < 24) return `${diffHours} ч назад`;
-    if (diffDays < 7) return `${diffDays} дн назад`;
-    return date.toLocaleDateString('ru-RU');
+    const timeLabels = {
+      justNow: { ru: 'Только что', kk: 'Жаңа ғана', en: 'Just now' },
+      minAgo: { ru: 'мин назад', kk: 'мин бұрын', en: 'min ago' },
+      hAgo: { ru: 'ч назад', kk: 'сағ бұрын', en: 'h ago' },
+      dAgo: { ru: 'дн назад', kk: 'күн бұрын', en: 'd ago' },
+    };
+
+    if (diffMins < 1) return timeLabels.justNow[language];
+    if (diffMins < 60) return `${diffMins} ${timeLabels.minAgo[language]}`;
+    if (diffHours < 24) return `${diffHours} ${timeLabels.hAgo[language]}`;
+    if (diffDays < 7) return `${diffDays} ${timeLabels.dAgo[language]}`;
+    return date.toLocaleDateString(language === 'ru' ? 'ru-RU' : language === 'kk' ? 'kk-KZ' : 'en-US');
   };
 
   return (
@@ -65,7 +74,7 @@ const Notifications = () => {
             </div>
             <h3 className="font-medium mb-1">{t('noNotifications')}</h3>
             <p className="text-sm text-muted-foreground">
-              У вас пока нет уведомлений
+              {language === 'ru' ? 'У вас пока нет уведомлений' : language === 'kk' ? 'Сізде әлі хабарландырулар жоқ' : 'You have no notifications yet'}
             </p>
           </div>
         ) : (
