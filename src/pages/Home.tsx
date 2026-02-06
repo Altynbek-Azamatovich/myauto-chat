@@ -181,19 +181,19 @@ const Home = () => {
         </div>
         
         {/* Interactive Points - adjusted for larger image */}
-        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[25%] left-[20%] w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
+        <button onClick={() => toast.info(t('partsSelectionInDev'))} className="absolute top-[25%] left-[20%] w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white" />
         </button>
         
-        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[30%] right-[15%] w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
+        <button onClick={() => toast.info(t('partsSelectionInDev'))} className="absolute top-[30%] right-[15%] w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white" />
         </button>
         
-        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[50%] left-[10%] w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
+        <button onClick={() => toast.info(t('partsSelectionInDev'))} className="absolute top-[50%] left-[10%] w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white" />
         </button>
         
-        <button onClick={() => toast.info('Выбор деталей в разработке')} className="absolute top-[55%] right-[20%] w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
+        <button onClick={() => toast.info(t('partsSelectionInDev'))} className="absolute top-[55%] right-[20%] w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm hover:scale-110 transition-transform">
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white" />
         </button>
 
@@ -287,7 +287,7 @@ const Home = () => {
             <div className="flex items-start gap-2">
               <Clock className="h-4 w-4 text-orange-500 flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground mb-1">Страховка до</p>
+                <p className="text-xs text-muted-foreground mb-1">{t('insuranceExpires')}</p>
                 <Popover open={isInsuranceDateOpen} onOpenChange={setIsInsuranceDateOpen}>
                   <PopoverTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
@@ -333,7 +333,7 @@ const Home = () => {
               </div>
               {(!primaryVehicle?.technical_condition || primaryVehicle.technical_condition === 0) && <p className="text-xs mt-2 flex items-center gap-1 text-amber-600 dark:text-amber-300">
                   <Bell className="h-3 w-3" />
-                  Актуальное состояние будет после прохождения ТО
+                  {t('conditionAfterInspection')}
                 </p>}
             </div>
         </div>
@@ -346,7 +346,7 @@ const Home = () => {
               <div className="text-xl mt-0.5">⚡</div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-muted-foreground">{t('avgConsumption')}</p>
-                {primaryVehicle?.average_consumption ? <p className="font-semibold text-sm text-foreground">{primaryVehicle.average_consumption} л/100км</p> : <p className="text-xs mt-1 text-amber-600 dark:text-amber-300">Будет доступно после ТО</p>}
+                {primaryVehicle?.average_consumption ? <p className="font-semibold text-sm text-foreground">{primaryVehicle.average_consumption} {language === 'ru' ? 'л/100км' : language === 'kk' ? 'л/100км' : 'L/100km'}</p> : <p className="text-xs mt-1 text-amber-600 dark:text-amber-300">{t('availableAfterInspection')}</p>}
               </div>
             </div>
           </Card>

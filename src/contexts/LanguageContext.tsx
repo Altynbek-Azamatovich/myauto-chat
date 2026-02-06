@@ -499,6 +499,11 @@ const translations: Translations = {
   total: { ru: 'Итого', kk: 'Барлығы', en: 'Total' },
   processing: { ru: 'Оформление...', kk: 'Ресімдеу...', en: 'Processing...' },
   checkout: { ru: 'Оформить заказ', kk: 'Тапсырысты ресімдеу', en: 'Checkout' },
+  
+  // Home page hardcoded strings
+  partsSelectionInDev: { ru: 'Выбор деталей в разработке', kk: 'Бөлшектерді таңдау әзірленуде', en: 'Parts selection in development' },
+  conditionAfterInspection: { ru: 'Актуальное состояние будет после прохождения ТО', kk: 'Нақты жағдай ТҚ-дан кейін белгілі болады', en: 'Actual condition will be available after inspection' },
+  availableAfterInspection: { ru: 'Будет доступно после ТО', kk: 'ТҚ-дан кейін қолжетімді болады', en: 'Available after inspection' },
 };
 
 interface LanguageContextType {
