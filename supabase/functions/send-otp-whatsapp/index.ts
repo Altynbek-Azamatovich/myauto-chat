@@ -161,15 +161,22 @@ Deno.serve(async (req) => {
     // Meta WhatsApp Cloud API endpoint
     const whatsappUrl = `https://graph.facebook.com/v22.0/${whatsappPhoneNumberId}/messages`;
     
-    // Use approved Russian template
-    const messageText = `Ваш код подтверждения — ${code}. Из соображений безопасности не сообщайте никому этот код.`;
-    
+    // Use approved "verification" template with OTP code as parameter
     const requestBody = {
       messaging_product: "whatsapp",
       to: formattedPhone,
-      type: "text",
-      text: {
-        body: messageText
+      type: "template",
+      template: {
+        name: "verification",
+        language: { code: "ru" },
+        components: [
+          {
+            type: "body",
+            parameters: [
+              { type: "text", text: code }
+            ]
+          }
+        ]
       }
     };
 
