@@ -168,13 +168,16 @@ Deno.serve(async (req) => {
     }
 
     // Format phone number for WhatsApp (remove + sign, keep only digits)
-    const formattedPhone = phone.replace(/\D/g, '');
+    let formattedPhone = phone.replace(/\D/g, '');
+    
+    // Kazakhstan number transformation: 7XXXXXXXXXX → 78XXXXXXXXXX
+    if (formattedPhone.length === 11 && formattedPhone.startsWith('7')) {
+      formattedPhone = '7' + '8' + formattedPhone.slice(1);
+    }
     
     // Meta WhatsApp Cloud API endpoint
     const whatsappUrl = `https://graph.facebook.com/v22.0/${whatsappPhoneNumberId}/messages`;
     
-    // Use approved Russian template
-    const messageText = `Ваш код подтверждения — ${code}. Из соображений безопасности не сообщайте никому этот код.`;
     console.log('Sending WhatsApp message via Meta API to:', formattedPhone);
     
     const whatsappResponse = await fetch(whatsappUrl, {
@@ -185,12 +188,19 @@ Deno.serve(async (req) => {
       },
       body: JSON.stringify({
         messaging_product: 'whatsapp',
-        recipient_type: 'individual',
         to: formattedPhone,
-        type: 'text',
-        text: {
-          preview_url: false,
-          body: messageText
+        type: 'template',
+        template: {
+          name: 'verification',
+          language: { code: 'ru' },
+          components: [
+            {
+              type: 'body',
+              parameters: [
+                { type: 'text', text: code }
+              ]
+            }
+          ]
         }
       }),
     });
