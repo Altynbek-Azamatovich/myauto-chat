@@ -27,7 +27,7 @@ interface PartnerApplication {
   status: string;
   created_at: string;
   notes: string | null;
-  partner_password: string | null;
+  partner_login: string | null;
 }
 
 const PartnerApplications = () => {
@@ -234,14 +234,11 @@ const PartnerApplications = () => {
                     </p>
                   </div>
                 )}
-                {app.partner_password && (
+                {app.partner_login && (
                   <div className="bg-muted/50 rounded-lg p-3">
                     <Label className="text-sm font-medium">Данные для входа:</Label>
                     <p className="text-sm mt-1">
-                      Телефон: <span className="font-mono">{app.phone_number}</span>
-                    </p>
-                    <p className="text-sm">
-                      Пароль: <span className="font-mono">{app.partner_password}</span>
+                      Логин: <span className="font-mono">{app.partner_login}</span>
                     </p>
                   </div>
                 )}

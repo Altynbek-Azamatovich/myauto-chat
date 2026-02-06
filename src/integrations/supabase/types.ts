@@ -579,7 +579,6 @@ export type Database = {
           id: string
           notes: string | null
           partner_login: string | null
-          partner_password: string | null
           phone_number: string
           status: string
           updated_at: string
@@ -595,7 +594,6 @@ export type Database = {
           id?: string
           notes?: string | null
           partner_login?: string | null
-          partner_password?: string | null
           phone_number: string
           status?: string
           updated_at?: string
@@ -611,7 +609,6 @@ export type Database = {
           id?: string
           notes?: string | null
           partner_login?: string | null
-          partner_password?: string | null
           phone_number?: string
           status?: string
           updated_at?: string
@@ -1264,7 +1261,7 @@ export type Database = {
           start_time?: never
           success?: boolean | null
           time?: never
-          user_account?: never
+          user_account?: string | null
         }
         Update: {
           category?: never
@@ -1281,7 +1278,7 @@ export type Database = {
           start_time?: never
           success?: boolean | null
           time?: never
-          user_account?: never
+          user_account?: string | null
         }
         Relationships: []
       }
