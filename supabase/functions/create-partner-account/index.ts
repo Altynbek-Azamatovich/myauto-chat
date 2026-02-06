@@ -158,9 +158,8 @@ const handler = async (req: Request): Promise<Response> => {
         status: "approved",
         approved_by: adminUser.id,
         approved_at: new Date().toISOString(),
-        partner_login: partnerLogin,
-        partner_password: password, // Store for admin reference
-        notes: (application.notes || "") + `\nОдобрено админом. Логин: ${partnerLogin}`,
+      partner_login: partnerLogin,
+      notes: (application.notes || "") + `\nОдобрено админом. Логин: ${partnerLogin}`,
       })
       .eq("id", applicationId);
 
