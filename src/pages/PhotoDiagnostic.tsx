@@ -16,6 +16,7 @@ import { ru } from 'date-fns/locale';
 interface DiagnosticReport {
   id: string;
   image_url: string;
+  signed_url?: string;
   analysis: string;
   created_at: string;
 }
@@ -46,7 +47,20 @@ const PhotoDiagnostic = () => {
       .order('created_at', { ascending: false });
 
     if (!error && data) {
-      setReports(data);
+      // Generate signed URLs for private bucket images
+      const reportsWithUrls = await Promise.all(
+        data.map(async (report) => {
+          // If image_url is a full URL (legacy public), keep it; otherwise generate signed URL
+          if (report.image_url.startsWith('http')) {
+            return { ...report, signed_url: report.image_url };
+          }
+          const { data: signedData } = await supabase.storage
+            .from('diagnostics')
+            .createSignedUrl(report.image_url, 3600); // 1 hour
+          return { ...report, signed_url: signedData?.signedUrl || '' };
+        })
+      );
+      setReports(reportsWithUrls);
     }
   };
 
@@ -112,16 +126,12 @@ const PhotoDiagnostic = () => {
 
       if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('diagnostics')
-        .getPublicUrl(fileName);
-
-      // Save report to database
+      // Save report with storage path (not public URL since bucket is private)
       const { error: insertError } = await supabase
         .from('diagnostic_reports')
         .insert({
           user_id: user.id,
-          image_url: publicUrl,
+          image_url: fileName,
           analysis: analysis
         });
 
@@ -175,7 +185,7 @@ const PhotoDiagnostic = () => {
           </p>
           
           <img 
-            src={selectedReport.image_url} 
+            src={selectedReport.signed_url || selectedReport.image_url} 
             alt="Diagnostic" 
             className="w-full rounded-2xl" 
           />
@@ -223,7 +233,7 @@ const PhotoDiagnostic = () => {
                   onClick={() => setSelectedReport(report)}
                 >
                   <img 
-                    src={report.image_url} 
+                    src={report.signed_url || report.image_url} 
                     alt="Diagnostic" 
                     className="w-16 h-16 rounded-lg object-cover"
                   />
