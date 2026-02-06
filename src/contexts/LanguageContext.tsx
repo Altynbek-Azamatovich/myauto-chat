@@ -85,11 +85,18 @@ const translations: Translations = {
   
   // OTP Verify
   enterOTP: { ru: 'Ввод кода', kk: 'Кодты енгізу', en: 'Enter Code' },
-  enterSmsCode: { ru: 'Введите код из СМС', kk: 'СМС кодын енгізіңіз', en: 'Enter SMS code' },
-  smsCodeSentTo: { ru: 'Мы отправили смс с кодом на номер', kk: 'Біз код бар смс жібердік', en: 'We sent a code to' },
+  enterSmsCode: { ru: 'Введите код', kk: 'Кодты енгізіңіз', en: 'Enter code' },
+  whatsappCodeSentTo: { ru: 'Мы отправили код в WhatsApp на номер', kk: 'Біз WhatsApp-қа код жібердік', en: 'We sent a code via WhatsApp to' },
+  smsCodeSentTo: { ru: 'Мы отправили СМС с кодом на номер', kk: 'Біз код бар СМС жібердік', en: 'We sent an SMS code to' },
   enterCode: { ru: 'Введите код из 4 цифр', kk: '4 таңбалы кодты енгізіңіз', en: 'Enter 4-digit code' },
+  resendWhatsApp: { ru: 'Отправить ещё раз в WhatsApp', kk: 'WhatsApp-қа қайта жіберу', en: 'Resend via WhatsApp' },
+  sendSms: { ru: 'Отправить СМС', kk: 'СМС жіберу', en: 'Send SMS' },
   resendCode: { ru: 'Выслать повторно', kk: 'Қайта жіберу', en: 'Resend code' },
   availableIn: { ru: 'Будет доступно через', kk: 'Қолжетімді болады', en: 'Available in' },
+  codeSentWhatsApp: { ru: 'Код отправлен в WhatsApp', kk: 'Код WhatsApp-қа жіберілді', en: 'Code sent via WhatsApp' },
+  codeSentWhatsAppDesc: { ru: 'Новый код отправлен в WhatsApp на ваш номер', kk: 'Жаңа код WhatsApp-қа жіберілді', en: 'New code sent via WhatsApp to your number' },
+  codeSentSms: { ru: 'СМС отправлено', kk: 'СМС жіберілді', en: 'SMS sent' },
+  codeSentSmsDesc: { ru: 'Код отправлен в СМС на ваш номер', kk: 'Код СМС арқылы жіберілді', en: 'Code sent via SMS to your number' },
   
   // Profile Setup
   profileSetup: { ru: 'Заполнение профиля', kk: 'Профильді толтыру', en: 'Profile Setup' },

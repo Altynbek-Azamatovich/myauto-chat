@@ -6,6 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft } from "lucide-react";
 
+type Channel = 'whatsapp' | 'sms';
+
 const OTPVerify = () => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
@@ -14,6 +16,7 @@ const OTPVerify = () => {
   const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(60);
   const [resendAttempts, setResendAttempts] = useState(0);
+  const [lastChannel, setLastChannel] = useState<Channel>('whatsapp');
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   
   const phone = localStorage.getItem('auth_phone') || '';
@@ -23,8 +26,6 @@ const OTPVerify = () => {
       navigate('/phone-auth');
       return;
     }
-    
-    // Focus first input on mount
     inputRefs.current[0]?.focus();
   }, [phone, navigate]);
 
@@ -36,26 +37,19 @@ const OTPVerify = () => {
   }, [resendTimer]);
 
   const formatPhoneDisplay = (phone: string) => {
-    // Format: +7 777 237 3000
     const digits = phone.replace(/[^\d]/g, '');
     if (digits.length < 11) return phone;
-    
     return `+${digits.slice(0, 1)} ${digits.slice(1, 4)} ${digits.slice(4, 7)} ${digits.slice(7)}`;
   };
 
   const handleOtpChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;
-    
     const newOtp = [...otp];
     newOtp[index] = value.slice(-1);
     setOtp(newOtp);
-    
-    // Auto-focus next input
     if (value && index < 3) {
       inputRefs.current[index + 1]?.focus();
     }
-    
-    // Auto-submit when all digits entered
     if (newOtp.every(d => d !== '') && index === 3) {
       handleVerify(newOtp.join(''));
     }
@@ -69,13 +63,12 @@ const OTPVerify = () => {
 
   const handleVerify = async (code?: string) => {
     const otpCode = code || otp.join('');
-    
     if (otpCode.length !== 4) {
       toast({
         title: t('error'),
         description: language === 'ru' 
           ? "Введите код из 4 цифр" 
-          : "4 таңбалы кодты енгізіңіз",
+          : language === 'kk' ? "4 таңбалы кодты енгізіңіз" : "Enter 4-digit code",
         variant: "destructive",
       });
       return;
@@ -83,25 +76,18 @@ const OTPVerify = () => {
 
     setLoading(true);
     try {
-      console.log('Verifying OTP:', { phone, code: otpCode });
-
       const { data, error } = await supabase.functions.invoke('verify-otp', {
         body: { phone, code: otpCode }
       });
 
       if (error) {
-        console.error('Error verifying OTP:', error);
-
-        // Try to read error body from the function response
         let serverBody: any = null;
         try {
           const ctx = (error as any)?.context;
           if (ctx && typeof ctx.json === 'function') {
             serverBody = await ctx.json();
           }
-        } catch {
-          // ignore
-        }
+        } catch { /* ignore */ }
 
         const err: any = new Error(serverBody?.error || error.message || 'Unknown error');
         err.shouldResendCode = !!serverBody?.shouldResendCode;
@@ -112,17 +98,14 @@ const OTPVerify = () => {
         throw new Error(data?.error || 'Invalid OTP code');
       }
 
-      console.log('OTP verified successfully:', data);
-
-      // Use the session data to log in
       if (data.session) {
         const accessToken = data.session.access_token ?? data.session.properties?.access_token;
         const refreshToken = data.session.refresh_token ?? data.session.properties?.refresh_token;
 
         if (!accessToken || !refreshToken) {
           throw new Error(language === 'ru'
-            ? 'Внутренняя ошибка. Запросите SMS код повторно.'
-            : 'Ішкі қате. SMS кодын қайта сұраңыз.');
+            ? 'Внутренняя ошибка. Запросите код повторно.'
+            : language === 'kk' ? 'Ішкі қате. Кодты қайта сұраңыз.' : 'Internal error. Request a new code.');
         }
 
         const { error: signInError } = await supabase.auth.setSession({
@@ -130,45 +113,37 @@ const OTPVerify = () => {
           refresh_token: refreshToken
         });
 
-        if (signInError) {
-          console.error('Error setting session:', signInError);
-          throw signInError;
-        }
+        if (signInError) throw signInError;
       }
 
       toast({
-        title: language === 'ru' ? "Успешно" : "Сәтті",
+        title: language === 'ru' ? "Успешно" : language === 'kk' ? "Сәтті" : "Success",
         description: language === 'ru' 
           ? "Вы успешно вошли в систему" 
-          : "Сіз жүйеге сәтті кірдіңіз",
+          : language === 'kk' ? "Сіз жүйеге сәтті кірдіңіз" : "You have successfully signed in",
       });
 
-      // Clear stored phone
       localStorage.removeItem('auth_phone');
 
-      // Navigate based on whether user is new
       if (data.isNewUser) {
         navigate('/profile-setup');
       } else {
         navigate('/');
       }
     } catch (error: any) {
-      console.error('Error in handleVerify:', error);
       setOtp(["", "", "", ""]);
       inputRefs.current[0]?.focus();
       
-      // Check if we should suggest resending the code
       const shouldResend = !!error?.shouldResendCode;
       
       toast({
         title: t('error'),
         description: error.message || (language === 'ru' 
-          ? (shouldResend ? "Внутренняя ошибка. Запросите SMS код повторно." : "Неверный код")
-          : (shouldResend ? "Ішкі қате. SMS кодын қайта сұраңыз." : "Қате код")),
+          ? (shouldResend ? "Внутренняя ошибка. Запросите код повторно." : "Неверный код")
+          : language === 'kk' ? (shouldResend ? "Ішкі қате. Кодты қайта сұраңыз." : "Қате код") : (shouldResend ? "Internal error. Request a new code." : "Invalid code")),
         variant: "destructive",
       });
       
-      // If server suggests resending, reset the timer to allow immediate resend
       if (shouldResend) {
         setResendTimer(0);
       }
@@ -177,62 +152,50 @@ const OTPVerify = () => {
     }
   };
 
-  const handleResend = async () => {
+  const handleResend = async (channel: Channel) => {
     if (resendTimer > 0) return;
     
-    // Progressive rate limiting: after 2 attempts, require 2 minutes wait
     const newAttemptCount = resendAttempts + 1;
     
     try {
-      console.log('Resending OTP to:', phone, 'attempt:', newAttemptCount);
+      const functionName = channel === 'sms' ? 'send-sms' : 'send-otp';
       
-      const { data, error } = await supabase.functions.invoke('send-otp', {
+      const { data, error } = await supabase.functions.invoke(functionName, {
         body: { phone, language }
       });
 
-      if (error) {
-        console.error('Error resending OTP:', error);
-        throw error;
-      }
-
-      if (!data?.success) {
-        throw new Error(data?.error || 'Failed to resend OTP');
-      }
+      if (error) throw error;
+      if (!data?.success) throw new Error(data?.error || 'Failed to send code');
 
       setResendAttempts(newAttemptCount);
+      setLastChannel(channel);
       
-      // After 2 attempts (this is the 3rd send), require 2 minutes wait
+      // Progressive timer: after 2 attempts, 2 min wait
       if (newAttemptCount >= 2) {
-        setResendTimer(120); // 2 minutes
-        toast({
-          title: language === 'ru' ? "Код отправлен" : "Код жіберілді",
-          description: language === 'ru' 
-            ? "Код отправлен. Следующая попытка через 2 минуты." 
-            : "Код жіберілді. Келесі әрекет 2 минуттан кейін.",
-        });
+        setResendTimer(120);
       } else {
-        setResendTimer(60); // 1 minute
-        toast({
-          title: language === 'ru' ? "Код отправлен" : "Код жіберілді",
-          description: language === 'ru' 
-            ? "Новый код отправлен на ваш номер" 
-            : "Жаңа код нөміріңізге жіберілді",
-        });
+        setResendTimer(60);
       }
+
+      toast({
+        title: channel === 'sms' ? t('codeSentSms') : t('codeSentWhatsApp'),
+        description: channel === 'sms' ? t('codeSentSmsDesc') : t('codeSentWhatsAppDesc'),
+      });
       
       setOtp(["", "", "", ""]);
       inputRefs.current[0]?.focus();
     } catch (error: any) {
-      console.error('Error in handleResend:', error);
       toast({
         title: t('error'),
         description: error.message || (language === 'ru' 
           ? "Не удалось отправить код" 
-          : "Кодты жіберу мүмкін болмады"),
+          : language === 'kk' ? "Кодты жіберу мүмкін болмады" : "Failed to send code"),
         variant: "destructive",
       });
     }
   };
+
+  const showResendOptions = resendTimer === 0;
 
   return (
     <div className="min-h-screen bg-background flex flex-col p-6">
@@ -254,9 +217,9 @@ const OTPVerify = () => {
           {t('enterSmsCode')}
         </h1>
 
-        {/* Subtitle with phone number - phone on separate line */}
+        {/* Subtitle - channel-aware */}
         <p className="text-foreground mb-8">
-          {t('smsCodeSentTo')}{' '}
+          {lastChannel === 'sms' ? t('smsCodeSentTo') : t('whatsappCodeSentTo')}{' '}
           <span className="font-medium whitespace-nowrap inline-block">
             {formatPhoneDisplay(phone)}
           </span>
@@ -280,15 +243,28 @@ const OTPVerify = () => {
           ))}
         </div>
 
-        {/* Resend Code */}
-        <div className="text-center">
-          <button
-            onClick={handleResend}
-            disabled={resendTimer > 0}
-            className="text-muted-foreground disabled:opacity-50"
-          >
-            {t('resendCode')}{resendTimer > 0 && ` (${resendTimer})`}
-          </button>
+        {/* Resend options */}
+        <div className="text-center space-y-3">
+          {resendTimer > 0 ? (
+            <p className="text-muted-foreground text-sm">
+              {t('resendCode')} ({resendTimer})
+            </p>
+          ) : (
+            <>
+              <button
+                onClick={() => handleResend('whatsapp')}
+                className="block w-full text-primary font-medium"
+              >
+                {t('resendWhatsApp')}
+              </button>
+              <button
+                onClick={() => handleResend('sms')}
+                className="block w-full text-muted-foreground text-sm"
+              >
+                {t('sendSms')}
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>
