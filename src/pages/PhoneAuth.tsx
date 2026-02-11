@@ -95,19 +95,19 @@ const PhoneAuth = () => {
       localStorage.setItem('auth_phone', cleanPhone);
       
       // Send OTP via edge function
-      const { data, error } = await supabase.functions.invoke('send-otp', {
+      const { data, error } = await supabase.functions.invoke('send-otp-whatsapp', {
         body: { phone: cleanPhone, language }
       });
 
       if (error) throw error;
 
       if (!data?.success) {
-        throw new Error(data?.error || 'Failed to send SMS');
+        throw new Error(data?.error || 'Failed to send WhatsApp code');
       }
 
       toast({
-        title: t('smsSent'),
-        description: t('smsSentDescription'),
+        title: t('codeSentWhatsApp'),
+        description: t('codeSentWhatsAppDesc'),
       });
       
       navigate('/otp-verify');
@@ -167,7 +167,7 @@ const PhoneAuth = () => {
         {/* Subtitle - two lines with same spacing as terms */}
         <div className="mb-8">
           <p className="text-foreground">
-            {t('enterPhoneTitle')}
+            {t('enterWhatsAppPhone')}
           </p>
           <p className="text-muted-foreground">
             {t('forLoginOrRegister')}

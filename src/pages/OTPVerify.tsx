@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft } from "lucide-react";
 
-type Channel = 'whatsapp' | 'sms';
+
 
 const OTPVerify = () => {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ const OTPVerify = () => {
   const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(60);
   const [resendAttempts, setResendAttempts] = useState(0);
-  const [lastChannel, setLastChannel] = useState<Channel>('whatsapp');
+  
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   
   const phone = localStorage.getItem('auth_phone') || '';
@@ -152,15 +152,13 @@ const OTPVerify = () => {
     }
   };
 
-  const handleResend = async (channel: Channel) => {
+  const handleResend = async () => {
     if (resendTimer > 0) return;
     
     const newAttemptCount = resendAttempts + 1;
     
     try {
-      const functionName = channel === 'sms' ? 'send-sms' : 'send-otp';
-      
-      const { data, error } = await supabase.functions.invoke(functionName, {
+      const { data, error } = await supabase.functions.invoke('send-otp-whatsapp', {
         body: { phone, language }
       });
 
@@ -168,7 +166,6 @@ const OTPVerify = () => {
       if (!data?.success) throw new Error(data?.error || 'Failed to send code');
 
       setResendAttempts(newAttemptCount);
-      setLastChannel(channel);
       
       // Progressive timer: after 2 attempts, 2 min wait
       if (newAttemptCount >= 2) {
@@ -178,8 +175,8 @@ const OTPVerify = () => {
       }
 
       toast({
-        title: channel === 'sms' ? t('codeSentSms') : t('codeSentWhatsApp'),
-        description: channel === 'sms' ? t('codeSentSmsDesc') : t('codeSentWhatsAppDesc'),
+        title: t('codeSentWhatsApp'),
+        description: t('codeSentWhatsAppDesc'),
       });
       
       setOtp(["", "", "", ""]);
@@ -217,9 +214,8 @@ const OTPVerify = () => {
           {t('enterSmsCode')}
         </h1>
 
-        {/* Subtitle - channel-aware */}
         <p className="text-foreground mb-8">
-          {lastChannel === 'sms' ? t('smsCodeSentTo') : t('whatsappCodeSentTo')}{' '}
+          {t('whatsappCodeSentTo')}{' '}
           <span className="font-medium whitespace-nowrap inline-block">
             {formatPhoneDisplay(phone)}
           </span>
@@ -250,20 +246,12 @@ const OTPVerify = () => {
               {t('resendCode')} ({resendTimer})
             </p>
           ) : (
-            <>
-              <button
-                onClick={() => handleResend('whatsapp')}
-                className="block w-full text-primary font-medium"
-              >
-                {t('resendWhatsApp')}
-              </button>
-              <button
-                onClick={() => handleResend('sms')}
-                className="block w-full text-muted-foreground text-sm"
-              >
-                {t('sendSms')}
-              </button>
-            </>
+            <button
+              onClick={() => handleResend()}
+              className="block w-full text-primary font-medium"
+            >
+              {t('resendWhatsApp')}
+            </button>
           )}
         </div>
       </div>
