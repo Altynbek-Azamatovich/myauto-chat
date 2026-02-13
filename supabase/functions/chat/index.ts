@@ -64,7 +64,9 @@ serve(async (req) => {
       }
     }
 
-    const systemPrompt = `Ты — лаконичный помощник водителя в Казахстане. Знаешь цены в тенге, ПДД РК и СТО. Отвечай без воды, максимум 2-3 предложения. Используй простой язык.${carContext}`;
+    const systemPrompt = `Ты — помощник водителя в Казахстане. Отвечай кратко: всегда 2–3 предложения, без воды.
+Знаешь: ПДД РК (правила дорожного движения Казахстана), цены в тенге, СТО и автотематику.
+Отвечай на том же языке, на котором задан вопрос: на казахском или русском.${carContext}`;
 
     // Convert messages to Gemini format
     const geminiContents = [];
@@ -75,8 +77,8 @@ serve(async (req) => {
       parts: [{ text: `[System]: ${systemPrompt}` }]
     });
     geminiContents.push({
-      role: "model", 
-      parts: [{ text: "Понял, я помощник водителя в Казахстане. Отвечаю кратко и по делу." }]
+      role: "model",
+      parts: [{ text: "Түсіндім. Қазақстанда жүргізушіге көмектесемін. Қысқа және нақты жауап беремін. Понял. Отвечаю кратко и по делу на казахском или русском." }]
     });
 
     // Add conversation messages
@@ -87,10 +89,10 @@ serve(async (req) => {
       });
     }
 
-    console.log("Calling Gemini API directly");
+    console.log("Calling Gemini API (gemini-1.5-flash)");
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -107,7 +109,7 @@ serve(async (req) => {
     if (!response.ok) {
       const errorText = await response.text();
       console.error("Gemini API error:", response.status, errorText);
-      
+
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "Слишком много запросов, попробуйте позже." }), {
           status: 429,
@@ -120,47 +122,12 @@ serve(async (req) => {
       });
     }
 
-    // Transform Gemini SSE stream to OpenAI-compatible SSE stream
-    const transformStream = new TransformStream({
-      transform(chunk, controller) {
-        const text = new TextDecoder().decode(chunk);
-        const lines = text.split('\n');
-        
-        for (const line of lines) {
-          if (!line.startsWith('data: ')) continue;
-          const jsonStr = line.slice(6).trim();
-          if (!jsonStr) continue;
-          
-          try {
-            const geminiData = JSON.parse(jsonStr);
-            const content = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text;
-            
-            if (content) {
-              // Convert to OpenAI-compatible format
-              const openAiChunk = {
-                choices: [{
-                  delta: { content },
-                  index: 0,
-                }]
-              };
-              controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify(openAiChunk)}\n\n`));
-            }
-            
-            // Check for finish
-            if (geminiData?.candidates?.[0]?.finishReason) {
-              controller.enqueue(new TextEncoder().encode(`data: [DONE]\n\n`));
-            }
-          } catch {
-            // Skip unparseable chunks
-          }
-        }
-      }
-    });
+    const data = await response.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
 
-    const stream = response.body!.pipeThrough(transformStream);
-
-    return new Response(stream, {
-      headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
+    return new Response(JSON.stringify({ content: text }), {
+      status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
     console.error("chat error:", e);
