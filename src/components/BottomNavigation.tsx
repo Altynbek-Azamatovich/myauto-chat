@@ -9,13 +9,13 @@ import NotificationBadge from "@/components/NotificationBadge";
 const translations = {
   home: { ru: 'Главная', kk: 'Басты бет', en: 'Home' },
   services: { ru: 'Сервисы', kk: 'Сервистер', en: 'Services' },
-  photoDiagnostics: { ru: 'Фото', kk: 'Фото', en: 'Photo' },
+  photoDiagnostics: { ru: 'Фото', kk: 'Фото', en: 'Photo' }
 };
 
 const BottomNavigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const context = useContext(LanguageContext) as { language: 'ru' | 'kk' | 'en' } | undefined;
+  const context = useContext(LanguageContext) as {language: 'ru' | 'kk' | 'en';} | undefined;
   const language = context?.language || 'kk';
   const t = (key: string) => {
     const trans = translations[key as keyof typeof translations];
@@ -45,7 +45,7 @@ const BottomNavigation = () => {
   const isActive = (path: string) => location.pathname === path;
   const isChatActive = location.pathname === "/super-chat";
   return <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-[9999]">
-      <div className="flex items-center space-x-4">
+      <div className="items-center space-x-4 flex flex-row">
         {/* Main navigation buttons */}
         <div className="flex items-center bg-black/15 backdrop-blur-[2px] rounded-full p-3 min-w-[220px]">
           <div className="flex items-center justify-between w-full relative">
@@ -61,7 +61,7 @@ const BottomNavigation = () => {
             } else if (index === 2) {
               marginClass = firstActive ? 'ml-auto' : '';
             }
-              return <Button key={item.path} variant="ghost" size="lg" className={`rounded-full aspect-square p-2 relative transition-all duration-300 ${active ? "bg-white/40 text-white hover:bg-white/50 ring-2 ring-white/60" : "text-white/70 hover:bg-white/10 hover:text-white"} ${marginClass}`} onClick={() => navigate(item.path)}>
+            return <Button key={item.path} variant="ghost" size="lg" className={`rounded-full aspect-square p-2 relative transition-all duration-300 ${active ? "bg-white/40 text-white hover:bg-white/50 ring-2 ring-white/60" : "text-white/70 hover:bg-white/10 hover:text-white"} ${marginClass}`} onClick={() => navigate(item.path)}>
                   <item.icon size={22} strokeWidth={2.5} className="!w-[22px] !h-[22px]" />
                   <NotificationBadge count={item.count} size="sm" className="absolute -top-1 -right-1" />
                 </Button>;

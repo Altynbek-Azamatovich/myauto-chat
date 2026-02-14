@@ -96,7 +96,7 @@ const Landing = () => {
 
             <span className="text-gray-900">Здесь начинается</span>
             <br />
-            <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 bg-clip-text text-[#1e3fae]">
               цифровая жизнь
             </span>
             <br />
@@ -190,16 +190,16 @@ const Landing = () => {
 
 
                 {/* Floating badge */}
-                <motion.div
-                  className="absolute -right-4 md:-right-10 top-1/4 px-4 py-2 rounded-xl bg-white border border-gray-100 shadow-lg"
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}>
+                
 
-                  <div className="flex items-center gap-2">
-                    <Camera className="w-4 h-4 text-emerald-500" />
-                    <span className="text-emerald-600 text-xs font-semibold">Скан завершён</span>
-                  </div>
-                </motion.div>
+
+
+
+
+
+
+
+
               </div>
             </SlideIn>
           </div>
