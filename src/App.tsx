@@ -65,7 +65,7 @@ import AuditLogs from "./pages/admin/AuditLogs";
 const AppContent = () => {
   const location = useLocation();
   const isMobile = useIsMobile();
-  const isLandingPage = location.pathname === '/landing';
+  const isLandingPage = location.pathname === '/' || location.pathname === '/landing';
   const hideNavigation = [
     '/welcome', 
     '/phone-auth', 
@@ -111,18 +111,16 @@ const AppContent = () => {
         </div>
       )}
       <div className={(isPartnerRoute || isLandingPage) ? "w-full min-h-screen bg-background relative" : "w-full max-w-md mx-auto shadow-2xl min-h-screen bg-background relative"}>
-        <Routes>
-        {/* Landing Page */}
+      <Routes>
+        {/* Landing Page — default */}
+        <Route path="/" element={<Landing />} />
         <Route path="/landing" element={<Landing />} />
         
         {/* Auth & Onboarding */}
         <Route path="/welcome" element={<Welcome />} />
-        <Route path="/phone-auth" element={<PhoneAuth />} />
-        <Route path="/otp-verify" element={<OTPVerify />} />
-        <Route path="/profile-setup" element={<ProfileSetup />} />
-        
+
         {/* User Routes */}
-        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/services" element={<Services />} />
         <Route path="/photo-diagnostic" element={<PhotoDiagnostic />} />
         <Route path="/super-chat" element={<SuperChat />} />
