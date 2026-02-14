@@ -107,9 +107,9 @@ const Landing = () => {
             className="text-gray-400 text-base md:text-lg max-w-md mb-12"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.6 }}>
-            AI-автосервис нового поколения
+            transition={{ duration: 0.8, delay: 0.6 }}>AI-автосервис нового поколения 
 просто, умно, быстро.
+
           </motion.p>
 
           {/* Frameless screenshot */}
