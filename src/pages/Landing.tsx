@@ -72,12 +72,12 @@ const Landing = () => {
     <div className="bg-white text-gray-900 overflow-x-hidden selection:bg-amber-500/20 selection:text-amber-900 font-sans">
 
       {/* ═══════════ HERO ═══════════ */}
-      <section ref={heroRef} className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-16 pb-32 overflow-hidden">
+      <section ref={heroRef} className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-16 pb-32 overflow-hidden bg-white text-white">
         {/* Subtle ambient */}
         <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[700px] h-[700px] rounded-full bg-amber-100/40 blur-[120px] pointer-events-none" />
         <div className="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] rounded-full bg-emerald-100/30 blur-[100px] pointer-events-none" />
 
-        <motion.div style={{ y: heroY, opacity: heroOpacity, scale: heroScale }} className="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto">
+        <motion.div style={{ y: heroY, opacity: heroOpacity, scale: heroScale }} className="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto bg-white">
           {/* Logo — 3x bigger */}
           <motion.img
             src={logoFull}
@@ -107,7 +107,7 @@ const Landing = () => {
             className="text-gray-400 text-base md:text-lg max-w-md mb-12"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.6 }}>AI-автосервис нового поколения
+            transition={{ duration: 0.8, delay: 0.6 }}>AI-автосервис нового поколения 
 просто, умно, быстро.
 
           </motion.p>
@@ -168,7 +168,7 @@ const Landing = () => {
               <FadeUp delay={0.2}>
                 <div className="flex gap-8 mb-8 md:mb-0">
                   <div>
-                    <div className="text-2xl md:text-3xl font-bold text-gray-900">2 сек</div>
+                    <div className="text-2xl md:text-3xl font-bold text-gray-900">до 10 сек</div>
                     <div className="text-xs text-gray-400">Время анализа</div>
                   </div>
                   <div>
@@ -405,7 +405,7 @@ const Landing = () => {
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col md:flex-row md:justify-between gap-8">
             <div>
-              <img src={logoFull} alt="myAuto" className="h-10 mb-4 opacity-70" />
+              <img src={logoFull} alt="myAuto" className="h-10 mb-4 opacity-100" />
               <div className="space-y-2 text-sm text-gray-400">
                 <div className="flex items-center gap-2">
                   <Mail className="w-4 h-4" />
