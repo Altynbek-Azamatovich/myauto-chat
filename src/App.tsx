@@ -46,6 +46,7 @@ import Showroom3D from "./pages/Showroom3D";
 import Car360View from "./pages/Car360View";
 import Car3DModel from "./pages/Car3DModel";
 import TuningCategory from "./pages/TuningCategory";
+import Landing from "./pages/Landing";
 
 // Partner Pages
 import PartnerDashboard from "./pages/partner/Dashboard";
@@ -64,6 +65,7 @@ import AuditLogs from "./pages/admin/AuditLogs";
 const AppContent = () => {
   const location = useLocation();
   const isMobile = useIsMobile();
+  const isLandingPage = location.pathname === '/landing';
   const hideNavigation = [
     '/welcome', 
     '/phone-auth', 
@@ -82,14 +84,15 @@ const AppContent = () => {
     '/partner/pending-verification',
     '/privacy-policy',
     '/terms-of-service',
-    '/delete-account-request'
+    '/delete-account-request',
+    '/landing'
   ].includes(location.pathname) || location.pathname.startsWith('/tuning/');
   
   const isPartnerRoute = location.pathname.startsWith('/partner');
 
   return (
     <>
-      {!isMobile && !isPartnerRoute && (
+      {!isMobile && !isPartnerRoute && !isLandingPage && (
         <div className="fixed top-4 left-4 right-4 z-50 pointer-events-none">
           <div className="max-w-7xl mx-auto flex justify-between items-start px-4">
             <Alert className="w-64 pointer-events-auto border-primary/20 bg-primary/5 shadow-lg">
@@ -107,8 +110,11 @@ const AppContent = () => {
           </div>
         </div>
       )}
-      <div className={isPartnerRoute ? "w-full min-h-screen bg-background relative" : "w-full max-w-md mx-auto shadow-2xl min-h-screen bg-background relative"}>
+      <div className={(isPartnerRoute || isLandingPage) ? "w-full min-h-screen bg-background relative" : "w-full max-w-md mx-auto shadow-2xl min-h-screen bg-background relative"}>
         <Routes>
+        {/* Landing Page */}
+        <Route path="/landing" element={<Landing />} />
+        
         {/* Auth & Onboarding */}
         <Route path="/welcome" element={<Welcome />} />
         <Route path="/phone-auth" element={<PhoneAuth />} />
