@@ -67,6 +67,7 @@ const AppContent = () => {
   const isMobile = useIsMobile();
   const isLandingPage = location.pathname === '/' || location.pathname === '/landing';
   const hideNavigation = [
+    '/',
     '/welcome', 
     '/phone-auth', 
     '/otp-verify',
