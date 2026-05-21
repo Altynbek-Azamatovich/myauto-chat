@@ -47,6 +47,11 @@ import Car360View from "./pages/Car360View";
 import Car3DModel from "./pages/Car3DModel";
 import TuningCategory from "./pages/TuningCategory";
 import Landing from "./pages/Landing";
+import LegalPrivacy from "./pages/legal/Privacy";
+import LegalTerms from "./pages/legal/Terms";
+import LegalOffer from "./pages/legal/Offer";
+import LegalLicense from "./pages/legal/License";
+import LegalPayments from "./pages/legal/Payments";
 
 // Partner Pages
 import PartnerDashboard from "./pages/partner/Dashboard";
