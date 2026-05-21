@@ -47,6 +47,11 @@ import Car360View from "./pages/Car360View";
 import Car3DModel from "./pages/Car3DModel";
 import TuningCategory from "./pages/TuningCategory";
 import Landing from "./pages/Landing";
+import LegalPrivacy from "./pages/legal/Privacy";
+import LegalTerms from "./pages/legal/Terms";
+import LegalOffer from "./pages/legal/Offer";
+import LegalLicense from "./pages/legal/License";
+import LegalPayments from "./pages/legal/Payments";
 
 // Partner Pages
 import PartnerDashboard from "./pages/partner/Dashboard";
@@ -86,7 +91,12 @@ const AppContent = () => {
     '/privacy-policy',
     '/terms-of-service',
     '/delete-account-request',
-    '/landing'
+    '/landing',
+    '/privacy',
+    '/terms',
+    '/offer',
+    '/license',
+    '/payments'
   ].includes(location.pathname) || location.pathname.startsWith('/tuning/');
   
   const isPartnerRoute = location.pathname.startsWith('/partner');
@@ -165,6 +175,13 @@ const AppContent = () => {
         {/* Admin Routes */}
         <Route path="/admin/partner-applications" element={<PartnerApplications />} />
         <Route path="/admin/audit-logs" element={<AuditLogs />} />
+
+        {/* Legal Documents */}
+        <Route path="/privacy" element={<LegalPrivacy />} />
+        <Route path="/terms" element={<LegalTerms />} />
+        <Route path="/offer" element={<LegalOffer />} />
+        <Route path="/license" element={<LegalLicense />} />
+        <Route path="/payments" element={<LegalPayments />} />
         
         <Route path="*" element={<NotFound />} />
       </Routes>
