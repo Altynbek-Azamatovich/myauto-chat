@@ -175,6 +175,13 @@ const AppContent = () => {
         {/* Admin Routes */}
         <Route path="/admin/partner-applications" element={<PartnerApplications />} />
         <Route path="/admin/audit-logs" element={<AuditLogs />} />
+
+        {/* Legal Documents */}
+        <Route path="/privacy" element={<LegalPrivacy />} />
+        <Route path="/terms" element={<LegalTerms />} />
+        <Route path="/offer" element={<LegalOffer />} />
+        <Route path="/license" element={<LegalLicense />} />
+        <Route path="/payments" element={<LegalPayments />} />
         
         <Route path="*" element={<NotFound />} />
       </Routes>
