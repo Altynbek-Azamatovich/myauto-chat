@@ -91,7 +91,12 @@ const AppContent = () => {
     '/privacy-policy',
     '/terms-of-service',
     '/delete-account-request',
-    '/landing'
+    '/landing',
+    '/privacy',
+    '/terms',
+    '/offer',
+    '/license',
+    '/payments'
   ].includes(location.pathname) || location.pathname.startsWith('/tuning/');
   
   const isPartnerRoute = location.pathname.startsWith('/partner');
