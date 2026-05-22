@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Условия использования myAuto Pro / myAuto Pro Terms of Use</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #F9FAFB;
+            --card-bg: #FFFFFF;
+            --text-color: #1F2937;
+            --text-secondary: #4B5563;
+            --primary: #1A80E6;
+            --primary-hover: #1565C0;
+            --border-color: #E5E7EB;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        header {
+            max-width: 800px;
+            margin: 20px auto 10px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-text {
+            font-weight: 800;
+            font-size: 20px;
+            letter-spacing: -0.5px;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .logo-badge {
+            background-color: var(--primary);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .lang-switcher {
+            display: flex;
+            gap: 5px;
+            background: #E5E7EB;
+            padding: 3px;
+            border-radius: 8px;
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            padding: 6px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn.active {
+            background: var(--card-bg);
+            color: var(--primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        main {
+            max-width: 800px;
+            background-color: var(--card-bg);
+            margin: 20px auto 60px auto;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            letter-spacing: -0.5px;
+            color: var(--text-color);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 30px;
+            margin-bottom: 12px;
+            color: var(--text-color);
+            letter-spacing: -0.3px;
+        }
+
+        p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            text-align: justify;
+        }
+
+        .footer-note {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 13px;
+            color: #9CA3AF;
+            text-align: center;
+        }
+
+        .lang-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .lang-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 10px;
+            }
+            main {
+                padding: 20px;
+                margin-top: 10px;
+                border-radius: 12px;
+            }
+            h1 {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+            h2 {
+                font-size: 16px;
+                margin-top: 20px;
+            }
+            p {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-group">
+            <a href="https://myautoplus.kz" class="logo-text">myAuto</a>
+            <span class="logo-badge">Pro</span>
+        </div>
+        <div class="lang-switcher">
+            <button class="lang-btn active" onclick="setLanguage('ru')">RU</button>
+            <button class="lang-btn" onclick="setLanguage('kk')">KK</button>
+            <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Russian Content -->
+        <div id="ru-content" class="lang-content active">
+            <h1>Условия использования myAuto Pro</h1>
+            <p>Настоящие Условия использования Платформы myAuto Pro (далее — «Условия») являются юридически обязательным соглашением между ТОО «myAuto Technologies» (далее — «Администрация») и Партнёром (юридическим лицом или индивидуальным предпринимателем).</p>
+<h2>1. Принятие условий</h2>
+<p>1.1. Использование Платформы для управления бизнесом означает полное и безоговорочное согласие Партнёра с данными Условиями. Если Партнёр не согласен с каким-либо положением, он обязан немедленно прекратить использование Платформы.<br><br>1.2. Платформа предназначена исключительно для профессионального использования в целях ведения бизнеса в сфере автоуслуг.</p>
+<h2>2. Изменение условий</h2>
+<p>Администрация вправе в любое время изменять Условия без предварительного уведомления. Новая редакция вступает в силу с момента публикации в разделе «Юридическая информация». Партнёр обязуется самостоятельно отслеживать изменения.</p>
+<h2>3. Предмет соглашения</h2>
+<p>3.1. Администрация предоставляет Партнёру доступ к SaaS-платформе для автоматизации процессов сервисного центра, ведения клиентской базы, управления записями и продвижения услуг.<br><br>3.2. Платформа предоставляется на условиях неисключительной лицензии без права передачи третьим лицам.</p>
+<h2>4. Регистрация и Доступ</h2>
+<p>4.1. Партнёр несёт полную ответственность за достоверность данных, указанных при регистрации (БИН/ИИН, реквизиты, адреса).<br><br>4.2. Доступ к аккаунту осуществляется по номеру телефона. Партнёр обязан обеспечивать конфиденциальность доступа и нести ответственность за все действия, совершённые под его учётной записью.</p>
+<h2>5. Права и обязанности Партнёра</h2>
+<p>5.1. Партнёр обязан предоставлять актуальную информацию об услугах и ценах. Указанные в Платформе цены являются юридически обязательными для Партнёра при расчётах с клиентами.<br><br>5.2. Партнёр гарантирует высокое качество оказываемых услуг и несёт полную ответственность перед конечными пользователями в соответствии с законодательством РК.</p>
+<h2>6. Права Администрации</h2>
+<p>6.1. Администрация имеет право блокировать аккарует в случае нарушения данных Условий или при получении обоснованных жалоб от пользователей.<br><br>6.2. Администрация вправе запрашивать у Партнёра подтверждающие документы на право осуществления деятельности.</p>
+<h2>7. Ограничение ответственности</h2>
+<p>Платформа предоставляется по принципу «как есть». Администрация не несёт ответственности за качество ремонта, задержки в обслуживании или любые иные действия Партнёра.</p>
+<h2>8. Интеллектуальная собственность</h2>
+<p>Все права на дизайн, код и бренд myAuto принадлежат Администрации. Запрещается копирование элементов интерфейса или использование бренда вне рамок Платформы.</p>
+<h2>9. Реквизиты и контакты</h2>
+<p>ТОО «myAuto Technologies»<br>Адрес: г. Астана, ул. Шарль де Голль, 1А<br>Email: info@myautoplus.kz</p>
+<div class="footer-note">Редакция от 17 марта 2026 г.<br>© 2026 ТОО «myAuto Technologies»</div>
+        </div>
+
+        <!-- Kazakh Content -->
+        <div id="kk-content" class="lang-content">
+            <h1>myAuto Pro Пайдалану шарттары</h1>
+            <p>Осы myAuto Pro Платформасын пайдалану шарттары (бұдан әрі — «Шарттар») «myAuto Technologies» ЖШС (бұдан әрі — «Әкімшілік») пен Серіктес (заңды тұлға немесе жеке кәсіпкер) арасындағы заңды күші бар келісім болып табылады.</p>
+<h2>1. Шарттарды қабылдау</h2>
+<p>1.1. Бизнесті басқару үшін Платформаны пайдалану Серіктестің осы Шарттармен толық және сөзсіз келісетінін білдіреді. Егер Серіктес қандай да бір ережемен келіспесе, ол Платформаны пайдалануды дереу тоқтатуға міндетті.<br><br>1.2. Платформа тек автоқызмет көрсету саласында бизнес жүргізу мақсатында кәсіби пайдалануға арналған.</p>
+<h2>2. Шарттарды өзгерту</h2>
+<p>Әкімшілік кез келген уақытта Шарттарды алдын ала ескертусіз өзгертуге құқылы. Жаңа редакция «Заңды ақпарат» бөлімінде жарияланған сәттен бастап күшіне енеді. Серіктес өзгерістерді өз бетінше қадағалауға міндеттенеді.</p>
+<h2>3. Келісім нысаны</h2>
+<p>3.1. Әкімшілік Серіктеске сервис орталығының процестерін автоматтандыру, клиенттер базасын жүргізу, жазбаларды басқару және қызметтерді ілгерілету үшін SaaS-платформасына қолжетімділік береді.<br><br>3.2. Платформа үшінші тұлғаларға беру құқығынсыз ерекше емес лицензия шарттарында беріледі.</p>
+<h2>4. Тіркеу және Қолжетімділік</h2>
+<p>4.1. Серіктес тіркелу кезінде көрсетілген деректердің (БСН/ЖСН, деректемелер, мекенжайлар) шынайылығына толық жауапты болады.<br><br>4.2. Аккаунтқа қол жеткізу телефон нөмірі арқылы жүзеге асырылады. Серіктес қолжетімділік құпиялылығын қамтамасыз етуге және оның есептік жазбасымен жасалған барлық әрекеттер үшін жауапты болуға міндетті.</p>
+<h2>5. Серіктестің құқықтары мен міндеттері</h2>
+<p>5.1. Серіктес қызметтер мен бағалар туралы өзекті ақпаратты беруге міндетті. Платформада көрсетілген бағалар клиенттермен есеп айырысу кезінде Серіктес үшін міндетті болып табылады.<br><br>5.2. Серіктес көрсетілетін қызметтердің жоғары сапасына кепілдік береді және ҚР заңнамасына сәйкес соңғы пайдаланушылар алдында толық жауапты болады.</p>
+<h2>6. Әкімшіліктің құқықтары</h2>
+<p>6.1. Әкімшіліктің осы Шарттарды бұзған жағдайда немесе пайдаланушылардан негізді шағымдар түскен жағдайда аккаунтты бұғаттауға құқығы бар.<br><br>6.2. Әкімшілік Серіктестен қызметті жүзеге асыру құқығына растайтын құжаттарды сұратуға құқылы.</p>
+<h2>7. Жауапкершілікті шектеу</h2>
+<p>Платформа «сол қалпында» (as is) принципі бойынша беріледі. Әкімшілік жөндеу сапасы, қызмет көрсетудің кешігуі немесе Серіктестің кез келген өзге әрекеттері үшін жауапты болмайды.</p>
+<h2>8. Зияткерлік меншік</h2>
+<p>myAuto дизайнына, кодына және брендіне барлық құқықтар Әкімшілікке тиесілі. Интерфейс элементтерін көшіруге немесе брендті Платформа шеңберінен тыс пайдалануға тыйым салынады.</p>
+<h2>9. Деректемелер мен байланыс ақпараты</h2>
+<p>«myAuto Technologies» ЖШС<br>Мекенжайы: Астана қ., Шарль де Голль көш., 1А<br>Email: info@myautoplus.kz</p>
+<div class="footer-note">2026 жылғы 17 наурыздағы редакция<br>© 2026 «myAuto Technologies» ЖШС</div>
+        </div>
+
+        <!-- English Content -->
+        <div id="en-content" class="lang-content">
+            <h1>myAuto Pro Terms of Use</h1>
+            <p>These Terms of Use of the myAuto Pro Platform (hereinafter referred to as the "Terms") are a legally binding agreement between myAuto Technologies LLP (hereinafter referred to as the "Administration") and the Partner (a legal entity or an individual entrepreneur).</p>
+<h2>1. Acceptance of Terms</h2>
+<p>1.1. Use of the Platform for business management implies the Partner's full and unconditional consent to these Terms. If the Partner does not agree with any provision, it is obliged to immediately stop using the Platform.<br><br>1.2. The Platform is intended exclusively for professional use for the purpose of conducting business in the field of automotive services.</p>
+<h2>2. Modification of Terms</h2>
+<p>The Administration has the right to change the Terms at any time without prior notice. The new version comes into force from the moment of publication in the "Legal Information" section. The Partner undertakes to independently monitor changes.</p>
+<h2>3. Subject of the Agreement</h2>
+<p>3.1. The Administration provides the Partner with access to the SaaS platform for automation of service center processes, customer database maintenance, record management, and service promotion.<br><br>3.2. The Platform is provided under the terms of a non-exclusive license without the right of transfer to third parties.</p>
+<h2>4. Registration and Access</h2>
+<p>4.1. The Partner bears full responsibility for the accuracy of the data provided during registration (BIN/IIN, requisites, addresses).<br><br>4.2. Access to the account is carried out by phone number. The Partner is obliged to ensure the confidentiality of access and bear responsibility for all actions performed under its account.</p>
+<h2>5. Partner Rights and Obligations</h2>
+<p>5.1. The Partner is obliged to provide up-to-date information about services and prices. The prices indicated on the Platform are legally binding for the Partner in settlements with customers.<br><br>5.2. The Partner guarantees high quality of services provided and bears full responsibility to end users in accordance with the legislation of the Republic of Kazakhstan.</p>
+<h2>6. Administration Rights</h2>
+<p>6.1. The Administration has the right to block the account in case of violation of these Terms or upon receipt of justified complaints from users.<br><br>6.2. The Administration has the right to request supporting documents from the Partner for the right to carry out activities.</p>
+<h2>7. Limitation of Liability</h2>
+<p>The Platform is provided on an "as is" basis. The Administration is not responsible for the quality of repairs, delays in service, or any other actions of the Partner.</p>
+<h2>8. Intellectual Property</h2>
+<p>All rights to the design, code, and myAuto brand belong to the Administration. Copying of interface elements or use of the brand outside the framework of the Platform is prohibited.</p>
+<h2>9. Requisites and Contacts</h2>
+<p>myAuto Technologies LLP<br>Address: 1A Charles de Gaulle St., Astana<br>Email: info@myautoplus.kz</p>
+<div class="footer-note">Version as of March 17, 2026<br>© 2026 myAuto Technologies LLP</div>
+        </div>
+    </main>
+
+    <script>
+        function setLanguage(lang) {
+            // Update active content
+            document.querySelectorAll('.lang-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.getElementById(lang + '-content').classList.add('active');
+
+            // Update active buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Map buttons to activate the correct one
+            const buttons = document.querySelectorAll('.lang-btn');
+            if (lang === 'ru') buttons[0].classList.add('active');
+            if (lang === 'kk') buttons[1].classList.add('active');
+            if (lang === 'en') buttons[2].classList.add('active');
+            
+            // Set HTML lang attribute
+            document.documentElement.lang = lang;
+        }
+    </script>
+</body>
+</html>

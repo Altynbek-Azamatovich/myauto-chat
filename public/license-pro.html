@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лицензионное соглашение myAuto Pro / myAuto Pro License Agreement</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #F9FAFB;
+            --card-bg: #FFFFFF;
+            --text-color: #1F2937;
+            --text-secondary: #4B5563;
+            --primary: #1A80E6;
+            --primary-hover: #1565C0;
+            --border-color: #E5E7EB;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        header {
+            max-width: 800px;
+            margin: 20px auto 10px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-text {
+            font-weight: 800;
+            font-size: 20px;
+            letter-spacing: -0.5px;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .logo-badge {
+            background-color: var(--primary);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .lang-switcher {
+            display: flex;
+            gap: 5px;
+            background: #E5E7EB;
+            padding: 3px;
+            border-radius: 8px;
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            padding: 6px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn.active {
+            background: var(--card-bg);
+            color: var(--primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        main {
+            max-width: 800px;
+            background-color: var(--card-bg);
+            margin: 20px auto 60px auto;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            letter-spacing: -0.5px;
+            color: var(--text-color);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 30px;
+            margin-bottom: 12px;
+            color: var(--text-color);
+            letter-spacing: -0.3px;
+        }
+
+        p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            text-align: justify;
+        }
+
+        .footer-note {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 13px;
+            color: #9CA3AF;
+            text-align: center;
+        }
+
+        .lang-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .lang-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 10px;
+            }
+            main {
+                padding: 20px;
+                margin-top: 10px;
+                border-radius: 12px;
+            }
+            h1 {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+            h2 {
+                font-size: 16px;
+                margin-top: 20px;
+            }
+            p {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-group">
+            <a href="https://myautoplus.kz" class="logo-text">myAuto</a>
+            <span class="logo-badge">Pro</span>
+        </div>
+        <div class="lang-switcher">
+            <button class="lang-btn active" onclick="setLanguage('ru')">RU</button>
+            <button class="lang-btn" onclick="setLanguage('kk')">KK</button>
+            <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Russian Content -->
+        <div id="ru-content" class="lang-content active">
+            <h1>Лицензионное соглашение myAuto Pro</h1>
+            <p>Настоящее Лицензионное соглашение (далее — «Соглашение») является юридически обязательным документом, определяющим условия использования программного обеспечения Платформы myAuto Pro (далее — «ПО»).</p>
+<h2>1. Предоставление лицензии</h2>
+<p>1.1. Администрация предоставляет Партнёру ограниченную, неисключительную, отзывную лицензию на использование ПО myAuto Pro исключительно для целей автоматизации бизнес-процессов его сервисного центра.<br><br>1.2. Лицензия предоставляется без права передачи третьим лицам (сублицензирования).</p>
+<h2>2. Ограничения использования</h2>
+<p>Партнёру запрещается:<br>• Копировать, модифицировать или декомпилировать исходный код ПО.<br>• Использовать ПО для создания конкурирующих продуктов.<br>• Предоставлять доступ к аккаунту лицам, не являющимся сотрудниками Партнёра.<br>• Использовать любые автоматизированные средства (скрипты, боты) для сбора данных с Платформы.</p>
+<h2>3. Интеллектуальная собственность</h2>
+<p>3.1. Все исключительные права на ПО, включая дизайн, интерфейс, логотипы и алгоритмы, принадлежат ТОО «myAuto Technologies».<br><br>3.2. Использование товарных знаков myAuto за пределами функционала Платформы допускается только с письменного согласия Администрации.</p>
+<h2>4. Обновления и Техподдержка</h2>
+<p>Администрация вправе в любое время изменять функционал ПО, выпускать обновления и проводить технические работы, временно ограничивающие доступ к Платформе.</p>
+<h2>5. Ответственность</h2>
+<p>ПО предоставляется «как есть» (as is). Администрация не гарантирует бесперебойную работу в случае проблем на стороне интернет-провайдеров Партнёра или несовместимости с мобильными устройствами.</p>
+<h2>6. Реквизиты правообладателя</h2>
+<p>ТОО «myAuto Technologies»<br>Адрес: г. Астана, ул. Шарль де Голль, 1А<br>Email: info@myautoplus.kz</p>
+<div class="footer-note">© 2026 ТОО «myAuto Technologies»</div>
+        </div>
+
+        <!-- Kazakh Content -->
+        <div id="kk-content" class="lang-content">
+            <h1>myAuto Pro Лицензиялық келісімі</h1>
+            <p>Осы Лицензиялық келісім (бұдан әрі — «Келісім») myAuto Pro Платформасының бағдарламалық қамтамасыз етуін (бұдан әрі — «БҚ») пайдалану шарттарын айқындайтын заңды күші бар құжат болып табылады.</p>
+<h2>1. Лицензия беру</h2>
+<p>1.1. Әкімшілік Серіктеске тек оның сервис орталығының бизнес-процестерін автоматтандыру мақсатында myAuto Pro БҚ пайдалануға шектеулі, ерекше емес, кері қайтарылатын лицензия береді.<br><br>1.2. Лицензия үшінші тұлғаларға беру (сублицензиялау) құқығынсыз беріледі.</p>
+<h2>2. Пайдаланудағы шектеулер</h2>
+<p>Серіктеске мыналарға тыйым салынады:<br>• БҚ бастапқы кодын көшіру, өзгерту немесе декомпиляциялау.<br>• БҚ-ны бәсекелес өнімдер жасау үшін пайдалану.<br>• Аккаунтқа Серіктестің қызметкері болып табылмайтын тұлғаларға қолжетімділік беру.<br>• Платформадан деректерді жинау үшін кез келген автоматтандырылған құралдарды (скрипттер, боттар) пайдалану.</p>
+<h2>3. Зияткерлік меншік</h2>
+<p>3.1. Дизайнды, интерфейсті, логотиптерді және алгоритмдерді қоса алғанда, БҚ-ға барлық ерекше құқықтар «myAuto Technologies» ЖШС-не тиесілі.<br><br>3.2. myAuto тауар белгілерін Платформа функционалынан тыс пайдалануға Әкімшіліктің жазбаша келісімімен ғана жол беріледі.</p>
+<h2>4. Жаңартулар және Техникалық қолдау</h2>
+<p>Әкімшілік кез келген уақытта БҚ функционалын өзгертуге, жаңартулар шығаруға және Платформаға қолжетімділікті уақытша шектейтін техникалық жұмыстар жүргізуге құқылы.</p>
+<h2>5. Жауапкершілік</h2>
+<p>БҚ «сол қалпында» (as is) беріледі. Әкімшілік Серіктестің интернет-провайдерлері тарапынан ақаулар болған немесе мобильді құрылғылармен үйлесімсіз болған жағдайда үздіксіз жұмыс істеуіне кепілдік бермейді.</p>
+<h2>6. Құқық иеленушінің деректемелері</h2>
+<p>«myAuto Technologies» ЖШС<br>Мекенжайы: Астана қ., Шарль де Голль көш., 1А<br>Email: info@myautoplus.kz</p>
+<div class="footer-note">© 2026 «myAuto Technologies» ЖШС</div>
+        </div>
+
+        <!-- English Content -->
+        <div id="en-content" class="lang-content">
+            <h1>myAuto Pro License Agreement</h1>
+            <p>This License Agreement (hereinafter referred to as the "Agreement") is a legally binding document that defines the conditions for the use of the myAuto Pro Platform software (hereinafter referred to as the "Software").</p>
+<h2>1. Granting of License</h2>
+<p>1.1. The Administration grants the Partner a limited, non-exclusive, revocable license to use the myAuto Pro Software solely for the purpose of automating the business processes of its service center.<br><br>1.2. The license is granted without the right to transfer to third parties (sublicensing).</p>
+<h2>2. Restrictions on Use</h2>
+<p>The Partner is prohibited from:<br>• Copying, modifying, or decompiling the source code of the Software.<br>• Using the Software to create competing products.<br>• Providing access to the account to persons who are not employees of the Partner.<br>• Using any automated means (scripts, bots) to collect data from the Platform.</p>
+<h2>3. Intellectual Property</h2>
+<p>3.1. All exclusive rights to the Software, including design, interface, logos, and algorithms, belong to myAuto Technologies LLP.<br><br>3.2. Use of myAuto trademarks outside the Platform functionality is allowed only with the written consent of the Administration.</p>
+<h2>4. Updates and Support</h2>
+<p>The Administration has the right at any time to change the functionality of the Software, release updates, and carry out technical work that temporarily restricts access to the Platform.</p>
+<h2>5. Liability</h2>
+<p>The Software is provided on an "as is" basis. The Administration does not guarantee uninterrupted operation in case of problems on the part of the Partner's Internet providers or incompatibility with mobile devices.</p>
+<h2>6. Right Holder Requisites</h2>
+<p>myAuto Technologies LLP<br>Address: 1A Charles de Gaulle St., Astana<br>Email: info@myautoplus.kz</p>
+<div class="footer-note">© 2026 myAuto Technologies LLP</div>
+        </div>
+    </main>
+
+    <script>
+        function setLanguage(lang) {
+            // Update active content
+            document.querySelectorAll('.lang-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.getElementById(lang + '-content').classList.add('active');
+
+            // Update active buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Map buttons to activate the correct one
+            const buttons = document.querySelectorAll('.lang-btn');
+            if (lang === 'ru') buttons[0].classList.add('active');
+            if (lang === 'kk') buttons[1].classList.add('active');
+            if (lang === 'en') buttons[2].classList.add('active');
+            
+            // Set HTML lang attribute
+            document.documentElement.lang = lang;
+        }
+    </script>
+</body>
+</html>
