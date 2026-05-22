@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Публичная оферта myAuto Pro / myAuto Pro Public Offer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #F9FAFB;
+            --card-bg: #FFFFFF;
+            --text-color: #1F2937;
+            --text-secondary: #4B5563;
+            --primary: #1A80E6;
+            --primary-hover: #1565C0;
+            --border-color: #E5E7EB;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        header {
+            max-width: 800px;
+            margin: 20px auto 10px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-text {
+            font-weight: 800;
+            font-size: 20px;
+            letter-spacing: -0.5px;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .logo-badge {
+            background-color: var(--primary);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .lang-switcher {
+            display: flex;
+            gap: 5px;
+            background: #E5E7EB;
+            padding: 3px;
+            border-radius: 8px;
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            padding: 6px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn.active {
+            background: var(--card-bg);
+            color: var(--primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        main {
+            max-width: 800px;
+            background-color: var(--card-bg);
+            margin: 20px auto 60px auto;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            letter-spacing: -0.5px;
+            color: var(--text-color);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 30px;
+            margin-bottom: 12px;
+            color: var(--text-color);
+            letter-spacing: -0.3px;
+        }
+
+        p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            text-align: justify;
+        }
+
+        .footer-note {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 13px;
+            color: #9CA3AF;
+            text-align: center;
+        }
+
+        .lang-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .lang-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 10px;
+            }
+            main {
+                padding: 20px;
+                margin-top: 10px;
+                border-radius: 12px;
+            }
+            h1 {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+            h2 {
+                font-size: 16px;
+                margin-top: 20px;
+            }
+            p {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-group">
+            <a href="https://myautoplus.kz" class="logo-text">myAuto</a>
+            <span class="logo-badge">Pro</span>
+        </div>
+        <div class="lang-switcher">
+            <button class="lang-btn active" onclick="setLanguage('ru')">RU</button>
+            <button class="lang-btn" onclick="setLanguage('kk')">KK</button>
+            <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Russian Content -->
+        <div id="ru-content" class="lang-content active">
+            <h1>Публичная оферта myAuto Pro</h1>
+            <p>Настоящий документ является официальным предложением (публичной офертой) ТОО «myAuto Technologies» (далее — «Администрация») заключить Договор об оказании услуг по предоставлению доступа к Платформе myAuto Pro (далее — «Платформа») на изложенных ниже условиях.</p>
+<h2>1. Акцепт оферты</h2>
+<p>1.1. Акцептом (полным и безоговорочным принятием оферты) является совершение Партнёром действий по регистрации на Платформе: ввод номера телефона, подтверждение кода из WhatsApp, заполнение данных о сервисном центре.<br><br>1.2. С момента акцепта между Администрацией и Партнёром считается заключённым договор присоединения на условиях настоящей оферты, Условий использования Платформы Pro, Политики конфиденциальности Pro и Политики выплат.<br><br>1.3. Использование функционала Платформы для управления бизнесом означает безусловное согласие Партнёра с текущей редакцией всех юридических документов.</p>
+<h2>2. Предмет оферты</h2>
+<p>2.1. Администрация предоставляет Партнёру доступ к программному комплексу Платформы для управления заказами, ведения клиентской базы, публикации информации об услугах, ценах и графике работы сервис-центра.<br><br>2.2. Администрация выступает информационным и технологическим посредником. Договор на оказание конечных услуг (ремонт, мойка и др.) заключается напрямую между Пользователем (клиентом) и Партнёром. Администрация не является стороной в спорах по качеству услуг Партнёра.</p>
+<h2>3. Связанные документы</h2>
+<p>Неотъемлемой частью договора являются следующие документы, доступные в разделе «Юридическая информация»:<br><br>• Условий использования Платформы (Pro) — технические правила и стандарты работы<br>• Политика конфиденциальности (Pro) — регламент обработки корпоративных и персональных данных<br>• Лицензионное соглашение (Pro) — условия использования ПО Платформы<br>• Политика выплат (Payout Policy) — порядок и сроки расчетов за заказы, оплаченные онлайн</p>
+<h2>4. Регистрация бизнеса</h2>
+<p>4.1. Партнёр обязан предоставить достоверные данные: БИН/ИИН, официальное название, адрес, банковские реквизиты. Регистрация подтверждает право Партнёра осуществлять предпринимательскую деятельность по законодательству РК.<br><br>4.2. Администрация проводит модерацию предоставленных данных. До успешного прохождения модерации доступ к некоторым функциям Платформы может быть ограничен.</p>
+<h2>5. Модерация и блокировка</h2>
+<p>Администрация вправе приостановить доступ Партнёра в случае нарушения условий оферты, предоставления ложных данных, размещения некачественного контента в Галерее или при наличии обоснованных жалоб от пользователей.</p>
+<h2>6. Изменение условий</h2>
+<p>Администрация вправе в одностороннем порядке изменять условия. Новая редакция вступает в силу с момента размещения. Продолжение работы на Платформе после изменений означает их принятие.</p>
+<h2>7. Ответственность</h2>
+<p>Партнёр несёт полную ответственность за достоверность цен и информации, а также за качество услуг перед клиентами. Ограничение ответственности Администрации регулируется Условиями использования Платформы.</p>
+<h2>8. Реквизиты и контакты</h2>
+<p>ТОО «myAuto Technologies»<br>Адрес: г. Астана, ул. Шарль де Голль, 1А<br>Email: info@myautoplus.kz</p>
+<div class="footer-note">Редакция от 17 марта 2026 г.<br>© 2026 ТОО «myAuto Technologies»</div>
+        </div>
+
+        <!-- Kazakh Content -->
+        <div id="kk-content" class="lang-content">
+            <h1>myAuto Pro Жария офертасы</h1>
+            <p>Осы құжат «myAuto Technologies» ЖШС (бұдан әрі — «Әкімшілік») тарапынан төменде көрсетілген шарттарда myAuto Pro платформасына (бұдан әрі — «Платформа») қолжетімділік беру бойынша қызмет көрсету туралы Шарт жасасуға ресми ұсыныс (жария оферта) болып табылады.</p>
+<h2>1. Офертаны акцептеу</h2>
+<p>1.1. Серіктестің Платформада тіркелу әрекеттерін жасауы: телефон нөмірін енгізу, WhatsApp-тан келген кодты растау, сервис орталығы туралы деректерді толтыру офертаны акцептеу (толық және сөзсіз қабылдау) болып табылады.<br><br>1.2. Акцепт жасалған сәттен бастап Әкімшілік пен Серіктес арасында осы оферта, Pro Платформасын пайдалану шарттары, Pro Құпиялылық саясаты және Төлемдер саясаты шарттарында қосылу шарты жасалды деп есептеледі.<br><br>1.3. Бизнесті басқару үшін Платформаның функционалын пайдалану Серіктестің барлық заңды құжаттардың ағымдағы редакциясымен сөзсіз келісетінін білдіреді.</p>
+<h2>2. Оферта нысаны</h2>
+<p>2.1. Әкімшілік Серіктеске тапсырыстарды басқару, клиенттер базасын жүргізу, қызметтер, бағалар және сервис орталығының жұмыс кестесі туралы ақпаратты жариялау үшін Платформаның бағдарламалық кешеніне қолжетімділік береді.<br><br>2.2. Әкімшілік ақпараттық және технологиялық делдал ретінде әрекет етеді. Соңғы қызметтерді көрсетуге (жөндеу, жуу және т.б.) арналған шарт Пайдаланушы (клиент) мен Серіктес арасында тікелей жасалады. Әкімшілік Серіктес қызметтерінің сапасы бойынша дауларда тарап болып табылмайды.</p>
+<h2>3. Байланысты құжаттар</h2>
+<p>Шарттың ажырамас бөлігі «Заңды ақпарат» бөлімінде қолжетімді келесі құжаттар болып табылады:<br><br>• Платформаны пайдалану шарттары (Pro) — жұмыстың техникалық ережелері мен стандарттары<br>• Құпиялылық саясаты (Pro) — корпоративтік және дербес деректерді өңдеу регламенті<br>• Лицензиялық келісім (Pro) — Платформа БҚ пайдалану шарттары<br>• Төлемдер саясаты (Payout Policy) — онлайн төленген тапсырыстар үшін есеп айырысу тәртібі мен мерзімдері</p>
+<h2>4. Бизнесті тіркеу</h2>
+<p>4.1. Серіктес шынайы деректерді беруге міндетті: БСН/ЖСН, ресми атауы, мекенжайы, банктік деректемелері. Тіркеу Серіктестің ҚР заңнамасына сәйкес кәсіпкерлік қызметті жүзеге асыруға құқығын растайды.<br><br>4.2. Әкімшілік берілген деректерге модерация жүргізеді. Модерация сәтті өткенге дейін Платформаның кейбір функцияларына қолжетімділік шектелуі мүмкін.</p>
+<h2>5. Модерация және бұғаттау</h2>
+<p>Әкімшілік оферта шарттары бұзылған, жалған деректер берілген, Галереяда сапасыз контент орналастырылған жағдайда немесе пайдаланушылардан негізді шағымдар түскен жағдайда Серіктестің қолжетімділігін тоқтата тұруға құқылы.</p>
+<h2>6. Шарттарды өзгерту</h2>
+<p>Әкімшілік біржақты тәртіппен шарттарды өзгертуге құқылы. Жаңа редакция орналастырылған сәттен бастап күшіне енеді. Өзгерістерден кейін Платформада жұмысты жалғастыру оларды қабылдауды білдіреді.</p>
+<h2>7. Жауапкершілік</h2>
+<p>Серіктес бағалар мен ақпараттың шынайылығына, сондай-ақ клиенттер алдындағы қызметтердің сапасына толық жауапты болады. Әкімшіліктің жауапкершілігін шектеу Платформаны пайдалану шарттарымен реттеледі.</p>
+<h2>8. Деректемелер мен байланыс ақпараты</h2>
+<p>«myAuto Technologies» ЖШС<br>Мекенжайы: Астана қ., Шарль де Голль көш., 1А<br>Email: info@myautoplus.kz</p>
+<div class="footer-note">2026 жылғы 17 наурыздағы редакция<br>© 2026 «myAuto Technologies» ЖШС</div>
+        </div>
+
+        <!-- English Content -->
+        <div id="en-content" class="lang-content">
+            <h1>myAuto Pro Public Offer</h1>
+            <p>This document constitutes an official offer (Public Offer) by myAuto Technologies LLP (hereinafter referred to as the "Administration") to enter into an Agreement for the provision of access to the myAuto Pro Platform (hereinafter referred to as the "Platform") under the terms set forth below.</p>
+<h2>1. Acceptance of the Offer</h2>
+<p>1.1. Acceptance (full and unconditional acceptance of the offer) is the performance by the Partner of registration actions on the Platform: entering a phone number, confirming the code from WhatsApp, and filling in data about the service center.<br><br>1.2. From the moment of acceptance, an adhesion agreement is deemed concluded between the Administration and the Partner under the terms of this offer, the Terms of Use of the Pro Platform, the Pro Privacy Policy, and the Payout Policy.<br><br>1.3. Use of the Platform's functionality for business management implies the Partner's unconditional consent to the current version of all legal documents.</p>
+<h2>2. Subject of the Offer</h2>
+<p>2.1. The Administration provides the Partner with access to the software complex of the Platform for order management, customer database maintenance, and publication of information about services, prices, and the service center's operating schedule.<br><br>2.2. The Administration acts as an information and technological intermediary. The agreement for the provision of final services (repair, washing, etc.) is concluded directly between the User (customer) and the Partner. The Administration is not a party to disputes regarding the quality of the Partner's services.</p>
+<h2>3. Related Documents</h2>
+<p>An integral part of the agreement are the following documents available in the "Legal Information" section:<br><br>• Terms of Use of the Platform (Pro) — technical rules and work standards<br>• Privacy Policy (Pro) — regulations for the processing of corporate and personal data<br>• License Agreement (Pro) — terms of use for the Platform software<br>• Payout Policy — procedure and terms of settlements for orders paid online</p>
+<h2>4. Business Registration</h2>
+<p>4.1. The Partner is obliged to provide reliable data: BIN/IIN, official name, address, and bank details. Registration confirms the Partner's right to carry out entrepreneurial activities under the legislation of the Republic of Kazakhstan.<br><br>4.2. The Administration moderates the provided data. Access to certain functions of the Platform may be restricted until moderation is successfully passed.</p>
+<h2>5. Moderation and Blocking</h2>
+<p>The Administration has the right to suspend the Partner's access in case of violation of the terms of the offer, provision of false data, placement of low-quality content in the Gallery, or in the presence of justified complaints from users.</p>
+<h2>6. Modification of Terms</h2>
+<p>The Administration has the right to unilaterally change the terms. The new version comes into force from the moment of placement. Continued work on the Platform after changes implies their acceptance.</p>
+<h2>7. Liability</h2>
+<p>The Partner bears full responsibility for the accuracy of prices and information, as well as for the quality of services to customers. Limitation of the Administration's liability is regulated by the Terms of Use of the Platform.</p>
+<h2>8. Requisites and Contacts</h2>
+<p>myAuto Technologies LLP<br>Address: 1A Charles de Gaulle St., Astana<br>Email: info@myautoplus.kz</p>
+<div class="footer-note">Version as of March 17, 2026<br>© 2026 myAuto Technologies LLP</div>
+        </div>
+    </main>
+
+    <script>
+        function setLanguage(lang) {
+            // Update active content
+            document.querySelectorAll('.lang-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.getElementById(lang + '-content').classList.add('active');
+
+            // Update active buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Map buttons to activate the correct one
+            const buttons = document.querySelectorAll('.lang-btn');
+            if (lang === 'ru') buttons[0].classList.add('active');
+            if (lang === 'kk') buttons[1].classList.add('active');
+            if (lang === 'en') buttons[2].classList.add('active');
+            
+            // Set HTML lang attribute
+            document.documentElement.lang = lang;
+        }
+    </script>
+</body>
+</html>

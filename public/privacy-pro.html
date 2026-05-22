@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Политика конфиденциальности myAuto Pro / myAuto Pro Privacy Policy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #F9FAFB;
+            --card-bg: #FFFFFF;
+            --text-color: #1F2937;
+            --text-secondary: #4B5563;
+            --primary: #1A80E6;
+            --primary-hover: #1565C0;
+            --border-color: #E5E7EB;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        header {
+            max-width: 800px;
+            margin: 20px auto 10px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-text {
+            font-weight: 800;
+            font-size: 20px;
+            letter-spacing: -0.5px;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .logo-badge {
+            background-color: var(--primary);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .lang-switcher {
+            display: flex;
+            gap: 5px;
+            background: #E5E7EB;
+            padding: 3px;
+            border-radius: 8px;
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            padding: 6px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn.active {
+            background: var(--card-bg);
+            color: var(--primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        main {
+            max-width: 800px;
+            background-color: var(--card-bg);
+            margin: 20px auto 60px auto;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            letter-spacing: -0.5px;
+            color: var(--text-color);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 30px;
+            margin-bottom: 12px;
+            color: var(--text-color);
+            letter-spacing: -0.3px;
+        }
+
+        p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            text-align: justify;
+        }
+
+        .footer-note {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 13px;
+            color: #9CA3AF;
+            text-align: center;
+        }
+
+        .lang-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .lang-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 10px;
+            }
+            main {
+                padding: 20px;
+                margin-top: 10px;
+                border-radius: 12px;
+            }
+            h1 {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+            h2 {
+                font-size: 16px;
+                margin-top: 20px;
+            }
+            p {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-group">
+            <a href="https://myautoplus.kz" class="logo-text">myAuto</a>
+            <span class="logo-badge">Pro</span>
+        </div>
+        <div class="lang-switcher">
+            <button class="lang-btn active" onclick="setLanguage('ru')">RU</button>
+            <button class="lang-btn" onclick="setLanguage('kk')">KK</button>
+            <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Russian Content -->
+        <div id="ru-content" class="lang-content active">
+            <h1>Политика конфиденциальности myAuto Pro</h1>
+            <p>Настоящая Политика конфиденциальности (далее — «Политика») определяет порядок обработки и защиты информации о Партнёрах Платформы myAuto Pro.</p>
+<h2>1. Правовые основания</h2>
+<p>Обработка данных осуществляется в соответствии с Законом Республики Казахстан «О персональных данных и их защите», а также международными стандартами защиты конфиденциальности Apple App Store и Google Play.</p>
+<h2>2. Категории собираемых данных</h2>
+<p>2.1. Данные об организации: БИН/ИИН, полное наименование, юридический адрес, банковские реквизиты (IBAN).<br><br>2.2. Личные данные сотрудников: номера телефонов для авторизации, имена и фамилии для отображения в системе управления персоналом.<br><br>2.3. Технические данные: IP-адрес, тип устройства, версия ОС, уникальные идентификаторы устройства (UDID), логи доступа и действий в системе.</p>
+<h2>3. Цели обработки данных</h2>
+<p>Мы используем данные для:<br>• Идентификации Партнёра и его правомочности.<br>• Обеспечения работы SaaS-платформы и инструментов управления.<br>• Проведения финансовых операций и выплат.<br>• Улучшения функционала приложения через анонимную аналитику.<br>• Коммуникации по техническим вопросам и уведомлениям о заказах.</p>
+<h2>4. Хранение и Безопасность</h2>
+<p>4.1. Данные хранятся в течение всего срока действия Договора и 3 лет после его прекращения для исполнения требований законодательства РК по налоговой и финансовой отчетности.<br><br>4.2. Мы используем защищенную облачную инфраструктуру и распределенные базы данных для надежного хранения информации. Передача осуществляется в зашифрованном виде (TLS/SSL).</p>
+<h2>5. Права Партнёра</h2>
+<p>Партнёр имеет право на доступ к своим данным, ввод исправлений (через Профиль), а также на отзыв согласия на обработку путем обращения в службу поддержки (при условии расторжения Договора).</p>
+<h2>6. Изменения и Контакты</h2>
+<p>6.1. Администрация оставляет за собой право изменять Политику. Новая редакция вступает в силу с момента публикации в приложении.<br><br>6.2. По вопросам обработки данных Партнёр может обращаться по адресу: info@myautoplus.kz</p>
+<h2>7. Реквизиты Администрации</h2>
+<p>ТОО «myAuto Technologies»<br>Адрес: г. Астана, ул. Шарль де Голль, 1А<br>Email: info@myautoplus.kz</p>
+<div class="footer-note">Обновлено: 17 марта 2026 г.<br>© 2026 ТОО «myAuto Technologies»</div>
+        </div>
+
+        <!-- Kazakh Content -->
+        <div id="kk-content" class="lang-content">
+            <h1>myAuto Pro Құпиялылық саясаты</h1>
+            <p>Осы Құпиялылық саясаты (бұдан әрі — «Саясат») myAuto Pro Платформасының Серіктестері туралы ақпаратты өңдеу және қорғау тәртібін айқындайды.</p>
+<h2>1. Құқықтық негіздер</h2>
+<p>Деректерді өңдеу Қазақстан Республикасының «Дербес деректер және оларды қорғау туралы» Заңына, сондай-ақ Apple App Store және Google Play құпиялылықты қорғаудың халықаралық стандарттарына сәйкес жүзеге асырылады.</p>
+<h2>2. Жинақталатын деректер санаттары</h2>
+<p>2.1. Ұйым туралы деректер: БСН/ЖСН, толық атауы, заңды мекенжайы, банктік деректемелері (IBAN).<br><br>2.2. Қызметкерлердің жеке деректері: авторизациялауға арналған телефон нөмірлері, персоналды басқару жүйесінде көрсетуге арналған есімдері мен тектері.<br><br>2.3. Техникалық деректер: IP-мекенжайы, құрылғы түрі, ОЖ нұсқасы, құрылғының бірегей идентификаторлары (UDID), жүйеге кіру және әрекеттер логтары.</p>
+<h2>3. Деректерді өңдеу мақсаттары</h2>
+<p>Біз деректерді мыналар үшін пайдаланамыз:<br>• Серіктесті және оның құқықтылығын сәйкестендіру.<br>• SaaS-платформасының және басқару құралдарының жұмысын қамтамасыз ету.<br>• Қаржылық операциялар мен төлемдерді жүргізу.<br>• Анонимді аналитика арқылы қолданбаның функционалын жақсарту.<br>• Техникалық мәселелер және тапсырыстар туралы хабарламалар бойынша коммуникация.</p>
+<h2>4. Сақтау және Қауіпсіздік</h2>
+<p>4.1. Деректер Шарттың бүкіл қолданылу мерзімі ішінде және ол тоқтатылғаннан кейін ҚР заңнамасының салықтық және қаржылық есептілік жөніндегі талаптарын орындау үшін 3 жыл бойы сақталады.<br><br>4.2. Біз ақпаратты сенімді сақтау үшін қорғалған бұлттық инфрақұрылымды және бөлінген деректер базасын пайдаланамыз. Деректерді беру шифрланған түрде (TLS/SSL) жүзеге асырылады.<br><br>4.3. Әкімшілік рұқсатсыз қол жеткізуді болдырмау үшін заманауи ұйымдастырушылық және техникалық шараларды (екі факторлы аутентификация, ДБ шифрлау) қолданады.</p>
+<h2>5. Серіктестің құқықтары</h2>
+<p>Серіктестің өз деректеріне қол жеткізуге, түзетулер енгізуге (Профиль арқылы), сондай-ақ қолдау қызметіне жүгіну арқылы өңдеуге келісімін қайтарып алуға (Шартты бұзу шартымен) құқығы бар.</p>
+<h2>6. Өзгерістер және Байланыс ақпараты</h2>
+<p>6.1. Әкімшілік Саясатты өзгерту құқығын өзіне қалдырады. Жаңа редакция қолданбада жарияланған сәттен бастап күшіне енеді.<br><br>6.2. Деректерді өңдеу мәселелері бойынша Серіктес мына мекенжайға жүгіне алады: info@myautoplus.kz</p>
+<h2>7. Әкімшіліктің деректемелері</h2>
+<p>«myAuto Technologies» ЖШС<br>Мекенжайы: Астана қ., Шарль де Голль көш., 1А<br>Email: info@myautoplus.kz</p>
+<div class="footer-note">Жаңартылды: 2026 жылғы 17 наурыз<br>© 2026 «myAuto Technologies» ЖШС</div>
+        </div>
+
+        <!-- English Content -->
+        <div id="en-content" class="lang-content">
+            <h1>myAuto Pro Privacy Policy</h1>
+            <p>This Privacy Policy (hereinafter referred to as the "Policy") defines the procedure for processing and protecting information about Partners of the myAuto Pro Platform.</p>
+<h2>1. Legal Basis</h2>
+<p>Data processing is carried out in accordance with the Law of the Republic of Kazakhstan "On Personal Data and Their Protection", as well as international privacy protection standards of the Apple App Store and Google Play.</p>
+<h2>2. Categories of Collected Data</h2>
+<p>2.1. Organization data: BIN/IIN, full name, legal address, bank details (IBAN).<br><br>2.2. Personal data of employees: phone numbers for authorization, names and surnames for display in the personnel management system.<br><br>2.3. Technical data: IP address, device type, OS version, unique device identifiers (UDID), access logs, and action logs in the system.</p>
+<h2>3. Purposes of Data Processing</h2>
+<p>We use data for:<br>• Identification of the Partner and its authority.<br>• Ensuring the operation of the SaaS platform and management tools.<br>• Conducting financial operations and payouts.<br>• Improving application functionality through anonymous analytics.<br>• Communication on technical issues and order notifications.</p>
+<h2>4. Storage and Security</h2>
+<p>4.1. Data is stored for the entire duration of the Agreement and for 3 years after its termination to fulfill the requirements of the legislation of the Republic of Kazakhstan on tax and financial reporting.<br><br>4.2. We use secure cloud infrastructure and distributed databases for reliable information storage. Transmission is carried out in encrypted form (TLS/SSL).</p>
+<h2>5. Partner Rights</h2>
+<p>The Partner has the right to access its data, make corrections (via the Profile), and withdraw consent for processing by contacting support (subject to termination of the Agreement).</p>
+<h2>6. Changes and Contacts</h2>
+<p>6.1. The Administration reserves the right to change the Policy. The new version comes into force from the moment of publication in the application.<br><br>6.2. For data processing issues, the Partner can contact: info@myautoplus.kz</p>
+<h2>7. Administration Requisites</h2>
+<p>myAuto Technologies LLP<br>Address: 1A Charles de Gaulle St., Astana<br>Email: info@myautoplus.kz</p>
+<div class="footer-note">Updated: March 17, 2026<br>© 2026 myAuto Technologies LLP</div>
+        </div>
+    </main>
+
+    <script>
+        function setLanguage(lang) {
+            // Update active content
+            document.querySelectorAll('.lang-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.getElementById(lang + '-content').classList.add('active');
+
+            // Update active buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Map buttons to activate the correct one
+            const buttons = document.querySelectorAll('.lang-btn');
+            if (lang === 'ru') buttons[0].classList.add('active');
+            if (lang === 'kk') buttons[1].classList.add('active');
+            if (lang === 'en') buttons[2].classList.add('active');
+            
+            // Set HTML lang attribute
+            document.documentElement.lang = lang;
+        }
+    </script>
+</body>
+</html>

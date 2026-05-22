@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Политика выплат myAuto Pro / myAuto Pro Payout Policy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #F9FAFB;
+            --card-bg: #FFFFFF;
+            --text-color: #1F2937;
+            --text-secondary: #4B5563;
+            --primary: #1A80E6;
+            --primary-hover: #1565C0;
+            --border-color: #E5E7EB;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        header {
+            max-width: 800px;
+            margin: 20px auto 10px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-text {
+            font-weight: 800;
+            font-size: 20px;
+            letter-spacing: -0.5px;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .logo-badge {
+            background-color: var(--primary);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .lang-switcher {
+            display: flex;
+            gap: 5px;
+            background: #E5E7EB;
+            padding: 3px;
+            border-radius: 8px;
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            padding: 6px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn.active {
+            background: var(--card-bg);
+            color: var(--primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        main {
+            max-width: 800px;
+            background-color: var(--card-bg);
+            margin: 20px auto 60px auto;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            letter-spacing: -0.5px;
+            color: var(--text-color);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 30px;
+            margin-bottom: 12px;
+            color: var(--text-color);
+            letter-spacing: -0.3px;
+        }
+
+        p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            text-align: justify;
+        }
+
+        .footer-note {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 13px;
+            color: #9CA3AF;
+            text-align: center;
+        }
+
+        .lang-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .lang-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 10px;
+            }
+            main {
+                padding: 20px;
+                margin-top: 10px;
+                border-radius: 12px;
+            }
+            h1 {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+            h2 {
+                font-size: 16px;
+                margin-top: 20px;
+            }
+            p {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-group">
+            <a href="https://myautoplus.kz" class="logo-text">myAuto</a>
+            <span class="logo-badge">Pro</span>
+        </div>
+        <div class="lang-switcher">
+            <button class="lang-btn active" onclick="setLanguage('ru')">RU</button>
+            <button class="lang-btn" onclick="setLanguage('kk')">KK</button>
+            <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Russian Content -->
+        <div id="ru-content" class="lang-content active">
+            <h1>Политика выплат myAuto Pro</h1>
+            <p>Настоящая Политика выплат (далее — «Политика») определяет порядок и условия осуществления денежных расчетов между Администрацией и Партнёром по заказам, оплаченным Пользователями безналичным способом через Платформу.</p>
+<h2>1. Общие положения</h2>
+<p>1.1. Администрация обеспечивает прием платежей от Пользователей в пользу Партнёра через интегрированные платежные системы.<br><br>1.2. Все расчеты производятся в национальной валюте Республики Казахстан — тенге (KZT).</p>
+<h2>2. Порядок и сроки выплат</h2>
+<p>2.1. Перечисление денежных средств Партнёру осуществляется на основании данных системы учета Платформы за вычетом комиссии Администрации.<br><br>2.2. Выплаты производятся автоматически по установленному графику (еженедельно или по достижении минимального порога) на расчетный счет (IBAN), указанный Партнёром при регистрации.<br><br>2.3. Срок зачисления средств на счет Партнёра зависит от регламента обслуживающего банка и обычно составляет от 1 до 3 банковских дней.</p>
+<h2>3. Комиссия Администрации</h2>
+<p>3.1. За предоставление технологических услуг и использование платежной инфраструктуры Администрация удерживает комиссию с каждого оплаченного через Платформу заказа.<br><br>3.2. Размер комиссии фиксируется в Личном кабинете или дополнительном соглашении и включает в себя эквайринговые сборы платежных систем.</p>
+<h2>4. Возвраты и претензии</h2>
+<p>4.1. В случае обоснованного требования Пользователя о возврате средств за неоказанную или некачественную услугу, сумма возврата удерживается из будущих выплат Партнёра.<br><br>4.2. Администрация оставляет за собой право приостановить выплаты в случае выявления подозрительных операций или нарушения Партнёром условий Оферты до выяснения обстоятельств.</p>
+<h2>5. Ответственность сторон</h2>
+<p>5.1. Партнёр несет полную ответственность за достоверность предоставленных банковских реквизитов. Убытки, возникшие из-за ошибок в реквизитах, не возмещаются.<br><br>5.2. Администрация не несет ответственности за задержки на стороне банков-корреспондентов или платежных агрегаторов.</p>
+<h2>6. Реквизиты и контакты</h2>
+<p>ТОО «myAuto Technologies»<br>Адрес: г. Астана, ул. Шарль де Голль, 1А<br>Email: info@myautoplus.kz</p>
+<div class="footer-note">Редакция от 17 марта 2026 г.<br>© 2026 ТОО «myAuto Technologies»</div>
+        </div>
+
+        <!-- Kazakh Content -->
+        <div id="kk-content" class="lang-content">
+            <h1>myAuto Pro Төлем саясаты</h1>
+            <p>Осы Төлемдер саясаты (бұдан әрі — «Саясат») Әкімшілік пен Серіктес арасында Платформа арқылы Пайдаланушылар қолма-қол ақшасыз тәсілмен төлеген тапсырыстар бойынша ақшалай есеп айырысуларды жүзеге асыру тәртібі мен шарттарын айқындайды.</p>
+<h2>1. Жалпы ережелер</h2>
+<p>1.1. Әкімшілік интеграцияланған төлем жүйелері арқылы Серіктестің пайдасына Пайдаланушылардан төлемдерді қабылдауды қамтамасыз етеді.<br><br>1.2. Барлық есеп айырысулар Қазақстан Республикасының ұлттық валютасы — теңгемен (KZT) жүргізіледі.</p>
+<h2>2. Төлемдерді төлеу тәртібі мен мерзімдері</h2>
+<p>2.1. Серіктеске ақшалай қаражатты аудару Платформаның есепке алу жүйесінің деректері негізінде Әкімшілік комиссиясын шегере отырып жүзеге асырылады.<br><br>2.2. Төлемдер белгіленген кесте бойынша (апта сайын немесе ең төменгі шектен асқан кезде) Серіктес тіркелу кезінде көрсеткен ағымдағы шотқа (IBAN) автоматты түрде жүргізіледі.<br><br>2.3. Қаражаттың Серіктес шотына түсу мерзімі қызмет көрсететін банктің регламентіне байланысты және әдетте 1-ден 3 банк күніне дейінгі уақытты алады.</p>
+<h2>3. Әкімшілік комиссиясы</h2>
+<p>3.1. Технологиялық қызметтер көрсеткені және төлем инфрақұрылымын пайдаланғаны үшін Әкімшілік Платформа арқылы төленген әрбір тапсырыстан комиссия ұстап қалады.<br><br>3.2. Комиссия мөлшері Жеке кабинетте немесе қосымша келісімде бекітіледі және төлем жүйелерінің эквайрингтік алымдарын қамтиды.</p>
+<h2>4. Қайтарулар мен шағымдар</h2>
+<p>4.1. Пайдаланушының көрсетілмеген немесе сапасыз қызмет үшін қаражатты қайтару туралы негізді талабы болған жағдайда, қайтару сомасы Серіктестің болашақ төлемдерінен ұсталады.<br><br>4.2. Әкімшілік күдікті операциялар анықталған немесе Серіктес Оферта шарттарын бұзған жағдайда мән-жайлар анықталғанға дейін төлемдерді тоқтата тұру құқығын өзіне қалдырады.</p>
+<h2>5. Тараптардың жауапкершілігі</h2>
+<p>5.1. Серіктес берілген банктік деректемелердің шынайылығына толық жауапты болады. Деректемелердегі қателер салдарынан туындаған залалдар өтелмейді.<br><br>5.2. Әкімшілік корреспондент-банктер немесе төлем агрегаторлары тарапынан болатын кешігулер үшін жауапты болмайды.</p>
+<h2>6. Деректемелер мен байланыс ақпараты</h2>
+<p>«myAuto Technologies» ЖШС<br>Мекенжайы: Астана қ., Шарль де Голль көш., 1А<br>Email: info@myautoplus.kz</p>
+<div class="footer-note">2026 жылғы 17 наурыздағы редакция<br>© 2026 «myAuto Technologies» ЖШС</div>
+        </div>
+
+        <!-- English Content -->
+        <div id="en-content" class="lang-content">
+            <h1>myAuto Pro Payout Policy</h1>
+            <p>This Payout Policy (hereinafter referred to as the "Policy") defines the procedure and conditions for cash settlements between the Administration and the Partner for orders paid by Users in a non-cash way through the Platform.</p>
+<h2>1. General Provisions</h2>
+<p>1.1. The Administration ensures the acceptance of payments from Users in favor of the Partner through integrated payment systems.<br><br>1.2. All settlements are made in the national currency of the Republic of Kazakhstan — tenge (KZT).</p>
+<h2>2. Procedure and Terms of Payouts</h2>
+<p>2.1. Transfer of funds to the Partner is carried out on the basis of data from the Platform's accounting system, minus the Administration's commission.<br><br>2.2. Payouts are made automatically according to the established schedule (weekly or upon reaching a minimum threshold) to the current account (IBAN) specified by the Partner during registration.<br><br>2.3. The period for crediting funds to the Partner's account depends on the regulations of the servicing bank and usually takes from 1 to 3 banking days.</p>
+<h2>3. Administration Commission</h2>
+<p>3.1. For the provision of technological services and use of the payment infrastructure, the Administration withholds a commission from each order paid through the Platform.<br><br>3.2. The commission amount is fixed in the My Account or an additional agreement and includes acquiring fees of payment systems.</p>
+<h2>4. Refunds and Claims</h2>
+<p>4.1. In case of a justified demand by the User for a refund for a service not provided or of poor quality, the refund amount is withheld from future payouts to the Partner.<br><br>4.2. The Administration reserves the right to suspend payouts in case of detection of suspicious operations or violation by the Partner of the Terms of the Offer until the circumstances are clarified.</p>
+<h2>5. Liability of the Parties</h2>
+<p>5.1. The Partner bears full responsibility for the accuracy of provide bank details. Losses arising from errors in details are not compensated.<br><br>5.2. The Administration is not responsible for delays on the part of correspondent banks or payment aggregators.</p>
+<h2>6. Requisites and Contacts</h2>
+<p>myAuto Technologies LLP<br>Address: 1A Charles de Gaulle St., Astana<br>Email: info@myautoplus.kz</p>
+<div class="footer-note">Version as of March 17, 2026<br>© 2026 myAuto Technologies LLP</div>
+        </div>
+    </main>
+
+    <script>
+        function setLanguage(lang) {
+            // Update active content
+            document.querySelectorAll('.lang-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.getElementById(lang + '-content').classList.add('active');
+
+            // Update active buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Map buttons to activate the correct one
+            const buttons = document.querySelectorAll('.lang-btn');
+            if (lang === 'ru') buttons[0].classList.add('active');
+            if (lang === 'kk') buttons[1].classList.add('active');
+            if (lang === 'en') buttons[2].classList.add('active');
+            
+            // Set HTML lang attribute
+            document.documentElement.lang = lang;
+        }
+    </script>
+</body>
+</html>
