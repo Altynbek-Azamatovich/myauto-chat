@@ -52,6 +52,7 @@ import LegalTerms from "./pages/legal/Terms";
 import LegalOffer from "./pages/legal/Offer";
 import LegalLicense from "./pages/legal/License";
 import LegalPayments from "./pages/legal/Payments";
+import InfoPlaceholder from "./pages/InfoPlaceholder";
 
 // Partner Pages
 import PartnerDashboard from "./pages/partner/Dashboard";
