@@ -468,21 +468,21 @@ const Landing = () => {
             <FooterCol
               title="Приложение"
               items={[
-                { label: "О нас", href: "#about" },
-                { label: "Возможности", href: "#features" },
-                { label: "Безопасность", href: "https://myautoplus.kz/privacy" },
-                { label: "Помощь", href: "mailto:info@myautoplus.kz" },
+                { label: "О нас", href: "/info/about" },
+                { label: "Возможности", href: "/info/features" },
+                { label: "Безопасность", href: "/info/security" },
+                { label: "Помощь", href: "/info/help" },
                 { label: "Техподдержка", href: "mailto:info@myautoplus.kz" },
               ]}
             />
             <FooterCol
               title="Партнёрам"
               items={[
-                { label: "Рабочий раздел", href: "/partner-application" },
-                { label: "Для Инвесторов", href: "#" },
-                { label: "Для СТО", href: "#" },
-                { label: "Для Магазинов", href: "#" },
-                { label: "Для Маляров", href: "#" },
+                { label: "Рабочий раздел", href: "/info/workspace" },
+                { label: "Для Инвесторов", href: "/info/investors" },
+                { label: "Для СТО", href: "/info/sto" },
+                { label: "Для Магазинов", href: "/info/shops" },
+                { label: "Для Маляров", href: "/info/painters" },
               ]}
             />
           </div>
