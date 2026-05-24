@@ -528,17 +528,23 @@ const FooterCol: React.FC<{ title: string; items: { label: string; href: string 
       {title}
     </h4>
     <ul style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-      {items.map((it) => (
-        <li key={it.label}>
-          <a
-            href={it.href}
-            style={{ fontSize: 15, fontWeight: 400, color: TEXT_PRIMARY }}
-            className="transition-opacity hover:opacity-70"
-          >
-            {it.label}
-          </a>
-        </li>
-      ))}
+      {items.map((it) => {
+        const isInternal = it.href.startsWith("/");
+        const style = { fontSize: 15, fontWeight: 400, color: TEXT_PRIMARY } as const;
+        return (
+          <li key={it.label}>
+            {isInternal ? (
+              <Link to={it.href} style={style} className="transition-opacity hover:opacity-70">
+                {it.label}
+              </Link>
+            ) : (
+              <a href={it.href} style={style} className="transition-opacity hover:opacity-70">
+                {it.label}
+              </a>
+            )}
+          </li>
+        );
+      })}
     </ul>
   </div>
 );
