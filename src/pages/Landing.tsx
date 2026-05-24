@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Menu, X, ArrowRight } from "lucide-react";
 
 import mockupDashboard from "@/assets/landing/mockup-dashboard.png";
