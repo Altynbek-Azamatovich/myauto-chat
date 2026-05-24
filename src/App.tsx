@@ -183,6 +183,7 @@ const AppContent = () => {
         <Route path="/offer" element={<LegalOffer />} />
         <Route path="/license" element={<LegalLicense />} />
         <Route path="/payments" element={<LegalPayments />} />
+        <Route path="/info/:slug" element={<InfoPlaceholder />} />
         
         <Route path="*" element={<NotFound />} />
       </Routes>
