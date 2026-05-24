@@ -83,7 +83,7 @@ const PhoneMock: React.FC<{ src: string; alt: string }> = ({ src, alt }) => (
 /* ---------- golden crown divider ---------- */
 const Crown: React.FC = () => (
   <div className="flex items-center justify-center" style={{ marginTop: 64, marginBottom: 32 }}>
-    <img src={crown} alt="" aria-hidden style={{ height: 32, width: "auto" }} />
+    <img src={crown} alt="" aria-hidden style={{ height: 48, width: "auto" }} />
   </div>
 );
 
