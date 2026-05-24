@@ -465,17 +465,14 @@ const Landing = () => {
             </p>
           </div>
 
-          <div
-            className="grid grid-cols-1 gap-10 md:grid-cols-3"
-            style={{ marginTop: 40 }}
-          >
+          <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
             <FooterCol
               title="Приложение"
               items={[
                 { label: "О нас", href: "#about" },
                 { label: "Возможности", href: "#features" },
-                { label: "Безопасность", href: "/privacy" },
-                { label: "Помощь", href: "#" },
+                { label: "Безопасность", href: "https://myautoplus.kz/privacy" },
+                { label: "Помощь", href: "mailto:info@myautoplus.kz" },
                 { label: "Техподдержка", href: "mailto:info@myautoplus.kz" },
               ]}
             />
@@ -489,6 +486,9 @@ const Landing = () => {
                 { label: "Для Маляров", href: "#" },
               ]}
             />
+          </div>
+
+          <div style={{ marginTop: 32 }}>
             <FooterCol
               title="Контакты"
               items={[
@@ -512,8 +512,14 @@ const Landing = () => {
             }}
             className="md:flex-row md:items-center md:justify-between"
           >
-            <span>© myAuto+, 2025. Все права защищены.</span>
-            <a href="/privacy" style={{ color: TEXT_SECONDARY }} className="hover:underline">
+            <span>myAuto, 2026 Все права защищены.</span>
+            <a
+              href="https://myautoplus.kz/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: TEXT_SECONDARY }}
+              className="hover:underline"
+            >
               Политика конфиденциальности
             </a>
           </div>
