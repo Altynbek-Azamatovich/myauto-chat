@@ -52,6 +52,7 @@ import LegalTerms from "./pages/legal/Terms";
 import LegalOffer from "./pages/legal/Offer";
 import LegalLicense from "./pages/legal/License";
 import LegalPayments from "./pages/legal/Payments";
+import InfoPlaceholder from "./pages/InfoPlaceholder";
 
 // Partner Pages
 import PartnerDashboard from "./pages/partner/Dashboard";
@@ -97,7 +98,7 @@ const AppContent = () => {
     '/offer',
     '/license',
     '/payments'
-  ].includes(location.pathname) || location.pathname.startsWith('/tuning/');
+  ].includes(location.pathname) || location.pathname.startsWith('/tuning/') || location.pathname.startsWith('/info/');
   
   const isPartnerRoute = location.pathname.startsWith('/partner');
 
@@ -182,6 +183,7 @@ const AppContent = () => {
         <Route path="/offer" element={<LegalOffer />} />
         <Route path="/license" element={<LegalLicense />} />
         <Route path="/payments" element={<LegalPayments />} />
+        <Route path="/info/:slug" element={<InfoPlaceholder />} />
         
         <Route path="*" element={<NotFound />} />
       </Routes>
