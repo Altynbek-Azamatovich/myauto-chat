@@ -525,30 +525,6 @@ const Landing = () => {
         </div>
       </footer>
 
-      {/* ===== Floating store badges (hide at bottom) ===== */}
-      <AnimatePresence>
-        {!atBottom && (
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 24 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-x-0 bottom-4 z-30 flex justify-center px-5 pointer-events-none"
-          >
-            <div
-              className="pointer-events-auto rounded-2xl px-3 py-2"
-              style={{
-                background: "rgba(255,255,255,0.85)",
-                backdropFilter: "blur(12px)",
-                WebkitBackdropFilter: "blur(12px)",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
-              }}
-            >
-              <StoreButtons />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };
