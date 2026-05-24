@@ -260,39 +260,39 @@ const Landing = () => {
         <div className="mx-auto max-w-[1200px]">
           <div className="mx-auto max-w-[640px] text-center">
             <FadeUp>
-              <h1
-                className="mx-auto"
+              <p
                 style={{
-                  color: TEXT_PRIMARY,
-                  fontWeight: 700,
-                  lineHeight: 1.1,
-                  fontSize: "clamp(36px, 8vw, 40px)",
-                  letterSpacing: "-0.02em",
+                  fontSize: 19,
+                  fontWeight: 500,
+                  color: TEXT_SECONDARY,
+                  lineHeight: 1.35,
+                  textAlign: "center",
                 }}
               >
                 AI — автосервис нового поколения
-              </h1>
-              <p
-                style={{
-                  marginTop: 8,
-                  fontSize: 22,
-                  fontWeight: 500,
-                  color: TEXT_SECONDARY,
-                }}
-              >
+                <br />
                 просто, умно, быстро
               </p>
-              <p
+              <h1
+                className="mx-auto"
                 style={{
-                  marginTop: 16,
-                  fontSize: 17,
-                  fontWeight: 400,
-                  color: TEXT_TERTIARY,
-                  lineHeight: 1.5,
+                  marginTop: 20,
+                  color: TEXT_PRIMARY,
+                  fontWeight: 700,
+                  lineHeight: 1.1,
+                  fontSize: "clamp(40px, 11vw, 48px)",
+                  letterSpacing: "-0.02em",
+                  textAlign: "center",
                 }}
               >
-                Здесь начинается цифровая жизнь твоего авто
-              </p>
+                Здесь
+                <br />
+                начинается
+                <br />
+                цифровая жизнь
+                <br />
+                твоего авто
+              </h1>
             </FadeUp>
             <FadeUp delay={0.1}>
               <div style={{ marginTop: 32 }}>
