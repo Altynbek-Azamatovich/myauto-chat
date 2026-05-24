@@ -98,7 +98,7 @@ const AppContent = () => {
     '/offer',
     '/license',
     '/payments'
-  ].includes(location.pathname) || location.pathname.startsWith('/tuning/');
+  ].includes(location.pathname) || location.pathname.startsWith('/tuning/') || location.pathname.startsWith('/info/');
   
   const isPartnerRoute = location.pathname.startsWith('/partner');
 
