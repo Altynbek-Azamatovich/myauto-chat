@@ -171,18 +171,7 @@ const FeatureSection: React.FC<{
 /* ============== LANDING ============== */
 const Landing = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [atBottom, setAtBottom] = useState(false);
 
-  useEffect(() => {
-    const onScroll = () => {
-      const scrolled = window.scrollY + window.innerHeight;
-      const full = document.documentElement.scrollHeight;
-      setAtBottom(scrolled >= full - 80);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   const navLinks = [
     { href: "#about", label: "О нас" },
