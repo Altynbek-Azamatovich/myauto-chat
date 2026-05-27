@@ -106,7 +106,7 @@ const storyColors: Record<string, string> = {
 export const StoriesCarousel = ({ stories }: StoriesCarouselProps) => {
   const [selectedStory, setSelectedStory] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startXRef = useRef<number>(0);
 
   useEffect(() => {

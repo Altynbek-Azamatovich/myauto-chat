@@ -47,7 +47,7 @@ export default function PartnerDashboard() {
   });
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
   const [currentShift, setCurrentShift] = useState<any>(null);
-  const [shiftInterval, setShiftInterval] = useState<NodeJS.Timeout | null>(null);
+  const [shiftInterval, setShiftInterval] = useState<ReturnType<typeof setInterval> | null>(null);
   const [quickActionDialog, setQuickActionDialog] = useState<'clients' | 'services' | 'analytics' | null>(null);
   useEffect(() => {
     loadDashboardData();
