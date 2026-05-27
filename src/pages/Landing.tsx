@@ -3,11 +3,11 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Menu, X, ArrowRight } from "lucide-react";
 
-import mockupDashboard from "@/assets/landing/mockup-dashboard.png";
-import mockupChat from "@/assets/landing/mockup-chat.png";
-import mockupServices from "@/assets/landing/mockup-services.png";
-import screenCrash from "@/assets/landing/screen-crash.png";
-import screenRoadside from "@/assets/landing/screen-roadside.png";
+import heroPhone from "@/assets/landing/hero-phone.png";
+import phoneHealth from "@/assets/landing/phone-health.png";
+import phoneServices from "@/assets/landing/phone-services.png";
+import phoneRoadside from "@/assets/landing/phone-roadside.png";
+import phoneSuperchat from "@/assets/landing/phone-superchat.png";
 import logoMyAuto from "@/assets/landing/logo-myauto.png";
 import crown from "@/assets/landing/ornament-crown.png";
 
@@ -68,17 +68,12 @@ const ScaleIn: React.FC<{ children: React.ReactNode; delay?: number; className?:
 
 /* ---------- iPhone placeholder ---------- */
 const PhoneMock: React.FC<{ src: string; alt: string }> = ({ src, alt }) => (
-  <div
-    className="relative mx-auto overflow-hidden bg-white"
-    style={{
-      width: "min(320px, 82vw)",
-      aspectRatio: "320 / 680",
-      borderRadius: 40,
-      boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
-    }}
-  >
-    <img src={src} alt={alt} className="block h-full w-full object-cover" />
-  </div>
+  <img
+    src={src}
+    alt={alt}
+    className="block mx-auto h-auto w-auto"
+    style={{ maxWidth: "min(320px, 82vw)" }}
+  />
 );
 
 /* ---------- golden crown divider ---------- */
@@ -336,13 +331,13 @@ const Landing = () => {
 
             {/* Phone */}
             <ScaleIn delay={0.2} className="w-full md:w-1/2 flex justify-center">
-              <PhoneMock src={mockupDashboard} alt="myAuto Dashboard" />
+              <PhoneMock src={heroPhone} alt="myAuto" />
             </ScaleIn>
           </div>
         </div>
       </section>
 
-      {/* ===== Всё в одном приложении ===== */}
+      {/* ===== Карточка здоровья ===== */}
       <section id="about" className="px-5">
         <Crown />
         <div
@@ -351,7 +346,7 @@ const Landing = () => {
           <div className="w-full md:w-1/2 text-center md:text-left">
             <FadeUp>
               <h2 style={{ color: TEXT_PRIMARY, fontSize: 28, fontWeight: 600 }}>
-                Всё в одном приложении
+                Карточка здоровья
               </h2>
               <p
                 className="mx-auto md:mx-0"
@@ -364,12 +359,12 @@ const Landing = () => {
                   color: TEXT_SECONDARY,
                 }}
               >
-                Быстрый доступ к качественным автоуслугам.
+                История, обслуживание, страховка и напоминания — всё в одной умной карточке.
               </p>
             </FadeUp>
           </div>
           <ScaleIn delay={0.1} className="w-full md:w-1/2 flex justify-center">
-            <PhoneMock src={mockupServices} alt="Экосистема myAuto" />
+            <PhoneMock src={phoneHealth} alt="Карточка здоровья" />
           </ScaleIn>
         </div>
       </section>
@@ -377,40 +372,32 @@ const Landing = () => {
       <div id="features">
         <FeatureRow
           reverse
-          title="Карточка здоровья"
-          description="История, обслуживание, страховка и напоминания — всё в одной умной карточке."
-          image={mockupDashboard}
-          alt="Карточка здоровья"
+          title="Всё в одном приложении"
+          description="Быстрый доступ к качественным автоуслугам."
+          image={phoneServices}
+          alt="Всё в одном приложении"
         />
 
         <FeatureRow
-          title="Автосервисы"
-          description="Нужный сервис — всегда под рукой."
-          image={mockupServices}
-          alt="Автосервисы"
+          title="Помощь на дороге"
+          description={
+            <>
+              Статус «Нужна помощь» уведомляет ближайших участников и создаёт сеть мгновенной поддержки.
+            </>
+          }
+          image={phoneRoadside}
+          alt="Помощь на дороге"
         />
 
         <FeatureRow
           reverse
-          title="Диагностика по фото"
-          description="ИИ находит повреждения, оценивает ремонт, находит СТО. Точно и быстро."
-          image={screenCrash}
-          alt="Диагностика по фото"
-        />
-
-        <FeatureRow
           title="СуперЧат"
-          description={
-            <>
-              Подскажет, найдёт, посоветует.
-              <br />
-              Подбор запчастей, рекомендации, советы по уходу — всегда на связи.
-            </>
-          }
-          image={mockupChat}
+          description="Подскажет, найдёт, посоветует."
+          image={phoneSuperchat}
           alt="СуперЧат"
         />
       </div>
+
 
       {/* ===== Final CTA ===== */}
       <section id="download" className="px-5">
