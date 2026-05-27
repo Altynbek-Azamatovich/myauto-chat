@@ -146,7 +146,7 @@ const Home = () => {
       error
     } = await supabase.from('user_vehicles').update({
       [field]: format(date, 'yyyy-MM-dd')
-    }).eq('id', primaryVehicle.id);
+    } as never).eq('id', primaryVehicle.id);
     if (error) {
       toast.error(t('errorUpdating'));
     } else {

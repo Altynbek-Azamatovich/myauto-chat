@@ -18,7 +18,7 @@ export const VoiceRecordingIndicator = ({
   const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval>;
     
     if (isRecording) {
       setSeconds(0);
