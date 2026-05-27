@@ -102,7 +102,9 @@ const badgeStyle: React.CSSProperties = {
 
 const AppStoreBadge: React.FC = () => (
   <a
-    href="#"
+    href="https://apps.apple.com/kz/app/myauto-superapp/id6771123616"
+    target="_blank"
+    rel="noopener noreferrer"
     aria-label="Download on the App Store"
     className="inline-flex items-center transition-transform hover:-translate-y-0.5"
     style={badgeStyle}
