@@ -68,17 +68,12 @@ const ScaleIn: React.FC<{ children: React.ReactNode; delay?: number; className?:
 
 /* ---------- iPhone placeholder ---------- */
 const PhoneMock: React.FC<{ src: string; alt: string }> = ({ src, alt }) => (
-  <div
-    className="relative mx-auto overflow-hidden bg-white"
-    style={{
-      width: "min(320px, 82vw)",
-      aspectRatio: "320 / 680",
-      borderRadius: 40,
-      boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
-    }}
-  >
-    <img src={src} alt={alt} className="block h-full w-full object-cover" />
-  </div>
+  <img
+    src={src}
+    alt={alt}
+    className="block mx-auto h-auto w-auto"
+    style={{ maxWidth: "min(320px, 82vw)" }}
+  />
 );
 
 /* ---------- golden crown divider ---------- */
