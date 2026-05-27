@@ -3,11 +3,11 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Menu, X, ArrowRight } from "lucide-react";
 
-import mockupDashboard from "@/assets/landing/mockup-dashboard.png";
-import mockupChat from "@/assets/landing/mockup-chat.png";
-import mockupServices from "@/assets/landing/mockup-services.png";
-import screenCrash from "@/assets/landing/screen-crash.png";
-import screenRoadside from "@/assets/landing/screen-roadside.png";
+import heroPhone from "@/assets/landing/hero-phone.png";
+import phoneHealth from "@/assets/landing/phone-health.png";
+import phoneServices from "@/assets/landing/phone-services.png";
+import phoneRoadside from "@/assets/landing/phone-roadside.png";
+import phoneSuperchat from "@/assets/landing/phone-superchat.png";
 import logoMyAuto from "@/assets/landing/logo-myauto.png";
 import crown from "@/assets/landing/ornament-crown.png";
 
