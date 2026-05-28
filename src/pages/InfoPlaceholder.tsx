@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
@@ -10,6 +11,9 @@ const LINE = "#D2D2D7";
 
 const Shell = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div className="min-h-screen w-full bg-white" style={{ fontFamily: FONT, color: INK }}>
       <header
@@ -22,7 +26,7 @@ const Shell = ({ children }: { children: React.ReactNode }) => {
         }}
       >
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate(-1)}
           className="flex items-center gap-1 text-sm font-medium"
           style={{ color: INK }}
         >
