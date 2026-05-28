@@ -495,7 +495,7 @@ const Landing = () => {
               items={[
                 { label: "О нас", href: "/info/about" },
                 { label: "Возможности", href: "/info/features" },
-                { label: "Техподдержка", href: "mailto:info@myautoplus.kz" },
+                { label: "Техподдержка", href: "/info/support" },
               ]}
             />
             <FooterCol
