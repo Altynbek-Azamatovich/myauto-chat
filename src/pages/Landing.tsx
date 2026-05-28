@@ -495,21 +495,17 @@ const Landing = () => {
               items={[
                 { label: "О нас", href: "/info/about" },
                 { label: "Возможности", href: "/info/features" },
-                { label: "Безопасность", href: "/info/security" },
-                { label: "Помощь", href: "/info/help" },
                 { label: "Техподдержка", href: "mailto:info@myautoplus.kz" },
               ]}
             />
             <FooterCol
               title="Партнёрам"
               items={[
-                { label: "Рабочий раздел", href: "/info/workspace" },
                 { label: "Для Инвесторов", href: "/info/investors" },
-                { label: "Для СТО", href: "/info/sto" },
-                { label: "Для Магазинов", href: "/info/shops" },
-                { label: "Для Маляров", href: "/info/painters" },
+                { label: "Для Бизнеса", href: "/info/business" },
               ]}
             />
+
             <div className="col-span-2 md:col-span-1">
               <FooterCol
                 title="Контакты"
