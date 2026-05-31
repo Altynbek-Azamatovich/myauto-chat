@@ -77,10 +77,10 @@ const PhoneMock: React.FC<{ src: string; alt: string }> = ({ src, alt }) => (
 );
 
 /* ---------- golden crown divider ---------- */
-const Crown: React.FC<{ align?: "center" | "left" }> = ({ align = "center" }) => (
+const Crown: React.FC<{ align?: "center" | "left"; inline?: boolean }> = ({ align = "center", inline = false }) => (
   <div
-    className={`flex items-center ${align === "left" ? "justify-start md:justify-start" : "justify-center"}`}
-    style={{ marginTop: 64, marginBottom: 32 }}
+    className="flex items-center justify-center"
+    style={{ marginTop: inline ? 0 : 64, marginBottom: inline ? 20 : 32 }}
   >
     <img src={crown} alt="" aria-hidden style={{ height: 48, width: "auto" }} />
   </div>
