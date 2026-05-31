@@ -351,15 +351,15 @@ const Landing = () => {
           <div className="w-full md:w-1/2 text-center">
             <FadeUp>
               <Crown inline />
-              <h2 style={{ color: TEXT_PRIMARY, fontSize: 28, fontWeight: 600 }}>
+              <h2
+                className="text-[28px] md:text-[40px]"
+                style={{ color: TEXT_PRIMARY, fontWeight: 600, lineHeight: 1.15, letterSpacing: "-0.01em" }}
+              >
                 Карточка здоровья
               </h2>
               <p
-                className="mx-auto"
+                className="mx-auto mt-3 md:mt-5 text-[17px] md:text-[22px] max-w-[420px] md:max-w-[520px]"
                 style={{
-                  marginTop: 12,
-                  maxWidth: 420,
-                  fontSize: 17,
                   fontWeight: 400,
                   lineHeight: 1.5,
                   color: TEXT_SECONDARY,
