@@ -407,20 +407,20 @@ const Landing = () => {
       {/* ===== Final CTA ===== */}
       <section id="download" className="px-5">
         <Crown />
-        <div className="mx-auto max-w-[640px] text-center">
+        <div className="mx-auto max-w-[640px] md:max-w-[760px] text-center">
           <FadeUp>
-            <h2 style={{ color: TEXT_PRIMARY, fontSize: 28, fontWeight: 600 }}>
+            <h2
+              className="text-[28px] md:text-[40px]"
+              style={{ color: TEXT_PRIMARY, fontWeight: 600, lineHeight: 1.15, letterSpacing: "-0.01em" }}
+            >
               Доступно на всех платформах
             </h2>
             <p
-              className="mx-auto"
+              className="mx-auto mt-3 md:mt-5 text-[17px] md:text-[22px] max-w-[460px] md:max-w-[560px]"
               style={{
-                marginTop: 12,
-                fontSize: 17,
                 fontWeight: 400,
                 lineHeight: 1.5,
                 color: TEXT_SECONDARY,
-                maxWidth: 460,
               }}
             >
               Скачайте myAuto SuperApp
