@@ -338,18 +338,18 @@ const Landing = () => {
       </section>
 
       {/* ===== Карточка здоровья ===== */}
-      <section id="about" className="px-5">
-        <Crown />
+      <section id="about" className="px-5" style={{ marginTop: 64 }}>
         <div
           className="mx-auto max-w-[1200px] flex flex-col items-center gap-10 md:flex-row md:justify-between md:gap-16"
         >
-          <div className="w-full md:w-1/2 text-center md:text-left">
+          <div className="w-full md:w-1/2 text-center">
             <FadeUp>
+              <Crown inline />
               <h2 style={{ color: TEXT_PRIMARY, fontSize: 28, fontWeight: 600 }}>
                 Карточка здоровья
               </h2>
               <p
-                className="mx-auto md:mx-0"
+                className="mx-auto"
                 style={{
                   marginTop: 12,
                   maxWidth: 420,
