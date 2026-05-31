@@ -371,7 +371,6 @@ const Landing = () => {
 
       <div id="features">
         <FeatureRow
-          reverse
           title="Всё в одном приложении"
           description="Быстрый доступ к качественным автоуслугам."
           image={phoneServices}
@@ -379,6 +378,7 @@ const Landing = () => {
         />
 
         <FeatureRow
+          reverse
           title="Помощь на дороге"
           description={
             <>
@@ -390,7 +390,6 @@ const Landing = () => {
         />
 
         <FeatureRow
-          reverse
           title="СуперЧат"
           description="Подскажет, найдёт, посоветует."
           image={phoneSuperchat}
