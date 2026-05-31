@@ -338,9 +338,9 @@ const Landing = () => {
       </section>
 
       {/* ===== Карточка здоровья ===== */}
-      <section id="about" className="px-5" style={{ marginTop: 64 }}>
+      <section id="about" className="px-5" style={{ marginTop: 140 }}>
         <div
-          className="mx-auto max-w-[1200px] flex flex-col items-center gap-10 md:flex-row md:justify-between md:gap-16"
+          className="mx-auto max-w-[1200px] flex flex-col items-center gap-10 md:flex-row-reverse md:justify-between md:gap-16"
         >
           <div className="w-full md:w-1/2 text-center">
             <FadeUp>
