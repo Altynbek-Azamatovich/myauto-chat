@@ -289,7 +289,7 @@ const Landing = () => {
         <div className="mx-auto max-w-[1200px]">
           <div className="flex flex-col items-center gap-10 md:flex-row md:items-center md:justify-between md:gap-16">
             {/* Text + buttons */}
-            <div className="w-full md:w-1/2 text-center md:text-left">
+            <div className="w-full md:w-1/2 text-center">
               <FadeUp>
                 <p
                   style={{
@@ -324,7 +324,7 @@ const Landing = () => {
               </FadeUp>
               <FadeUp delay={0.1}>
                 <div style={{ marginTop: 32 }}>
-                  <StoreButtons align="start" />
+                  <StoreButtons />
                 </div>
               </FadeUp>
             </div>
