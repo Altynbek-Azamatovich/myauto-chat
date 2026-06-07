@@ -120,7 +120,7 @@ const AppStoreBadge: React.FC = () => (
 
 const GooglePlayBadge: React.FC = () => (
   <a
-    href="#"
+    href="https://expo.dev/artifacts/eas/hjyYGQceVU92Jg4NTYQ5zm.aab"
     aria-label="Get it on Google Play"
     className="inline-flex items-center transition-transform hover:-translate-y-0.5"
     style={badgeStyle}
