@@ -139,16 +139,17 @@ const GooglePlayBadge: React.FC<{ onClick?: () => void }> = ({ onClick }) => (
   </button>
 );
 
-const StoreButtons: React.FC<{ className?: string; align?: "center" | "start" }> = ({
+const StoreButtons: React.FC<{ className?: string; align?: "center" | "start"; onAndroidClick?: () => void }> = ({
   className = "",
   align = "center",
+  onAndroidClick,
 }) => (
   <div
     className={`flex flex-row items-center ${align === "start" ? "justify-center md:justify-start" : "justify-center"} ${className}`}
     style={{ gap: 16 }}
   >
     <AppStoreBadge />
-    <GooglePlayBadge />
+    <GooglePlayBadge onClick={onAndroidClick} />
   </div>
 );
 
