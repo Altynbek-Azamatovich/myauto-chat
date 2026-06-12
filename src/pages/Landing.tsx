@@ -118,9 +118,10 @@ const AppStoreBadge: React.FC = () => (
   </a>
 );
 
-const GooglePlayBadge: React.FC = () => (
-  <a
-    href="https://expo.dev/artifacts/eas/hjyYGQceVU92Jg4NTYQ5zm.aab"
+const GooglePlayBadge: React.FC<{ onClick?: () => void }> = ({ onClick }) => (
+  <button
+    type="button"
+    onClick={onClick}
     aria-label="Get it on Google Play"
     className="inline-flex items-center transition-transform hover:-translate-y-0.5"
     style={badgeStyle}
@@ -135,19 +136,20 @@ const GooglePlayBadge: React.FC = () => (
       <text x="36" y="17" fontFamily="-apple-system, SF Pro Text, Roboto, Arial" fontSize="7" fill="#1D1D1F">GET IT ON</text>
       <text x="36" y="31" fontFamily="-apple-system, SF Pro Display, Roboto, Arial" fontSize="16" fontWeight="600" fill="#1D1D1F">Google Play</text>
     </svg>
-  </a>
+  </button>
 );
 
-const StoreButtons: React.FC<{ className?: string; align?: "center" | "start" }> = ({
+const StoreButtons: React.FC<{ className?: string; align?: "center" | "start"; onAndroidClick?: () => void }> = ({
   className = "",
   align = "center",
+  onAndroidClick,
 }) => (
   <div
     className={`flex flex-row items-center ${align === "start" ? "justify-center md:justify-start" : "justify-center"} ${className}`}
     style={{ gap: 16 }}
   >
     <AppStoreBadge />
-    <GooglePlayBadge />
+    <GooglePlayBadge onClick={onAndroidClick} />
   </div>
 );
 
@@ -197,8 +199,21 @@ const FeatureRow: React.FC<{
 /* ============== LANDING ============== */
 const Landing = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [comingSoonOpen, setComingSoonOpen] = useState(false);
   const [headerVisible, setHeaderVisible] = useState(true);
   const lastScrollY = useRef(0);
+
+  const isAndroid = typeof navigator !== "undefined" && /android/i.test(navigator.userAgent);
+  const isIOS = typeof navigator !== "undefined" && /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+  const handleDownloadClick = (e: React.MouseEvent) => {
+    if (isIOS) {
+      window.location.href = "https://apps.apple.com/kz/app/myauto-superapp/id6771123616";
+    } else {
+      e.preventDefault();
+      setComingSoonOpen(true);
+    }
+  };
 
   useEffect(() => {
     const onScroll = () => {
@@ -290,6 +305,87 @@ const Landing = () => {
         )}
       </AnimatePresence>
 
+      {/* ===== Coming soon modal (Android) ===== */}
+      <AnimatePresence>
+        {comingSoonOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center px-5"
+            style={{ background: "rgba(255,255,255,0.96)", backdropFilter: "blur(20px)" }}
+            onClick={() => setComingSoonOpen(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 12 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-[480px] text-center"
+              style={{
+                background: "#FFFFFF",
+                border: `1px solid ${BORDER_LIGHT}`,
+                borderRadius: 24,
+                padding: "48px 32px",
+              }}
+            >
+              <button
+                onClick={() => setComingSoonOpen(false)}
+                aria-label="Close"
+                className="absolute right-4 top-4 p-1"
+              >
+                <X style={{ width: 22, height: 22, color: TEXT_PRIMARY }} strokeWidth={1.5} />
+              </button>
+              <div style={{ fontSize: 56, marginBottom: 16 }}>⏳</div>
+              <h3
+                style={{
+                  fontSize: 28,
+                  fontWeight: 700,
+                  letterSpacing: "-0.01em",
+                  color: TEXT_PRIMARY,
+                  lineHeight: 1.2,
+                }}
+              >
+                Доступно для скачивания
+                <br />
+                через 48 часов
+              </h3>
+              <p
+                style={{
+                  marginTop: 16,
+                  fontSize: 17,
+                  lineHeight: 1.5,
+                  color: TEXT_SECONDARY,
+                }}
+              >
+                Версия для Android скоро появится в Google Play.
+                <br />
+                Спасибо за ожидание!
+              </p>
+              <button
+                onClick={() => setComingSoonOpen(false)}
+                className="mt-8 inline-flex items-center justify-center transition-transform hover:-translate-y-0.5"
+                style={{
+                  height: 52,
+                  padding: "0 28px",
+                  borderRadius: 14,
+                  background: TEXT_PRIMARY,
+                  color: "#FFFFFF",
+                  fontSize: 16,
+                  fontWeight: 600,
+                }}
+              >
+                Понятно
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+
+
       {/* ===== Hero ===== */}
       <section className="px-5" style={{ paddingTop: 60 }}>
         <div className="mx-auto max-w-[1200px]">
@@ -330,7 +426,7 @@ const Landing = () => {
               </FadeUp>
               <FadeUp delay={0.1}>
                 <div style={{ marginTop: 32 }}>
-                  <StoreButtons />
+                  <StoreButtons onAndroidClick={() => setComingSoonOpen(true)} />
                 </div>
               </FadeUp>
             </div>
@@ -430,13 +526,14 @@ const Landing = () => {
           </FadeUp>
           <FadeUp delay={0.1}>
             <div style={{ marginTop: 32 }}>
-              <StoreButtons />
+              <StoreButtons onAndroidClick={() => setComingSoonOpen(true)} />
             </div>
           </FadeUp>
           <FadeUp delay={0.15}>
             <div style={{ marginTop: 32, display: "flex", flexDirection: "column", gap: 12 }}>
               <a
-                href="#"
+                href={isIOS ? "https://apps.apple.com/kz/app/myauto-superapp/id6771123616" : "#"}
+                onClick={handleDownloadClick}
                 className="inline-flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5"
                 style={{
                   height: 56,
