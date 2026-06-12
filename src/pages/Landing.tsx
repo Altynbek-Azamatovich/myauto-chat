@@ -118,9 +118,10 @@ const AppStoreBadge: React.FC = () => (
   </a>
 );
 
-const GooglePlayBadge: React.FC = () => (
-  <a
-    href="https://expo.dev/artifacts/eas/hjyYGQceVU92Jg4NTYQ5zm.aab"
+const GooglePlayBadge: React.FC<{ onClick?: () => void }> = ({ onClick }) => (
+  <button
+    type="button"
+    onClick={onClick}
     aria-label="Get it on Google Play"
     className="inline-flex items-center transition-transform hover:-translate-y-0.5"
     style={badgeStyle}
@@ -135,7 +136,7 @@ const GooglePlayBadge: React.FC = () => (
       <text x="36" y="17" fontFamily="-apple-system, SF Pro Text, Roboto, Arial" fontSize="7" fill="#1D1D1F">GET IT ON</text>
       <text x="36" y="31" fontFamily="-apple-system, SF Pro Display, Roboto, Arial" fontSize="16" fontWeight="600" fill="#1D1D1F">Google Play</text>
     </svg>
-  </a>
+  </button>
 );
 
 const StoreButtons: React.FC<{ className?: string; align?: "center" | "start" }> = ({
