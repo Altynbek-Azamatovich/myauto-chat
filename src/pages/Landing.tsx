@@ -199,8 +199,21 @@ const FeatureRow: React.FC<{
 /* ============== LANDING ============== */
 const Landing = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [comingSoonOpen, setComingSoonOpen] = useState(false);
   const [headerVisible, setHeaderVisible] = useState(true);
   const lastScrollY = useRef(0);
+
+  const isAndroid = typeof navigator !== "undefined" && /android/i.test(navigator.userAgent);
+  const isIOS = typeof navigator !== "undefined" && /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+  const handleDownloadClick = (e: React.MouseEvent) => {
+    if (isIOS) {
+      window.location.href = "https://apps.apple.com/kz/app/myauto-superapp/id6771123616";
+    } else {
+      e.preventDefault();
+      setComingSoonOpen(true);
+    }
+  };
 
   useEffect(() => {
     const onScroll = () => {
