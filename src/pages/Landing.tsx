@@ -451,7 +451,8 @@ const Landing = () => {
           <FadeUp delay={0.15}>
             <div style={{ marginTop: 32, display: "flex", flexDirection: "column", gap: 12 }}>
               <a
-                href="#"
+                href={isIOS ? "https://apps.apple.com/kz/app/myauto-superapp/id6771123616" : "#"}
+                onClick={handleDownloadClick}
                 className="inline-flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5"
                 style={{
                   height: 56,
