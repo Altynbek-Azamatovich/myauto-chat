@@ -445,7 +445,7 @@ const Landing = () => {
           </FadeUp>
           <FadeUp delay={0.1}>
             <div style={{ marginTop: 32 }}>
-              <StoreButtons />
+              <StoreButtons onAndroidClick={() => setComingSoonOpen(true)} />
             </div>
           </FadeUp>
           <FadeUp delay={0.15}>
