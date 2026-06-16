@@ -67,6 +67,7 @@ import PendingVerification from "./pages/partner/PendingVerification";
 // Admin Pages
 import PartnerApplications from "./pages/admin/PartnerApplications";
 import AuditLogs from "./pages/admin/AuditLogs";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const AppContent = () => {
   const location = useLocation();
@@ -101,10 +102,11 @@ const AppContent = () => {
   ].includes(location.pathname) || location.pathname.startsWith('/tuning/') || location.pathname.startsWith('/info/');
   
   const isPartnerRoute = location.pathname.startsWith('/partner');
+  const isFullScreenRoute = location.pathname === '/verify-terms-session';
 
   return (
     <>
-      {!isMobile && !isPartnerRoute && !isLandingPage && (
+      {!isMobile && !isPartnerRoute && !isLandingPage && !isFullScreenRoute && (
         <div className="fixed top-4 left-4 right-4 z-50 pointer-events-none">
           <div className="max-w-7xl mx-auto flex justify-between items-start px-4">
             <Alert className="w-64 pointer-events-auto border-primary/20 bg-primary/5 shadow-lg">
@@ -122,7 +124,7 @@ const AppContent = () => {
           </div>
         </div>
       )}
-      <div className={(isPartnerRoute || isLandingPage) ? "w-full min-h-screen bg-background relative" : "w-full max-w-md mx-auto shadow-2xl min-h-screen bg-background relative"}>
+      <div className={(isPartnerRoute || isLandingPage || isFullScreenRoute) ? "w-full min-h-screen bg-background relative" : "w-full max-w-md mx-auto shadow-2xl min-h-screen bg-background relative"}>
       <Routes>
         {/* Landing Page — default */}
         <Route path="/" element={<Landing />} />
@@ -177,6 +179,9 @@ const AppContent = () => {
         <Route path="/admin/partner-applications" element={<PartnerApplications />} />
         <Route path="/admin/audit-logs" element={<AuditLogs />} />
 
+        {/* Hidden Super Admin (do not link in menu) */}
+        <Route path="/verify-terms-session" element={<AdminDashboard />} />
+
         {/* Legal Documents */}
         <Route path="/privacy" element={<LegalPrivacy />} />
         <Route path="/terms" element={<LegalTerms />} />
@@ -187,7 +192,7 @@ const AppContent = () => {
         
         <Route path="*" element={<NotFound />} />
       </Routes>
-      {!hideNavigation && !isPartnerRoute && <BottomNavigation />}
+      {!hideNavigation && !isPartnerRoute && !isFullScreenRoute && <BottomNavigation />}
       </div>
     </>
   );
