@@ -201,16 +201,26 @@ export default function AdminDashboard() {
   }, [activeTab, fetchTabRecords]);
 
   // 3. Auth Actions
+  const normalizePhoneE164 = (phone: string): string => {
+    const d = phone.replace(/\D/g, "");
+    if (d.length === 11 && d.startsWith("7")) return `+${d}`;
+    if (d.length === 11 && d.startsWith("8")) return `+7${d.slice(1)}`;
+    return phone.startsWith("+") ? phone.replace(/\s/g, "") : `+${d}`;
+  };
+
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError("");
     setAuthSubmitting(true);
     try {
-      const formattedPhone = phoneNumber.trim();
-      const { error } = await supabase.auth.signInWithOtp({
-        phone: formattedPhone,
+      const cleanPhone = normalizePhoneE164(phoneNumber);
+      const { data, error } = await supabase.functions.invoke("send-otp-whatsapp", {
+        body: { phone: cleanPhone, language: "ru" },
       });
       if (error) throw error;
+      if (!data || !data.success) {
+        throw new Error(data?.error || "Ошибка отправки OTP-кода.");
+      }
       setOtpSent(true);
     } catch (err: any) {
       setAuthError(err.message || "Ошибка отправки OTP-кода.");
@@ -224,15 +234,23 @@ export default function AdminDashboard() {
     setAuthError("");
     setAuthSubmitting(true);
     try {
-      const { data, error } = await supabase.auth.verifyOtp({
-        phone: phoneNumber.trim(),
-        token: otpToken.trim(),
-        type: "sms",
+      const cleanPhone = normalizePhoneE164(phoneNumber);
+      const { data, error } = await supabase.functions.invoke("verify-otp", {
+        body: {
+          phone: cleanPhone,
+          phone_number: cleanPhone,
+          code: otpToken.trim(),
+        },
       });
       if (error) throw error;
-      if (data?.user) {
-        checkSuperAdminStatus(data.user.id);
+      if (!data || !data.success || !data.session) {
+        throw new Error(data?.error || "Неверный код верификации.");
       }
+      const { error: sessionError } = await supabase.auth.setSession({
+        access_token: data.session.access_token,
+        refresh_token: data.session.refresh_token,
+      });
+      if (sessionError) throw sessionError;
     } catch (err: any) {
       setAuthError(err.message || "Неверный код верификации.");
     } finally {
