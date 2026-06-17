@@ -2,7 +2,7 @@
 
 
 import React, { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { createClient } from "@supabase/supabase-js";
 import {
   Activity,
   ShieldCheck,
@@ -26,6 +26,18 @@ import {
   RefreshCw,
   Phone,
 } from "lucide-react";
+
+const ADMIN_SUPABASE_URL = "https://weihzfwybxeondsrjubs.supabase.co";
+const ADMIN_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_ViaLNQQH5wY1Vo796zprfg_9cB8PHpT";
+
+const supabase = createClient(ADMIN_SUPABASE_URL, ADMIN_SUPABASE_PUBLISHABLE_KEY, {
+  auth: {
+    storageKey: "myauto-admin-weihzfwybxeondsrjubs-auth",
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: false,
+  },
+});
 
 type SessionUser = {
   id: string;
