@@ -25,6 +25,8 @@ import {
   MessageSquare,
   RefreshCw,
   Phone,
+  Sun,
+  Moon,
 } from "lucide-react";
 
 const ADMIN_SUPABASE_URL = "https://weihzfwybxeondsrjubs.supabase.co";
@@ -86,6 +88,39 @@ export default function AdminDashboard() {
   const [rejectionReason, setRejectionReason] = useState("");
   const [showRejectionInput, setShowRejectionInput] = useState(false);
   const [actionSubmitting, setActionSubmitting] = useState(false);
+
+  // Theme state
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("admin_theme") as "dark" | "light" | null;
+    if (savedTheme) setTheme(savedTheme);
+  }, []);
+  const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    localStorage.setItem("admin_theme", newTheme);
+  };
+
+  const handleSelectClient = async (client: any) => {
+    setSelectedClient(client);
+    try {
+      const { data, error } = await supabase
+        .from("super_chat_archives")
+        .select("*")
+        .eq("user_id", client.id)
+        .order("created_at", { ascending: false });
+      if (!error && data) {
+        const mappedData = data.map((chat: any) => ({
+          ...chat,
+          title: chat.title || chat.session_title || "Диалог с AI",
+          saved_at: chat.saved_at || chat.created_at || new Date().toISOString(),
+        }));
+        setSelectedClient((prev: any) => prev ? { ...prev, super_chat_archives: mappedData } : null);
+      }
+    } catch (e) {
+      console.error("Failed to load chat archives for client:", e);
+    }
+  };
 
   // 1. Session and Auth Check
   useEffect(() => {
@@ -179,7 +214,7 @@ export default function AdminDashboard() {
       } else if (activeTab === "clients") {
         const { data } = await supabase
           .from("profiles")
-          .select("*, user_vehicles(*), super_chat_archives(*)")
+          .select("*, user_vehicles(*)")
           .order("created_at", { ascending: false });
         setClients(data || []);
       } else if (activeTab === "orders") {
@@ -415,7 +450,36 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="flex min-h-screen bg-zinc-950 text-zinc-100 font-sans">
+    <div className={`flex min-h-screen font-sans ${theme === "dark" ? "theme-dark bg-zinc-950 text-zinc-100" : "theme-light bg-slate-50 text-slate-900"}`}>
+      <style dangerouslySetInnerHTML={{__html: `
+        .theme-light { background-color: #f8fafc !important; color: #0f172a !important; }
+        .theme-light aside,
+        .theme-light header,
+        .theme-light .bg-zinc-900,
+        .theme-light .bg-zinc-900\\/20,
+        .theme-light .bg-zinc-900\\/50,
+        .theme-light .bg-zinc-950,
+        .theme-light .bg-zinc-900\\/30,
+        .theme-light .bg-zinc-900\\/40,
+        .theme-light .bg-zinc-950\\/20,
+        .theme-light .bg-zinc-950\\/40 { background-color: #ffffff !important; }
+        .theme-light .border-zinc-900,
+        .theme-light .border-zinc-800,
+        .theme-light .border-zinc-800\\/30,
+        .theme-light .divide-zinc-900 > *,
+        .theme-light .divide-y > * { border-color: #e2e8f0 !important; }
+        .theme-light .text-zinc-100,
+        .theme-light .text-zinc-200,
+        .theme-light .text-zinc-300,
+        .theme-light h1, .theme-light h2, .theme-light h3, .theme-light h4,
+        .theme-light th, .theme-light td { color: #0f172a !important; }
+        .theme-light .text-zinc-400, .theme-light .text-zinc-500 { color: #64748b !important; }
+        .theme-light input, .theme-light select, .theme-light textarea {
+          background-color: #ffffff !important; border-color: #cbd5e1 !important; color: #0f172a !important;
+        }
+        .theme-light .bg-emerald-500\\/10 { background-color: #f0fdf4 !important; }
+        .theme-light .bg-zinc-900\\/10:hover, .theme-light tr:hover { background-color: #f1f5f9 !important; }
+      `}} />
       {/* Sidebar Navigation */}
       <aside className="w-64 border-r border-zinc-900 bg-zinc-950 flex flex-col">
         <div className="p-6 border-b border-zinc-900">
@@ -537,6 +601,15 @@ export default function AdminDashboard() {
           </div>
           <div className="flex items-center gap-4">
             <button
+              onClick={toggleTheme}
+              className={`p-2 rounded-lg transition-colors ${
+                theme === "dark" ? "bg-zinc-900 hover:bg-zinc-800 text-amber-400" : "bg-zinc-100 hover:bg-zinc-200 text-indigo-600 border border-zinc-200"
+              }`}
+              title={theme === "dark" ? "Светлая тема" : "Темная тема"}
+            >
+              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </button>
+            <button
               onClick={fetchTabRecords}
               className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-semibold transition text-zinc-300"
             >
@@ -623,12 +696,12 @@ export default function AdminDashboard() {
                   <h3 className="font-bold text-zinc-200">Очередь модерации партнеров</h3>
                 </div>
                 <div className="divide-y divide-zinc-900">
-                  {partners.filter(p => p.moderation_status === "in_review" || p.moderation_status === "waiting").length === 0 ? (
+                  {partners.filter(p => p.moderation_status === "in_review").length === 0 ? (
                     <div className="p-8 text-center text-sm text-zinc-500">
                       Нет партнеров в очереди на модерацию.
                     </div>
                   ) : (
-                    partners.filter(p => p.moderation_status === "in_review" || p.moderation_status === "waiting").map((partner) => (
+                    partners.filter(p => p.moderation_status === "in_review").map((partner) => (
                       <div key={partner.id} className="p-6 flex items-center justify-between hover:bg-zinc-900/20 transition">
                         <div className="flex items-center gap-4">
                           <div className="h-12 w-12 rounded-xl bg-zinc-900 flex items-center justify-center font-bold text-zinc-300 border border-zinc-800">
@@ -718,7 +791,7 @@ export default function AdminDashboard() {
                           </td>
                           <td className="px-6 py-4 text-right">
                             <button
-                              onClick={() => setSelectedClient(client)}
+                              onClick={() => handleSelectClient(client)}
                               className="px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-semibold transition"
                             >
                               Карточка
