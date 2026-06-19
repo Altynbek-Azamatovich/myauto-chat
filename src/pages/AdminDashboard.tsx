@@ -181,7 +181,7 @@ export default function AdminDashboard() {
       } else if (activeTab === "clients") {
         const { data } = await supabase
           .from("profiles")
-          .select("*, user_vehicles(*), super_chat_archives(*)")
+          .select("*, user_vehicles(*)")
           .order("created_at", { ascending: false });
         setClients(data || []);
       } else if (activeTab === "orders") {
