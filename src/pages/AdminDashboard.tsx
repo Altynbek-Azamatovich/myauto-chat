@@ -601,6 +601,15 @@ export default function AdminDashboard() {
           </div>
           <div className="flex items-center gap-4">
             <button
+              onClick={toggleTheme}
+              className={`p-2 rounded-lg transition-colors ${
+                theme === "dark" ? "bg-zinc-900 hover:bg-zinc-800 text-amber-400" : "bg-zinc-100 hover:bg-zinc-200 text-indigo-600 border border-zinc-200"
+              }`}
+              title={theme === "dark" ? "Светлая тема" : "Темная тема"}
+            >
+              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </button>
+            <button
               onClick={fetchTabRecords}
               className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-semibold transition text-zinc-300"
             >
