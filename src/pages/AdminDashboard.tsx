@@ -720,7 +720,7 @@ export default function AdminDashboard() {
                           </td>
                           <td className="px-6 py-4 text-right">
                             <button
-                              onClick={() => setSelectedClient(client)}
+                              onClick={() => handleSelectClient(client)}
                               className="px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-semibold transition"
                             >
                               Карточка
