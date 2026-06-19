@@ -89,6 +89,39 @@ export default function AdminDashboard() {
   const [showRejectionInput, setShowRejectionInput] = useState(false);
   const [actionSubmitting, setActionSubmitting] = useState(false);
 
+  // Theme state
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("admin_theme") as "dark" | "light" | null;
+    if (savedTheme) setTheme(savedTheme);
+  }, []);
+  const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    localStorage.setItem("admin_theme", newTheme);
+  };
+
+  const handleSelectClient = async (client: any) => {
+    setSelectedClient(client);
+    try {
+      const { data, error } = await supabase
+        .from("super_chat_archives")
+        .select("*")
+        .eq("user_id", client.id)
+        .order("created_at", { ascending: false });
+      if (!error && data) {
+        const mappedData = data.map((chat: any) => ({
+          ...chat,
+          title: chat.title || chat.session_title || "Диалог с AI",
+          saved_at: chat.saved_at || chat.created_at || new Date().toISOString(),
+        }));
+        setSelectedClient((prev: any) => prev ? { ...prev, super_chat_archives: mappedData } : null);
+      }
+    } catch (e) {
+      console.error("Failed to load chat archives for client:", e);
+    }
+  };
+
   // 1. Session and Auth Check
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
