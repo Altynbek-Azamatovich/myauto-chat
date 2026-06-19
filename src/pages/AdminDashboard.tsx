@@ -625,12 +625,12 @@ export default function AdminDashboard() {
                   <h3 className="font-bold text-zinc-200">Очередь модерации партнеров</h3>
                 </div>
                 <div className="divide-y divide-zinc-900">
-                  {partners.filter(p => p.moderation_status === "in_review" || p.moderation_status === "waiting").length === 0 ? (
+                  {partners.filter(p => p.moderation_status === "in_review").length === 0 ? (
                     <div className="p-8 text-center text-sm text-zinc-500">
                       Нет партнеров в очереди на модерацию.
                     </div>
                   ) : (
-                    partners.filter(p => p.moderation_status === "in_review" || p.moderation_status === "waiting").map((partner) => (
+                    partners.filter(p => p.moderation_status === "in_review").map((partner) => (
                       <div key={partner.id} className="p-6 flex items-center justify-between hover:bg-zinc-900/20 transition">
                         <div className="flex items-center gap-4">
                           <div className="h-12 w-12 rounded-xl bg-zinc-900 flex items-center justify-center font-bold text-zinc-300 border border-zinc-800">
