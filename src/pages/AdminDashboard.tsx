@@ -450,7 +450,36 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="flex min-h-screen bg-zinc-950 text-zinc-100 font-sans">
+    <div className={`flex min-h-screen font-sans ${theme === "dark" ? "theme-dark bg-zinc-950 text-zinc-100" : "theme-light bg-slate-50 text-slate-900"}`}>
+      <style dangerouslySetInnerHTML={{__html: `
+        .theme-light { background-color: #f8fafc !important; color: #0f172a !important; }
+        .theme-light aside,
+        .theme-light header,
+        .theme-light .bg-zinc-900,
+        .theme-light .bg-zinc-900\\/20,
+        .theme-light .bg-zinc-900\\/50,
+        .theme-light .bg-zinc-950,
+        .theme-light .bg-zinc-900\\/30,
+        .theme-light .bg-zinc-900\\/40,
+        .theme-light .bg-zinc-950\\/20,
+        .theme-light .bg-zinc-950\\/40 { background-color: #ffffff !important; }
+        .theme-light .border-zinc-900,
+        .theme-light .border-zinc-800,
+        .theme-light .border-zinc-800\\/30,
+        .theme-light .divide-zinc-900 > *,
+        .theme-light .divide-y > * { border-color: #e2e8f0 !important; }
+        .theme-light .text-zinc-100,
+        .theme-light .text-zinc-200,
+        .theme-light .text-zinc-300,
+        .theme-light h1, .theme-light h2, .theme-light h3, .theme-light h4,
+        .theme-light th, .theme-light td { color: #0f172a !important; }
+        .theme-light .text-zinc-400, .theme-light .text-zinc-500 { color: #64748b !important; }
+        .theme-light input, .theme-light select, .theme-light textarea {
+          background-color: #ffffff !important; border-color: #cbd5e1 !important; color: #0f172a !important;
+        }
+        .theme-light .bg-emerald-500\\/10 { background-color: #f0fdf4 !important; }
+        .theme-light .bg-zinc-900\\/10:hover, .theme-light tr:hover { background-color: #f1f5f9 !important; }
+      `}} />
       {/* Sidebar Navigation */}
       <aside className="w-64 border-r border-zinc-900 bg-zinc-950 flex flex-col">
         <div className="p-6 border-b border-zinc-900">
