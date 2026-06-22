@@ -254,3 +254,22 @@ All colors MUST be HSL.
     transform: translateX(-110%);
   }
 }
+
+/* Premium admin dashboard styles (Apple-like) */
+.transition-premium {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-scale {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+.glass-panel {
+  background-color: rgba(24, 24, 27, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
