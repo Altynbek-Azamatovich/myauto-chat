@@ -2,6 +2,18 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { createClient } from "@supabase/supabase-js";
 
+const ADMIN_SUPABASE_URL = "https://weihzfwybxeondsrjubs.supabase.co";
+const ADMIN_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_ViaLNQQH5wY1Vo796zprfg_9cB8PHpT";
+
+const supabase = createClient(ADMIN_SUPABASE_URL, ADMIN_SUPABASE_PUBLISHABLE_KEY, {
+  auth: {
+    storageKey: "myauto-admin-weihzfwybxeondsrjubs-auth",
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: false,
+  },
+});
+
 import {
   Activity,
   ShieldCheck,
@@ -25,19 +37,6 @@ import {
   RefreshCw,
   Phone,
 } from "lucide-react";
-
-const ADMIN_SUPABASE_URL = "https://weihzfwybxeondsrjubs.supabase.co";
-const ADMIN_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_ViaLNQQH5wY1Vo796zprfg_9cB8PHpT";
-
-const supabase = createClient(ADMIN_SUPABASE_URL, ADMIN_SUPABASE_PUBLISHABLE_KEY, {
-  auth: {
-    storageKey: "myauto-admin-weihzfwybxeondsrjubs-auth",
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: false,
-  },
-});
-
 type SessionUser = {
   id: string;
   phone?: string;
@@ -56,16 +55,7 @@ const translateCategory = (category: string) => {
     'tire': 'Шиномонтаж',
     'oil': 'Замена масла'
   };
-  if (!category || category === 'admin' || category === 'staff' || category === '—') {
-    return '—';
-  }
   return map[category] || category || '—';
-};
-
-const getSpecializationText = (partner: any) => {
-  if (!partner) return '—';
-  const spec = partner.specialization || partner.service_data?.partnerType || (partner.role !== 'admin' && partner.role !== 'staff' ? partner.role : '');
-  return translateCategory(spec);
 };
 
 const translateModerationStatus = (status: string) => {
@@ -175,24 +165,20 @@ const formatServicesPrices = (servicesPrices: any) => {
   );
 };
 
-const renderGallery = (photos: any, onPhotoClick: (url: string) => void) => {
+const renderGallery = (photos: any) => {
   if (!photos || !Array.isArray(photos) || photos.length === 0) {
-    return <p className="text-xs text-zinc-550 dark:text-zinc-500">Фотографии не загружены</p>;
+    return <p className="text-xs text-zinc-500">Фотографии не загружены</p>;
   }
   const webPhotos = photos.filter((url: string) => url.startsWith("http"));
   if (webPhotos.length === 0) {
-    return <p className="text-xs text-zinc-550 dark:text-zinc-500">Фотографии сохранены на устройстве партнера и загружаются...</p>;
+    return <p className="text-xs text-zinc-500">Фотографии сохранены на устройстве партнера и загружаются...</p>;
   }
   return (
     <div className="grid grid-cols-3 gap-3 mt-2">
       {webPhotos.map((url: string, idx: number) => (
-        <div 
-          key={idx} 
-          onClick={() => onPhotoClick(url)} 
-          className="block rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-950 hover:border-emerald-500 dark:hover:border-emerald-500 transition-premium hover:scale-105 cursor-zoom-in"
-        >
+        <a key={idx} href={url} target="_blank" rel="noopener noreferrer" className="block rounded-xl overflow-hidden border border-zinc-800 bg-zinc-950 hover:border-emerald-500 transition-premium hover:scale-105">
           <img src={url} alt={`Фото ${idx + 1}`} className="w-full h-24 object-cover" />
-        </div>
+        </a>
       ))}
     </div>
   );
@@ -236,8 +222,6 @@ export default function AdminDashboard() {
   const [selectedPartner, setSelectedPartner] = useState<any | null>(null);
   const [selectedClient, setSelectedClient] = useState<any | null>(null);
   const [selectedSuperChat, setSelectedSuperChat] = useState<any | null>(null);
-  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
-  const [partnerStaff, setPartnerStaff] = useState<any[]>([]);
   const [rejectionReason, setRejectionReason] = useState("");
   const [showRejectionInput, setShowRejectionInput] = useState(false);
   const [actionSubmitting, setActionSubmitting] = useState(false);
@@ -275,89 +259,6 @@ export default function AdminDashboard() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Load super_chat_archives on-demand for selectedClient
-  useEffect(() => {
-    if (!selectedClient || !selectedClient.id || selectedClient.super_chat_archives) return;
-    
-    const fetchChatArchives = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("super_chat_archives")
-          .select("*")
-          .eq("user_id", selectedClient.id)
-          .order("saved_at", { ascending: false });
-          
-        if (error) throw error;
-        
-        setSelectedClient((prev: any) => 
-          prev && prev.id === selectedClient.id 
-            ? { ...prev, super_chat_archives: data || [] } 
-            : prev
-        );
-      } catch (e) {
-        console.error("Error fetching super chat archives:", e);
-      }
-    };
-    
-    fetchChatArchives();
-  }, [selectedClient?.id]);
-
-  // Load staff members on-demand for selectedPartner
-  useEffect(() => {
-    if (!selectedPartner || !selectedPartner.id) {
-      setPartnerStaff([]);
-      return;
-    }
-    
-    const fetchStaff = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("pro_profiles")
-          .select("*")
-          .eq("admin_id", selectedPartner.id)
-          .order("created_at", { ascending: false });
-          
-        if (error) throw error;
-        setPartnerStaff(data || []);
-      } catch (e) {
-        console.error("Error fetching partner staff:", e);
-      }
-    };
-    
-    fetchStaff();
-  }, [selectedPartner?.id]);
-
-  // Auto-logout after 30 minutes of inactivity
-  useEffect(() => {
-    if (!sessionUser) return;
-
-    let timeoutId: NodeJS.Timeout;
-
-    const resetTimer = () => {
-      if (timeoutId) clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        console.log("Inactivity timeout reached, logging out...");
-        handleSignOut();
-      }, 30 * 60 * 1000); // 30 minutes
-    };
-
-    const events = ["mousedown", "mousemove", "keypress", "scroll", "touchstart"];
-    const handleActivity = () => resetTimer();
-
-    events.forEach((event) => {
-      window.addEventListener(event, handleActivity, { passive: true });
-    });
-
-    resetTimer();
-
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-      events.forEach((event) => {
-        window.removeEventListener(event, handleActivity);
-      });
-    };
-  }, [sessionUser]);
-
   const checkSuperAdminStatus = async (uid: string) => {
     try {
       const { data, error } = await supabase
@@ -386,8 +287,8 @@ export default function AdminDashboard() {
         { count: sosCount },
       ] = await Promise.all([
         supabase.from("profiles").select("*", { count: "exact", head: true }),
-        supabase.from("pro_profiles").select("*", { count: "exact", head: true }).neq("role", "staff"),
-        supabase.from("pro_profiles").select("*", { count: "exact", head: true }).eq("moderation_status", "in_review").neq("role", "staff"),
+        supabase.from("pro_profiles").select("*", { count: "exact", head: true }).eq("role", "partner"),
+        supabase.from("pro_profiles").select("*", { count: "exact", head: true }).eq("moderation_status", "in_review"),
         supabase.from("help_requests").select("*", { count: "exact", head: true }).eq("status", "active"),
       ]);
 
@@ -412,13 +313,12 @@ export default function AdminDashboard() {
         const { data } = await supabase
           .from("pro_profiles")
           .select("*")
-          .neq("role", "staff")
           .order("created_at", { ascending: false });
         setPartners(data || []);
       } else if (activeTab === "clients") {
         const { data } = await supabase
           .from("profiles")
-          .select("*, user_vehicles!user_vehicles_user_id_fkey(*, car_brands(*))")
+          .select("*, user_vehicles(*, car_brands(*)), super_chat_archives(*)")
           .order("created_at", { ascending: false });
         setClients(data || []);
       } else if (activeTab === "orders") {
@@ -492,9 +392,9 @@ export default function AdminDashboard() {
     }
   };
 
-  async function handleSignOut() {
+  const handleSignOut = async () => {
     await supabase.auth.signOut();
-  }
+  };
 
   // 4. Moderation Action (Approve / Reject)
   const handleUpdateModerationStatus = async (partnerId: string, status: "approved" | "rejected") => {
@@ -642,17 +542,17 @@ export default function AdminDashboard() {
 
   // 8. Main Dashboard Application layout
   return (
-    <div className="flex min-h-screen bg-background text-foreground font-sans antialiased">
+    <div className="flex min-h-screen bg-zinc-950 text-zinc-100 font-sans antialiased">
       {/* Sidebar Navigation */}
-      <aside className="w-64 border-r border-zinc-200/80 dark:border-zinc-900 bg-[#f5f5f7]/80 dark:bg-zinc-950/80 backdrop-blur-md flex flex-col">
-        <div className="p-6 border-b border-zinc-200/80 dark:border-zinc-900">
+      <aside className="w-64 border-r border-zinc-900 bg-zinc-950/80 backdrop-blur-md flex flex-col">
+        <div className="p-6 border-b border-zinc-900">
           <div className="flex items-center gap-3">
             <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-zinc-950 font-bold shadow-md shadow-emerald-500/10">
               my
             </div>
             <div>
               <h2 className="text-sm font-bold leading-none tracking-tight">myAuto</h2>
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium uppercase tracking-wider mt-1 block">Super Admin Console</span>
+              <span className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider mt-1 block">Super Admin Console</span>
             </div>
           </div>
         </div>
@@ -661,7 +561,7 @@ export default function AdminDashboard() {
           <button
             onClick={() => setActiveTab("dashboard")}
             className={`flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-semibold transition-premium ${
-              activeTab === "dashboard" ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-900/50 hover:text-zinc-800 dark:hover:text-zinc-200"
+              activeTab === "dashboard" ? "bg-emerald-500/10 text-emerald-400" : "text-zinc-400 hover:bg-zinc-900/50 hover:text-zinc-200"
             }`}
           >
             <Activity className="h-4 w-4" />
@@ -670,7 +570,7 @@ export default function AdminDashboard() {
           <button
             onClick={() => setActiveTab("moderation")}
             className={`flex items-center justify-between w-full rounded-xl px-4 py-3 text-sm font-semibold transition-premium ${
-              activeTab === "moderation" ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-900/50 hover:text-zinc-800 dark:hover:text-zinc-200"
+              activeTab === "moderation" ? "bg-emerald-500/10 text-emerald-400" : "text-zinc-400 hover:bg-zinc-900/50 hover:text-zinc-200"
             }`}
           >
             <div className="flex items-center gap-3">
@@ -678,7 +578,7 @@ export default function AdminDashboard() {
               Модерация СТО
             </div>
             {stats.pending > 0 && (
-              <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs text-emerald-600 dark:text-emerald-400 border border-emerald-550/20 font-bold">
+              <span className="rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs text-amber-500 border border-amber-500/20 font-bold">
                 {stats.pending}
               </span>
             )}
@@ -686,7 +586,7 @@ export default function AdminDashboard() {
           <button
             onClick={() => setActiveTab("clients")}
             className={`flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-semibold transition-premium ${
-              activeTab === "clients" ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-900/50 hover:text-zinc-800 dark:hover:text-zinc-200"
+              activeTab === "clients" ? "bg-emerald-500/10 text-emerald-400" : "text-zinc-400 hover:bg-zinc-900/50 hover:text-zinc-200"
             }`}
           >
             <Users className="h-4 w-4" />
@@ -695,7 +595,7 @@ export default function AdminDashboard() {
           <button
             onClick={() => setActiveTab("partners")}
             className={`flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-semibold transition-premium ${
-              activeTab === "partners" ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-900/50 hover:text-zinc-800 dark:hover:text-zinc-200"
+              activeTab === "partners" ? "bg-emerald-500/10 text-emerald-400" : "text-zinc-400 hover:bg-zinc-900/50 hover:text-zinc-200"
             }`}
           >
             <Wrench className="h-4 w-4" />
@@ -704,7 +604,7 @@ export default function AdminDashboard() {
           <button
             onClick={() => setActiveTab("orders")}
             className={`flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-semibold transition-premium ${
-              activeTab === "orders" ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-900/50 hover:text-zinc-800 dark:hover:text-zinc-200"
+              activeTab === "orders" ? "bg-emerald-500/10 text-emerald-400" : "text-zinc-400 hover:bg-zinc-900/50 hover:text-zinc-200"
             }`}
           >
             <FileText className="h-4 w-4" />
@@ -713,15 +613,15 @@ export default function AdminDashboard() {
           <button
             onClick={() => setActiveTab("sos")}
             className={`flex items-center justify-between w-full rounded-xl px-4 py-3 text-sm font-semibold transition-premium ${
-              activeTab === "sos" ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-900/50 hover:text-zinc-800 dark:hover:text-zinc-200"
+              activeTab === "sos" ? "bg-emerald-500/10 text-emerald-400" : "text-zinc-400 hover:bg-zinc-900/50 hover:text-zinc-200"
             }`}
           >
-            <div className="flex items-center gap-3 whitespace-nowrap">
+            <div className="flex items-center gap-3">
               <AlertTriangle className="h-4 w-4" />
               Дорожная помощь (SOS)
             </div>
             {stats.sos > 0 && (
-              <span className="rounded-full bg-red-500/10 px-2.5 py-0.5 text-xs text-red-550 dark:text-red-550 border border-red-500/20 font-bold">
+              <span className="rounded-full bg-red-500/10 px-2.5 py-0.5 text-xs text-red-500 border border-red-500/20 font-bold">
                 {stats.sos}
               </span>
             )}
@@ -729,42 +629,47 @@ export default function AdminDashboard() {
           <button
             onClick={() => setActiveTab("audit")}
             className={`flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-semibold transition-premium ${
-              activeTab === "audit" ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-900/50 hover:text-zinc-800 dark:hover:text-zinc-200"
+              activeTab === "audit" ? "bg-emerald-500/10 text-emerald-400" : "text-zinc-400 hover:bg-zinc-900/50 hover:text-zinc-200"
             }`}
           >
             <FolderOpen className="h-4 w-4" />
             Логи аудита
           </button>
         </nav>
+
+        <div className="p-4 border-t border-zinc-900 mt-auto bg-zinc-950/40">
+          <div className="flex items-center justify-between">
+            <div className="truncate max-w-[150px]">
+              <p className="text-xs font-bold leading-none text-zinc-200">Суперадмин</p>
+              <span className="text-[10px] text-zinc-500 font-mono mt-1 block">телефон: 87772373000</span>
+            </div>
+            <button
+              onClick={handleSignOut}
+              className="h-8 w-8 rounded-lg bg-zinc-900 hover:bg-zinc-800 flex items-center justify-center text-zinc-400 hover:text-zinc-100 transition-premium"
+              title="Выйти"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col min-h-screen bg-background">
+      <main className="flex-1 flex flex-col min-h-screen bg-zinc-950">
         {/* Top Header */}
-        <header className="h-16 border-b border-zinc-200 dark:border-zinc-900 bg-background/60 backdrop-blur-md flex items-center justify-between px-8">
+        <header className="h-16 border-b border-zinc-900 bg-zinc-950/60 backdrop-blur-md flex items-center justify-between px-8">
           <div className="flex items-center gap-4">
-            <h1 className="text-[17px] font-medium text-foreground">{getTabTitle(activeTab)}</h1>
+            <h1 className="text-[17px] font-medium text-zinc-100">{getTabTitle(activeTab)}</h1>
             {dataLoading && <RefreshCw className="h-4 w-4 animate-spin text-emerald-500" />}
           </div>
           <div className="flex items-center gap-4">
             <button
               onClick={fetchTabRecords}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-150 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-xs font-semibold transition-premium text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-white/5 cursor-pointer"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-semibold transition-premium text-zinc-300 border border-white/5"
             >
               <RefreshCw className="h-3 w-3" />
               Обновить
             </button>
-            <div className="h-4 w-px bg-zinc-200 dark:bg-zinc-800 mx-1" />
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300 select-none">Суперадмин</span>
-              <button
-                onClick={handleSignOut}
-                className="h-8 w-8 rounded-lg bg-zinc-150 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 flex items-center justify-center text-zinc-500 dark:text-zinc-400 hover:text-red-500 dark:hover:text-red-400 transition-premium border border-zinc-200 dark:border-white/5 cursor-pointer"
-                title="Выйти"
-              >
-                <LogOut className="h-4 w-4" />
-              </button>
-            </div>
           </div>
         </header>
 
@@ -775,48 +680,48 @@ export default function AdminDashboard() {
             <div className="space-y-8">
               {/* Stat Cards Grid */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="rounded-[26px] border border-zinc-200 dark:border-white/5 bg-white dark:bg-zinc-900/20 p-6 transition-premium hover-scale shadow-sm">
+                <div className="rounded-[26px] border border-white/5 bg-zinc-900/20 p-6 transition-premium hover-scale">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">Клиенты</span>
+                    <span className="text-sm font-semibold text-zinc-400">Клиенты</span>
                     <div className="h-8 w-8 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
                       <Users className="h-4 w-4 text-blue-500" />
                     </div>
                   </div>
-                  <h3 className="text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">{stats.clients}</h3>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2">Зарегистрированных водителей</p>
+                  <h3 className="text-3xl font-bold tracking-tight text-zinc-100">{stats.clients}</h3>
+                  <p className="text-xs text-zinc-500 mt-2">Зарегистрированных водителей</p>
                 </div>
 
-                <div className="rounded-[26px] border border-zinc-200 dark:border-white/5 bg-white dark:bg-zinc-900/20 p-6 transition-premium hover-scale shadow-sm">
+                <div className="rounded-[26px] border border-white/5 bg-zinc-900/20 p-6 transition-premium hover-scale">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">СТО и Партнеры</span>
+                    <span className="text-sm font-semibold text-zinc-400">СТО и Партнеры</span>
                     <div className="h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
                       <Wrench className="h-4 w-4 text-emerald-500" />
                     </div>
                   </div>
-                  <h3 className="text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">{stats.partners}</h3>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2">Одобренных сервисов и магазинов</p>
+                  <h3 className="text-3xl font-bold tracking-tight text-zinc-100">{stats.partners}</h3>
+                  <p className="text-xs text-zinc-500 mt-2">Одобренных сервисов и магазинов</p>
                 </div>
 
-                <div className="rounded-[26px] border border-zinc-200 dark:border-white/5 bg-white dark:bg-zinc-900/20 p-6 transition-premium hover-scale shadow-sm">
+                <div className="rounded-[26px] border border-white/5 bg-zinc-900/20 p-6 transition-premium hover-scale">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">На модерации</span>
+                    <span className="text-sm font-semibold text-zinc-400">На модерации</span>
                     <div className="h-8 w-8 rounded-lg bg-amber-500/10 flex items-center justify-center border border-amber-500/20">
                       <ShieldCheck className="h-4 w-4 text-amber-500" />
                     </div>
                   </div>
                   <h3 className="text-3xl font-bold tracking-tight text-amber-500">{stats.pending}</h3>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2">СТО ждут проверки анкет</p>
+                  <p className="text-xs text-zinc-500 mt-2">СТО ждут проверки анкет</p>
                 </div>
 
-                <div className="rounded-[26px] border border-zinc-200 dark:border-white/5 bg-white dark:bg-zinc-900/20 p-6 transition-premium hover-scale shadow-sm">
+                <div className="rounded-[26px] border border-white/5 bg-zinc-900/20 p-6 transition-premium hover-scale">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">Активные SOS</span>
+                    <span className="text-sm font-semibold text-zinc-400">Активные SOS</span>
                     <div className="h-8 w-8 rounded-lg bg-red-500/10 flex items-center justify-center border border-red-500/20">
                       <AlertTriangle className="h-4 w-4 text-red-500" />
                     </div>
                   </div>
                   <h3 className="text-3xl font-bold tracking-tight text-red-500">{stats.sos}</h3>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2">Вызовов помощи прямо сейчас</p>
+                  <p className="text-xs text-zinc-500 mt-2">Вызовов помощи прямо сейчас</p>
                 </div>
               </div>
 
@@ -860,7 +765,7 @@ export default function AdminDashboard() {
                   ) : (
                     partners.filter(p => p.moderation_status === "in_review" || p.moderation_status === "waiting").map((partner) => {
                       const name = partner.business_name || partner.name || partner.service_data?.name || "Без названия";
-                      const specText = getSpecializationText(partner);
+                      const spec = partner.specialization || partner.service_data?.partnerType || partner.role || "—";
                       const city = partner.city || partner.service_data?.city || "—";
                       const phone = partner.phone || partner.service_data?.phone || "—";
                       
@@ -877,7 +782,7 @@ export default function AdminDashboard() {
                             <div>
                               <h4 className="font-semibold text-[17px] text-zinc-100">{name}</h4>
                               <p className="text-xs text-zinc-400 mt-1 font-normal">
-                                Категория: <span className="font-semibold text-emerald-400">{specText}</span> • Город: {city} • Тел: {phone}
+                                Категория: <span className="font-semibold text-emerald-400">{translateCategory(spec)}</span> • Город: {city} • Тел: {phone}
                               </p>
                             </div>
                           </div>
@@ -1017,14 +922,14 @@ export default function AdminDashboard() {
                       .filter((p) => {
                         const q = searchQuery.toLowerCase();
                         const name = p.business_name || p.name || p.service_data?.name || "";
-                        const specText = getSpecializationText(p);
-                        const matchQuery = name.toLowerCase().includes(q) || specText.toLowerCase().includes(q);
+                        const spec = p.specialization || p.service_data?.partnerType || p.role || "";
+                        const matchQuery = name.toLowerCase().includes(q) || spec.toLowerCase().includes(q);
                         const matchStatus = statusFilter === "all" || p.moderation_status === statusFilter;
                         return matchQuery && matchStatus;
                       })
                       .map((partner) => {
                         const name = partner.business_name || partner.name || partner.service_data?.name || "Без названия";
-                        const specText = getSpecializationText(partner);
+                        const spec = partner.specialization || partner.service_data?.partnerType || partner.role || "—";
                         const city = partner.city || partner.service_data?.city || "—";
                         const rating = partner.rating !== undefined && partner.rating !== null ? partner.rating : null;
                         
@@ -1040,7 +945,7 @@ export default function AdminDashboard() {
                               )}
                               <span>{name}</span>
                             </td>
-                            <td className="px-6 py-4 font-medium text-emerald-400">{specText}</td>
+                            <td className="px-6 py-4 font-medium text-emerald-400">{translateCategory(spec)}</td>
                             <td className="px-6 py-4 text-zinc-300">{city}</td>
                             <td className="px-6 py-4 font-semibold text-amber-400">
                               {rating !== null ? `⭐ ${rating.toFixed(1)}` : "⭐ 0.0"}
@@ -1253,7 +1158,7 @@ export default function AdminDashboard() {
             {/* Fallbacks */}
             {(() => {
               const name = selectedPartner.business_name || selectedPartner.name || selectedPartner.service_data?.name || "Без названия";
-              const specText = getSpecializationText(selectedPartner);
+              const spec = selectedPartner.specialization || selectedPartner.service_data?.partnerType || selectedPartner.role || "—";
               const city = selectedPartner.city || selectedPartner.service_data?.city || "—";
               const address = selectedPartner.address || selectedPartner.service_data?.address || "—";
               const phone = selectedPartner.phone || selectedPartner.service_data?.phone || "—";
@@ -1285,7 +1190,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-6 bg-zinc-100/50 dark:bg-zinc-900/10 p-5 rounded-[26px] border border-zinc-200 dark:border-white/5">
+                  <div className="grid grid-cols-2 gap-6 bg-zinc-900/10 p-5 rounded-[26px] border border-white/5">
                     <div>
                       <label className="text-xs font-medium text-zinc-500 uppercase tracking-wider block mb-1">Роль на платформе</label>
                       <p className="font-semibold text-zinc-200 capitalize">
@@ -1295,12 +1200,12 @@ export default function AdminDashboard() {
                     <div>
                       <label className="text-xs font-medium text-zinc-500 uppercase tracking-wider block mb-1">Основная специализация</label>
                       <p className="font-semibold text-emerald-400">
-                        {specText}
+                        {translateCategory(spec)}
                       </p>
                     </div>
                   </div>
 
-                  <div className="space-y-4 bg-zinc-100/50 dark:bg-zinc-900/10 p-5 rounded-[26px] border border-zinc-200 dark:border-white/5">
+                  <div className="space-y-4 bg-zinc-900/10 p-5 rounded-[26px] border border-white/5">
                     <div>
                       <label className="text-xs font-medium text-zinc-500 uppercase tracking-wider block mb-1">Город и Адрес</label>
                       <p className="font-semibold text-zinc-200">
@@ -1324,57 +1229,18 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  <div className="bg-zinc-100/50 dark:bg-zinc-900/10 p-5 rounded-[26px] border border-zinc-200 dark:border-white/5">
+                  <div className="bg-zinc-900/10 p-5 rounded-[26px] border border-white/5">
                     <label className="text-xs font-medium text-zinc-500 uppercase tracking-wider block mb-3">Фотогалерея сервиса</label>
-                    {renderGallery(selectedPartner.gallery_photos, setLightboxImage)}
-                  </div>
-
-                  <div className="bg-zinc-100/50 dark:bg-zinc-900/10 p-5 rounded-[26px] border border-zinc-200 dark:border-white/5">
-                    <label className="text-xs font-medium text-zinc-500 uppercase tracking-wider block mb-3">
-                      Сотрудники автосервиса ({partnerStaff.length})
-                    </label>
-                    {partnerStaff.length === 0 ? (
-                      <p className="text-xs text-zinc-500 dark:text-zinc-400">Нет зарегистрированных сотрудников.</p>
-                    ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {partnerStaff.map((staff) => (
-                          <div 
-                            key={staff.id} 
-                            className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/40 flex items-center justify-between text-sm shadow-sm"
-                          >
-                            <div className="flex items-center gap-3">
-                              {staff.avatar_url ? (
-                                <img src={staff.avatar_url} alt={staff.name || "Сотрудник"} className="h-10 w-10 rounded-lg object-cover border border-zinc-200 dark:border-zinc-800" />
-                              ) : (
-                                <div className="h-10 w-10 rounded-lg bg-zinc-200 dark:bg-zinc-900 flex items-center justify-center font-bold text-zinc-500 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 text-xs">
-                                  {(staff.name || "С")[0]}
-                                </div>
-                              )}
-                              <div>
-                                <p className="font-semibold text-zinc-800 dark:text-zinc-200 text-xs">
-                                  {staff.name || "Без имени"}
-                                </p>
-                                <p className="text-[10px] text-zinc-500 font-mono mt-0.5">
-                                  Тел: {staff.phone || "—"}
-                                </p>
-                              </div>
-                            </div>
-                            <span className="text-[10px] rounded bg-zinc-100 dark:bg-zinc-900 px-2 py-0.5 text-zinc-600 dark:text-zinc-400 font-medium">
-                              Сотрудник
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    {renderGallery(selectedPartner.gallery_photos)}
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-zinc-100/50 dark:bg-zinc-900/10 p-5 rounded-[26px] border border-zinc-200 dark:border-white/5">
+                    <div className="bg-zinc-900/10 p-5 rounded-[26px] border border-white/5">
                       <label className="text-xs font-medium text-zinc-500 uppercase tracking-wider block mb-3">Рабочее время</label>
                       {formatWorkingHours(selectedPartner.working_hours)}
                     </div>
 
-                    <div className="bg-zinc-100/50 dark:bg-zinc-900/10 p-5 rounded-[26px] border border-zinc-200 dark:border-white/5">
+                    <div className="bg-zinc-900/10 p-5 rounded-[26px] border border-white/5">
                       <label className="text-xs font-medium text-zinc-500 uppercase tracking-wider block mb-3">Услуги и Прайс-лист</label>
                       {formatServicesPrices(selectedPartner.services_prices)}
                     </div>
@@ -1548,28 +1414,6 @@ export default function AdminDashboard() {
               )}
             </div>
           </div>
-        </div>
-      )}
-
-      {/* LIGHTBOX MODAL FOR GALLERY PHOTOS */}
-      {lightboxImage && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 cursor-zoom-out"
-          onClick={() => setLightboxImage(null)}
-        >
-          <button 
-            className="absolute top-6 right-6 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition-premium focus:outline-none cursor-pointer"
-            onClick={(e) => { e.stopPropagation(); setLightboxImage(null); }}
-          >
-            <X className="h-6 w-6" />
-          </button>
-          
-          <img 
-            src={lightboxImage} 
-            alt="Увеличенное фото" 
-            className="max-w-full max-h-[90vh] rounded-2xl object-contain shadow-2xl border border-white/10 hover-scale cursor-default"
-            onClick={(e) => e.stopPropagation()}
-          />
         </div>
       )}
     </div>
