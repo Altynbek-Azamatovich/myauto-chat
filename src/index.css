@@ -85,6 +85,9 @@ All colors MUST be HSL.
   }
 
   .dark {
+    --card-bg: rgba(24, 24, 27, 0.45);
+    --card-border: rgba(255, 255, 255, 0.05);
+
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
