@@ -118,10 +118,13 @@ const AppStoreBadge: React.FC = () => (
   </a>
 );
 
-const GooglePlayBadge: React.FC<{ onClick?: () => void }> = ({ onClick }) => (
-  <button
-    type="button"
-    onClick={onClick}
+const GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.altynbek.myauto";
+
+const GooglePlayBadge: React.FC<{ onClick?: () => void }> = () => (
+  <a
+    href={GOOGLE_PLAY_URL}
+    target="_blank"
+    rel="noopener noreferrer"
     aria-label="Get it on Google Play"
     className="inline-flex items-center transition-transform hover:-translate-y-0.5"
     style={badgeStyle}
@@ -136,7 +139,7 @@ const GooglePlayBadge: React.FC<{ onClick?: () => void }> = ({ onClick }) => (
       <text x="36" y="17" fontFamily="-apple-system, SF Pro Text, Roboto, Arial" fontSize="7" fill="#1D1D1F">GET IT ON</text>
       <text x="36" y="31" fontFamily="-apple-system, SF Pro Display, Roboto, Arial" fontSize="16" fontWeight="600" fill="#1D1D1F">Google Play</text>
     </svg>
-  </button>
+  </a>
 );
 
 const StoreButtons: React.FC<{ className?: string; align?: "center" | "start"; onAndroidClick?: () => void }> = ({
