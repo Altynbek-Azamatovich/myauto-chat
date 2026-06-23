@@ -11,6 +11,12 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
+    /* Admin console palette (Apple-like) */
+    --card-bg: rgba(255, 255, 255, 0.75);
+    --card-border: rgba(0, 0, 0, 0.06);
+    --accent: #10b981;
+    --accent-hover: #059669;
+
     --background: 0 0% 100%;
     --foreground: 220 9% 15%;
 
@@ -79,6 +85,9 @@ All colors MUST be HSL.
   }
 
   .dark {
+    --card-bg: rgba(24, 24, 27, 0.45);
+    --card-border: rgba(255, 255, 255, 0.05);
+
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
@@ -268,8 +277,8 @@ All colors MUST be HSL.
 }
 
 .glass-panel {
-  background-color: rgba(24, 24, 27, 0.45);
+  background-color: var(--card-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
 }
