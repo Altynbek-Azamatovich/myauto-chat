@@ -11,6 +11,12 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
+    /* Admin console palette (Apple-like) */
+    --card-bg: rgba(255, 255, 255, 0.75);
+    --card-border: rgba(0, 0, 0, 0.06);
+    --accent: #10b981;
+    --accent-hover: #059669;
+
     --background: 0 0% 100%;
     --foreground: 220 9% 15%;
 
